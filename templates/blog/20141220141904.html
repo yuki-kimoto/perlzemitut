@@ -1,0 +1,269 @@
+<h2 class="title">XSでメモリリークを起こさずプログラムを書く方法</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100809127859.html">
+        <span itemprop="name">XS</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+XSでメモリリークを起こさずプログラムを書く方法を解説します。
+
+<h3>Perlのメモリ管理はリファレンスカウント方式</h3>
+
+まず基礎知識としてPerlのメモリ管理は<a href="/blog/20131010138141.html">リファレンスカウント方式</a>によって、行われているということを、知っておいてください。リファレンスカウント方式では、リファレンスカウントが0になった時点で、メモリの解放が行われます。つまり、Perlにおいてメモリ解放を行うということは、リファレンスカウントを0にするという操作を行うことと等しいです。
+
+リファレンスカウント方式についてもう少し説明しておきます。Perlの変数においては、最初に変数を宣言したときに、その変数のリファレンスカウントは1になります。また、変数への参照が作られると、リファレンスカウントが1増やされます。
+
+<pre>
+{
+  # $strのリファレンスカウントは1になる。
+  my $str = 'Hello';
+  
+  # $strのリファレンスカウントは2になる。$str_refのリファレンスカウントは1になる
+  my $str_ref = \$str;
+}
+</pre>
+
+またPerlでは<a href="/blog/20110128130016.html">スコープ</a>を抜けると、自動的に変数が解放されます。これは、なぜかというと、変数は、自動的に、モータルと呼ばれる状態になっているからです。モータルという概念は非常に重要です。モータルとは、「スコープを抜けたときに、リファレンスカウントが自動的に1減らされる状態」という意味です。
+
+上記のコードでスコープから抜けたときに何が起こるかを記述します。
+
+<pre>
+{
+  # $strのリファレンスカウントは1になる。
+  my $str = 'Hello';
+  
+  # $strのリファレンスカウントは2になる。$str_refのリファレンスカウントは1になる
+  my $str_ref = \$str;
+}
+# $str_refのリファレンスカウントが1減らされて0になります。
+# $str_refのリファレンスカウントが0になったので、$str_refは解放されます。
+# $str_refが解放されたので、$strのリファレンスカウントは2から1になっています。
+# $strのリファレンスカウントが1減らされて0になります。
+# $strのリファレンスカウント0になったので、$strは解放されます。
+# ('Hello'は$strの内部に含まれているのこれも解放されます)
+</pre>
+
+このような経緯をたどって、メモリは解放されます。
+
+<h3>XSにおけるメモリ管理の基礎</h3>
+
+次にこれを踏まえてXSにおけるメモリ管理の基礎について解説します。
+
+<h4>Perlの変数</h4>
+
+最初にPerlの変数について簡単に解説します。
+
+<a href="/blog/20161107147852.html">Perlの変数</a>について解説しておきます。まず内部的には、スカラ変数は「SV*型」で表現されます。配列は「AV*型」、ハッシュは「HV*型」で表現されます。まずこのみっつを覚えましょう。リファレンスはもちろん「SV*型」に代入できます。そして、内部的には、「AV*型」と「HV*型」は、「SV*型」から派生しているということを、覚えておきましょう。これは、アップキャスト、ダウンキャストができるという意味です。
+
+スカラ変数の作成は次の関数で行います。XSにおいては、文字列、浮動小数点、整数で、作成する関数が異なるということを覚えておきましょう。
+
+<pre>
+SV* sv_str = newSvPV("Hello", 0);
+SV* sv_num = newSvNV(1.2);
+SV* sv_num_int = newSvIV(4);
+</pre>
+
+配列とハッシュの生成は次の関数で行います。
+
+<pre>
+AV* av_nums = newAV();
+HV* hv_scores = newHV();
+</pre>
+
+リファレンスの生成は次の関数で行います。
+
+<pre>
+SV* sv_str_ref = newRV_inc(sv_str);
+</pre>
+
+他のnewRVという関数もありますが、リファレンスを生成するときは、newRV_incで、リファレンスカウントを1増やすことが原則です。
+
+<h3>作成した変数はすべてモータルにする</h3>
+
+次にメモリ管理に進みます。Perlのメモリ管理の鉄則は、新しく作成するPerlの変数は、すべてモータルにするということです。モータルにすることによって、スコープを抜けた変数のリファレンスカウントは1減らされ、自動的にメモリ解放されます。
+
+<q>
+新しく作成するPerlの変数はすべてモータルにする。
+</q>
+
+モータルにするには<strong>sv_2mortal</strong>関数を使用します。引数には「SV*型」を受け取り、戻り値はモータルにされた「SV*型」です。
+
+<pre>
+sv_2mortal(SV* sv_var)
+</pre>
+
+次のように使用します。
+
+<pre>
+SV* sv_str = sv_2mortal(newSvPV("Hello", 0));
+</pre>
+
+sv_2mortalに「AV*型」「HV*型」などを渡すには、「SV*型」にアップキャストして、さらに受け取るときに「AV*型」「HV*型」にダウンキャストする必要があります。
+
+<pre>
+AV* sv_nums = (AV*)sv_2mortal((SV*)newAV());
+HV* hv_nums = (AV*)sv_2mortal((SV*)newHV());
+</pre>
+
+リファレンスを作成する場合もsv_2mortalを使います。
+
+<pre>
+SV* sv_str_ref = sv_2mortal(newRV_inc(sv_str));
+</pre>
+
+このように変数をモータルにしておくと、Perlのスコープが終わった時点で、リファレンスカウントが1減らされ自動的に解放されます。C言語のスコープではなくってPerlのスコープが終わった時点なので、区別しましょう。以下のようなXSの関数は、内部的には、関数全体がPerlのスコープで囲われています。
+
+<pre>
+SV*
+foo(...)
+  PPCODE:
+{
+  /* Perlのスコープの開始 */
+  
+  SV* sv_str = sv_2mortal(newSvPV("Hello", 0));
+  
+  XSRETURN(0);
+  
+  /* Perlのスコープの終わり */
+}
+</pre>
+
+以下のように戻り値として返したときは、Perlのコードに戻った時点で、リファレンスカウントが1増やされ、モータルになっているのでリファレンスカウントが1減らされるので、結果としてリファレンスカウントは変化しません。
+
+<pre>
+SV*
+foo(...)
+  PPCODE:
+{
+  /* Perlのスコープの開始 */
+  
+  SV* sv_str = sv_2mortal(newSvPV("Hello", 0));
+  
+  /* スタックに積んで、戻り値として返却 */
+  XPUSHs(sv_str);
+  XSRETURN(1);
+  
+  /* Perlのスコープの終わり */
+}
+</pre>
+
+<h3>配列とハッシュにデータを格納する場合</h3>
+
+上記の鉄則を守りながらコーディングをしていくと、配列とハッシュにデータを格納した場合にメモリ解放がうまくいきません。なぜなら、配列とハッシュは、それ自体が破棄されるときに、内部に含まれる「SV*型」のデータのリファレンスカウントを1下げてしまうためです。
+
+これを回避するために、配列とハッシュにデータを格納する場合は、リファレンスカウントを手動で1増やしてあげる必要があります。配列の場合は、av_push,av_storeを使う場合、ハッシュの場合はhv_storeを使う場合がこれに該当します。リファレンスカウントを増やすには<strong>SvREFCNT_inc</strong>関数を使用します。
+
+<pre>
+/* 配列に格納する場合 */
+SV* sv_num = sv_2mortal(newSvIV(3));
+AV* av_nums = (AV*)sv_2mortal((SV*)newAV());
+av_push(av_nums, SvREFCNT_inc(sv_num));
+
+/* ハッシュに格納する場合 */
+SV* sv_score_math = sv_2mortal(newSViv(60));
+HV* hv_scores = (HV*)sv_2mortal((SV*)newHV());
+hv_store(hv_scores, "math", strlen("math"), SvREFCNT_inc(sv_score_math), 0);
+</pre>
+
+<h3>Cの構造体に、Perlのデータを格納する場合</h3>
+
+Cの構造体にPerlのデータを格納する場合は、自分でメモリ管理を行う必要があります。この話の前提として、<a href="/blog/20140807140729.html">C言語の構造体をPerlのオブジェクトとして扱う方法</a>を見ていただくとよいと思います。
+
+C言語の構造体に、「SV*型」を保存したい場合を考えましょう。sv_nameというメンバを持つPeopleという構造体を宣言してみました。
+
+<pre>
+struct People {
+ SV* sv_name;
+};
+</pre>
+
+この場合は、代入するときにリファレンスカウントをSvREFCNT_incを使って増やします。そうしなければ、Perlのスコープを抜けた瞬間にリファレンスカウントは1下げられ、勝手に解放されてしまうからです。
+
+<pre>
+SV*
+foo(...)
+  PPCODE:
+{
+  /* 省略 */
+  
+  /* 構造体の作成(ポインタとして作成) */
+  People* people = (People*)malloc(sizeof(People));
+  SV* sv_name = sv_2mortal(newSvPV("kimoto", 0));
+  people->name = SvREFCNT_inc(sv_name);
+  
+  /* 省略 */
+}
+</pre>
+
+そして、デストラクタの中で、リファレンスカウントを<strong>SvREFCNT_dec</strong>を使ってひとつ下げます。
+
+<pre>
+void
+DESTORY(...)
+  PPCODE:
+{
+  // オブジェクトを取得
+  SV* people_obj = ST(0);
+  
+  // デリファレンス
+  SV* people_sv = SvROK(people_obj) ? SvRV(people_obj) : people_obj;
+  
+  // SV*型をsize_t型に変換
+  size_t people_iv = SvIV(people_sv);
+  
+  // size_t型をポインタに変換
+  People* people = INT2PTR(People*, people_iv);
+  
+  // sv_nameを解放
+  SvREFCNT_dec(people->sv_name);
+  
+  // People*を解放
+  free(people);
+  
+  XSRETURN(0);
+}
+</pre>
+
+このようにC言語の世界の構造体(クラスも同じ)のメンバにデータを保存したい場合は、手動でリファレンスカウントの増加と減少を行う必要があります。
+
+<h3>まとめ</h3>
+
+まとめると、要点は3つ。
+
+<ol>
+  <li>
+    新しくPerlの変数を作成した場合はsv_2mortalを使って変数をモータルな状態にする。
+  </li>
+  <li>
+    配列とハッシュに値を格納するときは、SvREFCNT_incを使って手動でリファレンスカウントを増やす。
+  </li>
+  <li>
+    構造体のメンバに保存する場合は、格納するときにSvREFCNT_incでリファレンスカウントを増やし、デストラクタで、SvREFCNT_decを使って、リファレンスカウントを1減らす。
+  </li>
+</ol>
+
+これで、たいていの場合には対処できると思います。
+
+<h3>参考</h3>
+
+この解説ででてきたXSで利用する関数については以下の記事で詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20100818127859.html">perlapi - XSにおけるデータ操作のためのAPI</a>
+  </li>
+</ul>
+

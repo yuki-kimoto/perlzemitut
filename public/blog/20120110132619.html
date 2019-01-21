@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>Validator::Custom 1.0 以前におけるドキュメント - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">Validator::Custom 1.0 以前におけるドキュメント</h2>
+<a href="/blog/20151212144988.html">このページはValidator::Custom 1.0 以前のドキュメントになります。最新版のドキュメントは、こちらです。</a>
+<strong>Validator::Custom</strong>は<strong>HTMLフォーム</strong>のデータの<strong>バリデーション</strong>(<strong>値の検証</strong>)を行うための便利なモジュールです。バリデーションのルールを少ない記述で書けること、制約ごとにエラーメッセージを設定できること、良く使う機能は最初から提供していて、ユーザー定義の制約を簡単に追加できる柔軟性の高い設計などが特徴です。
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom-&gt;new;
+
+# データ
+my $data = {
+  price =&gt; 1200
+  name =&gt; 'Perl',
+  password =&gt; 'secret',
+  passwrod2 =&gt; 'secret'
+};
+
+# ルールの作成
+my $rule = $vc-&gt;create_rule($data, $rule);
+$rule-&gt;require('price')-&gt;check('int')-&gt;message('price must be number');
+
+$rule-&gt;optional('name')
+  -&gt;check('not_blank')-&gt;message('name is empty')
+  -&gt;check({length =&gt; [0, 20])-&gt;message('name is too long');
+
+$rule-&gt;require('password')
+  -&gt;check('not_blank')-&gt;message('password is empty')
+  -&gt;check('ascii')-&gt;message('password contains invalid caharcters');
+
+$rule-&gt;require(['password', 'password2'])-&gt;name('password_check')
+  -&gt;check('duplication')-&gt;message('Two password not match')
+  -&gt;copy(0);
+
+# バリデーション
+my $vresult = $vc-&gt;validate($data, $rule);
+
+# 結果の確認
+if ($vresult-&gt;is_ok) {
+  # 安全なデータ
+  my $safe_data = $vresult-&gt;data;
+}
+else {
+  # エラーメッセージ
+  my $errors = $vresult-&gt;messages;
+}
+</pre>
+<p>
+  ルール作成の古い文法はこちら。上記の新しい文法で書くのが推奨です。
+</p>
+<pre>
+# ルールの作成(古い文法)
+my $rule = [
+  price =&gt; [
+    [int =&gt; 'price must be number']
+  ],
+  name =&gt; [
+    [not_blank =&gt; 'name is empty'],
+    [{length =&gt; [0, 20]} =&gt; 'name is too long']
+  ],
+  password =&gt; [
+    [not_blank =&gt; 'password is empty'],
+    [ascii =&gt; 'password contains invalid caharcters']
+  ],
+  {password_check =&gt; ['password', 'password2']}
+    =&gt; {copy =&gt; 0}
+    =&gt; [
+      [duplication =&gt; 'Two password not match']
+    ]
+];
+</pre>
+<p>
+  こちらのドキュメントは、新しい文法に書き直しますので、古い文法については、公式のドキュメントを参考にしてください。
+</p>
+<h3>Validator::Customのインストール</h3>
+<strong>Validator::Custom</strong>を<strong>インストール</strong>するにはcpanコマンドを使用します。
+<pre>
+cpan Validator::Custom
+</pre>
+<p>
+  WindowsでもUnix系のOSでもインストールすることができます。cpanコマンドではルート権限がないインストールを行うことができませんので、ユーザーのローカル環境にインストールしたい場合はcpanmなどのツールを使用してください。
+</p>
+<h3>Validator::Customオブジェクトの生成</h3>
+<p>
+  Validator::Customオブジェクトの生成するには<strong>new</strong>メソッドを使用します。
+</p>
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom-&gt;new;
+</pre>
+<p>
+  このオブジェクトを使ってバリデーションの処理を行います。
+</p>
+<h3>バリデーションの基礎</h3>
+<p>
+  バリデーションの基礎について解説します。以下のソースコードを見てください。
+</p>
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom-&gt;new;
+
+# データ
+my $data = {price =&gt; 1200};
+
+# ルールの作成
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check('int');
+
+# バリデーション
+my $vresult = $vc-&gt;validate($data, $rule);
+
+# 結果の確認
+if ($vresult-&gt;is_ok) { print "OK\n" }
+else { print "Not OK\n" }
+</pre>
+<h4>データ</h4>
+<p>
+  バリデーションを行うデータは、ハッシュリファレンスである必要があります。
+</p>
+<pre>
+# データ
+my $data = {price =&gt; 1200};
+</pre>
+<h4>ルール</h4>
+<p>
+  次にバリデーションのためのルールを作成します。
+</p>
+<pre>
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check('int');
+</pre>
+<p>
+  まず最初にValidator::Custom::Ruleオブジェクトを、<b>create_rule</b>メソッドを使って、作成します。
+</p>
+<pre>
+my $rule = $vc-&gt;create_rule;
+</pre>
+<p>
+  次に、<b>require</b>メソッドを使って、存在する必要のあるキーの名前を記述します。
+</p>
+<pre>
+$rule-&gt;require('price')
+</pre>
+<p>
+  もしキーが任意のものであるならば、<b>require</b>の代わりに<b>optional</b>を使うこともできます。
+</p>
+<pre>
+$rule-&gt;optional('price')
+</pre>
+<p>
+  次に制約を記述します。
+</p>
+<pre>
+$rule-&gt;require('price')-&gt;check('int');
+</pre>
+<p>
+  今回はひとつのキーのチェックだけですが、複数の値をチェックする場合は、引き続き記述していくことができます。
+</p>
+<pre>
+$rule-&gt;require('name')-&gt;check('string');
+</pre>
+<h4>バリデーション</h4>
+<p>
+  バリデーションを行うには、validateメソッドを使用します。
+</p>
+<pre>
+# バリデーション
+my $vresult = $vc-&gt;validate($data, $rule);
+</pre>
+<p>
+  戻り値は、Validator::Custom::Resultオブジェクトです。
+</p>
+<h4>結果の確認</h4>
+<p>
+  Validator::Custom::Resultオブジェクトを使って、結果の確認を行うことができます。
+</p>
+<pre>
+my $ok = $vresult-&gt;is_ok;
+</pre>
+<p>
+  is_okメソッドで、バリデーションの結果が正しいかどうかを確認することができます。
+</p>
+<h3>複数の値のバリデーション</h3>
+<p>
+  複数の値のバリデーションを行うためのルールを作成してみます。
+</p>
+<pre>
+# 複数の値を含むデータ
+my $data = {price =&gt; 1200, title =&gt; 'Perl'};
+
+# 複数の値のバリデーションを行うためのルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check('int');
+$rule-&gt;require('title')-&gt;check('ascii');
+</pre>
+<p>
+  複数の値をバリデーションのするときは、次のように複数回<b>require</b>を書くだけです。ルールの中身は次のようになります。
+</p>
+<pre>
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check('int');
+$rule-&gt;require('title')-&gt;check('ascii');
+</pre>
+<h3>ユーザー定義の制約の登録 - register_constraint</h3>
+<p>
+  デフォルトで用意されている制約とand条件とor条件を使って、さまざまな制約を表現することができました。Validator::Customではこれに加えて、ユーザー定義の制約を新しく登録することができます。
+</p>
+<p>
+  ここでは簡易的に、Emailが正しい形式であるかを確認するための制約を登録してみます。制約を登録するには<b>register_constraint</b>メソッドを使用します。
+</p>
+<pre>
+# Emailが正しい形式かを確認するための制約を登録
+$vc-&gt;register_constraint(
+  email =&gt; sub {
+    my $value = shift;
+    
+    # 正しいときは1を、正しくないときは0を返却
+    return 0 unless defined $value;
+    return $value =~ /^.+@.+$/ ? 1 : 0;
+  }
+);
+</pre>
+<p>
+  制約の登録の形式は次のようになります。
+</p>
+<pre>
+$vc-&gt;register_constraint(
+  制約名 =&gt; 制約のための処理
+);
+</pre>
+<p>
+  一度に複数の制約を登録することもできます。
+</p>
+<pre>
+$vc-&gt;register_constraint(
+  制約名1 =&gt; 制約のための処理1,
+  制約名2 =&gt; 制約のための処理2
+);
+</pre>
+<p>
+  制約のための処理は、サブルーチンのリファレンスです。データが正しいときは1を、正しくないときは0を返すようにしてください。
+</p>
+<pre>
+sub 制約名 {
+  ...  
+  if(正しい) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+</pre>
+<p>
+  登録した制約は、ルールの中で利用することができます。
+</p>
+<pre>
+# 複数の値のバリデーションを行うためのルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('admin_email')-&gt;check('email');
+my $data = {admin_email =&gt; 'foo@my.com'};
+</pre>
+<h3>制約関数を登録する</h3>
+<p>
+  Validator::Customでは、バリデーションのための制約関数を簡単に登録することができます。制約関数を登録するには<strong>register_constraint</strong>メソッドを使用します。
+</p>
+<pre>
+$vc-&gt;register_constraint(
+  tel_num =&gt; sub {
+    my $value = shift;
+    $value =~ /^[\d-]+$/ ? 1 : 0;
+  }
+);
+</pre>
+<p>
+  値が正しいものであった場合は1を、値が間違ったものであった場合は0を返却するようにします。注意として、真になる値として、配列のリファレンスを返却してはいけません。配列のリファレンスは制約関数をフィルタとして扱う場合に利用されるからです。
+</p>
+<p>
+  このように登録した制約関数はルールの中で使用することができます。
+</p>
+<pre>
+$rule-&gt;require('tel')-&gt;check('tel_num');
+</pre>
+<p>
+  制約関数は複数同時に登録することもできます。
+</p>
+<pre>
+$vc-&gt;register_constraint(
+  tel_num =&gt; sub {
+     my $value = shift;
+     $value =~ /^[\d-]+$/ ? 1 : 0;
+  },
+  hiragana =&gt; sub { ... }
+);
+</pre>
+<h3>項目が存在しなくてもよい require => 0 / Validator::Customリファレンス</h3>
+<strong>項目が存在しても存在しなくてもよい</strong>場合は<strong>require</strong>メソッドの代わりに<b>optional</b>メソッドを使用します。
+<pre>
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;optional('name')-&gt;check('int');
+</pre>
+<p>
+  上記のルールはnameが存在しても存在しなくてもよくて、存在する場合はintでなければならないことを表現します。
+</p>
+<h3>少なくともひとつの項目に値が含まれている</h3>
+<p>
+  複数のテキストボックスを入力して、そのうちの少なくともひとつに値が含まれていることをチェックしたい場合があります。このような場合は少し工夫がいります。テキストボックスの値をマージしてから、それが空でないことをチェックするのがよいでしょう。
+</p>
+<pre>
+# 少なくともひとつの項目に値が含まれている
+my $vc = Validator::Custom-&gt;new;
+$data = {name1 =&gt; 'Ken', name2 =&gt; '', name3 =&gt; 'Taro'};
+$rule = [
+  {key =&gt; qr/^name\d+$/} =&gt; [
+    'merge',
+    'trim',
+    'not_blank'
+  ],
+];
+my $result = $vc-&gt;validate($data, $rule);
+</pre>
+<h3>and条件を使ったルール</h3>
+<a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+<p>
+  バリデーションを行うときに、複数の条件を満たしているかどうかを記述したいことがあります。たとえば、1000より大きくて2000より小さいという条件を書きたいときなどです。
+</p>
+<p>
+  and条件を使ったルールを作成してみます。<b>check</b>メソッドを複数回呼び出すだけです。ここではgreater_thanとless_thanという制約を使っています。ハッシュリファレンスで制約を指定することで、引数を渡すこともができます。
+</p>
+<pre>
+# データ
+my $data = {price =&gt; 1200};
+
+# and条件を使ったルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')
+  -&gt;check({greater_than =&gt; 1000})
+  -&gt;check({less_than =&gt; 2000});
+</pre>
+<h3>or条件を使ったルール</h3>
+<p>
+  バリデーションを行うときに、あるひとつの条件を満たしているかどうかを記述したいことがあります。たとえば、空白あるいは整数という条件を記述したい場合があります。
+</p>
+<p>
+  or条件を使ったルールを作成してみます。or条件を記述するには<b>check_or</b>メソッドを使用します。
+</p>
+<pre>
+# データ
+my $data = {price =&gt; 1200};
+
+# or条件を使ったルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check_or('blank', 'int');
+</pre>
+<h4>and条件とor条件を同時に使う</h4>
+<p>
+  and条件とor条件を同時に使うこともできます。
+</p>
+<pre>
+$rule-&gt;require('price')
+  -&gt;check_or('blank', 'int')
+  -&gt;check({greater_than =&gt; 1000});
+</pre>
+<h3>制約での引数の指定</h3>
+<p>
+  デフォルトで用意されている制約には引数を受け取ることができるものがあります。<b>equal_to</b>, <b>between</b>などです。
+</p>
+<p>
+  引数を渡すには制約名の部分をハッシュリファレンスを使って次のように指定します。
+</p>
+<pre>
+{制約名 =&gt; 引数}
+</pre>
+<b>equal_to</b>と<b>between</b>のサンプルは次のようになります。
+<pre>
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check({'equal_to' =&gt; 1000});
+$rule-&gt;require('age')-&gt;check({between =&gt; [1, 20]});
+my $data = {price =&gt; 1000, age =&gt; 19};
+</pre>
+<p>
+  引数には、スカラ値であれば、文字列でも数値でも、配列のリファレンスでも、ハッシュのリファレンスでも渡すことができます。
+</p>
+<h3>to_array(フィルタ) - 配列のリファレンスへの変換</h3>
+<p>
+  値を配列のリファレンスに変換したい場合は<b>to_array</b>フィルタを使用します。
+</p>
+<pre>
+# データ
+my $data = {languages =&gt; 'Japanese'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('languages')-&gt;filter('to_array');
+
+my $vresult = $vc-&gt;validate($data, $rule);
+print $vresult-&gt;data-&gt;{languages}; # ['Japanese']
+</pre>
+<p>
+  to_arrayは配列のリファレンスではないデータを配列のリファレンスに変換します。もともと配列のリファレンスだった場合は何もしません。
+</p>
+<p>
+  これはチェックボックスなどで、ひとつの値がくるか、複数の値がくるかがわからない場合に、配列のリファレンスに変換するのに便利です。
+</p>
+<h3>in_array(制約関数) - 値が配列の値に含まれたものがどうかをチェックする</h3>
+<p>
+  HTMLフォームのチェックで、値が、ある値以外は許可したくないという場合があると思います。そのような場合は<strong>in_array</strong>制約関数を使用します。
+</p>
+<pre>
+# データ
+my $data = {food =&gt; 'sushi'};
+
+# ルール
+my $rule = $rule-&gt;create_rule;
+$rule-&gt;require('food')-&gt;check({'in_array' =&gt; [qw/sushi bread apple/]});
+</pre>
+<p>
+  in_array制約関数の引数には、許容する値を含んだ配列のリファレンスを指定します。
+</p>
+<pre>
+{'in_array' =&gt; [qw/sushi bread apple/]}
+</pre>
+<h4>チェックボックスなどの複数の値に適用する</h4>
+<p>
+  チェックボックスの値は、複数になりますね。複数の値すべてが、ある値に含まれてほしいという場合は次のように記述します。
+</p>
+<pre>
+# 複数の値
+my $data = {food =&gt; ['sushi', 'cake']};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('food')
+  -&gt;each(1)-&gt;check({'in_array' =&gt; [qw/sushi bread apple/]);
+
+my $is_valid = $vc-&gt;validate($data, $rule);
+</pre>
+<b>each</b>メソッドを利用することで、要素のそれぞれの値に対して、検証を行うことができます。
+<p>
+  少しややこしいですが、覚えてしまうと便利です。
+</p>
+<h4>応用</h4>
+<p>
+  たとえば、少なくともひとつがチェックされていて、そのすべての値が001か002というルールは次のようにかけます。
+</p>
+<pre>
+# ルール
+$rule-&gt;require('food')
+  -&gt;filter('to_array')
+  -&gt;check('selected_at_least')
+  -&gt;each(1)
+  -&gt;check({'in_array' =&gt; [qw/001 002/]});
+</pre>
+<p>
+  Validator::Customを使うと、HTMLフォームのバリデーションチェックが簡単にかけます。
+</p>
+<h3>selected_at_least(制約関数) - 少なくともひとつが選択されている</h3>
+<p>
+  HTMLフォームで、チェックボックスの中で、少なくともひとつが選択されているかを調べたい場合があります。そのようなときは<b>selected_at_least</b>制約関数を使用します。
+</p>
+<pre>
+# データ
+my $data = {hobby =&gt; ['music', 'movie' ]};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('hobby')-&gt;check({selected_at_least =&gt; 1});
+</pre>
+<p>
+  selected_at_least制約関数には、引数で少なくともいくつ選択されている必要があるかを指定できます。このサンプルでは、1が指定されているので、少なくともひとつという意味になります。
+</p>
+<h3>制約関数の中で登録されている制約関数を利用する</h3>
+<p>
+  Validator::Customでバリデーションのための制約関数を書くときに、低レベルな制約関数を利用したいという場合があるかと思います。
+</p>
+<p>
+  次のように書きます。
+</p>
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom-&gt;new;
+
+$vc-&gt;register_constraint(
+  int_plus_alpha =&gt; sub {
+    my ($value, $args, $vc) = @_;
+    
+    my $is_int = $vc-&gt;constraints-&gt;{'int'}-&gt;($value);
+    
+    my $is_valid = $is_int && $value &lt; 1000;
+    
+    return $is_valid;
+  }
+);
+</pre>
+<p>
+  制約関数は、第３引数として、Validator::Customオブジェクトがわたってくるというのがポイントです。
+</p>
+<p>
+  constraints属性は、制約関数を含むハッシュリファレンスを返却しますので、以下のようにしてすでに登録されている制約関数を利用することができます。
+</p>
+<pre>
+my $is_int = $vc-&gt;constraints-&gt;{'int'}-&gt;($value);
+</pre>
+<h3>uint(制約関数) - 非負数の整数</h3>
+<p>
+  HTMLフォームで、非負数の整数のみを許可したい場合があると思います。そのような場合は、<b>uint</b>制約関数を使用します。
+</p>
+<pre>
+# データ
+my $data = {age =&gt; 19};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('age')-&gt;check('uint');
+
+my $is_valid = $vc-&gt;validate($data, $rule);
+</pre>
+<p>
+  内部的には「^[0-9]+$」という正規表現が使われています。
+</p>
+<h3>duplication(制約関数) - メールアドレスが一致していることをチェック</h3>
+<p>
+  HTMLフォームで、パスワードを二つ入力してもらって、パスワードが同じことをチェックしたい場合があります。そのような場合は、<b>duplication</b>制約関数を使用します。
+</p>
+<pre>
+# データ
+my $data = {mail1 =&gt; 'a@somehost.com', mail2 =&gt; 'a@somehost.com'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require(['mail1', 'mail2'])-&gt;name('mail_check')
+  -&gt;check('duplication');
+</pre>
+<p>
+  二つの値がどちらも未定義の場合は、バリデーションは失敗することに注意してください。
+</p>
+<h3>length(制約関数) - 文字列の長さのチェック</h3>
+<p>
+  HTMLフォームで、文字列の長さをチェックしたい場合があると思います。そのような場合は、<b>length</b>制約関数を使用します。
+</p>
+<pre>
+# データ
+my $data = {value1 =&gt; 'aaa', value2 =&gt; 'bbbbb'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+# 長さは3
+$rule-&gt;require('value1')-&gt;check({'length' =&gt; 3});
+# 長さが2以上5以下
+$rule-&gt;require('value2')-&gt;check({'length' =&gt; [2, 5]});
+# 長さが2以上
+$rule-&gt;require('value3')-&gt;check({'length' =&gt; {min =&gt; 2, max =&gt; 5}});
+# 長さが2以上
+$rule-&gt;require('value4')-&gt;check({'length' =&gt; {min =&gt; 2, max =&gt; 5}});
+# 長さが5以下
+$rule-&gt;require('value4')-&gt;check({'length' =&gt; {max =&gt; 5}});
+</pre>
+<p>
+  長さのチェックができます。文字列が内部文字列の場合は文字列の長さをチェックできます。文字列がバイト文字列の場合は、バイト数をチェックします。
+</p>
+<h3>defined(制約関数) - 定義されている</h3>
+<strong>定義されている</strong>ことを指定するには<strong>defined</strong>制約関数を使用します。
+<pre>
+my $data =&gt; {name =&gt; 'Ken'};
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('name')-&gt;check('defined');
+</pre>
+<p>
+  HTMLフォームの場合は、空文字列かどうかを確認できればよいのでdefineの代わりにnot_blankを使えばよいでしょう。
+</p>
+<h3>decimal(制約関数) - 正の数値(桁数指定)</h3>
+<a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+<strong>数値</strong>であることを指定するには<strong>decimal</strong>制約関数を使用します。数値というのは正の整数と少数を含みます。負の数は含まないので注意してくだだい。引数で小数点の前にくる最大の桁数と小数点の後にくる最大の桁数を指定できます。
+<pre>
+my $data = {num1 =&gt; '123', num2 =&gt; '1.45'};
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('num1')-&gt;check({'decimal' =&gt; 3});
+$rule-&gt;require('num2')-&gt;check({'decimal' =&gt; [1, 2]});
+</pre>
+<h3>blank(制約関数) - 空文字列</h3>
+<strong>空文字列</strong>であることを指定するには<strong>blank</strong>制約関数を使用します。
+<pre>
+my $data = {name =&gt; ''};
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('name')-&gt;check('blank');
+</pre>
+<p>
+  HTMLフォームのバリデーションにおいては、特に使う機会はないと思います。
+</p>
+<h3>between(制約関数) - AからBの間の数値</h3>
+<strong>AからBの間の数値</strong>であることを指定するには<strong>between</strong>制約関数を使用します。両端のAとBを含むということに注意してください。
+<pre>
+my $data = {age =&gt; 19};
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('age')-&gt;check({between =&gt; [1, 20]});
+</pre>
+<p>
+  betweenは整数であるかどうかは考慮しません。さらに整数の制約をかけたい場合はint制約関数もあわせてしようしてください。
+</p>
+<h3>ascii(制約関数) - アスキー図形文字</h3>
+<p>
+  HTMLフォームのパスワードなど<strong>アスキーの印字文字</strong>(16進数の21～7Eまで)のみを許可したい場合があります。そのような場合は<strong>ascii</strong>制約関数を使用します。
+</p>
+<pre>
+my $data = {password =&gt; 'ajf&$#-'};
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('password')-&gt;check('ascii');
+</pre>
+<p>
+  ASCIIコードの全体ではなくって、図形文字の範囲なので、タブや空白などが含まれていた場合はバリデーションが失敗します。
+</p>
+<h3>duplication(制約関数) - 二つの値が同一であることのチェック</h3>
+<strong>ふたつの値が一致</strong>していることをチェックしたい場合はC<duplication>制約関数を使用します。どちらか一方の値が未定義だった場合は常にバリデーションは失敗します。
+<p>
+  複数の値
+</p>
+<pre>
+my $data = {password1 =&gt; 'secret', password2 =&gt; 'secret'};
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require(['passwrod1', 'password2'])-&gt;name('password_check')
+  -&gt;check('duplication');
+</pre>
+<p>
+  複数の値をチェックする場合は、配列のリファレンスをrequireメソッドに渡すことができます。この場合は、キーの値をnameメソッドをつけてください。
+</p>
+<h4>パスワードのチェックを実際に行う</h4>
+<p>
+  パスワードのチェックを実際に行う場合は、パスワードが空ではないこと、パスワードがアスキーの図形文字だけで構成されていることのチェックもあわせて行います。またふたつのパスワードが一致しているという制約については、バリデーション後の安全なデータに識別キーに対応する値は必要がないのでcopyオプションに0を指定しておきましょう。
+</p>
+<p>
+  ルールは以下のようになります。
+</p>
+<pre>
+$rule-&gt;require('password')
+  -&gt;check('not_blank')-&gt;message('password is empty')
+  -&gt;check('ascii')-&gt;message('password contains invalid character');
+$rule-&gt;require(['password1', 'password2'])-&gt;name('password_check')
+  -&gt;check('duplication')-&gt;message('Two password is not matched')
+</pre>
+<h3>regex(制約関数) - 正規表現にマッチする</h3>
+<strong>HTMLフォーム</strong>で、<strong>ある正規表現にマッチする</strong>ことをチェックしたい場合は<strong>regex</strong>制約関数を使用します。
+<pre>
+#データ
+my $data = {num =&gt; '123'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('num')-&gt;check({'regex' =&gt; qr/\d{0,3}/});
+</pre>
+<h3>not_space(制約関数) - 空白文字ではない</h3>
+<strong>HTMLフォーム</strong>で、<strong>空白文字ではない</strong>ことをチェックしたい場合は<strong>not_space</strong>制約関数を使用します。空白文字とは空白文字、タブ文字、改行文字だけで構成されている文字列のことです。文字列が存在しない場合も含まれます。ユニコードにおける空白文字は含まれません。
+<pre>
+#データ
+my $data = {name =&gt; 'Ken'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('name')-&gt;check('not_space');
+</pre>
+<h3>not_defined(制約関数) - 値が定義されていない</h3>
+<strong>HTMLフォーム</strong>で、<strong>値が定義されていない</strong>ことをチェックしたい場合は<strong>not_defined</strong>制約関数を使用します。
+<pre>
+#データ
+my $data = {name =&gt; 'Ken'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('name')-&gt;check('not_defined');
+</pre>
+<h3>less_than(制約関数) - 数値がある数より小さい</h3>
+<strong>HTMLフォーム</strong>で、<strong>数値がある数より小さい</strong>ことをチェックしたい場合は<strong>less_than</strong>制約関数を使用します。
+<pre>
+#データ
+my $data = {num =&gt; 20};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('num')-&gt;check({'less_than' =&gt; 25});
+</pre>
+<h3>int(制約関数) - 整数</h3>
+<strong>HTMLフォーム</strong>で、<strong>整数</strong>であることをチェックしたい場合は<strong>int</strong>制約関数を使用します。
+<pre>
+#データ
+my $data = {age =&gt; 19};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('age')-&gt;check('int');
+</pre>
+<h3>http_url(制約関数) - HTTPあるいはHTTPSのURL</h3>
+<strong>HTMLフォーム</strong>で、<strong>HTTPあるいはHTTPSのURL</strong>であることをチェックしたい場合は<strong>http_url</strong>制約関数を使用します。
+<pre>
+# データ
+my $data = {url =&gt; 'http://somehost.com'};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('url')-&gt;check('http_url');
+</pre>
+<h3>greater_than(制約関数) - ある数より大きい</h3>
+<strong>HTMLフォーム</strong>で、<strong>ある数より大きい</strong>ことをチェックしたい場合は<strong>greater_than</strong>制約関数を使用します。
+<pre>
+#データ
+my $data = {price =&gt; 1000};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check({'greater_than' =&gt; 900});
+</pre>
+<h3>equal_to(制約関数) - 数値が等しい</h3>
+<strong>HTMLフォーム</strong>で、<strong>数値が等しい</strong>ことをチェックしたい場合は<strong>equal_to</strong>制約関数を使用します。
+<pre>
+# データ
+my $data = {price =&gt; 1000};
+
+# ルール
+my $rule = $vc-&gt;create_rule;
+$rule-&gt;require('price')-&gt;check({'equal_to' =&gt; 1000});
+</pre>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

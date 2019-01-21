@@ -1,0 +1,176 @@
+<h2 class="title">行入力演算子「&lt;&gt;」 - ファイルから一行読み込む</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<strong>ファイルを一行づつ読み込む</strong>には<strong>行入力演算子「<>」</strong>を使用します。読み込む行がなくなると、undefを返却します。
+
+<pre>
+my $line = <$fh>;
+</pre>
+
+他の演算子と異なり「<」と「>」の間にファイルハンドルを記述することに注意してください。
+
+通常は、while関数と組み合わせて、繰り返して行を読み込むのに利用します。
+
+<pre>
+while(my $line = <$fh>) {
+  # ...
+}
+</pre>
+
+考え深い方は、上記のように書いた場合は、もし「0」などの偽の値が返ってきた場合は、正しく動かないんじゃないかと感じるのではないでしょうか。行の途中は、改行コードが入りますから、「0」が返ることはありませんが、末尾の場合は「0」が返ってくる可能性があります。
+
+でも、心配しないでください。ファイル演算子は、whileと組み合わされて使う場合のみ、次のように解釈されるからです。
+
+<pre>
+while(defined(my $line = <$fh>)) {
+  # ...
+}
+</pre>
+
+ですから、whileと組み合わせて使っている限りは、最初の書き方で問題ありません。
+
+<h3>ダイヤモンド演算子</h3>
+
+行入力演算子で「<」と「>」の間に何もない「<>」という記述の場合は、特別に<strong>ダイヤモンド演算子</strong>と呼ばれます。ファイルハンドルが省略された場合は、標準入力と、<a href="/blog/20080108132865.html">コマンドライン引数</a>で指定されたファイル名から、1行づつ読み込むことができます。
+
+<pre>
+# ダイヤモンド演算子
+my $line = <>;
+</pre>
+
+ダイヤモンド演算子を使用すればファイルから1行読み込みを簡単に行うことができます。標準入力とコマンドライン引数で与えられたファイルから一行ずつ順に読み込みます。
+
+<pre>
+while (my $line = <>) {
+  ...
+}
+</pre>
+
+ダイヤモンド演算子を使う利点は「標準入力から他のプログラムの出力を受け取ることができるプログラム」を簡単に書けるということです。これは一般的なUNIXユーティリティであるcat,sed,awk,grepなどと同じ動きです。
+
+<pre>
+# コマンドライン引数からファイル名を受け取る
+script.pl file.txt
+
+# 他のプログラムの出力をパイプを使って標準入力から受け取る
+grep hello file.txt | script.pl
+</pre>
+
+もう一つの利点はわざわざopenやcloseをする必要がないということです。短いプログラムではダイヤモンド演算子を利用すると簡単にプログラムを書くことができるので便利です。
+
+受け取った行をそのまま出力するサンプルです。
+
+<pre>
+# 受け取った行をそのまま出力する
+use strict;
+use warnings;
+
+while (my $line = <>) {
+  print $line;
+}
+</pre>
+
+<h3>配列に一度に取り込む</h3>
+
+行入力演算子を、リストコンテキストで評価すると、すべての行を配列に取り込むことができます。けれども、ファイルが大きい場合は、メモリの使用量が大きくなるので、注意してください。
+
+<pre>
+my @lines = <$fh>
+</pre>
+
+<h3>ファイルのすべての内容を取り込む</h3>
+
+ファイルのすべての内容を取り込むには、次のような書き方が一般的です。
+
+<pre>
+my $content = do { local $/; <$fh> };
+</pre>
+
+「$/」は、行の区切り文字です。これを未定義にすれば、行入力演算子は、ファイルの内容をすべてを取り込みます。<a href="/blog/20080309120507.html">local</a>を使って、一時的に未定義にしています。doブロックは、最後に評価された値を返します。ですから、この記述で、ファイルの内容を一度に読み込むことができます。
+
+<h3>サンプル</h3>
+
+行入力演算子を使って、ファイルを1行ずつ読み込むサンプルです。1行読みこみを while ループで繰り返します。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルリード
+# readline $fh
+# <$fh>
+
+# 読み込みたいファイル名
+my $file = shift; 
+
+open(my $fh, "<", $file)
+  or die "Cannot open $file: $!";
+
+print "1: ファイルリードの一般的な記述\n";
+# readline関数で、一行読み込む。
+while(my $line = readline $fh){ 
+    # chomp関数で、改行を取り除く
+    chomp $line;
+    
+    # $line に対して何らかの処理。
+    # 標準出力へ書き出し。
+    print $line, "\n";
+
+    # ファイルがEOF( END OF FILE ) に到達するまで1行読みこみを繰り返す。
+}
+
+close $fh;
+</pre>
+
+<h3>コード解説</h3>
+
+<h4>(1)1行ファイル読み込み</h4>
+<pre>
+while (my $line = readline $fh) { 
+    # 処理 ...
+}
+</pre>
+ファイルを1行づつ読み込むには、readline関数を使用します。$fhは、open関数でオープンしたファイルハンドルです。１行読み込みをwhile文で繰り返して、ファイルの最後まで読み込んでいきます。
+
+whileループの条件文を書く位置で、1行読みこみを行っているのは変に感じるかもしれませんがこのような記述が可能です。my $line = readline $fh という記述で、$lineというレキシカル変数を宣言して、$line に、読み込んだ1行を代入しています。$line は、whileループの中でだけ有効で、外からは見えません。
+
+ファイルの終わりに到達すれば、readline関数はundefを返し、$lineにundefが代入されます。$lineがundefなので、while文は終了します。
+
+<h4>(2)chomp関数で改行を取り除く</h4>
+
+<pre>
+while (my $line = readline $fh) { 
+  chomp $line;
+  # 処理 ...
+}
+</pre>
+
+行を読み込んだら改行が不必要な場合が多いので、chomp関数を使って改行を取り除きます。
+
+<h4>(3)readlineのもうひとつの書き方 <$fh></h4>
+
+<pre>
+while (my $line = <$fh>) { 
+  # 処理 ...
+}
+</pre>
+
+Perlでは、 < > の中にファイルハンドルを入れると、readline $fh と同じ意味になります。簡便な記述を好む場合はこちらを使います。
+

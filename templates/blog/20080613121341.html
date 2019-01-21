@@ -1,0 +1,88 @@
+<h2 class="title">シンボルテーブルの中身を覗いてみる</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><a itemprop="item" href="/"><span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161130148051.html"><span itemprop="name">モジュール作成</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+Perlは、シンボルテーブルというものを持ち、プログラマーが、それを参照したり、変更を加えたりすることができます。Perlは、他の言語に比べて、柔軟で、高い適応力を持ちますが、その力をを生み出している機能のひとつがシンボルテーブルです。
+
+シンボルテーブルは、%main:: という名前の単なるハッシュです。%main:: というハッシュから、実行されているスクリプトの持つすべてのサブルーチンとパッケージ変数を知ることができます。( レキシカル変数を除く )
+
+<h3>シンボルテーブルの内容を覗いてみる</h3>
+
+<pre>
+# mainパッケージの内容を含むシンボルテーブル
+%main::
+# %main:: の別名
+%::
+</pre>
+
+<h3>シンボルテーブルを通じて、パッケージ変数の内容を知る</h3>
+
+<pre>
+our $num = 1;
+${$main::{num}};
+</pre>
+
+詳しい説明は、型グロブの解説で、説明します。ここでは、シンボルテーブルから、パッケージ変数の内容やサブルーチンの内容を知ることができるというPerlの機能について、覚えておいてください。
+
+シンボルテーブルを中身を出力するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# シンボルテーブルを覗いてみる。
+# このサブルーチンは、コンパイル時に、シンボルテーブルに登録される。
+# パッケージ宣言を、行っていないので、暗黙的にmain パッケージに属するものと
+# されます。
+
+our $num = 1;
+
+sub func {
+  return 2;
+}
+
+print "1: シンボルテーブルを覗いてみる\n";
+require Data::Dumper;
+print # シンボルテーブルは、単なるハッシュです。
+# main パッケージに、属するものは、
+# %main:: という名前で、参照できます。
+Data::Dumper->Dump([\%main::], [qw( *main:: )]),"\n";
+
+print "2:mainパッケージの num と func の内容を見る。\n";
+print $main::{ num },"\n";
+# main:: の別名として、 :: も使うことができます。 
+print $::{ num }, "\n";
+
+print $main::{ func }, "\n";
+print $::{ func }, "\n\n";
+
+print "3: シンボルテーブルから、変数の内容を取得する。\n";
+# ${ } で、'*main::num' から、スカラー変数を取り出す。
+my $num_from_symbol = ${$main::{num}};
+print $num_from_symbol;
+
+</pre>
+
+<h3>出力結果の意味</h3>
+
+<pre>
+print $main::{num};
+# 出力結果
+*main::num
+</pre>
+
+上記の出力結果は、 *main::num と表示されます。* 記号は、型グロブを表現する記号です。型グロブは、次回説明。
+

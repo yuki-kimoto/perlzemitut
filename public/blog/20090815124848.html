@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>DateTime - 日付・時刻を汎用的に扱う - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">DateTime - 日付・時刻を汎用的に扱う</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<p>
+  DateTimeを使用すると、日付と時刻を汎用的に扱うできます。
+</p>
+<p>
+  これまでは、なんとか標準モジュールで日付を扱おうと記事を書いてきましたが、本当はあまりよくない方法です。日付と時刻というのは例外が多く自分でスクリプトを書くとバグが混入しやすいです。
+</p>
+<p>
+  このモジュールは便利ですが、汎用的に日付を扱うために依存するモジュールの数が非常に多いです。また日付の計算を早く行うために、一部はC言語で記述されています。このため、Windows環境でのインストールには少し準備が必要です。
+</p>
+<p>
+  日付・時刻に関する一般的な情報は、以下を参考にしてください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20161123147990.html">Perlで日付・時刻を扱う</a>
+  </li>
+</ul>
+<h4>CPANからDateTimeをインストールする</h4>
+<p>
+  コマンドプロンプトで
+</p>
+<q>
+<p>
+  cpan DateTime
+</p>
+</q>
+<p>
+  と打ってください。cpanを使用するのがはじめての場合は、cpanの設定の初期化の作業が必要です(たぶん)。何かたずねられたらEnterを押して進めてください(非常に長いです)。
+</p>
+<p>
+  cpanの初期設定が終わっている場合は、ダウンロードできます。依存するモジュールをインストールしますかと何回も聞かれるので、ENTERを押して進めます。
+</p>
+<p>
+  最後まで進めば終了です。
+</p>
+<p>
+  Perl 5.10以降はPerlの標準モジュールとしてTime::Pieceを使えるので、Time::Pieceを使うのもよい方法でしょう。Time::Pieceによる時刻の扱いについては「<a href="/blog/20091105124627.html">「Time::Piece」で日付と時刻を扱う</a>」をご覧ください。
+</p>
+<h3>DateTime 初期化と日付・時刻情報の取得</h3>
+<p>
+  汎用的に日付を扱うには、DateTimeモジュールを利用します。
+</p>
+<pre>
+use DateTime;
+my $dt = DateTime-&gt;new( 
+  year =&gt; 1964,
+  month =&gt; 10,
+  day =&gt; 16,
+  hour =&gt; 16,
+  minute =&gt; 12,
+  second =&gt; 47,
+);
+</pre>
+<p>
+  DateTimeモジュールはオブジェクト指向のモジュールです。DateTime->new メソッドでDateTimeオブジェクトを作成します。年と月はそのままの数を指定します。
+</p>
+<p>
+  標準関数のlocaltime関数や標準モジュールのTime::Localのように、年を1900年からの年数で指定したり、月を0から始まる数値で指定したりする必要がありません。
+</p>
+<h4>日付・時刻情報の取得</h4>
+<pre>
+# 時刻情報を取得するGetメソッド
+my $year = $dt-&gt;year;
+my $mon = $dt-&gt;month;
+my $mday = $dt-&gt;day;
+my $wday = $dt-&gt;day_of_week;
+my $hour = $dt-&gt;hour;
+my $minute = $dt-&gt;minute;
+my $second = $dt-&gt;second;
+my $yday = $dt-&gt;day_of_year;
+my $qtr = $dt-&gt;quarter;
+</pre>
+<p>
+  上記のメソッドで、年月日、時分秒、曜日、1年で何日目か、4半期で数えていくつ目かなどを取得できます。曜日は月曜日が1,日曜日が7になります。
+</p>
+<h3>現在の日付と時刻を取得する</h3>
+<p>
+  現在時刻を表現するDateTimeオブジェクトを作成するにはnowメソッドを使用します。引数で、time_zone にlocalを指定すれば、OSに設定されているはずである自分の国のタイムゾーンになります。
+</p>
+<pre>
+my $dt = DateTime-&gt;now(time_zone =&gt; 'local');
+</pre>
+<p>
+  タイムゾーンを明示的に指定することもできます。
+</p>
+<pre>
+my $dt = DateTime-&gt;now(time_zone =&gt; 'Asia/Tokyo'); 
+</pre>
+<p>
+  タイムゾーンを明示的に指定するほうが、localを指定するより速度がやや遅いらしいです。ただし、明示的に指定すると移植性が損なわれます。
+</p>
+<p>
+  引数を指定しなかった場合はUTC(協定世界時)になります。
+</p>
+<pre>
+my $dt = DateTime-&gt;now;
+</pre>
+<h3>エポック秒から日付情報を作成する</h3>
+<p>
+  エポック秒からDateTimeオブジェクトを作成するには from_epochメソッドを使用します。
+</p>
+<pre>
+my $dt = DateTime-&gt;from_epoch(epoch =&gt; $epoch);
+</pre>
+<p>
+  引数に time_zone を指定しない場合は、UTC(協定世界時)になります。以下のように、 time_zone => 'local' を加えると、ローカル時刻を取得することができます。
+</p>
+<pre>
+my $dt = DateTime-&gt;from_epoch( epoch =&gt; $epoch, time_zone =&gt; 'local' );
+</pre>
+<h3>タイムゾーンオブジェクトを作成する</h3>
+<p>
+  DateTimeはコンストラクタで、タイムゾーンを指定することができます。DateTime::TimeZoneオブジェクトを先に作成しておくと再利用することができます。
+</p>
+<pre>
+my $time_zone = DateTime::TimeZone-&gt;new(name =&gt; 'Asia/Tokyo');
+</pre>
+<h4>タイムゾーンオブジェクトの作成</h4>
+<p>
+  タイムゾーンオブジェクトを作成するには、newメソッドを使用します。引数で、name に タイムゾーン名を指定します。(タイムゾーン名一覧)
+</p>
+<pre>
+my $time_zone = DateTime::TimeZone-&gt;new(name =&gt; 'Asia/Tokyo');
+</pre>
+<h4>タイムゾーンオブジェクトの自動生成</h4>
+<p>
+  以下のように、DateTimeのコンストラクタ(new, nowなど)で、タイムゾーンを指定した場合は、内部で自動的に、DateTime::TimeZoneオブジェクトが作成されます。
+</p>
+<pre>
+my  $dt = DateTime-&gt;now(time_zone =&gt; 'Asia/Tokyo');
+</pre>
+<p>
+  DateTimeオブジェクト作成するたびに、DateTime::TimeZoneオブジェクトが作成されることになります。
+</p>
+<p>
+  これはコストになりますので、2回以上DateTimeオブジェクトを作成する場合は、最初にDateTime::TimeZoneオブジェクトを作っておくほうがよいです。
+</p>
+<h4>タイムゾーンオブジェクトの利用</h4>
+<p>
+  DateTimeのコンストラクタの引数の、time_zone に、作成したDateTime::TimeZoneオブジェクトを指定するだけです。
+</p>
+<pre>
+my $dt1 = DateTime-&gt;now(time_zone =&gt; $time_zone);
+</pre>
+<p>
+  タイムゾーンの一覧は「<a href="/blog/20081101122558.html">タイムゾーンの一覧</a>」をご覧ください。
+</p>
+<h3>月名と曜日名を日本語で出力する ロケールの指定</h3>
+<p>
+  日付の表現は国や地域によって表現が異なります。たとえば1月はアメリカではJanuaryと表現します。月曜日はMondayと表現します。国や地域ごとの表現のセットをロケールと呼びます。DateTimeモジュールは、さまざまな国や地域のロケールを指定することができます。
+</p>
+<pre>
+my $dt = DateTime-&gt;now(locale =&gt; 'ja');
+</pre>
+<p>
+  日本のロケールは、jaになります。 
+</p>
+<h4>ロケールの指定</h4>
+<p>
+  nowメソッドで、現在の時間情報を持つDateTimeオブジェクトが作成されます。引数に、locale を指定することができます。
+</p>
+<p>
+  またtime_zone にlocalを指定することで、ローカル時刻で時間情報が作成されます。
+</p>
+<pre>
+my $dt = DateTime-&gt;now(locale =&gt; 'ja' , time_zone =&gt; 'local');
+</pre>
+<h4>ロケールに依存する情報 月名と曜日名</h4>
+<p>
+  下記の4つのメソッドがロケールに依存します。たとえば、day_name は、ロケールが日本の場合は月曜日、ロケールがアメリカ地域のどこかだった場合は、Monday のようになります。
+</p>
+<p>
+  abbr は abbreviation( 省略 ) の略です。
+</p>
+<pre>
+# 月名
+my $month_name = $dt-&gt;month_name;
+
+# 月の省略名( 省略名がない場合は月名と同じ)
+my $month_abbr = $dt-&gt;month_abbr;
+
+# 曜日名
+my $day_name = $dt-&gt;day_name;
+
+# 曜日の省略名
+my $day_abbr = $dt-&gt;day_abbr;
+</pre>
+<h4>出力するためにエンコードする</h4>
+<p>
+  月名や曜日名を取得したとき、そこで使われている文字はUTF-8フラグが立っています。UTF-8フラグが立っているということは、Perlが文字列を内部表現で扱かっているということです。
+</p>
+<p>
+  画面やファイルに出力する時は、UTF-8フラグを落とす必要があります。つまり、エンコードして文字列を内部表現から外部表現に変換する必要があります。
+</p>
+<p>
+  Windowsの人は、Shift-JIS に、それ以外のOSの人は、UTF-8で出力するようにしてあります。
+</p>
+<pre>
+# UTF-8フラグが立っているので、エンコードする。
+my $encode_to;
+if ($^O eq 'MSWin32') { $encode_to = 'shift-jis' }
+else { $encode_to = 'utf8' }
+
+print(
+  encode($encode_to, $month_name) . "\n" .
+  encode($encode_to, $month_abbr) . "\n" .
+  encode($encode_to, $day_name) . "\n" .
+  encode($encode_to, $day_abbr) . "\n"
+);
+</pre>
+<h3>ロケール指定のためのクラス</h3>
+<p>
+  DateTimeのコンストラクタの引数でロケール名を指定することができます。
+</p>
+<pre>
+my $locale = DateTime::Locale-&gt;load('ja');
+</pre>
+<p>
+  DateTimeはコンストラクタの中で、DateTime::Localeオブジェクトを生成しています。そして生成したロケールオブジェクトに基づいて地域や国ごとの日付情報の出力を作ります。
+</p>
+<h4>ロケールオブジェクトの明示的な作成</h4>
+<pre>
+my $locale = DateTime::Locale-&gt;load('ja');
+</pre>
+<p>
+  明示的にDateTime::Localeオブジェクトを作成するには、loadメソッドを使用します。loadメソッドは、初回はDateTime::Localeオブジェクトを作成しますが、２回目以降はメモリに保存したDateTime::Localeオブジェクトを再利用します。
+</p>
+<p>
+  プログラム中で'ja'を表現するDateTime::Localeオブジェクトは常に存在しないかたったひとつであるかのどちらかです。このようなオブジェクトをsingleton(シングルトン)と呼びます。DateTime::TimeZoneオブジェクトのように毎回作成されるわけではありません。
+</p>
+<h4>ロケールオブジェクトをコンストラクタに渡す</h4>
+<p>
+  ロケールオブジェクトをDateTimeのコンストラクタに渡すには、以下のようにします。
+</p>
+<pre>
+my $dt = DateTime-&gt;now(locale =&gt; $locale , time_zone =&gt; 'local');
+</pre>
+<p>
+  明示的にロケールオブジェクトを渡すこともできますが、
+</p>
+<pre>
+my $dt = DateTime-&gt;now(locale =&gt; 'ja' , time_zone =&gt; 'local');
+</pre>
+<p>
+  のように、文字列で指定するのが楽です。こう書くと、DateTimeのコンストラクタの中で自動的にDateTime::Localeオブジェクトが作成されます。
+</p>
+<p>
+  利用できるロケールについては「<a href="/blog/20081107122606.html">利用できるロケール一覧</a>」をご覧ください。
+</p>
+<h3>年月日、時刻情報をまとめて取得する</h3>
+<p>
+  DateTimeを使って、日付や時刻の情報を得ることができます。さまざまなフォーマットで取得できます。引数で区切り文字を指定することができます。引数を省略すると、年月日の情報の場合は-で連結され、時刻情報の場合は:で連結されます。
+</p>
+<pre>
+# 年月日
+# yyyy-mm-dd
+my $ymd = $dt-&gt;ymd;
+
+# yyyy/mm/dd
+my $ymd_slash = $dt-&gt;ymd('/');
+
+# mm-dd-yyyy
+my $mdy = $dt-&gt;mdy;
+
+# mm/dd/yyyy
+my $mdy_slash = $dt-&gt;mdy('/');
+
+# dd-mm-yyyy
+my $dmy = $dt-&gt;dmy;
+
+# dd/mm/yyyy
+my $dmy_slash = $dt-&gt;dmy('/');
+
+# 時刻の情報
+# hh:mm:ss
+my $hms = $dt-&gt;hms;           
+
+# hh-mm-ss
+my $hms_hyphen = $dt-&gt;hms('-');
+
+# 年月日と時刻の情報
+my $ymdhms = $dt-&gt;datetime;
+</pre>
+<p>
+  出力結果
+</p>
+<pre>
+(1)DateTimeの日付・時刻の便利な出力方法
+年月日(ハイフン)   2008-11-14
+年月日(スラッシュ) 2008/11/14
+月日年(ハイフン)   11-14-2008
+月日年(スラッシュ) 11/14/2008
+日月年(ハイフン)   14-11-2008
+日月年(スラッシュ) 14/11/2008
+
+時分秒(コロン)     23:48:14
+時分秒(ハイフン)   23-48-14
+
+年月日時分秒       2008-11-14T23:48:14
+</pre>
+<h3>うるう年の判定 月末日の取得</h3>
+<p>
+  DateTimeはうるう年を判定するメソッド、月末日を取得するメソッドを持っています。
+</p>
+<pre>
+# うるう年かどうか判定
+my $is_leap_year = $dt1-&gt;is_leap_year;
+
+# 月末日
+my $dt2 = DateTime-&gt;last_day_of_month(year =&gt; 2008, month =&gt; 11);
+</pre>
+<h4>うるう年かどうかを判定する。</h4>
+<p>
+  うるう年かどうかを判定するにはis_leap_yearメソッドを使用します。
+</p>
+<pre>
+my $is_leap_year = $dt1-&gt;is_leap_year;
+</pre>
+<h4>月末日を取得する</h4>
+<p>
+  月末日を取得するには、last_day_of_monthメソッドを使用します。引数に year と month を指定すると、月末日を表現するDateTimeオブジェクトが返却されます(月末日そのものが返却されるわけではありません)。返却されたDateTimeオブジェクトからからdayメソッドで日付を取得します。
+</p>
+<pre>
+my $dt2 = DateTime-&gt;last_day_of_month(year =&gt; 2008, month =&gt; 11);
+</pre>
+<h3>日付の書式指定「strftime」メソッド</h3>
+<p>
+  日付を書式化するためのは<strong>strftime</strong>メソッドを使用します。引数には、書式指定子を渡します。
+</p>
+<pre>
+$dt-&gt;strftime("%a");
+</pre>
+<p>
+  以下のように文字列を組み合わせて複数指定することもできます。
+</p>
+<pre>
+$dt-&gt;strftime("%Y-%m-%d");
+</pre>
+<h4>strftime書式指定子一覧</h4>
+<p>
+  strftimeの書式指定子一覧です。
+</p>
+<table>
+  <tr>
+    <td>
+      %a
+    </td>
+    <td>
+      曜日の省略名
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %A
+    </td>
+    <td>
+      曜日名
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %b
+    </td>
+    <td>
+      月の省略名
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %B
+    </td>
+    <td>
+      月名
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %c
+    </td>
+    <td>
+      デフォルトのフォーマット
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %C
+    </td>
+    <td>
+      年の最初の2桁
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %d
+    </td>
+    <td>
+      日( 01 から 31 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %D
+    </td>
+    <td>
+      %m/%d/%y と同じ。月日年
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %e
+    </td>
+    <td>
+      日( 1 から 31 ) :1桁の数字( 1 ～ 9 )の2桁目はスペースになる。
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %F
+    </td>
+    <td>
+      %Y-%m-%d と同じ( 2008-11-31 など )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %G
+    </td>
+    <td>
+      年( %Yとの違いはよくわからない)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %g
+    </td>
+    <td>
+      年の下2桁 ( 00 ～ 99 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %h
+    </td>
+    <td>
+      %b と同じ。月の省略名
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %H
+    </td>
+    <td>
+      時( 00 から 23 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %I
+    </td>
+    <td>
+      時( 01 から 12 ) 12時間表記での時刻
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %j
+    </td>
+    <td>
+      年の最初から初めて何日目か。( 001 から 366 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %k
+    </td>
+    <td>
+      時( 0 から 23 ) : １桁の数字( 0～ 9 )の２桁目はスペースになる。
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %l
+    </td>
+    <td>
+      時( 1 から 12 ) 12時間表記での時刻 : １桁の数字( 0～ 9 )の２桁目はスペースになる。
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %m
+    </td>
+    <td>
+      月の番号( 01 から 12 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %M
+    </td>
+    <td>
+      分( 00 から 59 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %n
+    </td>
+    <td>
+      改行文字
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %N
+    </td>
+    <td>
+      ミリ秒( %3N と書くとミリ秒を3桁で、 %6Nと書くとミリ秒を6桁で表示 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %p
+    </td>
+    <td>
+      AM か PM
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %P
+    </td>
+    <td>
+      am か pm
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %r
+    </td>
+    <td>
+      %I:%M:%S %p と同じ。( 11:55:23 PM など)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %R
+    </td>
+    <td>
+      時分( 15:16 など )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %s
+    </td>
+    <td>
+      エポックからの秒数
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %S
+    </td>
+    <td>
+      秒( 00 から 61 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %t
+    </td>
+    <td>
+      タブ文字
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %T
+    </td>
+    <td>
+      %H:%M:%S と同じ。時分秒( 23:14:03 など )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %u
+    </td>
+    <td>
+      曜日の番号( 1 から 7。 月曜日が1 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %U
+    </td>
+    <td>
+      年の最初から数えて何週目か。( 00 から 53 ) : 年の最初の日曜日を週の最初として数える。最初の日曜日の週が01。その前の週が00。
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %V
+    </td>
+    <td>
+      年の最初から数えて何週目か。( 01 から 53 ) : 少なくとも4日を持つ週を年の最初の週とする。月曜日を週の最初として数える。
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %w
+    </td>
+    <td>
+      曜日の番号( 0 から 6。 日曜日が0 )
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %W
+    </td>
+    <td>
+      年の最初から数えて何週目か( 00 から 53 )  年の最初の月曜日を週の最初として数える。最初の月曜日の週が01。その前の週が00。
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %x
+    </td>
+    <td>
+      日付のデフォルトのフォーマット
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %X
+    </td>
+    <td>
+      時刻のデフォルトのフォーマット
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %y
+    </td>
+    <td>
+      年の下の2桁
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %Y
+    </td>
+    <td>
+      年
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %z
+    </td>
+    <td>
+      UTC(協定世界時)からのタイムゾーンの時刻のずれ)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %Z
+    </td>
+    <td>
+      タイムゾーン名
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %%
+    </td>
+    <td>
+      %
+    </td>
+  </tr>
+  <tr>
+    <td>
+      %{method}
+    </td>
+    <td>
+      DateTime.pm のメソッドを利用することができる。例 %{ymd}
+    </td>
+  </tr>
+</table>
+<h3>日付の足し算</h3>
+<p>
+  日付や時刻を加算するには<strong>add</strong>メソッドを使用します。
+</p>
+<pre>
+# 日の加算
+$dt-&gt;add(days =&gt; 1);
+
+# 月の加算
+$dt-&gt;add(months =&gt; 1);
+
+# 年の加算
+$dt-&gt;add(years =&gt; 1);
+
+# 時の加算
+$dt-&gt;add(hours =&gt; 1);
+
+# 分の加算
+$dt-&gt;add(minutes =&gt; 1);
+
+# 秒の加算
+$dt-&gt;add(seconds =&gt; 1);
+
+#まとめて加算
+$dt-&gt;add(years =&gt; 1, months =&gt; 1, days =&gt; 1, hours =&gt; 1, minutes =&gt; 1, seconds =&gt; 1);
+</pre>
+<h3>日付の引き算</h3>
+<p>
+  日付からある期間を減算するには<strong>subtract</strong>メソッドを使用します。
+</p>
+<pre>
+# 日の減算
+$dt-&gt;subtract(days =&gt; 1);
+
+# 月の減算
+$dt-&gt;subtract(months =&gt; 1);
+
+# 年の減算
+$dt-&gt;subtract(years =&gt; 1);
+
+# 時の減算
+$dt-&gt;subtract(hours =&gt; 1);
+
+# 分の減算
+$dt-&gt;subtract(minutes =&gt; 1);
+
+# 秒の減算
+$dt-&gt;subtract(seconds =&gt; 1);
+</pre>
+<p>
+  日付どうしの引き算を行うこともできます。<strong>-</strong>記号を使って普通に計算するようにできます。(演算子のオーバーロードという機能を使って実現されています。)戻り値は、DateTimeオブジェクトではなくて、期間を表すDateTime::Durationオブジェクトになります。years, months, days メソッドで、期間の年月日を取得できます。
+</p>
+<pre>
+my $duration = $dt2 - $dt1;
+</pre>
+<p>
+  日付の引き算には2種類あります。日付にある期間を引き算(たとえば1ヶ月前)するものと、日付どうしの引き算(たとえば2008年10月10日と2009年3月14日の差)するものがあります。
+</p>
+<h3>期間を表すオブジェクト</h3>
+<p>
+  日付と日付の間の期間はDateTime::Durationオブジェクトによって表現されます。DateTimeが日付の情報を表現するのに対して、DateTime::Durationは期間の情報を表現します。日付にある期間を加えたりある期間を引いたりした場合は、addメソッドやsubstructメソッドを使用しましたが、内部的には、DateTime::Durationオブジェクトが作成された上で演算がなされています。
+</p>
+<p>
+  DateTimeオブジェクトどうしの引き算を行うと、戻り値としてDateTime::Durationオブジェクトが返却されます。演算子のオーバーロードという機能が利用されていて、- 記号を使ってDateTimeオブジェクトどうしの引き算を行うことができます。
+</p>
+<pre>
+my $duration = $dt2 - $dt1;
+</pre>
+<p>
+  以下のメソッドで期間の情報を取得できます。
+</p>
+<pre>
+# 年
+$duration-&gt;years;
+
+# 月
+$duration-&gt;months;
+
+# 日 
+$duration-&gt;days;
+
+# 時間
+$duration-&gt;hours;
+
+# 分
+$duration-&gt;minutes;
+
+# 秒
+$duration-&gt;seconds;
+</pre>
+<p>
+  注意しないといけないことは、それぞれのメソッドは単独では意味を持たないということです。たとえば、$duration->days は、期間の日数そのものを表しているのではないということです。期間が1ヶ月と30日だとすると、$duration->monthsは1に、$duration->days は30になります。
+</p>
+<p>
+  上記のメソッドは常に正の値を返却するので、どちらの期間が先かという判定を行うことができません。期間の順序を判定するには、<strong>is_positive</strong>, <strong>is_zero</strong>, <strong>is_negative</strong>メソッドを使用します。
+</p>
+<pre>
+# 日付2 - 日付1が正
+$duration-&gt;is_positive
+
+# 日付2 - 日付1が同じ
+$duration-&gt;is_zero
+
+# 日付2 - 日付1が負
+$duration-&gt;is_negative
+</pre>
+<p>
+  期間をある単位で取得するには<strong>in_units</strong>メソッドを使用します。
+</p>
+<pre>
+# 期間が1年と15ヶ月の場合は27になる
+my $months = $duration-&gt;in_units('months');
+
+# 期間が1年と15ヵ月の場合は2になる 
+my $years = $duration-&gt;in_inits('years');
+
+# 期間が1年と15ヶ月の場合は( 2, 3 )になります。
+my ($years, $months) = $duration-&gt;in_units('years', 'months');
+</pre>
+<p>
+  引数を2つ渡す場合は、<a href="/blog/20080608121292.html">リストコンテキスト</a>で受け取る必要があります。
+</p>
+<p>
+  単位で変換可能であるのは以下の4つだけです。
+</p>
+<pre>
+年と月 (1年は12ヶ月)
+週と日 (1週間は7日)
+時間と分 (1時間は60分 )
+秒とミリ秒 (1秒は1000ミリ秒)
+</pre>
+<p>
+  日と月は相互に変換できません。日数が月によって異なるためです。
+</p>
+<p>
+  分と秒は相互に変換できそうですが、変換できません。うるう秒の存在によって、1分が61秒になることがあるためです。
+</p>
+<h3>日付計算の注意点</h3>
+<p>
+  日付の計算は不規則な部分があるのでできるだけ単純な方法で済ますほうがよいです。日付計算を複雑にしている原因を含めて、日付計算の注意点について書いておきます。
+</p>
+<h4>フローティングタイムゾーン( floating TimeZone )</h4>
+<p>
+  DateTimeオブジェクトは、new メソッドで作成されて、タイムゾーンが指定されない場合は、デフォルトのタイムゾーンは、フローティングタイムゾーンと呼ばれるものになります。
+</p>
+<p>
+  フローティングタイムゾーンとは、存在するどのタイムゾーンとも関係がない、うるう秒を考慮しないタイムゾーンのことです。
+</p>
+<p>
+  タイムゾーンとうるう秒を考慮する必要がない場合は、フローティングタイムゾーンを用いて計算を行えばもっとも安心だということになります。
+</p>
+<p>
+  たとえばログから年月日を取得して、3ヶ月後の年月日を取得したいといった場合、フローティングタイムゾーンで計算して問題はありません。
+</p>
+<h4>うるう秒とは</h4>
+<p>
+  時刻は絶対的なものではなくて、地球の自転が1週したときが一日と数えますから、地球の自転が遅れると一日の長さが変わってしまいます。うるう秒とは地球の自転が年々遅れていくために、何年かに一度挿入される秒のことです。
+</p>
+<p>
+  うるう秒が考慮されているタイムゾーンを用いて、うるう秒が間に挟まるように日付を計算すると、うるう秒が間に挟まらない場合と1秒のずれが生じます。
+</p>
+<h4>サマータイムとは</h4>
+<p>
+  サマータイムとは1年のある期間だけ時刻を1時間早めるという政策のことです。ある瞬間に時刻を1時間早めるわけですから、1時間時刻が重複してしまいます。普通の時刻が2時だったとしたら、サマータイム変更した直後は1時になるけです。
+</p>
+<p>
+  この日は、1時から2時が重なってしまいます。
+</p>
+<p>
+  だからサマータイムを導入している国では、時刻の計算を行おうとすると非常に複雑なことになってしまいます。
+</p>
+<p>
+  日本の場合はサマータイムがありませんので、サマータイムの影響は考える必要がありません。
+</p>
+<h4>特定のタイムゾーンをUTCに変換する</h4>
+<p>
+  日付の計算を単純にするために、特定のタイムゾーンをUTCに変換してから計算します。そして計算が終わった後で、元のタイムゾーンに戻します。
+</p>
+<pre>
+my $dt = DateTime-&gt;new(%user_input, time_zone =&gt; $user_tz);
+
+# UTCに変換
+$dt-&gt;set_time_zone('UTC');
+
+# 日付の計算を行う。
+# 元のタイムゾーンに戻す。
+$dt-&gt;set_time_zone($user_tz);
+print $dt-&gt;datetime;
+</pre>
+<p>
+  日本の場合はサマータイムがありませんので、ローカル時刻で計算をしても奇妙な結果になることはありません。世界的にはサマータイムを導入している国が結構あるようです。
+</p>
+<h4>特定のタイムゾーンでの計算</h4>
+<p>
+  特定のタイムゾーンで計算を行ってもたいていの場合は正しい結果が返ります。ただし、サマータイムが導入されている場合で、サマータイムへの変更の時間帯付近を含む場合は、奇妙な結果が返ります。
+</p>
+<p>
+  上記で解説したように、いったんUTCに変換して計算してから元に戻すのが安全です。
+</p>
+<h4>nowメソッドのデフォルトのタイムゾーン</h4>
+<p>
+  nowメソッドで現在時刻を取得することができますが、デフォルトのタイムゾーンはUTCになります。
+</p>
+<p>
+  newでDateTimeオブジェクト作った場合は、デフォルトのタイムゾーンは、フローティングタイムゾーンになります。
+</p>
+<h3>前の月と次の月を取得する方法</h3>
+<p>
+  DateTimeを使って、前の月と次の月を取得する方法です。(でも少し自信がない)
+</p>
+<pre>
+# 現在の年月
+my $current_dt = DateTime-&gt;now(time_zone =&gt; 'local');
+  
+# 前の月
+my $prev_dt = $current_dt-&gt;clone-&gt;add(months =&gt; -1, end_of_month =&gt; 'limit');
+
+# 次の月
+my $next_dt = $current_dt-&gt;clone-&gt;add(months =&gt; 1, end_of_month =&gt; 'limit');
+</pre>
+<p>
+  「end_of_month => 'limit'」オプションをつけると、日付が1/31日とかでも、正しく日付が取得できる気がします。たとえば1/31に1月を足した結果は、2/28とかになる。
+</p>
+<p>
+  先の月や次の月にページ遷移したいアプリケーションとかでは便利ではないかと思います。
+</p>
+<h3>サンプルコード</h3>
+<p>
+  最後にサンプルコードを掲載しておきます。
+</p>
+<p>
+  DateTimeを使ったサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+# DateTimeオブジェクトの初期化
+# (1900年からの経過年ではなく、そのままの年を使用する。)
+# (月は0から数えるのではなくて1から数える。 10 は 10月。)
+my $dt = DateTime-&gt;new( 
+  year =&gt; 1964,
+  month =&gt; 10,
+  day =&gt; 16,
+  hour =&gt; 16,
+  minute =&gt; 12,
+  second =&gt; 47,
+);
+
+# 時刻情報を取得するGetメソッド
+my $year = $dt-&gt;year;
+my $mon = $dt-&gt;month;
+my $mday = $dt-&gt;day;
+
+# 曜日の番号(曜日は1から始まり1は月,7は日になる。)
+my $wday = $dt-&gt;day_of_week; 
+my $hour = $dt-&gt;hour;
+my $minute = $dt-&gt;minute;
+my $second = $dt-&gt;second;
+my $yday = $dt-&gt;day_of_year;
+my $qtr = $dt-&gt;quarter;
+
+print "(1)DateTimeの日付・時刻情報\n";
+print(
+  "${year}年${mon}月${mday}日${wday}番目の曜日\n" .
+  "${hour}時${minute}分${second}秒\n" .
+  "${yday}日目(1年で数えて)\n" .
+  "${qtr}期(4半期のうち)\n"
+);
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1)DateTimeの日付・時刻情報
+1964年10月16日 5番目の曜日
+16時12分47秒
+290日目(1年で数えて)
+4期(4半期のうち)
+</pre>
+<p>
+  現在の日付と時刻を取得するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+# (1)-1 現在の時刻を取得する( ローカル時間 )
+my $dt = DateTime-&gt;now(time_zone =&gt; 'local');
+
+# (1)-2 タイムゾーンを明示的に指定する場合。
+# my $dt = DateTime-&gt;now(time_zone =&gt; 'Asia/Tokyo');
+
+# (1)-3 UTC 協定世界時
+# my $dt = DateTime-&gt;now;
+
+# 時刻情報を取得するGetメソッド
+my $year = $dt-&gt;year;
+my $mon = $dt-&gt;month;
+my $mday = $dt-&gt;day;
+my $wday = $dt-&gt;day_of_week;
+my $hour = $dt-&gt;hour;
+my $minute = $dt-&gt;minute;
+my $second = $dt-&gt;second;
+my $yday = $dt-&gt;day_of_year;
+my $qtr = $dt-&gt;quarter;
+
+print "(1)現在の時刻を取得する。\n";
+print(
+  "${year}年${mon}月${mday}日${wday}番目の曜日\n" .
+  "${hour}時${minute}分${second}秒\n" .
+  "${yday}日目(1年で数えて)\n" .
+  "${qtr}期(4半期のうち)\n"
+);
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1)現在の時刻を取得する。
+2008年11月2日 7番目の曜日
+8時11分5秒
+307日目(1年で数えて)
+4期(4半期のうち)
+</pre>
+<p>
+  エポック秒から日付情報を作成するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+# エポック秒から日付情報を作成する。
+my $epoch = 1225589752;
+my $dt = DateTime-&gt;from_epoch( epoch =&gt; $epoch );
+
+# 時刻情報を取得するGetメソッド
+my $year = $dt-&gt;year;
+my $mon = $dt-&gt;month;
+my $mday = $dt-&gt;day;
+my $wday = $dt-&gt;day_of_week; #曜日の番号(曜日は1から始まり1は月,7は日になる。)
+my $hour = $dt-&gt;hour;
+my $minute = $dt-&gt;minute;
+my $second = $dt-&gt;second;
+my $yday = $dt-&gt;day_of_year;
+my $qtr = $dt-&gt;quarter;
+
+print "(1)エポック秒から日付情報を作成する。\n";
+print(
+  $year, "年",
+  $mon, "月",
+  $mday, "日 ",
+  $wday, "番目の曜日\n",
+  $hour, "時",
+  $minute, "分",
+  $second, "秒\n",
+  $yday, "日目(1年で数えて)\n",
+  $qtr,"期(4半期のうち)\n"
+);
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1)エポック秒から日付情報を作成する。
+2008年11月2日 7番目の曜日
+1時35分52秒
+307日目(1年で数えて)
+4期(4半期のうち)
+</pre>
+<p>
+  タイムゾーンを指定するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+use DateTime::TimeZone;
+
+# (1)タイムゾーンオブジェクトの作成
+my $time_zone = DateTime::TimeZone-&gt;new(name =&gt; 'Asia/Tokyo');
+
+# OSの設定から自動的にタイムゾーンを取得する場合
+# my $time_zone = DateTime::TimeZone-&gt;new(name =&gt; 'local'); 
+                                                     
+# (2)タイムゾーンオブジェクトの利用
+my $dt1 = DateTime-&gt;now(time_zone =&gt; $time_zone);
+my $dt2 = DateTime-&gt;now(time_zone =&gt; $time_zone); 
+</pre>
+<p>
+  ロケールを設定するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+use Encode;
+
+print "(1)月名と曜日名を日本語で出力する。\n";
+my $dt = DateTime-&gt;now(locale =&gt; 'ja', time_zone =&gt; 'local');
+
+# 月名
+my $month_name = $dt-&gt;month_name;
+
+# 月の省略名( 省略名がない場合は月名と同じ)
+my $month_abbr = $dt-&gt;month_abbr;
+
+# 曜日名
+my $day_name = $dt-&gt;day_name;
+
+# 曜日の省略名
+my $day_abbr = $dt-&gt;day_abbr;
+
+# UTF-8フラグが立っているので、エンコードする。
+my $encode_to;
+if ($^O eq 'MSWin32') { $encode_to = 'shift-jis' }
+else { $encode_to = 'utf8' }
+
+print(
+  encode($encode_to, $month_name) . "\n" .
+  encode($encode_to, $month_abbr) . "\n" .
+  encode($encode_to, $day_name) . "\n" .
+  encode($encode_to, $day_abbr) . "\n"
+);
+</pre>
+<p>
+  出力結果
+</p>
+<pre>
+(1)月の名前と曜日を日本語で出力する。
+11月
+11月
+金曜日
+金
+</pre>
+<p>
+  DateTimeでロケールを指定するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+use DateTime::Locale;
+
+# エンコード用
+use Encode;
+my $encode_to;
+if ($^O eq 'MSWin32') { $encode_to = 'shift-jis' }
+else { $encode_to = 'utf8' }
+
+# ロケールの生成
+print "(1) DateTime::Localeオブジェクト\n";
+my $locale = DateTime::Locale-&gt;load('ja'); 
+my $dt = DateTime-&gt;now(locale =&gt; $locale , time_zone =&gt; 'local');
+
+# 曜日名
+my $day_name = $dt-&gt;day_name;
+print encode($encode_to, $day_name) . "\n";
+</pre>
+<p>
+  日付や時刻を取得するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+use DateTime::TimeZone;
+use DateTime::Locale;
+
+my $dt = DateTime-&gt;now(time_zone =&gt; 'local');
+
+print "(1)DateTimeの日付・時刻の便利な出力方法\n";
+my $ymd = $dt-&gt;ymd;
+my $ymd_slash = $dt-&gt;ymd('/');
+my $mdy = $dt-&gt;mdy;
+my $mdy_slash = $dt-&gt;mdy('/');
+my $dmy = $dt-&gt;dmy;
+my $dmy_slash = $dt-&gt;dmy('/');
+my $hms = $dt-&gt;hms;
+my $hms_hyphen = $dt-&gt;hms('-');
+my $ymdhms = $dt-&gt;datetime;
+
+print(
+  "年月日(ハイフン)   $ymd\n" .
+  "年月日(スラッシュ) $ymd_slash\n" .
+  "月日年(ハイフン)   $mdy\n" .
+  "月日年(スラッシュ) $mdy_slash\n" .
+  "日月年(ハイフン)   $dmy\n" .
+  "日月年(スラッシュ) $dmy_slash\n\n" .
+  "時分秒(コロン)     $hms\n" .
+  "時分秒(ハイフン)   $hms_hyphen\n\n" .
+  "年月日時分秒       $ymdhms\n"
+);
+</pre>
+<p>
+  うるう年の判定、月末日を取得するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+print "(1)うるう年かどうかを判定する。\n";
+my $dt1 = DateTime-&gt;now(time_zone =&gt; 'local');
+my $is_leap_year = $dt1-&gt;is_leap_year;
+if ($is_leap_year) { print "今年はうるう年です。\n\n" }
+else { print "今年はうるう年ではありません。\n\n" }
+
+print "(2)月末日を取得する。\n";
+my $dt2 = DateTime-&gt;last_day_of_month(year =&gt; 2008, month =&gt; 11);
+print "2008年11月の月末日は" . $dt2-&gt;day . "日です。\n";
+</pre>
+<p>
+  strftimeメソッドのサンプルです。全書式をサンプルで試しています。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+print "(1)strftime 書式指定一覧\n";
+my $dt = DateTime-&gt;now(time_zone =&gt; 'local');
+
+print '%a : 曜日の省略名 : ' . $dt-&gt;strftime("%a") . "\n";
+print '%A : 曜日名 : ' . $dt-&gt;strftime("%A") . "\n";
+print '%b : 月の省略名 : ' . $dt-&gt;strftime("%b") . "\n";
+print '%B : 月名 : ' . $dt-&gt;strftime("%B") . "\n";
+print '%c : デフォルトのフォーマット : ' . $dt-&gt;strftime("%c") . "\n";
+print '%C : 年の最初の2桁 : ' . $dt-&gt;strftime("%C") . "\n";
+print '%d : 日(01 から 31) : ' . $dt-&gt;strftime("%d") . "\n";
+print '%D : %m/%d/%y と同じ。月日年 : ' . $dt-&gt;strftime("%D") . "\n";
+print '%e : 日(1 から 31) 1桁の数字(1 ～ 9)の2桁目はスペースになる。 : '
+  . $dt-&gt;strftime("%e") . "\n";
+print '%F : %Y-%m-%d と同じ(2008-11-31 など) : ' . $dt-&gt;strftime("%F") . "\n";
+print '%G : 年(%Yとの違いはよくわからない) : ' . $dt-&gt;strftime("%G") . "\n";
+print '%g : 年の下2桁 (00 ～ 99) : ' . $dt-&gt;strftime("%g") . "\n";
+print '%h : %b と同じ。月の省略名 : ' . $dt-&gt;strftime("%h") . "\n";
+print '%H : 時(00 から 23) : ' . $dt-&gt;strftime("%H") . "\n";
+print '%I : 時(01 から 12) 12時間表記での時刻 : ' . $dt-&gt;strftime("%I") . "\n";
+print '%j : 年の最初から初めて何日目か。(001 から 366) : '
+  . $dt-&gt;strftime("%j") . "\n";
+print '%k : 時(0 から 23) 1桁の数字(0～ 9)の２桁目はスペースになる。 : '
+  . $dt-&gt;strftime("%k") . "\n";
+print '%l : 時(1 から 12) 12時間表記での時刻 : ' . $dt-&gt;strftime("%l") . "\n";
+print '%m : 月の番号(01 から 12) : ' . $dt-&gt;strftime("%m") . "\n";
+print '%M : 分(00 から 59) : ' . $dt-&gt;strftime("%M") . "\n";
+print '%n : 改行文字 : ' . $dt-&gt;strftime("%n") . "\n";
+print '%N : ミリ秒(%3N と書くとミリ秒を3桁で%6Nと書くとミリ秒を6桁で表示) : '
+  . $dt-&gt;strftime("%3N") . "\n";
+print '%p : AM か PM : ' . $dt-&gt;strftime("%p") . "\n";
+print '%P : am か pm : ' . $dt-&gt;strftime("%P") . "\n";
+print '%r : %I:%M:%S %p と同じ。(11:55:23 PM など) : '
+  . $dt-&gt;strftime("%r") . "\n";
+print '%R : 時分(15:16 など) : ' . $dt-&gt;strftime("%R") . "\n";
+print '%s : エポックからの秒数 : ' . $dt-&gt;strftime("%s") . "\n";
+print '%S : 秒(00 から 61) : ' . $dt-&gt;strftime("%S") . "\n";
+print '%t : タブ文字 : ' . $dt-&gt;strftime("%t") . "\n";
+print '%T : %H:%M:%S と同じ。時分秒(23:14:03 など) : '
+  . $dt-&gt;strftime("%T") . "\n";
+print '%u : 曜日の番号(1 から 7。 月曜日が1) : ' . $dt-&gt;strftime("%u") . "\n";
+print '%U : 年の最初から数えて何週目か。(00 から 53) 年の最初の日曜日'
+  . 'を週の最初として数える。最初の日曜日の週が01。その前の週が00。 : '
+  . $dt-&gt;strftime("%U") . "\n";
+print '%V : 年の最初から数えて何週目か。(01 から 53) 少なくとも4日を持つ週を'
+  . '年の最初の週とする。月曜日を週の最初として数える。 : '
+  . $dt-&gt;strftime("%V") . "\n";
+print '%w : 曜日の番号(0 から 6。 日曜日が0) : ' . $dt-&gt;strftime("%w") . "\n";
+print '%W : 年の最初から数えて何週目か(00 から 53)  年の最初の月曜日を週の'
+  . '最初として数える。最初の月曜日の週が01。その前の週が00。 : '
+  . $dt-&gt;strftime("%W") . "\n";
+print '%x : 日付のデフォルトのフォーマット : ' . $dt-&gt;strftime("%x") . "\n";
+print '%X : 時刻のデフォルトのフォーマット : ' . $dt-&gt;strftime("%X") . "\n";
+print '%y : 年の下の2桁 : ' . $dt-&gt;strftime("%y") . "\n";
+print '%Y : 年 : ' . $dt-&gt;strftime("%Y") . "\n";
+print '%z : UTC(協定世界時)からのタイムゾーンの時刻のずれ) : '
+  . $dt-&gt;strftime("%z") . "\n";
+print '%Z : タイムゾーン名 : ' . $dt-&gt;strftime("%Z") . "\n";
+print '%% : % : ' . $dt-&gt;strftime("%%") . "\n";
+print '%{method} : DateTime.pm のメソッドを利用することができる。例 %{ymd} : '
+  . $dt-&gt;strftime("%{ymd}") . "\n";
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1)strftime 書式指定一覧
+%a : 曜日の省略名 : Mon
+%A : 曜日名 : Monday
+%b : 月の省略名 : Nov
+%B : 月名 : November
+%c : デフォルトのフォーマット : Nov 17, 2008 12:09:37 AM
+%C : 年の最初の2桁 : 20
+%d : 日( 01 から 31 ) : 17
+%D : %m/%d/%y と同じ。月日年 : 11/17/08
+%e : 日( 1 から 31 ) 1桁の数字( 1 ～ 9 )の2桁目はスペースになる。 : 17
+%F : %Y-%m-%d と同じ( 2008-11-31 など ) : 2008-11-17
+%G : 年( %Yとの違いはよくわからない) : 2008
+%g : 年の下2桁 ( 00 ～ 99 ) : 08
+%h : %b と同じ。月の省略名 : Nov
+%H : 時( 00 から 23 ) : 00
+%I : 時( 01 から 12 ) 12時間表記での時刻 : 12
+%j : 年の最初から初めて何日目か。( 001 から 366 ) : 322
+%k : 時( 0 から 23 ) 1桁の数字( 0～ 9 )の２桁目はスペースになる。 :  0
+%l : 時( 1 から 12 ) 12時間表記での時刻 1桁の数字( 0～ 9 )の２桁目はスペースになる。 : 12
+%m : 月の番号( 01 から 12 ) : 11
+%M : 分( 00 から 59 ) : 09
+%n : 改行文字 :
+
+%N : ミリ秒( %3N と書くとミリ秒を3桁で、 %6Nと書くとミリ秒を6桁で表示 ) : 000
+%p : AM か PM : AM
+%P : am か pm : am
+%r : %I:%M:%S %p と同じ。( 11:55:23 PM など) : 12:09:37 AM
+%R : 時分( 15:16 など ) : 00:09
+%s : エポックからの秒数 : 1226848177
+%S : 秒( 00 から 61 ) : 37
+%t : タブ文字 :
+%T : %H:%M:%S と同じ。時分秒( 23:14:03 など ) : 00:09:37
+%u : 曜日の番号( 1 から 7。 月曜日が1 ) : 1
+%U : 年の最初から数えて何週目か。( 00 から 53 ) : 年の最初の日曜日を週の最初として数える。最初の日曜日の週が01。その前の
+週が00。 : 46
+%V : 年の最初から数えて何週目か。( 01 から 53 ) : 少なくとも4日を持つ週を年の最初の週とする。月曜日を週の最初として数え
+る。 : 47
+%w : 曜日の番号( 0 から 6。 日曜日が0 ) : 1
+%W : 年の最初から数えて何週目か( 00 から 53 )  年の最初の月曜日を週の最初として数える。最初の月曜日の週が01。その前の週
+が00。 : 46
+%x : 日付のデフォルトのフォーマット : Nov 17, 2008
+%X : 時刻のデフォルトのフォーマット : 12:09:37 AM
+%y : 年の下の2桁 : 08
+%Y : 年 : 2008
+%z : UTC(協定世界時)からのタイムゾーンの時刻のずれ) : +0900
+%Z : タイムゾーン名 : JST
+%% : % : %
+%{method} : DateTime.pm のメソッドを利用することができる。%{ymd} : 2008-11-17
+</pre>
+<p>
+  DateTimeを使って、日付や時刻の計算を行うサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+print "(1)-1 日付の足し算\n";
+my $dt = DateTime-&gt;now(time_zone =&gt; 'local');
+
+# 日の加算
+my $dt_tommorow = $dt-&gt;clone;
+$dt_tommorow-&gt;add(days =&gt; 1);
+
+# 月の加算
+my $dt_next_month = $dt-&gt;clone;
+$dt_next_month-&gt;add(months =&gt; 1);
+
+# 年の加算
+my $dt_next_year = $dt-&gt;clone;
+$dt_next_year-&gt;add(years =&gt; 1);
+
+print '現在は' . $dt-&gt;date . "です。\n\n";
+print '明日は' . $dt_tommorow-&gt;date . "です。\n";
+print '1年後は' . $dt_next_month-&gt;date . "です。\n";
+print '1年後は' . $dt_next_year-&gt;date . "です。\n\n";
+
+# 時の加算
+print "(1)-2 時刻の加算\n";
+my $dt_next_hour = $dt-&gt;clone; 
+$dt_next_hour-&gt;add(hours =&gt; 1);
+
+# 分の加算
+my $dt_next_minutes = $dt-&gt;clone;
+$dt_next_minutes-&gt;add(minutes =&gt; 1);
+
+# 秒の加算
+my $dt_next_second = $dt-&gt;clone;
+$dt_next_second-&gt;add(seconds =&gt; 1);
+
+print '現在は' . $dt-&gt;time . "です。\n\n";
+print '1時間後は' . $dt_next_hour-&gt;time . "です。\n";
+print '1分後は' . $dt_next_minutes-&gt;time . "です。\n";
+print '1秒後は' . $dt_next_second-&gt;time . "です。\n";
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1)-1 日付の加算
+現在は2008-11-18です。
+
+明日は2008-11-19です。
+1年後は2008-12-18です。
+1年後は2009-11-18です。
+
+(1)-2 時刻の加算
+現在は23:04:06です。
+
+1時間後は00:04:06です。
+1分後は23:05:06です。
+1秒後は23:04:07です。
+</pre>
+<p>
+  DateTimeを使って日付の引き算を行うサンプです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+print "(1) 日付の引き算\n";
+my $dt = DateTime-&gt;now(time_zone =&gt; 'local');
+
+# 日の減算
+my $dt_yesterday = $dt-&gt;clone;
+$dt_yesterday-&gt;subtract(days =&gt; 1);
+
+print '現在の日付は' . $dt-&gt;date . "です。\n";
+print '昨日の日付は' . $dt_yesterday-&gt;date . "です。\n\n";
+
+# 加算と減算を組み合わせる。
+my $dt_mix = $dt-&gt;clone;
+$dt_mix = $dt_mix-&gt;add(months =&gt; 1)-&gt;subtract(days =&gt; 1);
+
+print "(2)DateTimeオブジェクト同士の引き算\n";
+my $dt1 = DateTime-&gt;new(year =&gt; 2000 , month =&gt; 2, day =&gt; 1);
+my $dt2 = DateTime-&gt;new(year =&gt; 2003 , month =&gt; 3, day =&gt; 19);
+
+my $duration = $dt2 - $dt1;
+
+print '期間は' . $duration-&gt;years . '年と'
+  . $duration-&gt;months . 'ヶ月と'
+  . $duration-&gt;days . "日\n";
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1) 日付の引き算
+現在の日付は2008-11-18です。
+昨日の日付は2008-11-17です。
+
+(2)DateTimeオブジェクト同士の引き算
+期間は3年と1ヶ月と4日
+</pre>
+<p>
+  期間の情報を取得するサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+use DateTime;
+
+# DateTimeオブジェクト同士の引き算
+my $dt1 = DateTime-&gt;new(
+  year =&gt; 2000,
+  month =&gt; 2,
+  day =&gt; 1,
+  hour =&gt; 12,
+  minute =&gt; 44,
+  second =&gt; 30
+);
+
+my $dt2 = DateTime-&gt;new(
+  year =&gt; 2003,
+  month =&gt; 3,
+  day =&gt; 19,
+  hour =&gt; 23,
+  minute =&gt; 54,
+  second =&gt; 40
+);
+
+my $duration = $dt2 - $dt1;
+
+print "(1) 期間を取得する。\n";
+print "期間は" .$duration-&gt;years ."年と"
+  . $duration-&gt;months ."ヶ月と"
+  . $duration-&gt;days . "日と"
+  . $duration-&gt;hours . "時間と"
+  . $duration-&gt;minutes . "分と"
+  . $duration-&gt;seconds . "秒\n\n";
+
+print "(2)期間の順序を判定する。\n";
+if ($duration-&gt;is_positive) {
+  print "\$dt2は\$dt1より後の日付です。\n";
+}
+elsif ($duration-&gt;is_zero) {
+  print "\$dt2は\$dt1と等しいです。\n";
+}
+elsif ($duration-&gt;is_negative) {
+  print "\$dt2は\$dt1より前の日付です。\n";
+}
+print "\n";
+
+print "(3)期間を月換算で取得する。\n";
+print '期間は月換算で' . $duration-&gt;in_units('months') . "ヶ月です。\n";
+</pre>
+<p>
+  実行結果
+</p>
+<pre>
+(1) 期間を取得する。
+期間は3年と1ヶ月と4日と11時間と10分と10秒
+
+(2)期間の符号を判定する。
+$dt2は$dt1より後の日付です。
+
+(3)期間を月換算で取得する。
+期間は月換算で37ヶ月です。
+</pre>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

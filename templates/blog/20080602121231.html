@@ -1,0 +1,124 @@
+<h2 class="title"> ActivePerlをWindowsにインストールする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+<strong>ActivePerl</strong>をWindowsに<strong>インストール</strong>してPerlを使えるようにしましょう。
+
+<a href="https://www.activestate.com/activeperl"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018080920180809180334.png?1533805550"></a>
+
+<a href="https://www.activestate.com/activeperl">ActivePerl | ActiveState</a>
+
+ActivePerlはActiveState社によって無償で提供されているPerlディストリビューションの一つです。
+
+特徴は
+
+<ul>
+  <li>
+    Windows関連のモジュールが多く添付されている
+  </li>
+</ul>
+
+ことです。Excelなどを直接操作できるWin32::OLEなどのモジュールが標準で添付されています。
+
+インストールは簡単です。CPANモジュールをインストールすることもできます。
+
+<h4>ActivePerlのダウンロード</h4>
+
+ActivePerlをt次のページからダウンロードします。2018年8月現在の最新版は、5.26.1です。
+
+<ul>
+  <li>
+    <a href="https://www.activestate.com/activeperl/downloads">ActivePerlのダウンロード</a>
+  </li>
+</ul>
+
+<a href="https://www.activestate.com/activeperl/downloads"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018080920180809181736_original.png?1533806274"></a>
+
+登録をするかどうか聞かれることがありますが、必須ではないので、ダウンロードを進めることができます。msiという拡張子はWindowsのインストーラであることを表します。
+
+フリーで提供されているのは64bit版だけです。
+
+<h4>ActivePerlのインストール</h4>
+
+ダウンロードしたActive Perlをダブルクリックします。
+
+インストーラーが起動します。「Next」を押して進みます。
+
+途中で「I accept the terms in the License Agreement」というチェックボックスがでてくるので、チェックをいれて「Next」を押します。
+
+「typical」を選択します。
+
+さらに「Next」を押して進んでいって、最後に「Install」をクリックするとActive Perlのインストールが始まります。
+
+ここで「この不明な発行元からのアプリがデバイスに変更を加えることを許可しますか?」というダイアログが表示されると思いますが、「はい」をクリックしましょう。
+
+5分くらい時間がかかるので待ちましょう。
+
+プログレスバーが満タンになると、Active Perlのインストールが完了します。
+
+「Finish」を押してダイアログを閉じましょう。Readmeが表示されますが、これも閉じて大丈夫です。
+
+<h4>Perlがインストールされていることの確認</h4>
+
+インストールが完了したら実際にActive Perlがインストールできているか確認してみましょう。
+
+コマンドプロンプトというツールをを実行してPerlのバージョンを表示してみます。
+
+コマンドプロンプトは、「スタートメニュー」→「アプリの一覧」→「Windowsシステムツール」→「コマンドプロンプト」から実行できます。
+
+黒い画面がでてくるので、以下の文字をキーボードからうち「Enter」を押してみてください。
+
+<pre>
+perl -v
+</pre>
+
+次のようにバージョン情報が表示されればインストールは成功しています。
+
+<pre>
+This is perl 5, version 26, subversion 1 (v5.26.1) built for MSWin32-x64-multi-thread
+(with 1 registered patch, see perl -V for more detail)
+</pre>
+
+これでActive Perlのインストールは完了です。
+
+WindowsでPerlを実行するためにはコマンドプロンプトと呼ばれるものを利用します。perlコマンドを使ってPerlスクリプトを実行できるようになります。
+
+コマンドプロンプトの使い方を知りたい方は「<a href="/blog/20080603121251.html">Perlを実行するためのコマンドプロンプト入門</a>」という記事で解説しています。
+
+<h3>その他のPerlのインストール方法</h3>
+
+WindowsでPerlを利用するその他の方法については、以下を参考にしてください。それぞれに長所があります。
+
+<ul>
+  <li>
+    <a href="/blog/20180808153368.html">Strawberry Perl(ストロベリーパール)をWindowsにインストールする</a>
+  </li>
+  <li>
+    <a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>
+  </li>
+</ul>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+

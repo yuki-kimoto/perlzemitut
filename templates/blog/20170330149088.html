@@ -1,0 +1,212 @@
+<h2 class="title">DBIx::Custom 0.39 リリース - SQLの生成機能の追加、モデルの簡単な生成</h2>
+
+DBIx::Custom 0.39 リリースしました。今回は、大きなアップデートとなっています。アップデートするときは、十分に試験を行ってください。
+
+<ul>
+  <li>
+    <a href="http://search.cpan.org/dist/DBIx-Custom/lib/DBIx/Custom.pm">DBIx::Custom 0.39</a>
+  </li>
+</ul>
+
+<h3>機能の追加</h3>
+
+DBIx::Custom 0.39では以下の機能が追加されました。
+
+<h4>SQL生成機能</h4>
+
+SQLの生成機能が追加されました。queryオプションを使って、クエリ情報だけを取り出すことができます。<a href="http://search.cpan.org/dist/SQL-Abstract/lib/SQL/Abstract.pm">SQL::Abstract</a>に該当する機能が追加されたと考えてください。
+
+<pre>
+my $query = $dbi->model('book')->insert({id => 1, name => 'Perl'}, query => 1);
+
+my $sql = $query->sql;
+my $bind_values = $query->bind_values;
+</pre>
+
+これを利用すると、他のDBIモジュールと組み合わせて利用することができます。たとえば、非同期クエリを投げるために、<a href="http://search.cpan.org/dist/AnyEvent-DBI/DBI.pm">AnyEvent::DBI</a>と<a href="http://mojolicious.org/perldoc/Mojo/Pg">Mojo::Pg</a>組み合わるなどができます。
+
+<pre>
+my $pg = Mojo::Pg->new('postgresql://postgres@/test');
+$pg->db->query($sql => @$bind_values => sub {
+  my ($db, $err, $results) = @_;
+  ...
+});
+Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+</pre>
+
+これが今回のリリースの一番大きな目的で、これによって、DBIx::Customと好きな非同期DBIモジュールと組み合わせることが可能になりました。
+
+このqueryオプションは現在は実験的な機能として実装されています。
+
+<h4>SQLの再利用</h4>
+
+また上記のSQLはパラメータだけを変えて再利用することもできます。
+
+<pre>
+# 1回目
+my $param = {id => 1, name => 'Perl'};
+my $query = $dbi->model('book')->insert($param, query => 1);
+
+my $sql = $query->sql;
+my $sth = $dbi->dbh->prepare($sql);
+$sth->execute($query->bind_values);
+
+# 2回目
+$query->param({id => 2, name => 3});
+$query->build;
+$sth->execute($query->bind_values);
+</pre>
+
+これを利用することで、パフォーマンスがどうしても必要になった場合に対処できるようになりました。
+
+create_resultというメソッドも追加されて、ステートメントハンドルからDBIx::Custom::Resultオブジェクトを作成できます。
+
+<pre>
+my $result = $dbi->create_result($sth);
+</pre>
+
+<h4>DBIx::Connectorがデフォルトで有効に</h4>
+
+<a href="http://search.cpan.org/dist/DBIx-Connector/lib/DBIx/Connector.pm">DBIx::Connector</a>がデフォルトで有効になりました。
+
+MojoliciousなどのプリフォークサーバーでDBIx::Customを利用する場合も、意識する必要がなくなります。
+
+<h4>connectメソッドでDBIと同じ引数をサポート</h4>
+
+DBIx::CustomのconnectメソッドがDBIと同じ引数形式をサポートしました。特別な形式を覚える必要はなくなりました。
+
+<pre>
+my $dbi = DBIx::Custom->connect($dsn, $user, $password, $dbh_attrs);
+</pre>
+
+<h4>モデルの生成が簡単に</h4>
+
+モデルは、引数ひとつだけで作成できるようになりました。
+
+<pre>
+$dbi->create_model('book');
+$dbi->model('book')->insert(...);
+</pre>
+
+<h4>setup_modelが不要に</h4>
+
+モデルに列名を設定するためのsetup_modelの呼び出しが不要になりました。create_modelあるいはinclude_modelが呼ばれたときに、自動的に設定されます。
+
+<h4>サンプルプログラム</h4>
+
+今後は以下のように書くのが推奨になります。create_modelを使ってモデルを作成してから、insert, update, delete, selectを記述するのが、きれいです。
+
+<pre>
+  use DBIx::Custom;
+  
+  # 接続
+  my $dbi = DBIx::Custom->connect("dbi:mysql:database=dbname", 'ken', '!LFKD%$&',
+    {mysql_enable_utf8 => 1});
+  
+  # モデルの作成
+  $dbi->create_model('book');
+  
+  # Insert 
+  $dbi->model('book')->insert({title => 'Perl', author => 'Ken'});
+  
+  # Update 
+  $dbi->model('book')->update({title => 'Perl', author => 'Ken'}, where  => {id => 5});
+  
+  # Delete
+  $dbi->model('book')->delete(where => {author => 'Ken'});
+  
+  # Select
+  my $result = $dbi->model('book')->select(['title', 'author'], where  => {author => 'Ken'});
+</pre>
+
+<h3>実験的な機能の削除</h3>
+
+実験的な機能であるexecuteメソッドのasyncオプション、async_confアトリビュート、default_schemaアトリビュートが削除されました。
+
+MySQLで非同期のSQLを実行していた場合は、ご注意ください。今後はqueryオプションを利用して、SQLを取り出してから、自前で非同期のクエリを実行するという方法をご利用ください。
+
+DBIx::Customは、今後は非同期機能は、提供しません。「同期クエリ」と「SQL生成機能」を提供することに特化します。
+
+<h3>廃止予定になった機能</h3>
+
+いくつかの廃止予定になった機能があります。5年後に取り除かれる予定なので、ご準備ください。
+
+<h4>オートロード機能</h4>
+
+オートロード機能は廃止予定になりました。
+
+<h4>helperメソッド</h4>
+
+helperメソッドは廃止予定になりました。DBIx::Customに登録されているメソッドは、フレームワーク側に移動をお願いします。
+
+<h4>update_or_insertメソッド</h4>
+
+update_or_insertメソッドは廃止予定になりました。select、update、insertメソッドを使ったものに置き換えてください。
+
+<h4>idオプション、primary_keyオプション</h4>
+
+idオプションとprimary_keyオプションは廃止予定になりました。whereオプションを使って書き換えてください。
+
+<h4>countメソッド</h4>
+
+countメソッドは廃止予定になりました。「select('count(*'), ...)->value」を使って書き換えてください。
+
+<h3>リリースノート</h3>
+
+すべての変更点は以下にあります。
+
+<q>
+0.39 2017-03-28
+  ---------------------------------------------------
+  NOTE: This release add some DEPRECATED warnings.
+  Maybe after these DEPRECATED period, DBIx::Custom will be more stable.
+  ---------------------------------------------------
+  - DBIx::Custom::helper method is DEPRECATED!
+  - DBIx::Custom AUTOLOAD feature is DEPRECATED!
+  - DBIx::Custom::update_or_insert method is DEPRECATED!
+  - DBIx::Custom::count method is DEPRECATED!
+  - DBIx::Custom::insert, select,update,delete method's id option is DEPRECATED!
+  - DBIx::Custom::insert, select,update,delete method's primary_key option is DEPRECATED!
+  - DBIx::Custom::Model AUTOLOAD feature is DEPRECATED!
+  - DBIx::Custom::Model::helper method is DEPRECATED!
+  - DBIx::Custom::Model::update_or_insert method is DEPRECATED!
+  - DBIx::Custom::Model::count method is DEPRECATED!
+  - DBIx::Custom::Model::primary_key attribute is DEPRECATED!
+  - DBIx::Custom::setup method is DEPRECATED!
+    this method has no meaning because
+    columns is automatically set when create_model or include_model is called.
+  ------------------------
+  Performance down
+  ------------------------
+  - DBIx::Custom::insert method which have array argument(For example, [{foo => 1, bar => 2}, {foo => 3, bar => 4}])
+    become slow. (Performance down 1)
+  - DBIx::Custom::execute method's reuse option become no more meaning. (Performance down 2)
+  
+  You can resolve above two problem by using query option
+  ------------------------
+  remove EXPERIMENTAL
+  ------------------------
+  - remove EXPERIMENTAL DBIx::Custom::execute method's async option
+  - remove EXPERIMENTAL DBIx::Custom::async_conf attribute
+    From this release, DBIx::Custom support only syncronous query,
+    but from this release, you can create sql and bind values by excute method's query option
+    you can pass sql and bind values to any asyncronous support database module,
+    (for example, AnyEvent::DBI or Mojo::Pg)
+  - remove EXPERIMENTAL DBIx::Custom::default_schema attribute
+  -----------------------
+  New features
+  -----------------------
+  - add EXPERIMENTAL DBIx::Custom::execute query option again. This method return DBIx::Custom::Query object.
+    If you use this option, you can resolve "Performance down 1" and "Performance down 2".
+  - add EXPERIMENTAL DBIx::Custom::create_result method to create result class from statement handle
+  - DBIx::Connector become enable by default
+  - Model columns is automatically set when DBIx::Custome::create_model and DBIx::Custome::include_model called
+  - DBIx::Custom::connect method support DBI compatible arguments
+    DBIx::Custom->connect($dsn, $user, $password, $dbh_attrs);
+  - DBIx::Custom::create_model can receive model name only
+    $dbi->create_model('book');
+  - Model name is indepenet from table name.
+    You can write the following
+    $dbi->create_model(name => 'book1', table => 'book');
+</q>
+

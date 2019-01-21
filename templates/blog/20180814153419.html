@@ -1,0 +1,50 @@
+<h2 class="title">macOSへのPerlのインストール</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+macOSの環境には、すでにPerlがインストールされています。
+
+以下のコマンドでPerlがインストールされているか確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+バージョン情報が表示されれば、OKです。
+
+さっそく、Perlを使い始めてみましょう。
+
+<h4>ユーザー環境へのPerlのインストール</h4>
+
+最新のPerlなどを使いたい場合は、ユーザー環境にPerlをインストールすることもできます。
+
+自分のユーザー環境にPerlをインストールしたい場合はperlbrewあるいはplenvというツールを使うことができます。
+
+ルート権限が必要ないので、インストールが簡単で、OSの環境を汚しません。最新のPerlをインストールして使うことができます。
+
+本番環境のWebサービスでPerlを実行する場合は、この方法が2018年現在は主流となっています。
+
+perlbrewとplenvはどちらも、似ているツールで、ユーザー環境にPerlをインストールするためのツールです。お好みで選択してください。
+
+<a href="https://syncer.jp/mac-terminal">macOSでターミナルを立ち上げ</a>てから、以下の手順を実行してください。
+
+<ul>
+  <li>
+    <a href="/blog/20110220130464.html">perlbrew - ユーザー環境にPerlをインストールする</a>
+  </li>
+  <li>
+    plenv - ユーザー環境にPerlをインストールする(準備中)
+  </li>
+</ul>
+

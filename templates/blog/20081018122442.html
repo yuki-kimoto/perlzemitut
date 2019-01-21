@@ -1,0 +1,258 @@
+<h2 class="title">時刻の差を求める(24時間を越えない場合)</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161123147990.html">
+        <span itemprop="name">日付・時刻</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+時刻の差を求めるには、まずhhmmssと表記されているものを秒に変換する必要があります。秒の差を求めた上で再度hhmmssの時刻表現に復元します。時刻の差を求めるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+print "(1)時刻の差を求める(24時間を越えない)\n";
+my $time_str1 = '03:44:23';
+my $time_str2 = '22:34:45';
+
+# 時刻の文字列表現を時刻情報のハッシュに変換する。
+my $time1 = time_from_str($time_str1);
+my $time2 = time_from_str($time_str2);
+
+# 時刻情報のハッシュを秒に変換して経過秒を計算
+my $sec_interval = time_to_sec($time2) - time_to_sec($time1);
+
+# 経過秒を時刻表現のハッシュに変換
+my $time_interval = sec_to_time($sec_interval);
+
+# 時刻表現のハッシュを時刻の文字列表現に変換
+my $time_interval_str = str_from_time($time_interval);
+
+print "時刻の差は$time_interval_strです。\n";
+
+# 時刻の文字列表現を時刻情報を表すハッシュに変換する関数
+sub time_from_str {
+  my $time_str = shift;
+  return unless $time_str;
+  
+  my $time = {};
+  if ($time_str =~ /^(\d{2}):(\d{2}):(\d{2})$/) {
+    @{$time}{qw/hour min sec/} = ($1, $2, $3);
+    return wantarray ? %$time : $time;
+  }
+  return;
+}
+
+# 時刻情報を表すハッシュを時刻の文字列表現に変換する関数
+sub str_from_time {
+  my $time;
+  if (ref $_[0] eq 'HASH') {
+    $time = shift;
+  }
+  else {
+    %$time = @_;
+  }
+    
+  return unless defined $time->{hour};
+  return unless defined $time->{min};
+  return unless defined $time->{sec};
+    
+  my $time_str
+    = sprintf("%02s:%02s:%02s", @{$time}{qw/hour min sec/});
+  return $time_str;
+}
+
+# 時刻を秒に変換する関数
+sub time_to_sec {
+  my $time;
+  if (ref $_[0] eq 'HASH') {
+    $time = shift;
+  }
+  else {
+    %$time = @_;
+  }
+    
+  return unless defined $time->{hour};
+  return unless defined $time->{min};
+  return unless defined $time->{sec};
+  
+  my $sec = $time->{hour} * 3600 +
+            $time->{min} * 60 +
+            $time->{sec};
+  
+  return $sec;
+}
+
+# 秒を時刻に変換する関数。
+sub sec_to_time {
+  my $sec = int(shift);
+  my $time = {};
+  
+  $time->{hour} = int($sec / 3600);
+  $sec = $sec % 3600;
+  
+  $time->{min} = int($sec / 60);
+  $sec = $sec % 60;
+  
+  $time->{sec} = $sec;
+  
+  return wantarray ? %$time : $time;
+}
+</pre>
+実行結果
+<pre>
+(1)時刻の差を求める(24時間を越えない)
+時刻の差は18:50:22です。
+</pre>
+
+<h3>コード解説</h3>
+
+<h4>時刻の文字列表現を時刻情報を表すハッシュに変換する</h4>
+
+ログなどに時刻が表示されている場合は文字列になっています。この文字列を時刻情報を表すハッシュに変換しておくのが便利です。
+
+このように文字列をハッシュに変換することはよく行われます。(データを構造化しておくと抽象性、可読性、再利用性が増します。)
+
+<pre>
+# 時刻の文字列表現を時刻情報のハッシュに変換する。
+my $time1 = time_from_str( $time_str1 );
+my $time2 = time_from_str( $time_str2 );
+
+# 時刻の文字列表現を時刻情報を表すハッシュに変換する関数
+sub time_from_str {
+  my $time_str = shift;
+  return unless $time_str;
+  
+  my $time = {};
+  if ($time_str =~ /^(\d{2}):(\d{2}):(\d{2})$/) {
+    @{$time}{qw/hour min sec/} = ($1, $2, $3);
+    return wantarray ? %$time : $time;
+  }
+  return;
+}
+</pre>
+
+以下の部分はハッシュスライスになっています。$timeをデリファレンスしてハッシュスライスで代入する形です。qwは文字列リスト演算子です。
+
+<pre>
+@{$time}{qw/hour min sec/} = ($1, $2, $3);
+</pre>
+
+戻り値はリストとスカラーを選択できるようにしてあります。
+
+<pre>
+return wantarray ? %$time : $time;
+</pre>
+
+<h4>時刻情報のハッシュを秒に変換して経過秒を計算</h4>
+
+時刻を秒に直す計算は 「 時 × 3600 + 分 × 60 + 秒 」です。 
+
+<pre>
+my $sec_interval = time_to_sec($time2) - time_to_sec($time1);
+
+# 時刻を秒に変換する関数
+sub time_to_sec {
+  my $time;
+  if (ref $_[0] eq 'HASH') {
+    $time = shift;
+  }
+  else {
+    %$time = @_;
+  }
+    
+  return unless defined $time->{hour};
+  return unless defined $time->{min};
+  return unless defined $time->{sec};
+  
+  my $sec = $time->{hour} * 3600 +
+            $time->{min} * 60 +
+            $time->{sec};
+  
+  return $sec;
+}
+</pre>
+
+<h4>経過秒を時刻表現のハッシュに変換</h4>
+
+秒を時刻に変換するには、秒を3600で割った商と余りを求めます。この商が「時」になります。
+
+さらに、その余りを60で割った商と余りを求めます。この商が「分」、余りが「秒」になります。
+
+<pre>
+my $time_interval = sec_to_time($sec_interval);
+
+# 秒を時刻に変換する関数。
+sub sec_to_time {
+  my $sec = int(shift);
+  my $time = {};
+  
+  $time->{hour} = int($sec / 3600);
+  $sec = $sec % 3600;
+  
+  $time->{min} = int($sec / 60);
+  $sec = $sec % 60;
+  
+  $time->{sec} = $sec;
+  
+  return wantarray ? %$time : $time;
+}
+</pre>
+
+<h4>時刻表現のハッシュを時刻の文字列表現に変換</h4>
+
+最後に再び文字列に戻します。ここでは、sprintf関数を使いました。
+
+<pre>
+my $time_interval_str = str_from_time($time_interval);
+
+# 時刻情報を表すハッシュを時刻の文字列表現に変換する関数
+sub str_from_time {
+  my $time;
+  if (ref $_[0] eq 'HASH') {
+    $time = shift;
+  }
+  else {
+    %$time = @_;
+  }
+    
+  return unless defined $time->{hour};
+  return unless defined $time->{min};
+  return unless defined $time->{sec};
+    
+  my $time_str
+    = sprintf("%02s:%02s:%02s", @{$time}{qw/hour min sec/});
+  return $time_str;
+}
+</pre>
+

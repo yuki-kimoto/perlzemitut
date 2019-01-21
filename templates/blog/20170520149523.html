@@ -1,0 +1,69 @@
+<h2 class="title">範囲演算子 - m .. n </h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+Perlには、数値の範囲が指定できる<b>範囲演算子</b>があります。
+
+<pre>
+# 範囲演算子
+3 .. 6
+</pre>
+
+この結果は(3, 4, 5, 6)という<a href="/blog/20100308126967.html">リスト</a>になります。
+
+通常は<a href="/blog/20161012147627.html">配列</a>に代入したり、for文の中で利用します。
+
+<pre>
+my @nums = (3 .. 6);
+
+for my $num (3 .. 6) {
+  ...
+}
+</pre>
+
+また英数字を範囲で指定することもできます。
+
+<pre>
+'a' .. 'z'
+</pre>
+
+<h3>サンプルプログム</h3>
+
+範囲演算子のサンプルプログラムです。
+
+<pre>
+use strict;
+use warnings;
+
+my @nums = (3 .. 6);
+
+for my $num (@nums) {
+  print "$num\n";
+}
+</pre>
+
+出力結果は以下のようになります。
+
+<pre>
+3
+4
+5
+6
+</pre>
+

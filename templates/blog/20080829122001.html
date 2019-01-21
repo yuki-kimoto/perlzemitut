@@ -1,0 +1,93 @@
+<h2 class="title">数値と文字列の自動変換</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">数値と文字列の自動変換</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perlでは、<a href="/blog/20161003147558.html">文字列</a>と数値の自動変換が暗黙的に行われます。C言語やJavaのように明示的に文字列と数値の変換を行う必要がないので、スクリプトの記述が非常に楽です。
+
+<pre>
+my $num1_str = "100";
+my $num1 = 100;
+
+my $num1_total = $num1_str + $num1;
+</pre>
+
+文字列である"100"は数値として使用されると100に自動変換されて計算されます。
+
+Perlがどのように文字列を数値として解釈するかを解説します。
+
+<pre>
+my $num2_str = "34A11";
+</pre>
+
+"34A11"は数値として使用されると34に変換されます。先頭から続く数値の部分が数値に変換されます。
+
+use warnings; を記述しておくと数値だけで構成されない文字列を数値として使用しようとすると警告が行われます。
+
+空文字列"" は、0として計算されます(この場合も数値ではないので警告が行われます)。
+
+<h3>サンプル</h3>
+
+数値と文字列の自動変換を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my $num1_str = "100";
+my $num1 = 100;
+
+my $num1_total = $num1_str + $num1;
+
+print "(1)文字列から数値への自動変換\n";
+print "\$num1_total = $num1_total\n\n";
+
+# この文字列が数値として使用される場合は、34と
+# として扱われる。
+# use warningsを有効にしていれば数値として
+# 使おうとすると警告になる。
+my $num2_str = "34A11"; 
+
+my $num2 = 3;
+
+my $num2_total = $num2_str + $num2;
+
+print "(2)先頭から続く数字を使って計算される。\n";
+print "\$num2_total = $num2_total\n";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">数値と文字列の自動変換</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

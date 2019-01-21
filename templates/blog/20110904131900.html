@@ -1,0 +1,293 @@
+<h2 class="title">DBIx::Customの「ユーティリティ」メソッドの紹介</h2>
+
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<h3>最後に実行されたSQLを取得する - last_sql</h3>
+
+最後に実行されたSQLを取得するには<strong>last_sql</strong>メソッドを使用します。
+
+<pre>
+my $last_sql = $dbi->last_sql;
+</pre>
+
+デバッグを行うときに便利です。
+
+<h3>実行されたSQLを確認する</h3>
+
+どのようなSQLが実際に実行されたのかを確認するには<strogn>DBIX_CUSTOM_DEBUG</strong>という環境変数に真の値(たとえば1)を設定します。標準エラー出力に実行されたSQLとバインドされた値が出力されます。
+
+<pre>
+$ENV{DBIX_CUSTOM_DEBUG} = 1
+</pre>
+
+<h3>ヘルパーメソッドを登録する - helper</h3>
+
+ヘルパーメソッドを登録するには<strong>helper</strong>メソッドを使用します。
+
+<pre>
+$dbi->helper(
+  find_or_create   => sub {
+    my $self = shift;
+    ...
+  }
+);
+</pre>
+
+登録したヘルパーメソッドはDBIx::Customオブジェクトから直接呼び出すことができます。
+
+<pre>
+$dbi->find_or_create;
+</pre>
+
+<h3>パラメーターをマージする - merge_param</h3>
+
+二つのパラメータをマージするには<strong>merge_param</strong>メソッドを使用します。
+
+<pre>
+my $param = $dbi->merge_param({key1 => 1}, {key1 => 1, key2 => 2});
+</pre>
+
+次のような新しいパラメータを取得します。同一のキーを含むときは、値は配列のリファレンスにマージされます。
+
+<pre>
+{key1 => [1, 1], key2 => 2}
+</pre>
+
+<h3>DBIx::Customオブジェクトを生成する - new</h3>
+
+DBIx::Customオブジェクトを生成するには<strong>new</strong>メソッドを使用します。
+
+<pre>
+my $dbi = DBIx::Custom->new(
+  dsn => "dbi:mysql:database=dbname",
+  user => 'ken',
+  password => '!LFKD%$&',
+  option => {mysql_enable_utf8 => 1}
+);
+</pre>
+
+connectメソッドとの違いは、newメソッドは接続を行わないということです。オブジェクトを、生成した後に接続したい場合は、connectメソッドを呼んでください。
+
+<pre>
+$dbi->connect;
+</pre>
+
+<h3>データベースハンドルを取得する - dbh</h3>
+
+データベースハンドルを取得するには<strong>dbh</strong>メソッドを使用します。
+
+<pre>
+my $dbh = $dbi->dbh;
+</pre>
+
+もしconnectorにコネクションマネージャが設定されていた場合は、データベースハンドルはコネクションマネージャ経由で取得します。
+
+<h3>テーブルの存在を確認する</h3>
+
+データベースにテーブルがすでに存在しているかを確認したい場合があります。そのような場合は、each_columnメソッドを使って、指定するテーブルがあるかを調べるのが簡単です。each_columnメソッドはすべての列を取得するメソッドですが、テーブルの情報も引数で受け取りますので、このような使い方もできます。
+
+<pre>
+my $table_exists;
+$dbi->each_column(sub {
+  my ($dbi, $table, $column) = @_;
+  $table_exists = 1 if $table eq 'book';
+});
+</pre>
+
+<h3>Mojolicious::LiteとDBIx::CustomとDBD::mysqlを使ってnode.jsのようにノンブロッキングでDBにアクセスする</h3>
+
+DBIx::Customがまだ実験的な段階ですが、AnyEventの力を借りて、データベースに対してブロッキングせずにクエリを投げることができるようになりました。
+
+5秒間待機するSQLを投げているのですが、複数のリクエストがあっても、ブロックせずにリクエストを処理することができます。これで、nodel.jsで行いたいようなデータベースに対してノンブロッキングでクエリを投げるということが、Perlでも簡単にできるようになりそうです。
+
+<pre>
+use Mojolicious::Lite;
+use EV;
+use DBIx::Custom;
+
+my $dbi = DBIx::Custom->connect(
+  dsn => 'dbi:mysql:database=usertest',
+  user => 'root'
+);
+
+$dbi->async_conf({
+  prepare_attr => {async => 1},
+  fh => sub { shift->dbh->mysql_fd }
+});
+
+get '/' => sub {
+  my $self = shift;
+  
+  $self->render_later;
+  $dbi->select('SLEEP(5), 3', async => sub {
+    my ($dbi, $result) = @_;
+    my $row = $result->fetch_one;
+    $self->render(text => $row->[1]);
+  });
+};
+
+app->start;
+</pre>
+
+仕組みはこんな感じ。まずMojoliciousというのはノンブロッキングなHTTPサーバーを持っていて、内部実装としては中でIOのループをぐるぐると回している。MojoliciousはEVがあるときは、自前のMojo::IOLoopからEVを使ったIOループに切り替えることができる。DBIx::Customの中ではAnyEventを使って、イベントを登録している。EVを利用しているから、EVにイベントをどんどん登録する。Mojoliciousも自分のイベントをEVにどんどん登録する。ぐるぐるぐるーっと回って、IO待ちが終わったものから順に処理してくれる。
+
+ただしこれは、まだ超実験的なだんかいなので、不具合がないかを試してみていただけるとうれしいです。
+
+
+<h3>廃止予定のタグの解析機能を停止してパフォーマンスを上げる</h3>
+
+廃止予定の機能が削除されるまでは、後方互換性の維持の方針のために、DBIx::Customのパフォーマンスはデフォルトでは最適化されていません。以前はタグという機能を実装していたのですが、パフォーマンス上の理由のために、この機能は名前つきプレースホルダーに置き換えられました。
+
+タグの解析機能を停止させるとDBIx::Customのパフォーマンスを少し上げることができます。
+
+<pre>
+$ENV{DBIX_CUSTOM_TAG_PARSE} = 0;
+</pre>
+
+将来的には、他の多くの廃止予定の機能が取り除かれることで、パフォーマンスが全体的に若干向上します。
+
+<h3>パラメーターをマッピングする - mapper</h3>
+
+URLから受け取ってきたパラメータを、データベース用のパラメータに変換するということをすることが多いと思います。このような場合はmapperメソッドを使ってDBIx::Custom::Mapperオブジェクトを作成してそれを利用します。
+
+<pre>
+# マッパーの生成
+my $mapper = $dbi->mapper(param => $param);
+</pre>
+
+パラメータは次のようなものだとします。
+
+<pre>
+{
+  t => 'Perl',
+  p => 1000,
+  a => 'Ken',
+  b => 'XXX'
+}
+</pre>
+
+mapメソッドを使うとパラメータのマッピングを行うことができます。
+
+<pre>
+# マッピング
+my $new_param = $mapper->map(
+  t => [title => '%<value>'], # キーと値をマッピング
+  p => [price => '<value>'], # キーのみをマッピング
+  a => [a => '%<value>%'] # 値のみをマッピング
+);
+</pre>
+
+書式は以下のようになります。
+
+<pre>
+元のキー名 => [新しいキー名 => 新しい値]
+</pre>
+
+元の値は<b>&lt;value&gt;</b>というフォーマットで表現できます。これを使って<b>%Perl</b>などの新しい値を作成することもできます。
+
+次のようなパラメータにマッピングされます。
+
+<pre>
+{
+  title => '%Perl',
+  price => 1000,
+  a => '%Ken%'
+}
+</pre>
+
+mapメソッドで指定されていないキーについてはマッピングされません。このサンプルではbというキーはマッピングされません。
+
+値をもう少し柔軟に変更したい場合はサブルーチンのリファレンスを利用することができます。第一引数で元の値を取得できるので新しい値を返却します。
+
+<pre>
+元のキー名 => [新しいキー名 => sub { return '%' . $_[0] . '%' }]
+</pre>
+
+<h4>パラメータのマッピングの条件</h4>
+
+デフォルトのマッピングの条件は次のとおりです。
+
+<pre>
+値が定義されていて、長さがある
+</pre>
+
+ですから以下のようなパラメータはマッピングされます。
+
+<pre>
+title => 'Perl',
+</pre>
+
+けれども、空の文字列や未定義値やキー自体が存在しないものはマッピングされません。これはマッピングがWebアプリケーションを想定しているので、このような仕様になっています。
+
+<pre>
+title => '',
+title => undef
+</pre>
+
+この条件を変更するにはcondition属性を利用します。任意のサブルーチンのリファレンスか、特別な値として「length」「defined」「exists」という文字列を設定することができます。
+
+<pre>
+$mapper->condition('length'); # デフォルトと同じ
+$mapper->condition('defined'); # 値が定義されている
+$mapper->condition('exists'); # キーが存在する
+$mapper->condition(sub { defined $_[0] }); #任意のサブルーチンのリファレンス
+</pre>
+
+mapメソッドで次のようにキーごとに個別に設定することも可能です。
+
+<pre>
+$mapper->map(
+  古いキー => [新しいキー => 新しい値, {condtion => 'defined'}],
+);
+</pre>
+

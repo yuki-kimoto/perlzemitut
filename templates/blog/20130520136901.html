@@ -1,0 +1,194 @@
+<h2 class="title"> Perl 5.18 がリリースされました</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perl 5.18がリリースされました。パチパチパチ。
+
+<q>
+<a href="http://perl5.git.perl.org/perl.git/tag/refs/tags/v5.18.0">Perl 5.18.0</a>
+</q>
+
+<h3>バージョンアップするときに注意する点</h3>
+
+今回のPerl 5.18 へのバージョンアップは、すぐに行うのは、少し待ったほうがよいという感じがします。
+
+一つ目は、Perlのkeys,values, eachが、実行するたびに異なるキー、値の順序を返すようになったので、同じ順番を期待している実装で問題がでます。JSON::XSが現在は、試験に失敗することが知られているようです。ということは、CPANにあるモジュールの試験がうまくいかないモジュールがしばらく残るうちは、少し不安がありますね。
+
+これはセキュリティのほうが大事というPerlコミュニティの判断のようです。
+
+次に、Perl 5.10移行で導入された、given  - when構文とスマートマッチ(~~)が実験的な機能に差し戻されました。given - when構文、スマートマッチを利用している場合は、experimentalという警告が発生します。「no warnings 'experimental'」で、警告を無効にできますが、スマートマッチの実装と挙動が将来的に、変わる可能性が非常に高いのでおすすめしません。
+
+given - when構文、スマートマッチを使用している場合は、それを使わない方法に書き換えることが推奨です。以下のコマンドで、givenやスマートマッチを使用しているPerlのファイルがないかどうかを確認しましょう。
+
+<pre>
+grep -r '~~' dir | grep -e '\.p[lm]'
+grep -re 'given \+(' dir | grep -e '\.p[lm]'
+</pre>
+
+スマートマッチ演算子を使用している場合は、通常の演算子「eq」「==」に書き換えましょう。
+
+<pre>
+$var ~~ 1 -> defined $var && $var == 1
+$var ~~ [1, 2] -> (defined $var && $var == 1) || (defined $var && $var == 2)
+</pre>
+
+given whenは通常のif文に書き換えましょう。
+
+また削除された構文としてfor文の中のqw(...) はもはやかっことして使えなくなりました。
+
+<pre>
+# 廃止
+for my $str qw(a b) {
+  
+}
+
+# 書き換え
+for my $str (qw(a b)) {
+
+}
+</pre>
+
+上記のように互換性が壊れる変更で、使われている可能性がそれほど低いとはいえないものがあるので、バージョンアップするときには、今回は試験が必須だと思われます。
+
+<h3>次のバージョンでコアから取り除かれるCPANモジュール</h3>
+
+以下のモジュールはPerl 5.18で廃止予定になり、将来のバージョンでPerlコアから取り除かれます。利用している場合は、CPANからインストールして利用することができるので安心です。
+
+encodingプラグマが廃止予定になっています。encodingプラグマは非推奨ですので、使わないようにしましょう。日本語を扱うときは、utf8プラグマとEncodeモジュールを使うようにしましょう。
+
+CPANPLUSが廃止予定になっています。cpanもありますし、簡単便利なcpanmがあるので、コアにCPANPLUSは必要ないとの判断のようです。
+
+その他、Module::Pluggable、Log::Message、Object::Accessorなどが、廃止予定となっています。
+
+<q>
+encoding
+Archive::Extract
+B::Lint
+B::Lint::Debug
+CPANPLUS
+CPANPLUS::Backend
+CPANPLUS::Backend::RV
+CPANPLUS::Config
+CPANPLUS::Config::HomeEnv
+CPANPLUS::Configure
+CPANPLUS::Configure::Setup
+CPANPLUS::Dist
+CPANPLUS::Dist::Autobundle
+CPANPLUS::Dist::Base
+CPANPLUS::Dist::Build
+CPANPLUS::Dist::Build::Constants
+CPANPLUS::Dist::MM
+CPANPLUS::Dist::Sample
+CPANPLUS::Error
+CPANPLUS::Internals
+CPANPLUS::Internals::Constants
+CPANPLUS::Internals::Constants::Report
+CPANPLUS::Internals::Extract
+CPANPLUS::Internals::Fetch
+CPANPLUS::Internals::Report
+CPANPLUS::Internals::Search
+CPANPLUS::Internals::Source
+CPANPLUS::Internals::Source::Memory
+CPANPLUS::Internals::Source::SQLite
+CPANPLUS::Internals::Source::SQLite::Tie
+CPANPLUS::Internals::Utils
+CPANPLUS::Internals::Utils::Autoflush
+CPANPLUS::Module
+CPANPLUS::Module::Author
+CPANPLUS::Module::Author::Fake
+CPANPLUS::Module::Checksums
+CPANPLUS::Module::Fake
+CPANPLUS::Module::Signature
+CPANPLUS::Selfupdate
+CPANPLUS::Shell
+CPANPLUS::Shell::Classic
+CPANPLUS::Shell::Default
+CPANPLUS::Shell::Default::Plugins::CustomSource
+CPANPLUS::Shell::Default::Plugins::Remote
+CPANPLUS::Shell::Default::Plugins::Source
+Devel::InnerPackage
+Log::Message
+Log::Message::Config
+Log::Message::Handlers
+Log::Message::Item
+Log::Message::Simple
+Module::Pluggable
+Module::Pluggable::Object
+Object::Accessor
+Term::UI
+Term::UI::History
+</q>
+
+<h3>新規機能の追加</h3>
+
+<h4>experimentalプラグマの導入</h4>
+
+experimentalプラグマが導入されました。新しく追加される機能はexperimanl警告を出すようにしてリリースされ、安定した段階で、experimenal警告をはずずような運用に変更されました。
+
+<h4>レキシカルサブルーチン</h4>
+
+実験的な機能として、レキシカルなサブルーチンを定義する機能が追加されました。
+
+<pre>
+use 5.018;
+no warnings "experimental::lexical_subs";
+use feature "lexical_subs";
+{
+  my sub foo { ... }
+}
+</pre>
+
+Perlのサブルーチンの定義はすべてグローバルなものでしたが、スコープの中でだけ有効になるサブルーチンが書けるようになりそうですね。
+
+またパッケージの中だけで有効になるourも使えます。
+
+<pre>
+{
+  our sub foo { ... }
+}
+</pre>
+
+<h4>Unicode6.2への対応</h4>
+
+PerlはUnicode 6.2に対応しました。\N{BELL} は U+0007 ではなく U+1F514 を参照するようになったという互換性が崩れる変更があるので注意してください。"BELL" は U+1F514 を参照し、U+0007 の名前は "ALERT" になりました。
+
+<h4>kill関数が「-INT」のような指定ができるようにった</h4>
+
+kill関数が「-INT」のような指定を行って、グループに対してシグナル名でシグナルを送ることができるようになりました。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

@@ -1,0 +1,129 @@
+<h2 class="title">IO::ScalarArray - 標準入力の試験で活躍</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+今回は「IO::ScalarArray」を使った標準入力の自動試験について解説します。
+
+<h3>1. 標準入力にデータを流し込む方法</h3>
+
+標準入力 STDINは、入力用のハンドルであって、プログラムの中からここにデータを書き込むことはできません。
+
+標準入力にデータ流し込むことはできないのですが、擬似的に試験を行うことができます。tie という仕組みを使用すれば標準入力から行を読み込む
+
+<pre>
+<STDIN>
+</pre>
+
+という記述を、データを変数から読み込むという記述に結びつけることができます。( ここでは詳しく解説しませんがkitsさんの<a href="http://www.akatsukinishisu.net/itazuragaki/perl/tie_stdin.html">tieでSTDINを置き換える</a>という記事で方法が解説されています。)
+
+<h3>2. IO::ScalarArrayを使用した標準入力の試験</h3>
+
+IO::ScalarArrayは tie の仕組みを利用して、標準入力にデータを流し込むような記述を可能にするモジュールです。以下のように使用します。
+
+まず、標準入力に流し込みたいデータを配列で作成します。標準入力は改行がひとつの区切りですので、データの末尾には改行をつけます。
+
+それをIO::ScalarArrayのnewに渡して、オブジェクトを作成します。その後、型グロブを利用して、STDIN が $stdin のエイリアスになるようにします。
+
+<pre>
+use IO::ScalarArray;
+{
+  my @inputs = ("1\n", "2\n", "3\n");
+  my $stdin = IO::ScalarArray->new(\@inputs);
+  local *STDIN = *$stdin;
+  # 試験の記述
+}
+</pre>
+
+(参考)<a href="/blog/20080309120507.html">local</a>
+
+<h3>3 標準入力の自動試験のサンプル</h3>
+
+対話的に質問をするプログラムの試験です。question関数は、男かどうかをたずねる関数になっています。
+
+<pre>
+use Test::More tests => 1;
+use strict;
+use warnings;
+
+use IO::ScalarArray;
+
+{
+  my @answers = ("y\n");
+  my $stdin = IO::ScalarArray->new(\@answers);
+  
+  local *STDIN = *$stdin;
+  
+  my $is_man = question();
+  ok( $is_man, 'He is man');
+}
+
+# 男性かどうかを尋ねる関数
+sub question {
+  print "Are you man?\n";
+  my $answer = <STDIN>;
+  
+  chomp $answer;
+  my $is_man;
+  if ($answer eq 'y') { $is_man = 1 }
+  else { $is_man = 0 }
+  
+  return $is_man;
+}
+</pre>
+
+<h3>スカラー入出力を利用する方法</h3>
+Perlのスカラー入出力という機能を利用するサンプルです。
+
+<pre>
+use Test::More tests => 1;
+use strict;
+use warnings;
+
+{
+  my $inputs = <<"EOS";
+y\n
+n\n
+EOS
+
+  # スカラー入出力を利用する方法
+  open my $stdin, "<", \$inputs;
+  
+  local *STDIN = *$stdin;
+  
+  my $is_man = question();
+  ok($is_man, 'He is man');
+  
+  $is_man = question();
+  ok(!$is_man, 'He is not man');
+}
+
+# 男性かどうかを尋ねる関数
+sub question {
+  print "Are you man?\n";
+  my $answer = <STDIN>;
+  
+  chomp $answer;
+  my $is_man;
+  if ($answer eq 'y') { $is_man = 1 }
+  else { $is_man = 0 }
+
+  return $is_man;
+}
+</pre>
+

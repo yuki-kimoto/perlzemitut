@@ -1,0 +1,79 @@
+<h2 class="title">論理積 論理和 否定【ページ移転】</h2>
+
+このページの内容は以下のページに移転しました。
+
+<q>
+<a href="/blog/20100816136168.html">Perlの論理演算子</a>
+</q>
+
+論理積は<strong>&&</strong>、論理和は<strong>||</strong>、否定は<strong>!</strong>で表現します。
+
+<h3>論理積、論理和、否定</h3>
+
+<ul>
+  <li>
+    論理積 A かつ B   :  A && B
+  </li>
+  <li>
+    論理和 A または B :  A || B
+  </li>
+  <li>
+    否定   Aでない    :  !A
+  </li>
+  <li>
+    否定演算子は、0を1に変換し, 0でない数字を、1に反転させる。
+  </li>
+</ul>
+
+<h3>論理積(A かつ B)</h3>
+
+<pre>
+if ($num > 1 && $num < 4) {
+  print "\$numは、1より大きく、4より小さい\n\n";
+}
+</pre>
+
+<h3>論理和(A または B)</h3>
+
+<pre>
+if ($pet eq 'dog' || $pet eq 'cat') {
+  print "\$pet は、'dog' あるいは、'cat' のどちらかである。\n\n";
+}
+</pre>
+
+<h3>否定(Aでない)</h3>
+
+<pre>
+if (!$num0) {
+  print "!\$num は、真\n";
+}
+</pre>
+
+<h3>サンプルコード</h3>
+
+論理積、論理和、否定のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 論理積、論理和、否定
+print "1. 論理積( A かつ B )\n";
+my $num = 3;
+if ($num > 1 && $num < 4) {
+  print "\$numは、1より大きく、4より小さい\n\n";
+}
+
+print "2. 論理和( A または B )\n";
+my $pet = 'dog';
+if ($pet eq 'dog' || $pet eq 'cat') {
+  print "\$pet は、'dog' あるいは、'cat' のどちらかである。\n\n";
+}
+
+print "3. 否定( Aでない )\n";
+my $num0 = 0;
+if (!$num0) {
+  print "!\$num は、真\n";
+}
+</pre>
+

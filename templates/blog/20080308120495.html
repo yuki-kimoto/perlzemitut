@@ -1,0 +1,177 @@
+<h2 class="title">our - パッケージ変数の宣言</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+      <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">my</span>
+    <meta itemprop="position" content="4" />
+  </li>
+</ol>
+
+<b>our</b>による<b>パッケージ変数</b>の宣言について解説します。
+
+<h3>パッケージ変数の宣言</h3>
+
+パッケージ変数を宣言するには<strong>our</strong>を使用します。
+
+<pre>
+our $NUM;
+</pre>
+
+パッケージ変数は、ひとつの名前空間に属するグローバル変数です。パッケージ変数は、修飾名(パッケージ名)を持ち、ソースコードのどの位置からでも参照できます。
+
+パッケージ変数の変数名は「大文字」にするのが、Perlでは慣習となっています。
+
+<h3>パッケージ変数の初期化</h3>
+
+パッケージ変数の宣言と同時に「初期化」を行うことができます。
+
+<pre>
+our $NUM = 5;
+</pre>
+
+<h3>パッケージ変数のスコープと寿命</h3>
+
+パッケージ変数の寿命とスコープについて解説します。
+
+<h4>パッケージ変数の寿命</h4>
+
+パッケージ変数は、宣言して初期化されると、プログラムの最後まで、その値は存在し続けます。
+
+<h4>パッケージ変数のスコープ</h4>
+
+スコープが終わると、パッケージ名なしで、参照できなくなります。完全修飾名を、使えば、参照できます。
+
+<pre>
+package SomePackage;
+
+our $package_var1;
+$package_var1 = 1;
+
+# ourのスコープ
+{
+  our $package_var2 = 2;
+}
+# スコープが終わると、完全修飾名でのみ、参照できる
+$SomePackage::$package_var2;
+</pre>
+
+スコープの詳しい解説については以下をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20110128130016.html">Perlのスコープについて理解しよう</a>
+  </li>
+</ul>
+
+<h3>パッケージの宣言</h3>
+
+Perlではパッケージの宣言は、他の言語の名前空間の宣言にあたります。一般的には、パッケージ名は大文字ではじめる。単語の区切りも大文字にします。
+
+<pre>
+package SomePackage;
+</pre>
+
+パッケージ変数は完全修飾名でアクセスすることもできます。
+
+<pre>
+$SomePackage::package_var1
+</pre>
+
+パッケージの宣言については詳しくは以下の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20100419127089.html">package - パッケージの宣言</a>
+  </li>
+</ul>
+
+<h3>mainパッケージ</h3>
+
+パッケージの宣言が行われない場合、ourで宣言されたパッケージ変数は、mainパッケージに属します。
+
+<pre>
+# 「$main::NUM」として「mainパッケージ」に属する
+our $NUM;
+</pre>
+
+Perlには、パッケージを持たない変数は存在しません。パッケージがないように見えるものは実は、mainパッケージに属しています。
+
+たとえば<a href="/blog/20161102147817.html">特殊変数</a>はパッケージに属さないように見えますが、mainパッケージに属しています。
+
+<h3>ourによる変数宣言は使うべきか</h3>
+
+自分でプログラムを書く場合は、ourによる変数宣言を使う機会は、ほとんどありません。より安全で速い「my」による変数宣言によって、完全なプログラムが書けてしまうからです。できる限り「our」は避けて「my」だけを使うようにしましょう。
+
+myはレキシカルなスコープを持ちアクセス可能な範囲が小さく安全です。連続した領域にあるため変数へのアクセス速度が速いという特徴があります。
+
+myによる変数宣言については以下の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20080307120491.html">my - レキシカル変数の宣言</a>
+  </li>
+</ul>
+
+<h3>サンプル</h3>
+
+パッケージ変数を使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# パッケージ変数
+print "1: パッケージ変数は、修飾名( SomePackage )を持ち".
+    "プログラムのどの位置からも( スコープの外部からでも )参照できる。\n";
+{
+  # SomePackageに属するpackage_var1
+  $SomePackage::package_var1 = 1; 
+  
+  # OtherPackageに属するpackage_var1;
+  $OtherPackage::package_var1 = 2; 
+}
+
+print "\$SomePackage::package_var1 = $SomePackage::package_var1\n";
+print "\$OtherPackage::package_var1 = $OtherPackage::package_var1\n\n";
+</pre>
+
+実行結果
+
+<pre>
+1: パッケージ変数は、修飾名( SomePackage )を持ちプログラムのどの位置からも( スコ
+ープの外部からでも )参照できる。
+$SomePackage::package_var1 = 1
+$OtherPackage::package_var1 = 2
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+      <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">my</span>
+    <meta itemprop="position" content="4" />
+  </li>
+</ol>
+

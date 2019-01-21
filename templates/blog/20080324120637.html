@@ -1,0 +1,105 @@
+<h2 class="title">if修飾子 - 後置のif</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+if修飾子を使うとifを後置することができます。
+
+<pre>
+文 if 条件;
+</pre>
+
+if修飾子を使ったサンプルです。<a href="/blog/20100827127859.html">正規表現</a>を使って、先頭が「#」ならば次の行に移動という処理を行っています。
+
+<pre>
+for my $line (@lines) {
+  next if $line =~ /^#/;
+}
+</pre>
+
+一行で書ける簡単な条件のときはif修飾子を使うメリットがあります。<a href="/blog/20080329120687.html">next</a>やlastと組み合わせて 「next if 条件」「last if 条件」などがよく利用されます。
+
+<h4>if修飾子のメリット</h4>
+
+通常の<a href="/blog/20161023147731.html">if文</a>と比べてif修飾子のメリットはパフォーマンスです。if文は<a href="/blog/20110128130016.html">スコープ</a>を作るのに対して、if修飾子はスコープを作りません。そのためif修飾子の方がパフォーマンスがよいです。
+
+<h4>unless修飾子</h4>
+
+if修飾子と同じように後置することができるunless修飾子というものがあります。
+
+<pre>
+$num1 = 1 unless defined $num1;
+</pre>
+
+unless修飾子については以下で詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20180322152172.html">unless修飾子 - 後置のunless</a>
+  </li>
+</ul>
+
+<h3>サンプルコード</h3>
+
+if修飾子のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 後置のif
+print "1-2 : 後置のifの例(next if)\n";
+my @lines = (
+  '#コメント',
+  '1行目',
+  '2行目'
+);
+
+for my $line (@lines) {
+  # 先頭が、#ならば、次の行へ
+  next if $line =~ /^#/;
+  print $line, "\n";
+}
+print "\n";
+</pre>
+
+実行結果
+
+<pre>
+1行目
+2行目
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+

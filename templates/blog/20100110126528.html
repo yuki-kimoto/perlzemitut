@@ -1,0 +1,147 @@
+<h2 class="title">sort関数 - 配列の並べ替え</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+<strong>配列を並べ替える</strong>には<strong>sort関数</strong>を使用します。第1引数には比較のためのコードブロックを渡します。昇順で並べ替える場合は$aを$bより先に記述し、降順で並べ替えるには$bを$aより先に記述します。比較演算子には数値として比較したい場合は<=>を使用し、辞書順で比較したい場合はcmpを使用します。コードブロックの直後にカンマがないことに注意してください。
+
+<pre>
+# 昇順で並べ替え
+@sorted = sort { $a 演算子 $b } @array;
+
+# 降順で並べ替え
+@sorted = sort { $b 演算子 $a } @array;
+</pre>
+
+<h3>並び替えのサンプル</h3>
+
+数値の昇順で並べ替えるサンプルです。@numsは(2, 3, 5, 11)になります。
+
+<pre>
+# 数値の昇順で並び替え
+my @nums = (5, 11, 3, 2);
+@nums = sort {$a <=> $b} @nums;
+</pre>
+
+数値の降順で並べ替えるサンプルです。@numsは(11, 5, 3, 2)になります。
+
+<pre>
+# 数値の降順で並び替え
+my @nums = (5, 11, 3, 2);
+@nums = sort {$b <=> $a} @nums;
+</pre>
+
+辞書順の昇順で並べ替えるサンプルです。@numsは(11, 2, 3, 5)になります。11と3は辞書順で比較すると11のほうが咲きにきます。
+
+<pre>
+# 辞書順の昇順で並び替え
+my @nums = (5, 11, 3, 2);
+@nums = sort {$a cmp $b} @nums;
+</pre>
+
+辞書順の降順で並べ替えるサンプルです。@numsは(5, 3, 2, 11)になります。
+
+<pre>
+# 辞書順の降順で並び替え
+my @nums = (5, 11, 3, 2);
+@nums = sort {$b cmp $a} @nums;
+</pre>
+
+<h3>コードブロックの省略</h3>
+
+コードブロックを省略した場合は辞書順の昇順で並べ替えた場合と同じ意味になります。
+
+<pre>
+# 次の二つは同じ意味
+@nums = sort @nums;
+@nums = sort {$a cmp $b} @nums;
+</pre>
+
+<h3>複数条件での並び替え</h3>
+
+文字列の長さが長い順で並び替えて、長さが同じときは辞書順の昇順で並べ替えるようにしてみます。ふたつ目の条件を指定するときは||を使用します。最初の比較で並び順を確定できなかった場合に次の比較が行われます。@strsは('aaa', 'bbb', 'aa', 'bb', 'a', 'b')になります。
+
+<pre>
+my @strs = ('aaa', 'bbb', 'b', 'a', 'aa', 'bb');
+@strs = sort { length $b <=> length $a || $a cmp $b } @strs;
+</pre>
+
+<h3>ハッシュの値をキーで並べ替えて出力</h3>
+
+ハッシュをキーで並べ替えて出力してみます。ハッシュはキーの順序が保障されないので、決まった並び順で出力したい場合はキーを並び替えて出力します。
+
+<pre>
+my %points = (Tom => 100, Mike => 30, Mami => 90);
+for my $name (sort keys %points) {
+  print "$name:$points{$name}\n";
+}
+</pre>
+
+<h3>配列のリファレンスの並べ替え</h3>
+
+配列のリファレンスを並べ替えてみます。sort関数に渡すときにデリファレンスして、受け取るときもデリファレンスするのがポイントです。
+
+<pre>
+my $nums = [5, 11, 3, 2];
+@$nums = sort @$nums;
+</pre>
+
+<h3>ハッシュの配列を並べ替える</h3>
+
+ハッシュの配列を並べ替えてみます。サンプルのハッシュの配列には複数の人の情報が入っています。これを人物の年齢で並べ替えてみます。(注意: ハッシュの配列と呼んでいますがここでの正確な意味はハッシュのリファレンスを含む配列のリファレンスのことです。)
+
+$aと$bにはハッシュのリファレンスが代入されてくるので、年齢を取得するには$a->{age}, $b->{age}とします。これを使用して比較を行います。
+
+<pre>
+# 人物のデータ
+my $persons = [
+  {name => 'Ken', age => 19},
+  {name => 'Taro', age => 9},
+  {name => 'Kaori', age => 23}
+];
+
+@$persons = sort { $a->{age} <=> $b->{age} } @$persons;
+</pre>
+
+$personsは年齢の昇順で並べ替えられて次のようなデータになります。
+
+<pre>
+[
+  {name => 'Taro', age => 9},
+  {name => 'Ken', age => 19},
+  {name => 'Kaori', age => 23}
+];
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

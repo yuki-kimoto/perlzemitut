@@ -1,0 +1,54 @@
+<h2 class="title">Mojolicious::Liteアプリでは、最後を「1;」で終わってはいけない。</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Mojoliciousでは、自動的にファイルの変更を検地してくれる<a href="/blog/20120406133367.html">morbo</a>と呼ばれるサーバーを起動して開発ができます。
+
+<pre>
+morbo myapp.pl
+</pre>
+
+でもひとつ気をつけてほしいことがあります。実は以下のアプリケーションは正しくうごきません。
+
+<pre>
+use Mojolicious::Lite;
+
+get '/' => sub { shift->render(text => 'aaa') };
+
+app->start;
+
+1;
+</pre>
+
+Perlのソースコードとしては正しく見えます。でもmorboコマンドで実行すると以下のようにエラーになります。
+
+<pre>
+"myapp.pl" is not a valid application.
+</pre>
+
+実は最後の<b>1;</b>という行が問題です。実はapp->startでスクリプトが終わっている必要があります。__DATA__セクションがある場合は、app->startと__DATA__の間に空白以外をいれてはいけません。
+
+以下のように修正すると正しく動きます。
+
+<pre>
+use Mojolicious::Lite;
+
+get '/' => sub { shift->render(text => 'aaa') };
+
+app->start;
+</pre>
+
+これはPSGIでアプリケーションを実行するときも同じことが言えるので気をつけましょう。
+

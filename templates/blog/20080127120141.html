@@ -1,0 +1,84 @@
+<h2 class="title">splice関数 - 配列の要素の複雑な操作</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+<strong>splice関数</strong>を使用すると<a href="/blog/20161012147627.html">配列</a>の要素に対して複雑な操作を行うことができます。複数の要素を取り出したり、置換したりすることができます。
+
+<h4>複数要素の取り出し</h4>
+
+次の方法で配列の複数要素を取り出すことができます。
+
+<pre>
+# 複数要素の取り出し
+@parts = splice @array, $pos, $length;
+</pre>
+
+$posは取り出しの開始位置を指定します。$lengthには、取り出す長さを指定します。複数要素の取り出しにおいて$lengthを省略すると$posの位置から配列の末尾までが対象になります。
+
+<h4>複数要素の置換</h4>
+
+第４引数に、配列を指定することで、指定した配列で置換を行うことができます。対象の配列は、上記の構文と同じです。
+
+<pre>
+# 複数要素の置換
+splice @array, $pos, $length, @replace;
+</pre>
+
+<h4>splice関数の使いどころ</h4>
+
+まず最初に、<a href="/blog/20100104126425.html">shift関数</a>、<a href="/blog/20100105126425.html">unshift関数</a>、<a href="/blog/20100106126425.html">pop関数</a>、<a href="/blog/20100107126425.html">push関数</a>の四つの関数を使って配列操作のプログラムを記述できるかどうかを検討してみてください。9割のプログラムは、この四つの関数を使えば、記述できます。
+
+その上で、複雑な操作が必要な場合にsplice関数を使用してください。
+
+<h3>サンプルプログラム</h3>
+
+複数要素を取り出すサンプルプログラムです。@partsには(2,3)が代入され@numsは(1, 4)になります。
+
+<pre>
+# 複数要素の取り出し
+my @nums = (1, 2, 3, 4);
+my @parts = splice @nums, 1, 2;
+</pre>
+
+複数の要素を置換するサンプルです。@numsは(1, 5, 6, 4)になります。
+
+<pre>
+# 複数要素の置換
+my @nums = (1, 2, 3, 4);
+my @replace = (5, 6);
+splice @nums, 1, 2, @replace;
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

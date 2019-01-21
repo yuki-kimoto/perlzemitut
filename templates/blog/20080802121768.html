@@ -1,0 +1,106 @@
+<h2 class="title">Unix風のフィルタプログラミングを書く</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+
+Unix風フィルタプログラミングと呼ぶべき種類のプログラミングがあります。特徴を述べると
+
+<ol>
+  <li>
+    ファイルを引数で渡すか標準入力で渡すかをユーザが選択できる。
+  </li>
+  <li>
+    条件はオプションとして指定(-s10のような記述)する。
+  </li>
+</ol>
+
+ということです。
+
+Perlには、Unix風フィルタプログラミングを記述する便利な記述方法があります。以下はサンプルです。(オプションを指定する場合は次回)
+
+<pre>
+use strict;
+use warnings;
+
+# Unix風のフィルタプログラミングを記述する。
+# 今回はカンマ区切りの文字列の一列目を取り出すフィルタプログラムです。
+
+# 特殊な行入力演算子<>
+while (<>) {
+  # 読み込まれた行は特殊変数 $_に代入される。
+  chomp $_; 
+  my @items = split(/,/, $_);
+  print $items[0] . "\n";
+}
+</pre>
+
+<h3>コード解説</h3>
+
+<pre>
+# 特殊な行読み込み演算子 <>
+while (<>) {
+  # 読み込まれた行は特殊変数 $_に代入される。
+  chomp $_; 
+  my @items = split(',', $_);
+  print $items[0] . "\n";
+}
+</pre>
+
+<h4>(1)<> 演算子</h4>
+
+「<>」は、すこし変わった演算子です。<a href="/blog/20080722121673.html">行入力演算子</a>で、ファイルハンドルが空になっています。<>は、引数にファイルが与えられた場合は、そのファイルから一行読み取りを行います。標準入力にファイルが与えられれば、標準入力からファイルの一行読みとりを行います。
+
+引数に複数のファイルが指定された場合は、引数1,引数2という順番でファイルを読みこんでいきます。標準入力と引数が両方指定された場合は、標準入力を読み込みます。
+
+<>演算子を使えば、unix風フィルタプログラミングの条件が極めて簡潔な記述ができます。ファイルのオープンクローズも自動で行われます。
+
+読み込んだ行は、特殊変数$_に代入されます。以上のことに注意すれば残りは通常のプログラミングです。
+
+<h4>(2)Unix風フィルタプログラミングの利点</h4>
+
+最大の利点は、単独で使う場合とパイプを利用する場合に自然に対応できるということです。単独で使う場合は
+
+<pre>
+今回のプログラム 入力ファイル
+</pre>
+
+とすればよく、パイプを利用するときは
+
+<pre>
+プログラムA | 今回のプログラム | プログラムB
+</pre>
+
+と記述できます。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+

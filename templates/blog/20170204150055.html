@@ -1,0 +1,306 @@
+<h2 class="title">C++のクラスをXSから利用する方法</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100809127859.html">
+        <span itemprop="name">XS</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+XSで<b>C++のクラス</b>を呼び出す方法を学びましょう。これができるようになれば、どんなC++のライブラリでも、Perlにバインディングができるようになると思います。
+
+<h3>h2xsでモジュールを作成</h3>
+
+最初に<a href="/blog/20170209150055.html">h2xs</a>でXS用のモジュールを作成します。
+
+<pre>
+h2xs -A -n MyClass
+</pre>
+
+こうすると「MyClass」というディレクトリが作成されます。次のようなファイルとディレクトリが作成されます。
+
+<pre>
+Changes
+lib/
+Makefile.PL
+MANIFEST
+ppport.h
+README
+MyClass.xs
+t/
+</pre>
+
+<h3>C++でクラスの作成</h3>
+
+C++でクラスを作成しましょう。ヘッダファイルとソースファイルを作成します。
+
+<b>MyClass.h</b>
+
+ヘッダファイルです。コンストラクタ、メソッド、クラスメソッドを宣言しています。通常のメソッドとクラスメソッドの呼び出し方の違いを理解するために、このような構成にしています。ファイル名は「MyClass.h」です。
+
+<pre>
+#ifndef MYCLASS_INCLUDE
+#define MYCLASS_INCLUDE
+class MyClass {
+  
+  public:
+  
+  // コンストラクタ
+  MyClass();
+  
+  // メソッド
+  void print();
+  
+  // クラスメソッド
+  static void print_static();
+};
+#endif
+
+</pre>
+
+「#ifndef」で始まっているのは、インクルードガードと呼ばれるものです。ヘッダファイルは、XSファイルと、ソースファイルの2箇所から読み込まれる必要があります。すると、そのままでは、ヘッダファイルが二重に取り込まれて、コンパイルエラーになってしまいます。それを防ぐために、インクルードを行っています。
+
+<h3>MyClass_src.cpp</h3>
+
+C++のソースファイルです。コンストラクタ、メソッド、クラスメソッドの実装を行っています。ソースファイルでは、MyClassというシンボルを解決するために、ヘッダファイルを読み込む必要があります。ファイル名は「MyClass_src.cpp」にしてあります。これは「MyClass.cpp」としてしまうと、コンパイル後の名前は「MyClass.o」となりますが、これはXSファイル「MyClass.xs」のコンパイル後の名前「MyClass.o」とかぶってしまうためです。
+<pre>
+#include <iostream>
+#include "MyClass.h"
+
+// コンストラクタ
+MyClass::MyClass() {}
+
+// メソッド
+void MyClass::print() {
+  std::cout << "MyClass::print\n";
+}
+
+// クラスメソッド
+void MyClass::print_static() {
+  std::cout << "MyClass::print_static\n";
+}
+
+</pre>
+
+ヘッダファイルとソースファイルは保存して、XSファイルが存在するディレクトリと同じディレクトリに配置してください。
+
+<h3>XSファイルの記述</h3>
+
+XSファイルを記述しましょう。
+
+<pre>
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#include "ppport.h"
+#include "MyClass.h"
+
+#define XS_OBJ_TO_PTR(x, type)     (INT2PTR(type, SvROK(x) ? SvIV(SvRV(x)) : SvIV(x)))
+#define XS_PTR_TO_OBJ(x, class) \
+  sv_bless( \
+    sv_2mortal( \
+      newRV_inc( \
+        sv_2mortal( \
+          newSViv(PTR2IV(x)) \
+        ) \
+      ) \
+    ), \
+    gv_stashpv(class, 1) \
+  );
+
+MODULE = MyClass		PACKAGE = MyClass		
+
+void
+new(...)
+  PPCODE:
+{
+  MyClass* self = new MyClass();
+  SV* self_sv = XS_PTR_TO_OBJ(self, "MyClass");
+  
+  XPUSHs(self_sv);
+  XSRETURN(1);
+}
+
+void
+print(...)
+  PPCODE:
+{
+  MyClass* self = XS_OBJ_TO_PTR(ST(0), MyClass*);
+  
+  self->print();
+  XSRETURN(0);
+}
+
+void
+print_static(...)
+  PPCODE:
+{
+  MyClass::print_static();
+  XSRETURN(0);
+}
+
+void DESTORY(...)
+  PPCODE:
+{
+  MyClass* self = XS_OBJ_TO_PTR(ST(0), MyClass*);
+  delete self;
+}
+
+</pre>
+
+<b>型の変換を行うためのマクロ</b>
+
+少し解説をしておきます。以下は、Perlのオブジェクト(SV*型)をC(あるいはC++)のポインタに変換するマクロと、C(あるいはC++)のポインタをPerlのオブジェクト(SV*型)に変換するマクロになっています。
+
+<pre>
+#define XS_OBJ_TO_PTR(x, type)     (INT2PTR(type, SvROK(x) ? SvIV(SvRV(x)) : SvIV(x)))
+#define XS_PTR_TO_OBJ(x, class) \
+  sv_bless( \
+    sv_2mortal( \
+      newRV_inc( \
+        sv_2mortal( \
+          newSViv(PTR2IV(x)) \
+        ) \
+      ) \
+    ), \
+    gv_stashpv(class, 1) \
+  );
+</pre>
+
+<b>コンストラクタ</b>
+
+コンストラクタです。newを使ってMyClassをインスタンス化してMyClass*型に代入します。そして、このポンイタを、Perlのオブジェクト変換して、返します。
+
+<pre>
+void
+new(...)
+  PPCODE:
+{
+  MyClass* self = new MyClass();
+  SV* self_sv = XS_PTR_TO_OBJ(self, "MyClass");
+  
+  XPUSHs(self_sv);
+  XSRETURN(1);
+}
+</pre>
+
+<b>メソッド呼び出し</b>
+
+メソッドの呼び出しです。
+
+<pre>
+void
+print(...)
+  PPCODE:
+{
+  MyClass* self = XS_OBJ_TO_PTR(ST(0), MyClass*);
+  
+  self->print();
+  XSRETURN(0);
+}
+</pre>
+
+メソッド呼び出しでは、第一引数にはPerlのオブジェクトが渡ってくるので、これをポインタ「MyClass*」に変換します。そして「self->print」としてメソッドを呼び出します。
+
+<b>クラスメソッドの呼び出し</b>
+
+クラスメソッドの呼び出しです。
+
+<pre>
+void
+print_static(...)
+  PPCODE:
+{
+  MyClass::print_static();
+  XSRETURN(0);
+}
+</pre>
+
+「MyClass::print_static()」と完全修飾名で呼び出しているだけです。
+
+<b>デストラクタ</b>
+
+デストラクタです。deleteを使って、メモリの開放を行う必要があります。
+
+<pre>
+void DESTORY(...)
+  PPCODE:
+{
+  MyClass* self = XS_OBJ_TO_PTR(ST(0), MyClass*);
+  delete self;
+}
+</pre>
+
+<h3>Makefile.PLの修正</h3>
+
+次に<a href="/blog/20150725143778.html">Makefile.PL</a>を少し修正しましょう。一番下の「OBJECT」オプションがデフォルトではコメントアウトされているので、コメントを取り除きます。「$(O_FILES)」という設定をすれば、カレントディレクトリのすべてのC言語のソースファイルとC++のソースファイルがコンパイルの対象になります。
+
+そしてコンパイラとリンカを「g++」に変更します。コンパイラは「CC」オプション、リンカは「LD」で設定できます。
+
+<pre>
+use ExtUtils::MakeMaker;
+use strict;
+use warnings;
+
+WriteMakefile(
+    NAME              => 'MyClass',
+    VERSION_FROM      => 'lib/MyClass.pm', # finds $VERSION
+    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
+      (ABSTRACT_FROM  => 'lib/MyClass.pm', # retrieve abstract from module
+       AUTHOR         => 'A. U. Thor <kimoto@sakura.ne.jp>') : ()),
+    LIBS              => [''], # e.g., '-lm'
+    DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
+    INC               => '-I.', # e.g., '-I. -I/usr/include/other'
+    OBJECT            => '$(O_FILES)', # link all the C files too
+    CC =>'g++',
+    LD => 'g++',
+);
+</pre>
+
+<h3>テストスクリプト</h3>
+
+テストスクリプトを作成します。これは、XSファイルがあるディレクトリと同じディレクトリにおいてください。
+
+<pre>
+use strict;
+use warnings;
+
+use MyClass;
+
+my $obj = MyClass->new;
+$obj->print;
+MyClass->print_static;
+</pre>
+
+<h3>コンパイルして実行</h3>
+
+コンパイルして実行してみましょう。
+
+<pre>
+perl Makefile.PL
+make
+perl -Mblib test.pl
+</pre>
+
+次のように出力されれば成功です。
+
+<pre>
+MyClass::print
+MyClass::print_static
+</pre>
+
+これで、C++のクラスをXSファイルから利用することができるようになりました。
+

@@ -1,0 +1,66 @@
+<h2 class="title">環境変数を取得・設定する %ENV</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161102147817.html">
+        <span itemprop="name">特殊変数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+<b>環境変数</b>は特殊変数「%ENV」を使うことで、取得・設定することができます。
+
+<pre>
+%ENV
+</pre>
+
+この環境変数は<a href="/blog/20161013147635.html">ハッシュ</a>で、環境変数名がキーになっています。
+
+たとえば、環境変数「REMOTE_ADDR」の場合は以下のようにして値を参照できます。
+
+<pre>
+my $remote_addre = $ENV{REMOTE_ADDR};
+</pre>
+
+環境変数を設定したい場合は以下のようにします。
+
+<pre>
+$ENV{MYAPP_MAX_CLIENT} = 10;
+</pre>
+
+<h4>環境変数とは</h4>
+
+環境変数とは、OSが持つ変数のようなものです。環境変数は、OSがプロセスを起動したときに、プロセス空間のメモリ上にコピーされます。OSの環境変数は、プロセスからは、変更できません。
+
+環境変数は、自由に設定変更できますが、そのプロセスでのみで有効です。あるプロセスが、子プロセスを起動したときは、OSが、プロセスを起動したときのように、環境変数がコピーされます。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161102147817.html">
+        <span itemprop="name">特殊変数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

@@ -1,0 +1,181 @@
+<h2 class="title">Perlの最新バージョン 5.24リリース - サブルーチンと数値計算の高速化、Unicode 8.0のサポート、文法機能強化</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perlの最新バージョン<strong>5.24</strong>がリリースされました。今回のリリースでは、Perlのサブルーチンと数値計算の高速がなされています。また、機能面では、Unicode 8.0のサポートがなされました。文法的な強化として、前方デリファレンスの実験的なステータスがはずされています。その他、細かなバグフィックスがなされました。
+
+Perl 5.22に引き続きPerl 5.24では、Perlの内部コードの改善がなされています。パフォーマンスの改善という大きなメリットがありますが、いくつかの副作用もありますので、合わせて、解説します。
+
+自分が技術的に不慣れで、安定的なPerlを望むなら、今のところPerl 5.20がおすすめです。技術的に強く、パフォーマンスの改善や新しい機能にチャレンジしたい方は、Perl 5.24にトライしてみてください。
+
+以下で、Perl 5.24の変更点を解説します。
+
+=====
+
+<h3>パフォーマンスの改善</h3>
+
+Perl 5.24の最大の変更点は、パフォーマンスの改善です。
+
+<h4>サブルーチン呼び出しの高速化</h4>
+
+スコープ生成と終了のオーバーヘッドをできる限り減らしたので、ループとブロックが速くなりました。たとえば、以下の空のサブルーチンは、今までの約三倍の速さで実行できます。
+
+<pre>
+sub f{} f();
+</pre>
+
+5.24の変更で、最もうれしいのはこれでしょう。Perlの問題点のひとつにサブルーチン呼び出しが遅いというものがありましたが、これによって、問題のひとつが改善されています。
+
+<h4>大文字、小文字を扱う関数、正規表現のパフォーマンス改善</h4>
+
+中国語のように、大文字小文字の区別がない言語があります。このような言語については、ロジックをスキップすることによって、ucfirst関数や「qr//i」のパフォーマンスが上昇しました。
+
+<h4>substrの高速化</h4>
+
+memchrがサポートされているプラットフォームにおいてsubstrが高速化されました。以下の処理が、7倍程度速くなっています。
+
+<pre>
+$s = "a" x 1000 . "wxyz";
+$s =~ /wxyz/ for 1..30000
+</pre>
+
+<h4>足し算・引き算・掛け算の高速化</h4>
+
+Perl 5.8.0において、64bit整数をサポートするために、数値演算が遅くなっていましたが、この遅いロジックが改善さました。Perlは、数値演算が遅いといわれますが、少し改善されました。
+
+<h4>インクリメント・デクリメントの性能の改善</h4>
+
+Perlのインクリメント・デクリメントの性能が改善されました。ループ処理などが、少し速くなります。
+
+<h3>機能面の強化</h3>
+
+<h4>Unicode 8.0のサポート</h4>
+
+Unicode 8.0がサポートされました。PerlはUnicodeサポートの対応が速いです
+
+<h4>新しい正規表現 \b{lb}</h4>
+
+改行の区切りを表現する新しい正規表現「\b{lb}」が追加されました。
+
+<h4>前方デリファレンスの実験的なステータスがとれました</h4>
+
+Perl 5.24では、前方デリファレンスが、最初から、有効になりました。このおかげで、リファレンスからの、配列スライス、ハッシュスライス、部分ハッシュ取得、部分配列取得の処理が、記述しやすくなっています。
+
+<pre>
+# 前方デリファレンス
+my $nums_ref = [1, 2, 3];
+my @nums = $nums_ref->@*; # (1, 2, 3);
+
+# 前方デリファレンスを使用した配列スライス
+my @nums_part = $nums_ref->@[0, 2]; # (1, 3)
+
+my $names_h_ref = {
+  ken => 1,
+  taro => 2,
+  kimoto => 3
+};
+
+# 前方デリファレンスを使用したハッシュスライス
+my @names_part = $names_h_ref->@{'ken', 'kimoto'}; # (1, 3)
+
+# 前方デリファレンスを使用した部分ハッシュ取得
+my %names_h_part = $names_h_ref->%{'ken', 'kimoto'}; # (ken => 1, kimoto => 3)
+</pre>
+
+<h3>互換性のない変更</h3>
+
+今回のリリースでは、いくつかの実験的な機能が、削除されています。
+
+<h4>自動デリファレンスの削除</h4>
+
+廃止警告が出されていた、実験的な自動デリファレンスが削除されました。たとえば、以下の処理が動かなくなります。push, pop, shift, unshift, splice, keys, values, eachに、リファレンスを渡すことはできません。
+
+<h4>レキシカルな$_が廃止されました。</h4>
+
+C<my $_>が、Perl 5.10で、実験的に追加されましたが、これが廃止されます。
+
+<h4>ネストされた宣言が許可されなくなった</h4>
+
+ネストされた宣言は許可されなくなりました。以下の記述はコンパイルエラーになります。
+
+<pre>
+my ($x, my($y));
+our (my $x);
+</pre>
+
+<h4>chdir('')は、ホームディレクトに移動できなくなりました</h4>
+
+chdir('')は、ホームディレクトリに移動できなくなりました。chdir()を使ってください。
+
+<h3>知られている問題</h3>
+
+Perl 5.24では、内部的な改善のために、保証されない実装を利用している、いくつかのモジュールが、動かなくなっています。これは、現在Perlのコアチームで、議論されているので、経過を見守りましょう。
+
+<ul>
+  <li>
+    Algorithm::Permute
+  </li>
+  <li>
+    Coro
+  </li>
+  <li>
+    Data::Alias
+  </li>
+  <li>
+    RPerl
+  </li>
+  <li>
+    Scope::Upper
+  </li>
+  <li>
+    TryCatch
+  </li>
+  <li>
+    lexical::underscore
+  </li>
+</ul>
+
+最近のPerlは、内部改善が多く行われているので、内部APIに依存した、文法変化形のモジュールに依存することは、リスクが伴っています。
+
+<h3>所見</h3>
+
+Perlのパフォーマンスが上がることはうれしい変更です。この方向性は、間違ってはいないと思います。このために、内部改善が必要ですが、そのために、いくつかの文法変化形のモジュールが、壊れるという状況になっています。
+
+特に、議論の的としては、Coroの話題が大きいようです。将来的には、コルーチンをPerlコアのほうで、サポートするのがよいと感じました。文法変化形のモジュールが、外部のモジュールとして実装されると、常に壊れる可能性がでてくるからです。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

@@ -1,0 +1,601 @@
+<h2 class="title">Webアプリケーション作成のためのHTMLの基礎</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+PerlでWebアプリケーションを作成するための前提知識としてHTMLの基本を解説します。これだけ知っていれば、HTMLを自由に記述することができる程度のものを目指しました。タグの役割を中心に解説します。通常のタグ、フォームタグ、ヘッダ部で利用するタグなどを解説しています。日本語などの扱い方、CSSやJavaScriptの利用の仕方などにも触れています。画面のレイアウトや色については、CSSを解説するときに解説します。
+
+<h3>基礎の基礎</h3>
+
+HTMLのフォーマットです。
+
+<pre>
+<!DOCTYPE html>
+<html>
+
+ <head>
+  <title>タイトル</title>
+ </head>
+
+ <body>
+  内容
+ </body>
+
+</html>
+</pre>
+HTMLでは「<」と「>」で囲まれたタグというものを使って文書を記述します。HTML文書は「<html>」で始まって「</html>」で終わります。「<head>」と「</head>」の間には、HTML文書のタイトルなどのメタ情報を記述します。「<doby>」と「</body>」の間には、画面に表示される文書の内容を記述します。
+
+<!DOCTYPE html>はドキュメントタイプと呼ばれ、とりあえず先頭に記述するものだと覚えて起きましょう。
+
+<h4>文字参照</h4>
+
+「<」や「>」といった文字は、そのままではHTMLの中で利用することができません。文字参照という方法を使ってこれらの文字を記述することができます。
+
+<table>
+  <tr>
+    <td>
+      &amp;quot;
+    </td>
+    <td>
+      "
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &amp;amp;
+    </td>
+    <td>
+      &
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &amp;lt;
+    </td>
+    <td>
+      <
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &amp;gt;
+    </td>
+    <td>
+      >
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &amp;nbsp;
+    </td>
+    <td>
+      スペース
+    </td>
+  </tr>
+
+</table>
+
+HTMLの中ではスペースはいくつ記述してもひとつのスペースに切り詰められるので「&nbsp;」を使用します。
+
+<h3>body部で利用されるタグ</h3>
+
+<h4>コメント</h4>
+
+<pre>
+<!-- コメント -->
+</pre>
+
+「<!--」から「-->」までがコメントになります。
+
+<h4>ブロック要素 div</h4>
+
+<pre>
+<div>なにか</div>
+</pre>
+
+ブロック要素を記述します。ブロック要素の特徴は、前後に改行が行われることと、幅と高さを持つことです。デフォルトで画面の左右いっぱいまで領域を広げます。また内部にある文字の位置をCSSを使って制御することもできます。
+
+<pre>
+# ブロック要素のイメージ
++----------------------------------------------------------------+
+|                                                                |
+|なにか                                                          |
+|                                                                |
++----------------------------------------------------------------+
++----------------------------------------------------------------+
+|                                                                |
+|                           なにか                               |
+|                                                                |
++----------------------------------------------------------------+
+</pre>
+
+<h4>インライン要素 span</h4>
+
+<pre>
+<span>なにか</span>
+</pre>
+
+インライン要素を記述します。インライン要素の特徴は、画面の右端に到達するまでは、改行が行われずに左に流れるようにつめられることです。
+
+<pre>
+# インライン要素のイメージ
++------+ +------+
+|なにか| |なにか|
++------+ +------+
+</pre>
+
+<h4>見出し1 h1</h4>
+
+<pre>
+<h1>見出し1</h1>
+</pre>
+
+見出しです。タグの使い方は自由ですが、一般的には、ページのタイトルを記述するために利用されます。大きく表示されます。h1はブロック要素です。
+
+<h4>見出し2 h2</h4>
+
+<pre>
+<h2>見出し2</h2>
+</pre>
+
+見出しです。h1よりは小さく表示されます。一般的には、個別の記事があった場合のタイトルなどに利用されます。h2はブロック要素です。
+
+<h4>見出し3 h3</h4>
+
+<pre>
+<h3>見出し3</h3>
+</pre>
+
+見出しです。h2よりは小さく表示されます。h3はブロック要素です。
+
+<h4>見出し4 h4</h4>
+
+<pre>
+<h4>見出し4</h4>
+</pre>
+
+見出しです。h3よりは小さく表示されます。h4はブロック要素です。
+
+<h4>見出し5 h5</h4>
+
+<pre>
+<h5>見出し5</h5>
+</pre>
+
+見出しです。h4よりは小さく表示されます。h5はブロック要素です。
+
+<h4>見出し6 h6</h4>
+
+<pre>
+<h6>見出し6</h6>
+</pre>
+
+見出しです。h5よりは小さく表示されます。h6はブロック要素です。
+
+<h4>段落 p</h4>
+
+<pre>
+<p>段落</p>
+</pre>
+
+段落を作成するにはpタグを使用します。pはブロック要素です。
+
+<h4>水平線 hr</h4>
+
+<pre>
+<hr>
+</pre>
+
+水平線を描画するにはhrタグを使用します。hrはブロック要素です。
+
+<h4>ハイパーリンク a</h4>
+
+<pre>
+<a href="/other.html">ハイパーリンク</a>
+</pre>
+
+ハイパーリンクです。リンク先の文書をhrefに指定します。aはインライン要素です。
+
+クリックした場合は同じ画面でハイパーリンク先のページへ移動します。新しい画面でリンクを開きたい場合はtargetに「_blank」を指定します。
+
+<pre>
+<a href="/other.html" target="_blank">ハイパーリンク</a>
+</pre>
+
+<h4>強調 strong</h4>
+
+<pre>
+<strong>強調表示</strong>
+</pre>
+
+ページの中で強調したい言葉に利用します。strongはインライン要素です。
+
+<h4>画像 img</h4>
+
+<pre>
+<img border="0" src="/images/img001.gif" width="128" height="128" alt="説明">
+</pre>
+
+画像を表示するにはimgタグを使用します。デフォルトでボーダーがついてしまうので、borderには0を指定します。scrに画像へのリンクを指定します。widthには画像の幅、heightには画像の高さを指定します。altには画像の説明を記述します。imgはインライン要素です。
+
+<h4>整形済みテキスト pre</h4>
+
+<pre>
+use strict;
+use warnings;
+
+print "Hello World!";
+</pre>
+
+整形済みテキストを記述したい場合はpreタグを使用します。改行やスペースなどがそのまま表示されますが、「<」と「>」は特殊文字として解釈されるので「&lt;」と「&gt;」に置き換える必要があることに注意してください。
+
+<h4>テーブル table, tr, th, td</h4>
+
+<pre>
+<table border="1" cellspacing="0">
+  <tr>
+    <th>1列目のヘッダ</th>
+    <th>2列目のヘッダ</th>
+    <th>3列目のヘッダ</th>
+  </tr>
+  <tr>
+    <td>1行1列</td>
+    <td>1行2列</td>
+    <td>1行3列</td>
+  </tr>
+  <tr>
+    <td>2行1列</td>
+    <td>2行2列</td>
+    <td>2行3列</td>
+  </tr>
+</table>
+</pre>
+
+テーブル(表)を作成するには、上記のタグを組み合わせて使用します。tableタグが一番外側にきます。列のヘッダはthタグを使って記述します。列はtrタグを使って記述します。列の中の各行はtdタグを使って記述します。
+
+tableタグのborderはボーダーの太さです。celspacingはtd間の幅の指定です。borderを1にしてcellspacingを0にすると一般的な見栄えのテーブルになります。
+
+<h4>太字 b</h4>
+
+<pre>
+<b>太字</b>
+</pre>
+
+文字を太字にするにはbタグを使用します。bはインライン要素です。
+
+<h4>改行 br</h4>
+
+<pre>
+<br>
+</pre>
+
+改行を行うにはbrタグを使用します。一般的には、brを使うよりも、divやpを使って改行を行うのがよいとされています。
+
+<h3>順序付きリスト ol, li</h3>
+
+<pre>
+<ol>
+  <li>項目1</li>
+  <li>項目2</li>
+  <li>項目3</li>
+</ol>
+</pre>
+
+順序付きリストを作成するには上記のタグを使用します。olタグの中に、liタグを並べます。以下のように順序がつきます。
+
+<pre>
+1. 項目1
+2. 項目2
+3. 項目3
+</pre>
+
+<h3>順序なしリスト ul, li</h3>
+
+<pre>
+<ul>
+  <li>項目1</li>
+  <li>項目2</li>
+  <li>項目3</li>
+</ul>
+</pre>
+
+順序なしリストを作成するには上記のタグを使用します。ulタグの中に、liタグを並べます。以下のように順序がつきません。
+
+<pre>
+・項目1
+・項目2
+・項目3
+</pre>
+
+<h3>フォームで利用するタグ</h3>
+
+<h4>フォーム form</h4>
+
+<pre>
+<form action="/register" method="post">
+  <div>年：<input type="text" name="age"></div>
+  <div><input type="submit" value="送信する"></div>
+</form>
+</pre>
+
+フォームを送信するにはformタグの中に、inputタグなどのフォームの要素を記述する必要があります。actionには、データーの送信先のURLを指定します。methodにはHTTPメソッドを指定しますが、フォームからの送信の場合はpostを利用するのが一般的です。
+
+<h4>テキストボックス &lt;input type="text"></h4>
+
+<pre>
+<input type="text" name="age">
+</pre>
+
+テキストボックスは1行のテキスト入力エリアです。typeに「text」を指定します。送信されたデータの名前になるのでnameは必ず指定します。inputタグはインライン要素です。
+
+次のような属性を指定することができます。
+
+<ul>
+  <li>
+    value - 値
+  </li>
+  <li>
+    size - 横のサイズ
+  </li>
+  <li>
+    maxlength - 最大文字数
+  </li>
+</ul>
+
+<h4>パスワード入力ボックス &lt;input type="password"></h4>
+
+<pre>
+<input type="password" name="pass">
+</pre>
+
+パスワード入力ボックスです。nameに名前を指定します。
+
+以下の属性が指定できます。
+
+<ul>
+  <li>
+    value - 値
+  </li>
+  <li>
+    size - 横のサイズ
+  </li>
+  <li>
+    maxlength - 最大文字数
+  </li>
+</ul>
+
+<h4>ボタン &lt;input type="button"></h4>
+
+<pre>
+<input type="button" value="押す" name="send">
+</pre>
+
+ボタンです。inputタグのtypeに「button」を指定します。ボタンを識別するときに利用するのでnameを指定しておきましょう。valueはボタンに表示されるテキストになります。
+
+<h4>送信ボタン &lt;input type="submit"></h4>
+
+<pre>
+<input type="submit" value="送信">
+</pre>
+
+送信ボタンです。フォームの値を送信するのに利用されます。valueは送信ボタンに表示されるテキストになります。
+次のような属性を指定することができます。
+
+<ul>
+  <li>
+    name - 名前
+  </li>
+</ul>
+
+<h4>リセットボタン &lt;input type="reset"></h4>
+
+<pre>
+<input type="reset" value="リセット">
+</pre>
+
+リセットボタンです。フォームの値をリセットするのに利用されます。valueはリセットボタンに表示されるテキストになります。
+
+次のような属性を指定することができます。
+
+<ul>
+  <li>
+    name - 名前
+  </li>
+</ul>
+
+<h4>画像ボタン &lt;input type="image"></h4>
+
+<pre>
+<input type="image" src="/image/dog.png" alt="犬">
+</pre>
+
+画像ボタンです。srcは画像のURLになります。altは画像の説明です。
+
+次のような属性を指定することができます。
+
+<ul>
+  <li>
+    name - 名前
+  </li>
+</ul>
+
+<h4>ラジオボタン &lt;input type="radio"></h4>
+
+<pre>
+<input type="radio" name="animal" value="犬" checked="checked">
+<input type="radio" name="animal" value="猫">
+</pre>
+
+ラジオボタンは複数の項目の中からひとつを選んでもらうときに使用します。nameに名前を指定します。同じグループに属するものは同じ名前にします。valueには値を指定します。checkedを「checked」にすると、その項目が選択されます。
+
+<h4>隠しフィールド &lt;input type="hidden"></h4>
+
+<pre>
+<input type="hidden" name="title" value="Perl">
+</pre>
+
+見えないフィールドです。ブラウザ上でユーザーに見せないで送信したい値がある場合に利用します。nameには名前を指定します。valueには値を指定します。
+
+<h4>チェックボックス &lt;input type="checkbox"></h4>
+
+<pre>
+<input type="checkbox" name="animal" value="犬" checked="checked">
+<input type="checkbox" name="animal" value="猫">
+</pre>
+
+チェックボックスは複数の項目を選択してもらう場合に使用します。nameには名前を指定します。同じグループに属するものは同じ名前にします。valueには値を指定します。checkedを「checked」にすると、その項目が選択されます。
+<h4>ファイルのアップロード &lt;input type="file"></h4>
+
+<pre>
+<input type="file" name="datafile">
+</pre>
+
+ファイルをアップロードしたい場合に利用します。nameに名前を指定します。これはファイル名ではなくて、単に識別するための名前です。
+
+以下の属性が指定できます。
+
+<ul>
+  <li>
+    size - 横のサイズ
+  </li>
+</ul>
+
+ファイルをアップロードする場合は、formタグのenctypeに「multipart/form-data」を指定しなければならないことに注意してください。
+
+<pre>
+<form action="cgi-bin/abc.cgi" method="post" enctype="multipart/form-data">
+<input type="file" name="datafile">
+<input type="submit" value="送信" >
+</form>
+</pre>
+
+<h3>プルダウンメニューあるいはリストボックス select</h3>
+
+<pre>
+<select name="animal">
+  <option value="犬">犬</option>
+  <option value="猫">猫</option>
+</select><
+</pre>
+
+selectタグを使うとプルダウンメニューを作成することができます。nameに名前を指定します。optionタグが選択する要素になります。valueには値を指定します。optionタグのテキストの部分には表示される項目を記述します。
+
+sizeを1より大きいものに指定するとリストボックスになります。
+
+<pre>
+<select name="animal" size="4">
+  <option value="1">猫</option>
+  <option value="2">犬</option>
+  <option value="3">亀</option>
+  <option value="4">ライオン</option>
+</select><
+</pre>
+
+select要素については以下の解説も参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20110416130621.html">select要素の操作まとめ</a>
+  </li>
+</ul>
+
+<h3>ヘッダ部で利用するタグ</h3>
+ヘッダ部で利用するタグを紹介します。
+
+<h4>文字コードの指定</h4>
+
+<pre>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+</pre>
+
+HTMLで利用する文字コードを指定するときはmetaタグを利用します。metaタグを利用するとhttp-equivに「Content-Type」を、contentに「text/html; charset=UTF-8」を指定します。この指定を行わないとブラウザで文字化けすることがある
+ので、headタグの先頭で記述してください。http-equiv属性を利用するとHTTPレスポンスのヘッダにContent-Typeがない場合にブラウザはhttp-equivの情報を利用します。
+
+<h4>CSS(スタイルシート)の記述</h4>
+
+<pre>
+<style type="text/css">/*<![CDATA[*/
+
+/* CSSの記述*/
+
+/*]]>*/</style>
+</pre>
+
+CSSを記述するにはstyleタグを使用します。typeには「text/css」を指定します。XHTMLという仕様でもちゃんと動くようにCSSのコードはCDATAと呼ばれるセクションに記述する必要があるそうです。反対にCSSからから見るとCDATAセクションはいらない子なので/* */でコメントアウトされています。
+
+<h4>外部CSS(スタイルシート)の読み込み</h4>
+
+<pre>
+<link href="/css/common.css" media="screen" rel="stylesheet" type="text/css" /> 
+</pre>
+
+外部のCSSを読み込むにはlinkタグを使用します。mediaには「screen」を指定します。これは、コンピュータースクリーン用のCSSであることを指定するためにです。relには「stylesheet」を指定します。これは外部スタイルシート定義ファイルを示します。typeには「text/css」を指定します。
+
+<h4>JavaScriptの記述</h4>
+
+<pre>
+<script type="text/javascript">//<![CDATA[
+ 
+// JavaScriptのソースコード
+ 
+//]]</script>
+</pre>
+
+JavaScriptを記述するにはscriptタグを利用します。typeに「text/javascript」を指定します。XHTMLという仕様でもちゃんと動くようにJavaScriptのコードはCDATAと呼ばれるセクションに記述する必要があるそうです。反対にJavaScriptから見るとCDATAセクションはいらない子なので//でコメントアウトされています。
+
+<h4>外部JavaScriptの読み込み</h4>
+
+<pre>
+<script src="/js/myapi.js" type="text/javascript"></script> 
+</pre>
+
+外部のJavaScriptを読み込むはscriptタグを利用します。srcにJavaScriptのソースのURLを指定し、typeに「text/javascript」を指定します。
+
+<h3>終わりに</h3>
+
+駆け足でしたが、HTMLの解説を終わります。
+
+<hr>
+
+<a href="http://px.a8.net/svt/ejp?a8mat=25TFA7+74LUIA+D8Y+C5VW1" target="_blank">
+<img border="0" width="250" height="250" alt="" src="http://www21.a8.net/svt/bgt?aid=130703263431&wid=001&eno=01&mid=s00000001717002043000&mc=1"></a>
+<img border="0" width="1" height="1" src="http://www18.a8.net/0.gif?a8mat=25TFA7+74LUIA+D8Y+C5VW1" alt="">
+

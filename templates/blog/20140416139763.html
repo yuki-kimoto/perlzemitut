@@ -1,0 +1,28 @@
+<h2 class="title">IOの負荷をかけているプロセスを調べるためのツール piotop</h2>
+
+topコマンドのように、実行中のプロセスとプロセスのreadとwriteのI/OをBpsでリアルタイムで表示するツール<strong>piotop</strong>というのがGitHubで公開されています。
+
+<pre>
+-- Every 3 sec --
+ 13:59:10 up 13 days, 15:28, 11 users,  load average: 0.22, 0.05, 0.01
+ pid   state            read         write        command          cwd_path
+ 1818  S (sleeping)     0bps         1Mbps        kjournald        /
+ 13314 S (sleeping)     21Kbps       32Kbps       rsync            /backup
+ 13312 D (disk sleep)   21Mbps       0bps         rsync            /
+ 13313 D (disk sleep)   20Mbps       0bps         rsync            /backup
+ 21561 S (sleeping)     0bps         0bps         bash             /root
+ 1788  S (sleeping)     0bps         0bps         kmpathd/0        /
+</pre>
+
+<q>
+<a href="http://blog.matsumoto-r.jp/?p=2361">Linux上でプロセス毎のI/Oを調査するツール piotop.pl をさらに改造</a>
+<a href="https://github.com/matsumoto-r/piotop">piotop(GitHub)</a>
+</q>
+
+Perlのツールなので、Perlのどのバージョンがインストールされているかを気にせずに利用できるので便利です。cpanmを利用するパッチを送って適用してもらったので、セットアップもコマンド一発でできます。
+
+こういうのが、Perlのもっとも便利な側面なので、みなさんもPerlで、ばしばしアプリケーションを作りましょう。どんな環境でも簡単に使ってもらえるアプリができます。
+
+<hr>
+<a href="/blog/20130319136374.html">Perlで作成されているアプリケーション</a>
+

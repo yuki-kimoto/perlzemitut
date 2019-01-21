@@ -1,0 +1,96 @@
+<h2 class="title">クラスを継承する</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">クラスの継承</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+今回は他のクラスを継承する方法について解説します。
+
+<h3>他のクラスを継承する</h3>
+
+他のクラスを継承してみます。少し注意してほしいことがあります。通常はクラスというものは、ファイル単位で作成します。もしパッケージ名を、Componet にしたとすると、そのパッケージだけを含んだファイルをComponent.pm という名前をつけて保存します。
+
+そして、そのクラスを利用したいスクリプトから呼び出します。けれども、解説を簡易にするために、多くのサンプルでは、ひとつのファイルの中に複数のクラスを記述します。
+
+x, y というメソッドを持つComponentというクラスを継承したButtonクラスの例を考えてみます。
+
+<h3>@ISAを使用した継承</h3>
+
+Perlの継承はどのような仕組みで動くのでしょうか。それを説明するために以下のサンプルを動かしてみましょう。
+
+<pre>
+use strict;
+use warnings;
+
+# コンポーネントクラス
+package Component;
+sub x { return 5 }
+
+
+# ボタンクラス
+package Button;
+# 継承
+our @ISA = ('Component');
+
+sub new { bless {}, 'Button' }
+
+package main;
+# ボタンクラスを使用する。
+my $button = Button->new;
+print $button->x;
+</pre>
+
+このスクリプトを動かしてみるとわかるのですが、 5と表示されると思います。大切なことは、Buttonクラスには、 x というメソッドはないにもかかわらず、 xというメソッドを呼ぶことができるということです。
+
+Componentクラスにxというメソッドがあり、ButtonクラスがComponentクラスを継承しているので、このようなことができます。
+
+<pre>
+our @ISA = ('Component');
+</pre>
+
+という部分に注目してください。これが継承を行っている部分です。継承するにはパッケージ変数 @ISA に継承したいクラスの名前を代入するだけです。
+
+<pre>
+package main
+</pre>
+
+という部分が気になるかもしれません。クラスをファイルに分けて記述した場合はこの記述はいりません。
+
+スクリプトが始まったときは、最初はmainパッケージというものに属しています。Button クラスを利用するときに、mainパッケージに戻って実行するのが自然なためそのようにしています。
+

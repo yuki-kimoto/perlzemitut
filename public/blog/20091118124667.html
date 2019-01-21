@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>Encodeモジュール - 日本語などのマルチバイト文字列を適切に処理する - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">Encodeモジュール - 日本語などのマルチバイト文字列を適切に処理する</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<p>
+  日本語などのマルチバイト文字をPerlで適切に扱うにはEncodeモジュールを使用します。次の3つのことを覚えておけば多くの場合適切に日本語を扱うことができます。
+</p>
+<ol>
+  <li>
+    外部から入力された文字列はEncodeモジュールのdecode関数でデコードする
+  </li>
+  <li>
+    外部へ出力する文字列はEncodeモジュールのencode関数でエンコードする
+  </li>
+  <li>
+    ソースコードはUTF-8で保存しutf8プラグマを有効にする
+  </li>
+</ol>
+<h3>この解説での用語</h3>
+<p>
+  この解説では外部から入力された文字列のことを「<span style="font-weight:bold;">バイト文字列</span>」と呼ぶことにします。Perlの内部表現に変換された文字列を「<span style="font-weight:bold;">内部文字列</span>」と呼ぶことにします。また「バイト文字列」が特定の文字コードで記述されている場合は「UTF-8バイト文字列」「Shift_JISバイト文字列」などと呼ぶことにします。
+</p>
+<p>
+  プログラミングで日本語を扱う場合にその文字列がバイト文字列であるのか内部文字列であるのかを明確に区別する必要があります。内部文字列とバイト文字列の変換に関してはプログラムが責任を持つというのがPerlで多言語を扱うときのルールです。この方法は少し手間がかかりますが、上記の3つのルールを覚えておけばよいだけなので仕組みとしてはとてもシンプルです。
+</p>
+<h3>外部から入力された文字列は必ずデコードする</h3>
+<p>
+  外部から入力された文字列は必ずEncodeモジュールのdecode関数を使用してデコードします。デコードとは「バイト文字列」を「内部文字列」に変換する処理のことをいいます。マルチバイト文字列を扱う場合はdecode関数を使用して必ず内部文字列に変換します。
+</p>
+<p>
+  decode関数の第1引数にはバイト文字列の文字コード、第2引数にはバイト文字列を指定します。戻り値は内部文字列になります。
+</p>
+<pre>
+use Encode 'decode';
+
+# 外部からの入力(コマンドライン引数)
+my $str = shift;
+
+# バイト文字列(外部からの入力)を内部文字列に変換($strがUTF-8の場合)
+$str = decode('UTF-8', $str);
+
+# バイト文字列(外部からの入力)を内部文字列に変換($strがShift_JISの場合)
+$str = decode('Shift_JIS', $str);
+</pre>
+<p>
+  外部から入力される文字列というのは「コマンドライン引数」「ファイル」「標準入力」「環境変数」などです。外部からの入力はすべてバイト文字列であると考えてください。
+</p>
+<pre>
+$str = decode('UTF-8', $str);
+</pre>
+<p>
+  を図式的に表現すると以下のようになります。
+</p>
+<pre>
+                「UTF-8バイト文字列」を「内部文字列」に変換
+UTF-8バイト文字列                 ---&gt;                 内部文字列
+</pre>
+<p>
+  decode関数の第1引数の意味は勘違いしやすい部分です。バイト文字列が実際にはどの文字コードでエンコーディングされているかを指定します。
+</p>
+<h3>外部へ出力する文字列は必ずエンコードすること</h3>
+<p>
+  外部へ出力する文字列はEncodeモジュールのencode関数を使用してエンコードします。エンコードとは「内部文字列」から「バイト文字列」に変換する処理のことをいいます。
+</p>
+<p>
+  encode関数の第1引数にはどの文字コードに変換するかを指定します。第2引数には内部文字列を指定します。
+</p>
+<pre>
+use Encode 'encode';
+
+# 内部文字列をUTF-8バイト文字列に変換する場合
+$str = encode('UTF-8', $str);
+
+# 内部文字列をShift_JISバイト文字列に変換する場合
+$str = encode('Shift_JIS', $str);
+</pre>
+<p>
+  decode関数を使用して内部文字列に変換した文字列を出力する場合は必ずencode関数でバイト文字列に戻す必要があります。どのタイミングでencode関数を使って変換を行うかといえば出力するぎりぎりのところです。プログラムの中ではできるだけ遅いタイミングまで内部文字列を保つようにします。
+</p>
+<pre>
+$str = encode('UTF-8', $str);
+</pre>
+<p>
+  を図式的に表現すると以下のようになります。
+</p>
+<pre>
+                「内部文字列」を「UTF-8バイト文字列」に変換
+内部文字列                 ---&gt;                 UTF-8バイト文字列
+</pre>
+<h3>ソースコードはUTF-8で保存しutf8プラグマを有効にすること</h3>
+<p>
+  マルチバイト文字を扱う上でもうひとつ気にする必要があるのはソースコードの中に記述する文字列です。もし日本語などのマルチバイト文字をソースコードの中で記述する必要があるならソースコードはUTF-8で保存してください。その上でutf8プラグマを有効にします。
+</p>
+<pre>
+# ソースコードはUTF-8として保存
+# utf8プラグマを有効にする
+use utf8;
+
+my $str = "日本語などを書く。";
+</pre>
+<p>
+  ソースコードの中に書かれた文字列のことを文字列リテラルと呼びます。覚えておいて欲しいことは文字列リテラルの文字コードはソースコードの文字コードと同じになります。ソースコードをUTF-8で保存すれば文字列リテラルはUTF-8バイト文字列となり、Shift_JISで保存すれば文字列リテラルはShift_JISバイト文字列となります。
+</p>
+<p>
+  特定の文字コードで保存する方法はエディタによって異なります。参考にWindowsのメモ帳の場合を説明します。これがわかれば他のテキストエディタでも理解できると思います。
+</p>
+<q>
+<p>
+  「ファイル」→「名前をつけて保存」→「文字コード」→「UTF-8」を選択。
+</p>
+</q>
+<p>
+  utf8プラグマというのはソースコードに書かれたUTF-8バイト文字列を内部文字列に変換する効果があります。つまりソースコードをUTF-8で保存してutf8プラグマを有効にすれば文字列リテラルは内部文字列に変換されます。
+</p>
+<p>
+  utf8プラグマの効果を図式的に表すと次のようになります。decode関数と効果が良く似ています。
+</p>
+<pre>
+                                use utf8
+UTF-8バイト文字列                 ---&gt;                 内部文字列
+</pre>
+<p>
+  最初に述べた次の3つのことを守りさえすれば文字コードで悩むことはだいぶ少なくなると思います。文字コードで悩んだらまずこの原則に戻ってみてください。
+</p>
+<h3>内部文字列に変換することの意味</h3>
+<p>
+  それでは実際に内部文字列に変換した効果をみてみましょう。Perlが正しく文字列を扱えていることがわかると思います。<a href="/blog/20080926122245.html">length関数</a>は正しい長さを返してくれますし、<a href="/blog/20100827127859.html">正規表現</a>が正しく動きます。
+</p>
+<p>
+  ソースコードはUTF-8で保存してください。UTF-8で保存されていない場合は「Malformed UTF-8 character」などという警告がでます。
+</p>
+<p>
+  解説はUTF-8の場合で行いますがWindowsの場合はencode関数やdecode関数にcp932を指定する必要があります。cp932というのはWindowsの文字コードである「Windows-31J」を表すものです。コマンドライン引数には「これは日本語です。」という文字列を渡してみてください。
+</p>
+<pre>
+# 内部文字列に変換した効果を試す
+use strict;
+use warnings;
+
+use utf8;
+use Encode qw/encode decode/;
+
+# コマンドライン引数(UTF-8バイト文字列)
+my $str1 = shift;
+
+# UTF-8バイト文字列を内部文字列にデコード
+$str1 = decode('UTF-8', $str1);
+
+# 文字列リテラル (utf8プラグマが有効なので内部文字列になる)
+my $str2 = "日本語";
+
+# 内部文字列に変換すると正しく文字を数えることができる
+print length $str2, "\n"; # 3
+
+# 内部文字列どうしであれば正しく正規表現を使用できる
+if ($str1 =~ /$str2/) {
+  print "Match!\n";
+}
+
+# 出力する直前に内部文字列をバイト文字列にエンコード
+$str1 = encode('UTF-8', $str1);
+$str2 = encode('UTF-8', $str2);
+
+print "'$str1' is match '$str2'\n";
+</pre>
+<h3>文字コードの変換</h3>
+<p>
+  文字コードの変換処理はPerlではdecode関数とencode関数を組み合わせて次のようにします。いったん内部文字列に変換する必要があります。次の例はUTF-8バイト文字列をShift_JISバイト文字列に変換する例です。
+</p>
+<pre>
+# UTF-8バイト文字列を内部文字列に変換
+$str = decode('UTF-8', $str);
+
+# 内部文字列をShift_JISバイト文字列に変換
+$str = encode('Shift_JIS', $str);
+</pre>
+<p>
+  図式すると次のようになります。
+</p>
+<pre>
+UTF-8バイト文字列  --&gt;  内部文字列  --&gt;  Shift_JISバイト文字列
+</pre>
+<p>
+  これは少々面倒なので、from_toという関数が用意されています。第1引数はバイト文字列、第2引数は変換前の文字コード、第3引数は変換後の文字コードです。enocdeやdecode関数とは異なり第1引数に指定したバイト文字列自体が変換されることに注意してください。
+</p>
+<pre>
+# 文字コードの変換
+use Encode 'from_to';
+
+# $str自体が変換される
+from_to($str, 'UTF-8', 'Shift_JIS');
+</pre>
+<h3>ファイル名として指定する文字列</h3>
+<p>
+  openやunlinkなどの関数にファイル名を指定するときは、OSのバイト文字列に変換して指定する必要があります。
+</p>
+<pre>
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode';
+
+my $file = 'あいう.txt';
+open my $fh, '&lt;', encode('cp932', $file)
+  or die "Can't open " . encode('cp932', $file) . ":$!";
+</pre>
+<p>
+  ファイル名を扱う関数に渡す直前でエンコードするのがポイントです。これはファイル名を扱う関数をたくさん扱う場合は少し面倒ですので、ファイル名をOSの文字コードに変換する関数を作っておくと便利です。
+</p>
+<p>
+  またエラーメッセージを自動OSの文字コードに変換するためにbinmode関数を使って標準エラー出力のエンコーディングを指定しておくと便利です。
+</p>
+<pre>
+use warnings;
+use utf8;
+
+use Encode qw/encode decode/;
+my $enc = 'cp932';
+binmode STDERR, ":encoding($enc)";
+sub d($) { decode($enc, shift) }
+sub e($) { encode($enc, shift) }
+
+my $file = 'あいう.txt';
+open my $fh, '&lt;', e$file
+  or die qq/Can't open "$file": $!/;
+</pre>
+<p>
+  これできわめて簡潔にPerlの文字コードを扱うことができるようになりました。
+</p>
+<h3>文字列に関するその他の注意点</h3>
+<h4>内部文字列とバイト文字列の連結は避ける</h4>
+<p>
+  内部文字列とバイト文字列を連結は避けましょう。この場合はバイト文字列は自動的に内部文字列へと変換されるのですが、その変換は文字化けの原因になります。すべて内部文字列に変換してから連結を行いましょう。
+</p>
+<h4>内部文字列かバイト文字列かの識別は正確にはできない</h4>
+<p>
+  Perlではプログラムの中でその文字列がバイト文字列なのか内部文字列なのかを正確に識別する方法がありません。内部文字列かバイト文字列かを識別するためにutf8::is_utf8メソッドを使用することはできません。utf8::is_utf8メソッドはUTF8フラグが立っているかどうかを判別できるだけで、内部文字列かバイト文字列かを判定することはできないのです。
+</p>
+<p>
+  ですから、おそらくこうなっているだろうという推測には利用できますが、内部文字列かバイト文字列かをプログラム内で確定させるための判定には使えませんので注意してください。UTF8フラグが立っていた場合は必ず内部文字列です。UTF8フラグが立っていない場合は内部文字列かバイト文字列です。
+</p>
+<h4>モジュールとの連携</h4>
+<p>
+  モジュールのある関数が引数として内部文字列を受け取るかバイト文字列を受け取るかはモジュールの作成者の意図によります。関数の戻り値についても同じです。バイト文字列を返すか、内部文字列を返すかは作成者の意図によります。必ずドキュメントを読んでください。
+</p>
+<p>
+  これはPerlでプログラムをする上でプログラマが特に大変だと思う点のひとつだと思います。けれども単に否定せずに「後方互換性の維持」「シンプルな変換規則」「文字列の正確で適切な扱い」というその他の大きな恩恵にあずかっているということを思いだしてみてください。他の言語と比べてもPerlは文字列の扱いをかなりよくやっていると思います。
+</p>
+<p>
+  その他のプログラミング言語の実装を見てもわかると思いますが、文字コードの扱いは何かとのトレードオフになっています。それくらい扱うのが難しい分野です。
+</p>
+<h3>内部文字列について</h3>
+<p>
+  内部文字列がどのようなものかについては意識しないほうがよいでしょう。プログラムを作成する上で意識する必要も特にありません。それでも知りたいという方は次の解説がわかりやすいです。
+</p>
+<ul>
+  <li>
+    <a href="http://d.hatena.ne.jp/dayflower/200802191203493616">UTF8 フラグあれこれ(daily dayflower)</a>
+  </li>
+</ul>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

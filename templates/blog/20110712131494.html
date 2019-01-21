@@ -1,0 +1,30 @@
+<h2 class="title">メインウインドウの幅と高さを指定する / Tkx Tips</h2>
+メインウインドウの幅と高さを指定するにはg_wm_geometryメソッドを使用します。
+
+<pre>
+# Width and height
+$mw->g_wm_geometry("600x300");
+</pre>
+
+幅と高さは「幅x高さ」という形式で指定します。
+
+表示位置も同時に指定したい場合は次のようにします。
+
+<pre>
+$mw->g_wm_geometry("600x300+200+400");
+</pre>
+
+以下はサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+use Tkx;
+
+my $mw = Tkx::widget->new(".");
+$mw->g_wm_geometry("600x300");
+
+Tkx::MainLoop();
+</pre>
+

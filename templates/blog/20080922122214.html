@@ -1,0 +1,84 @@
+<h2 class="title">四捨五入を行う</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+四捨五入を行うには、<a href="/blog/20081001122296.html">sprintf関数</a>を使用します。フォーマット指定を、有効桁を指定して四捨五入したい場合は"%.3g"や"%.5g"のように指定し、小数点以下のある桁で四捨五入したい場合は"%.3f"や"%.5f"のように指定します。
+
+<pre>
+# 小数点以下の桁数で指定。
+sprintf("%.1f", $num1); 
+
+# 有効桁数で指定。
+sprintf("%.1g", $num1);
+</pre>
+
+四捨五入を行うには、sprintf関数を使用します。"%.1f"という書式指定は、浮動小数点を小数点第1までに丸めるという書式指定です。小数点第2位が四捨五入されます。
+
+有効桁数を指定して四捨五入を行いたい場合は、"%.1g"のように指定します。たとえば37.48を、"%.3g"で書式指定をすると、37.5という数値が得られます。
+
+<h4>四捨五入の注意点</h4>
+
+<pre>
+my $num2 = 0.725;
+my $num2_round = sprintf("%.2f", $num2);
+</pre>
+
+<a href="/blog/20080826121977.html">数値リテラル</a>で表現した0.725は、内部的には0.725ではありません。2進数で表現でいない数値は、内部的に必ず誤差が発生し(わたしの環境では)近似値 0.72499999999999998 として扱われています。
+
+これを小数点第3位で四捨五入すると0.724になります。これは期待した結果になりません。
+
+<h4>sprintfによる四捨五入は正しくない</h4>
+
+<q>
+<a href="http://d.hatena.ne.jp/end0tknr/200809281222581535">perlで四捨五入</a>(<a href="http://d.hatena.ne.jp/end0tknr/">end0tknrのkipple</a>)
+</q>
+
+sprintfによる四捨五入は行うべきではないという指摘がありました。
+
+おっしゃられているように正確に四捨五入をしたい場合はsprintfを使うべきではありません。sprintfによる四捨五入はたいていの場合はうまくいきますが、上記のような例外があります。
+
+もっと正確に四捨五入をしたい場合にMath::Round::nearestというCPANモジュールがあるそうです。
+
+end0tknrさん、ご指摘ありがとうございます。
+
+<h3>サンプルプログラム</h3>
+
+四捨五入を行うサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my $num1 = 100.47;
+
+print "(1)四捨五入を行う。\n";
+my $num1_round = sprintf("%.1f", $num1);
+print "$num1を小数点第2位で四捨五入すると${num1_round}になります。\n\n";
+
+print "(2)四捨五入の注意点\n";
+my $num2 = 0.725;
+
+# 0.73にはならない。
+my $num2_round = sprintf("%.2f", $num2); 
+print "0.725を小数点第3位で丸めると${num2_round}になります\n\n";
+
+printf("内部的には%.30fという数であることが原因\n" . $num2);
+</pre>
+

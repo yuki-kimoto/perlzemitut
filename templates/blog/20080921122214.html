@@ -1,0 +1,60 @@
+<h2 class="title">浮動小数点を比較する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">浮動小数点の比較</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+コンピュータは内部的には2進数を使って演算しているので、2進数で表現できない小数については計算の過程で誤差が生まれます。2進数の演算の過程で発生した誤差の影響を無視するためには、ある有効桁で数値を丸めて比較する必要があります。
+
+桁を丸めるには<a href="/blog/20081001122296.html">sprintf関数</a>を使用します。
+
+<pre>
+sprintf("%.5g", $num1);
+</pre>
+
+"%.5g" は浮動小数点を有効桁5桁に丸めるという書式指定です。
+
+<h3>サンプルプログラム</h3>
+
+浮動小数点を比較するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my $num1 = 1;
+my $num2;
+
+# 0.1を10回加算
+for my $i (1 .. 10){
+  $num2 += 0.1;
+}
+
+print "(1)誤差が生まれる。\n";
+if ($num1 != $num2) {
+  print '$num1と$num2は等しくない' . "\n\n";
+}
+
+print "(2)-1 浮動少数点を有効桁5桁で丸めて比較(等しい)。\n";
+my $num1_cut5 = sprintf("%.5g", $num1);
+my $num2_cut5 = sprintf("%.5g", $num2);
+
+print $num1_cut5 . "\n";
+print $num2_cut5 . "\n";
+</pre>
+

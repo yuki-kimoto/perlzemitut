@@ -1,0 +1,161 @@
+<h2 class="title">defined関数 - 値が定義されているかを確認する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+値が定義されているかを確認するには<strong>defined関数</strong>を使用します。
+
+<pre>
+# 値が定義されているかの確認
+$is_defined = defined $value;
+</pre>
+
+<h3>定義されているとは</h3>
+
+defined関数で判定できる定義されている値とはなんでしょうか。考えてみましょう。
+
+変数宣言した場合は、代入による初期化を行わなかった場合は未定義となります。
+
+<pre>
+# 宣言直後は未定義
+my $value;
+</pre>
+
+値を代入すると、値が定義されている状態になります。
+
+<pre>
+# 値を代入したので定義されている状態になる
+$value = 5;
+</pre>
+
+<a href="/blog/20100220126425.html">undef関数</a>を使って、未定義値が代入されると値は未定義になります。
+
+<pre>
+# undefを代入すると未定義になる
+$value = undef;
+</pre>
+
+<h3>真偽値との違いは?</h3>
+
+defined関数で判定できる「定義されている/定義されていない」というのは「真/偽」という概念とは異なることに注意してください。定義されているとは未定義値ではないということです。
+
+一方、真であるというのはPerlにおける偽の値ではないということです。真偽値については以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080323120628.html">真偽値</a>
+  </li>
+</ul>
+
+<h3>「ハッシュの値が定義されている」と「キーが存在している」のとの違いは?</h3>
+
+<a href="/blog/20080213120291.html">exists関数</a>を使うとハッシュのキーが存在しているかどうかを確認することができます。キーが存在していることと、値が定義されていることは異なることです。
+
+defined関数による判定とexists関数による判定の結果は異なることがあります。
+
+次のような場合は、値は未定義だけれど、ハッシュのキーは存在しているといえます。
+
+<pre>
+my %scores;
+
+# キーは存在するが、値は未定義
+$scores{math} = undef;
+</pre>
+
+<h3>配列とハッシュへのdefine関数は廃止予定</h3>
+
+配列とハッシュは宣言されると未定義値にはならずに、空リストが代入されます。
+
+<pre>
+my @nums;
+my %scores;
+</pre>
+
+これは以下と同じです。
+
+<pre>
+my @nums = ();
+my %scores = ();
+</pre>
+
+配列やハッシュに対するdefined関数に使用は廃止予定となっています。代わりに単純に空リストであるかどうかをチェックしてください。
+
+<pre>
+if (@nums) { ... }
+if (%scores) { ... }
+</pre>
+
+<h3>便利なDefined-or演算子</h3>
+
+値が未定義だった場合に右辺を代入できる<a href="/blog/20120702134129.html">Defined-or演算子</a>という便利な演算子があるので紹介しておきます。
+
+<pre>
+my $num;
+
+# 未定義だったら「defined-or演算」を使って3を代入
+$num //= 3;
+</pre>
+
+<h3>サンプル</h3>
+
+defined関数を使って定義されているかどうかを確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my $num = 3;
+
+if (defined $num) {
+  print "Defined\n";
+}
+else {
+  print "Not defined\n";
+}
+</pre>
+
+定義されていないことが主要なロジックであった場合は<a href="/blog/20100125126425.html">unless</a>と組み合わせるのも読みやすいです。
+
+<pre>
+use strict;
+use warnings;
+
+my $num;
+unless (defined $num) {
+  print "Not defined\n";
+}
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+        <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">here</span>
+  </li>
+</ol>
+

@@ -1,0 +1,91 @@
+<h2 class="title">grep関数 - 特定の条件を満たす配列要素のみ取得</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+「<strong>grep関数</strong>」を使用すると配列の中で条件にマッチした要素のみを取り出すことができます。デフォルト引数$_に@arrayの各要素が渡されてきます。条件文を満たした要素のみが@matchedに追加されます。
+
+<pre>
+# 条件にマッチした要素のみを取り出す
+@matched = grep { 条件文 } @array;
+</pre>
+
+<h3>サンプル</h3>
+
+<a href="/blog/20100827127859.html">正規表現</a>にマッチした要素のみを取得するサンプルです。このサンプルでは整数だけを取り出しています。@numsが(1.23, 123, 43)の場合は@matchedは(123, 43)になります。
+
+<pre>
+# 正規表現にマッチした要素のみを取得
+my @nums = (1.23, 123, 43);
+my @matched = grep { /^\d+$/ } @nums;
+</pre>
+
+正規表現でパターンマッチ演算子(=~)を省略するとデフォルト変数$_がパターンマッチの対象になります。上のサンプルは次と同じ意味です。
+
+<pre>
+# デフォルト変数$_を明示的に指定
+my @matched = grep { $_ =~ /^\d+$/ } @nums;
+</pre>
+
+2の倍数のみを取得するサンプルです。@numsが(1, 2, 3, 4)の場合は@evenは(2, 4)になります。
+
+<pre>
+# 2の倍数のみを取得
+my @nums = (1, 2, 3, 4);
+my @even = grep { $_ % 2 == 0 } @nums;
+</pre>
+
+grepを使用した処理はforeach文を使用して書くことができます。grepのほうが簡潔に書くことができるのでPerlではgrepがよく使用されます。
+
+<pre>
+# for
+my @nums = (1.23, 123, 43);
+my @matched;
+for my $num (@nums) {
+  push @matched, $num if $num =~  /^\d+$/;
+}
+</pre>
+
+<h3>参考「Perlの配列」</h3>
+
+Perlの「配列」についての解説は以下をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20161012147627.html">Perlの「配列」を理解しよう</a>
+  </li>
+</ul>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

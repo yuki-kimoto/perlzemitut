@@ -1,0 +1,176 @@
+<h2 class="title">CentOS上でPerlのDBIを使ってSQL Serverに接続する手順</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+CentOS上でPerlのDBIを使ってSQL Serverに接続する手順です。FreeTDS, UnixODBCというUnix(Linux)のライブラリとPerlのDBD::ODBCモジュールを適切にインストールし設定する必要があります。
+
+(試した環境はCentOS release 5.5 (Final)。この記事はRed Hat Enterprise Linux, Fedoraでも有効であるかもしれません。また他のLinuxディストリビューションでも有効であるかもしれません。SELinuxを無効化しておかないと、インストールがうまくいかないかもしれません。ソースからインストールするのでgccなどの開発ツールは事前にインストールされていることを想定しています。)
+
+接続のイメージを書くと以下のようになります。
+
+<pre>
+DBI - ODBC(通信にFreeTDSプロトコルを使用) - SQL Server
+</pre>
+
+DBIではドライバとしてODBCが必要となります。これに対応するPerlのモジュールがDBD::ODBCです。またDBD::ODBCは、UnixODBCというライブラリを必要としています。UnixODBCというライブラリはSQLサーバーと通信するためにFreeTDSというライブラリを必要とします。
+
+<h3>UnixODBCのインストール</h3>
+
+UnixODBCとはODBCのUnix上での実装のひとつです。UnixODBCをソースコードからインストールしましょう。依存モジュールが増えるので、オプションでGUIのサポートはなしにしています。makeは時間がかかるのでしばらく待ちましょう。
+
+<pre>
+cd /usr/local/src
+wget http://www.unixodbc.org/unixODBC-2.3.0.tar.gz
+tar -xzvf unixODBC-2.3.0.tar.gz
+cd unixODBC-2.3.0
+./configure --enable-gui=no
+make
+make install
+</pre>
+
+このライブラリは「/usr/local/lib」以下にインストールされます。確認してみましょう。
+
+<pre>
+ls /usr/local/lib/libodbc.so
+</pre>
+
+<h3>FreeTDSのインストール</h3>
+
+FreeTDSとは「Tabular Data Stream」とぴう通信プロトコルを実装したライブラリです。UnixODBCが利用します。
+
+<pre>
+cd /usr/local/src
+wget http://ibiblio.org/pub/Linux/ALPHA/freetds/stable/freetds-0.82.tar.gz
+tar -xzvf freetds-0.82.tar.gz
+cd freetds-0.82
+export LD_LIBRARY_PATH=/usr/local/lib
+export LD_RUN_PATH=/usr/local/lib
+./configure --with-unixodbc=/usr/local --with-msdblib
+make
+make install
+</pre>
+
+このライブラリは「/usr/local/lib」以下にインストールされます。確認してみましょう。
+
+<pre>
+ls /usr/local/lib/libtdsodbc.so
+</pre>
+
+<h3>DBD::ODBCモジュールのインストール</h3>
+
+DBD::ODBCモジュールをインストールします。
+
+<pre>
+export ODBCHOME=/usr/local
+cpan DBD::ODBC
+</pre>
+
+DBD::ODBCはルート権限でインストールする必要がありませんので、cpanmなどを使って個人ディレクトリにインストールするのもよいでしょう。
+
+<h3>FreeTDSの設定</h3>
+
+FreeTDSの設定ファイルを編集します。FreeTDSの設定ファイルで接続先の情報などを記述します。
+
+<pre>
+vi /usr/local/etc/freetds.conf
+</pre>
+
+<pre>
+[tdssqlserver]
+host = 192.168.1.19
+port = 1433
+tds version = 8.0
+</pre>
+
+接続先の情報とTDSのバージョンを指定します。現在は8.0でよいようです。[]の中の名前はUnixODBCで利用される名前になります。
+
+<h3>UnixODBCの設定</h3>
+
+UnixODBCの設定ファイルを編集します。
+
+<pre>
+vi /usr/local/etc/odbc.ini
+</pre>
+
+<pre>
+[ODBC Data Sources]
+freetds = FreeTDS ODBC Driver
+
+[sqlserver]
+Driver = /usr/local/lib/libtdsodbc.so
+Description = Microsoft SQL Server
+Servername = tdssqlserver
+Database = dbname
+</pre>
+
+DriverにはFreeTDSのライブラリのパス、ServernameにはFreeTDSの設定ファイルで設定した名前、DesDatabaseには接続先のデータベース名を指定します。
+
+<h3>FreeTDSとUnixODBCの設定の確認</h3>
+
+まずFreeTDSの設定が正しいかどうかをtsqlというコマンドを起動することで確認してみましょう。
+
+次に設定が正しいかどうかをtsqlとisqlを使用して試してみましょう。
+
+<pre>
+tsql -S tdssqlserver -U kimoto -P pipipi
+</pre>
+
+tsqlでの接続が成功したらFreeTDSの設定が正しいことが確認できます。exitで終了できます。
+
+<pre>
+isql sqlserver kimoto pipipi
+</pre>
+
+isqlでの接続が成功したらUnixODBCの設定が正しいことが確認できます。Enterキーで終了できます。
+
+<h3>SQL ServerにPerlから接続する</h3>
+
+次にDBIモジュールをを使用してスクリプトから接続できれば成功です。
+
+<pre>
+use strict;
+use warnings;
+
+use DBI;
+
+my $dbi = DBI->connect('dbi:ODBC:sqlserver', 'kimoto', 'pipipi')
+  or die $!;
+</pre>
+

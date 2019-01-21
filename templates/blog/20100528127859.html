@@ -1,0 +1,62 @@
+<h2 class="title">utf8 - ソースコードのUTF-8で書かれた文字列を内部文字列に変換</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>utf8</strong>モジュールを使用すると、ソースコード中のUTF-8で記述された文字列を内部文字列に変換することができます。
+
+<pre>
+# ソースコード中にUTF-8で書かれた文字列を内部文字列に変換
+use utf8;
+my $message = 'あいうえお';
+</pre>
+
+ソースコードはUTF-8で保存してください。文字列 'あいうえお' は自動的に内部文字列に変換されます。
+
+<h3>utf8プラグマに関するFAQ</h3>
+
+Q, utf8プラグマの機能についてですが、Encodeモジュールのdecode関数を使って、UTF-8バイト文字列を内部文字列に変換していると考えてよいでしょうか。
+A. はい。次の処理を行っているものだと考えてください。
+
+<pre>
+# Encodeモジュールを使って同じ処理を記述
+my $str = 'あいうえお';
+$str = decode('UTF-8', $str);
+</pre>
+
+Q. UTF-8フラグというものを聞いたことがあるのですが、utf8プラグマはUTF-8フラグを立てる処理を行うと考えてよいでしょうか。
+
+A. その解釈は間違いです。ソースコード中の文字列がASCII範囲の文字で構成されていれば、utf8プラグマは文字列に対してUTF-8フラグを立てず、ASCII範囲外の文字が含まれていた場合はUTF-8フラグを立てます。
+
+これはプログラマの視点から見た場合に、何を行っているかがとても理解しづらいものになります。ですから難しく考えずに、utf8プラグマはUTF-8バイト文字列を内部文字列に変換するものだと覚えましょう。
+
+Q. UTF-8フラグについては忘れたほうがよいのでしょうか。
+A. はい基本的には忘れてください。でも、覚えておくと便利なことがひとつだけあるので伝えておきます。それは、「UTF-8フラグが立っていれば必ず内部文字列だといえる」ということです。この逆はいえません。UTF-8フラグを立っているかを確認する関数に<strong>utf8::is_utf8</strong>関数があります。この関数を使ってUTF-8フラグが立っていることを確認すれば、それは内部文字列だということがいえます。
+
+<pre>
+# UTF-8フラグが立っていれば内部文字列
+my $utf8_flagged = utf8::is_utf8($str);
+
+if ($utf8_flagged) {
+  # $strは内部文字列
+}
+else {
+  # $strは内部文字列かバイト文字列
+}
+</pre>
+

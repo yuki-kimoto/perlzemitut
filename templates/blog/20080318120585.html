@@ -1,0 +1,307 @@
+<h2 class="title">Perlの比較演算子</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<b>比較演算子</b>は、二つの値の大小について比較する演算子です。Perlには、数値を比較する<b>数値比較演算子</b>と文字列が辞書順でどちらが大きいかを比較する<b>文字列比較演算子</b>があります。
+
+<h3>数値比較演算子</h3>
+
+数値比較演算子は、値を数値として比較するときに利用する演算子です。
+
+<table>
+  <tr>
+    <td>
+      *演算子
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A == B
+    </td>
+    <td>
+      AとBは等しい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A != B
+    </td>
+    <td>
+      AとBは等しくない
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A > B
+    </td>
+    <td>
+      AはBより大きい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A >= B
+    </td>
+    <td>
+      AはB以上
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A < B
+    </td>
+    <td>
+      AはBより小さい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A <= B
+    </td>
+    <td>
+      AはB以下
+    </td>
+  </tr>
+
+</table>
+
+比較演算子は、条件を満たすと真値、満たさない場合は偽値を返します。
+
+Perlの真偽値については以下の記事も参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080323120628.html">Perlにおける真偽値</a>
+  </li>
+</ul>
+
+<h4>if文の条件部で使う</h4>
+
+<a href="/blog/20161107147852.html">変数</a>に代入された数値を比較するサンプルプログラムを<a href="/blog/20161023147731.html">if文</a>を使って書いてみます。
+
+<pre>
+my $num1 = 4;
+my $num2 = 3;
+
+if ($num1 > $num2) {
+  print "Left is big";
+}
+</pre>
+
+このプログラムでは$num1には4が、$num2には3が代入されています。$num1は$num2より大きいので、条件が真になって、ブロックの中が実行されます。
+
+<h4>三項演算子の条件部で使う</h4>
+
+比較演算子を<a href="/blog/20080325120646.html">三項演算子</a>の条件部で使用してみましょう。
+
+<pre>
+my $num1 = 4;
+my $num2 = 3;
+
+my $message = $num1 > $num2 ? "OK" : "Not OK";
+</pre>
+
+$num1は$num2より大きいので真が返され「OK」が$messageに代入されます。
+
+<h3>文字列比較演算子</h3>
+
+文字列比較演算子は<a href="/blog/20161003147558.html">文字列</a>を辞書順で比較するときに利用する演算子です。
+
+辞書順比較では、先頭から1文字づつ、文字コードの大きさを比べてゆきます。「a」は「b」より小さくなります。「1」は「02」より大きくなります。
+
+<table>
+  <tr>
+    <td>
+      *演算子
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A eq B
+    </td>
+    <td>
+      AとBは等しい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A ne B
+    </td>
+    <td>
+      AとBは等しくない
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A gt B
+    </td>
+    <td>
+      AはBより大きい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A ge B
+    </td>
+    <td>
+      AはB以上
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A lt B
+    </td>
+    <td>
+      AはBより小さい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      A le B
+    </td>
+    <td>
+      AはB以下
+    </td>
+  </tr>
+
+</table>
+
+<h4>if文の条件部で使う</h4>
+
+文字列比較演算子をif文の条件部で使うサンプルです。
+
+<pre>
+my $str1 = "1";
+my $str2 = "02";
+
+if ($num1 gt $num2) {
+  print "Left is big";
+}
+</pre>
+
+<h3>論理演算子で条件を組み合わせる</h3>
+
+論理演算子を使うと比較演算子を組み合わせた条件で使用することができます。
+
+<pre>
+# $num1は1より大きい、かつ、5より小さい
+if ($num1 > 1 && $num1 < 5) {
+  ...
+}
+
+# $num1は1より小さい、または、5より大きい
+if ($num1 < 1 || $num1 > 5) {
+  ...
+}
+</pre>
+
+論理演算子についてはこちらで解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20100816136168.html">Perlの論理演算子</a>
+  </li>
+</ul>
+
+<h3>文字列の部分位置を調べる方法</h3>
+
+Perlの文字列比較演算子の「eq」は完全に文字列が一致するときに利用しますが、文字列の部分一致を知りたいときもありますね。そういう場合は、正規表現を使いましょう。
+
+<pre>
+# $str1が「Cat」を含んでいたら
+if ($str1 =~ /Cat/) {
+  ...
+}
+</pre>
+
+正規表現については、以下で解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20100827127859.html">Perlの正規表現</a>
+  </li>
+</ul>
+
+<h3>サンプルプログラム</h3>
+
+数値比較と辞書順比較のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 数値比較と辞書順比較
+print "1: 数値比較と辞書順比較を比べる\n";
+my $num1 = "1";  
+my $num2 = "02"; 
+
+if ($num1 <  $num2) {
+  print "数値で比較して$num1 は $num2 より小さい\n";
+}
+
+if ($num1 gt $num2) {
+  print "辞書順で比較して, $num1 は $num2 より、大きい\n";
+}
+
+</pre>
+
+実行結果
+
+<pre>
+1: 数値比較と辞書順比較を比べる
+数値で比較して1 は 02 より小さい
+辞書順で比較して, 1 は 02 より、大きい
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+

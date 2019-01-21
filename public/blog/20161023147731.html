@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>if文による条件分岐 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">if文による条件分岐</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li>
+    <span itemprop="name">here</span></a>
+  </li>
+</ol>
+<p>
+  プログラミングを書いていると条件によって処理を変えたり、同じ処理を繰り返したくなる場合があります。
+</p>
+<p>
+  そのような場合はif文やfor文を使うことによって条件分岐と繰り返しを実現できます。
+</p>
+<h3>条件分岐の基礎</h3>
+<p>
+  条件分岐の基礎を解説します。
+</p>
+<h4>if文</h4>
+<p>
+  Perlで条件分岐を行うには<a href="/blog/20080317120577.html">if文</a>を使用します。まず最初に簡単な条件分岐を書いてみます。変数の値が「5」の場合に「OK」と出力するif文です。
+</p>
+<pre>
+my $num = 5;
+if ($num == 5) {
+  print "OK\n";
+}
+</pre>
+<p>
+  if文は以下のような構文です。条件が真になったときに、続くブロックの中が実行されます。
+</p>
+<pre>
+if (条件) {
+  ...;
+}
+</pre>
+<b>==</b>は比較演算子で、数値が等しい場合に真を返します。
+<p>
+  この例の場合は、変数には5が入っているので「$num == 5」は真を返します。
+</p>
+<p>
+  そして、条件が真なので、続くブロックの中身が実行されます。
+</p>
+<p>
+  変数の内容を「4」などに変えてみると「OK」と表示されないことも確認してみてください。
+</p>
+<h4>if～else文</h4>
+<a href="/blog/20080320120602.html">if～else文</a>を使うと、条件が真の場合に実行する処理と偽の場合に実行する処理を書くことができます。
+<pre>
+# if文
+my $num = 5;
+if ($num == 5) {
+  print "OK\n";
+}
+else {
+  print "Not OK\n";
+}
+</pre>
+<h4>if～elsif文</h4>
+<a href="/blog/20080320120602.html">if～elsif文</a>を使うと、条件を複数記述することができます。
+<pre>
+# if～elsif
+my $num = 5;
+if ($num == 5) {
+  print "Number is 5\n";
+}
+elsif ($num == 7) {
+  print "Number is 7\n";
+}
+</pre>
+<p>
+  上記の場合は「$num」が5だった場合は「Number is 5」、「$num」が7だった場合は「Number is 7」と表示されます。
+</p>
+<p>
+  C言語やJavaでは「else if」ですが、Perlでは「elsif」となっていることに注意してください。
+</p>
+<p>
+  elsifは複数指定することもできます。
+</p>
+<pre>
+# 複数のelsif
+my $num = 5;
+if ($num == 5) {
+  print "Number is 5\n";
+}
+elsif ($num == 7) {
+  print "Number is 7\n";
+}
+elsif ($num == 9) {
+  print "Number is 9\n";
+}
+</pre>
+<p>
+  elsifはelseと組み合わせて利用することもできます。elseは必ず最後に記述します。
+</p>
+<pre>
+# elseifとelseの組み合わせ
+my $num = 5;
+if ($num == 5) {
+  print "Number is 5\n";
+}
+elsif ($num == 7) {
+  print "Number is 7\n";
+}
+elsif ($num == 9) {
+  print "Number is 9\n";
+}
+else {
+  print "Not match\n";
+}
+</pre>
+<h3>比較演算子</h3>
+<p>
+  if文の条件の中で「==」という記号を使いましたが、これは<b>比較演算子</b>の一つです。
+</p>
+<p>
+  Perlの比較演算子をここで紹介しておきます。Perlには二種類の比較演算子があります。<b>数値比較演算子</b>と<b>文字列比較演算子</b>です。
+</p>
+<h4>数値比較演算子</h4>
+<p>
+  数値比較演算子は、値を数値として比較するときに利用する演算子です。
+</p>
+<table>
+  <tr>
+    <td>
+      *演算子
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A == B
+    </td>
+    <td>
+      AとBは等しい
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A != B
+    </td>
+    <td>
+      AとBは等しくない
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A > B
+    </td>
+    <td>
+      AはBより大きい
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A >= B
+    </td>
+    <td>
+      AはB以上
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A < B
+    </td>
+    <td>
+      AはBより小さい
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A <= B
+    </td>
+    <td>
+      AはB以下
+    </td>
+  </tr>
+</table>
+<h4>文字列比較演算子</h4>
+<p>
+  文字列比較演算子は、文字列を辞書順で比較するときに利用する演算子です。
+</p>
+<table>
+  <tr>
+    <td>
+      *演算子
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A eq B
+    </td>
+    <td>
+      AとBは等しい
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A ne B
+    </td>
+    <td>
+      AとBは等しくない
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A gt B
+    </td>
+    <td>
+      AはBより大きい
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A ge B
+    </td>
+    <td>
+      AはB以上
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A lt B
+    </td>
+    <td>
+      AはBより小さい
+    </td>
+  </tr>
+  <tr>
+    <td>
+      A le B
+    </td>
+    <td>
+      AはB以下
+    </td>
+  </tr>
+</table>
+<h4>数値比較と文字列比較</h4>
+<p>
+  Perlでは、値を数値として比較したい場合は数値比較演算子を使い、文字列として比較したい場合は文字列比較演算子を使います。
+</p>
+<p>
+  この点が他の言語と異なる部分なので注意してください。
+</p>
+<pre>
+# 数値比較
+my $num = 4;
+if ($num &lt; 6) {
+  ...
+}
+
+# 文字列比較
+my $animal = 'Cat':
+if ($animal eq 'Dog') {
+  ...
+}
+</pre>
+<p>
+  文字列比較演算子には、大きさを比べるための「gt」「ge」「lt」「le」がありますが、これは辞書順で比較されます。
+</p>
+<p>
+  たとえば「1」と「03」を数値比較した場合は「1」は「1」、「03」は「3」と解釈され「03」の方が大きいです。
+</p>
+<p>
+  けれども「1」と「03」を文字列比較した場合は、最初の文字から判定され「1」と「0」は、文字コードが「1」のほうが大きいので「1」のほうが大きくなります。
+</p>
+<pre>
+my $num1 = '1';
+my $num2 = '03';
+
+# 数値比較
+if ($num1 &gt; $num2) {
+  # 実行されない
+  print "OK 1\n";
+}
+
+# 文字列比較
+if ($num1 gt $num2) {
+  # 実行される
+  print "OK 2\n";
+}
+</pre>
+<p>
+  Perlの比較演算子の詳しい解説については以下をご覧ください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20080318120585.html">Perlの比較演算子</a>
+  </li>
+</ul>
+<h3>Perlの真偽値</h3>
+<p>
+  次にPerlの<b>真偽値</b>についてきちんと理解しておきましょう。if文では、条件が真になったときにブロックの中が実行されましたね。偽になったときは実行されませんでした。
+</p>
+<p>
+  ここでPerlでの真偽値について、正しく理解しておきましょう。
+</p>
+<h4>Perlで偽とされる値</h4>
+<p>
+  Perlで偽とされる値は以下の4つです。
+</p>
+<table>
+  <tr>
+    <td>
+      1
+    </td>
+    <td>
+      <a href="/blog/20100220126425.html">undef</a>
+    </td>
+    <td>
+      未定義値
+    </td>
+  </tr>
+  <tr>
+    <td>
+      2
+    </td>
+    <td>
+      ""
+    </td>
+    <td>
+      空文字列
+    </td>
+  </tr>
+  <tr>
+    <td>
+      3
+    </td>
+    <td>
+      0
+    </td>
+    <td>
+      0
+    </td>
+  </tr>
+  <tr>
+    <td>
+      4
+    </td>
+    <td>
+      "0"
+    </td>
+    <td>
+      文字列の0
+    </td>
+  </tr>
+</table>
+<p>
+  以下のようにif文の条件が偽値の場合は、ブロックの中が実行されません。
+</p>
+<pre>
+# 条件が偽の場合は実行されない
+if (undef) {
+  # 実行されない
+}
+
+if ("") {
+  # 実行されない
+}
+
+if (0) {
+  # 実行されない
+}
+
+if ("0") {
+  # 実行されない
+}
+</pre>
+<h4>Perlで真とされる値</h4>
+<p>
+  上記で偽とされるもの以外は、すべて真になります。たとえば例を挙げると次のものが真になります。
+</p>
+<b>長さのある文字列</b>
+<pre>
+"Cat"
+</pre>
+<b>0以外の数値</b>
+<pre>
+13
+-3
+1.5
+</pre>
+<b>"0"以外の数値を含む文字列</b>
+<pre>
+"13"
+"0.1"
+"0.0"
+</pre>
+<b>リファレンスあるいはオブジェクト</b>
+<pre>
+my $nums = [1, 2, 3];
+my $scores = {};
+my $object = XML::Simple-&gt;new;
+</pre>
+<p>
+  「"0.0"」という文字列が真になることに注意してください。
+</p>
+<b>要素を持つ<a href="/blog/20100308126967.html">リスト</a></b>
+<pre>
+(0)
+(1, 2);
+</pre>
+<p>
+  以下のようにif文の条件が真の場合は、ブロックの中が実行されます。
+</p>
+<pre>
+# 条件が真の場合は実行される
+if ("Cat") {
+  # 実行される
+}
+
+if (13) {
+  # 実行される
+}
+
+if ("13") {
+  # 実行される
+}
+
+my $object = XML::Simple-&gt;new;
+if ($object) {
+  # 実行される
+}
+</pre>
+<h4>配列をif文の条件に書く場合</h4>
+<p>
+  配列をif文に書くというのはよくあることなので、真偽値としてどう評価されるのかを見ておきましょう。
+</p>
+<p>
+  配列が要素を持つ場合は、スカラコンテキストで評価され、配列の個数が評価されます。
+</p>
+<p>
+  配列が要素を持つ場合は、ifブロックが実行され、そうでない場合は、実行されません。
+</p>
+<pre>
+my @nums = (1, 2);
+if (@nums) {
+  # 実行される
+}
+
+my @nums = ();
+if (@nums) {
+  # 実行されない
+}
+</pre>
+<p>
+  Perlの真偽値の詳細については以下をご覧ください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20080323120628.html">Perlの真偽値</a>
+  </li>
+</ul>
+<h3>Perlの論理演算子</h3>
+<p>
+  次に「AかつB」「AまたはB」「Aではない」ということを表現できる論理演算子を解説します。
+</p>
+<p>
+  これまでは、単一の条件だけを見てきましたが、論理演算子を使うことによって複合的な条件や否定を表現することができます。
+</p>
+<table>
+  <tr>
+    <td>
+      *演算子
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+  <tr>
+    <td>
+      &#x7c;&#x7c;
+    </td>
+    <td>
+      論理和
+    </td>
+  </tr>
+  <tr>
+    <td>
+      &&
+    </td>
+    <td>
+      論理積
+    </td>
+  </tr>
+  <tr>
+    <td>
+      !
+    </td>
+    <td>
+      否定
+    </td>
+  </tr>
+  <tr>
+    <td>
+      or
+    </td>
+    <td>
+      論理和(&&より優先順位が低い)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      and
+    </td>
+    <td>
+      論理積&&より優先順位が低い)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      not
+    </td>
+    <td>
+      否定(!より優先優位が低い)
+    </td>
+  </tr>
+</table>
+<h4>論理積(A かつ B)</h4>
+<p>
+  たとえば変数「$num」が「1より大きい、かつ、5より小さい」という条件を表現するには<b>&&</b>を使って次のように書きます。
+</p>
+<pre>
+if ($num &gt; 1 && $num &lt; 5) {
+  ...
+}
+</pre>
+<p>
+  andも同じ意味を持ちますが演算子の優先順位が低く、if文の条件部で書く場合は「&&」を使うのが慣習的なPerlの書き方となっています。
+</p>
+<h4>論理和(A または B)</h4>
+<p>
+  次に、変数「$num」が「1より小さい、あるいは、5より大きい」という条件を表現するには<b>||</b>を使って次のように書きます。
+</p>
+<pre>
+if ($num &lt; 1 || $num &gt; 5) {
+  ...
+}
+</pre>
+<p>
+  orも同じ意味を持ちますが演算子の優先順位が低く、if文の条件部で書く場合は「||」を使うのが慣習的なPerlの書き方となっています。
+</p>
+<h4>否定(Aではない)</h4>
+<p>
+  変数「$num」が「真ではない」という条件を表現するには<b>!</b>を使って次のように書けます。
+</p>
+<pre>
+if (!$num)) {
+  ...
+}
+</pre>
+<p>
+  notも同じ意味を持ちますが演算子の優先順位が低く、ソースコードで利用されることは少ないようです。
+</p>
+<h4>論理演算子を組み合わせて使う</h4>
+<p>
+  論理演算子は組み合わせて使うことができます。括弧を使うことで演算子の結合順序を制御することができます。
+</p>
+<pre>
+if ($num &gt; 10 || (($num &gt; -3 && $num &lt; 6) && !($num == 0))) {
+  ...
+}
+</pre>
+<p>
+  「&&」の結合順序のほうが「||」の結合順序より高く、途中の一部の括弧はプログラム的には意味がありませんが、ソースコードをわかりやすくするために、意味の区切りで、積極的に「()」を使いましょう。
+</p>
+<p>
+  論理演算子の詳細な解説については以下の記事を参考にしてください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20100816136168.html">Perlの論理演算子の一覧</a>
+  </li>
+</ul>
+<h3>やや特殊な条件分岐</h3>
+<p>
+  Perlでしばしば使われるやや特殊な条件分岐について解説します。
+</p>
+<h4>unless文</h4>
+<a href="/blog/20100125126425.html">unless文</a>はif文で条件を否定した場合と同じ処理を書くことができます。
+<pre>
+# $numが真でなければブロックを実行
+unless ($num) {
+  ...
+}
+</pre>
+<p>
+  次のif文と全く同じ意味になります。
+</p>
+<pre>
+if (!$num) {
+  ...
+}
+</pre>
+<p>
+  意味が同じならunless文はどういうときに使うんでしょうか。それは「でなければ」という気持ちを強めたいときです。unlessの方が「でなければ」という気持ちが目立ちます。
+</p>
+<p>
+  たとえばエラーチェックの処理が主要な処理なのであれば、以下のように書くと「if」と「!」を使って書くより目立ちますね。<a href="/blog/20100219126425.html">define関数</a>を使って値が定義されなかった場合にブロックを実行する処理です。
+</p>
+<pre>
+unless (defined $num) {
+  ...
+}
+</pre>
+<h4>失敗した処理における分岐をorで書く</h4>
+<p>
+  Perlには<a href="/blog/20100816136168.html">論理演算子 or</a>を使った条件分岐の処理が慣習的に書かれることが多いです。
+</p>
+<p>
+  典型的な例では、<a href="/blog/20080718121643.html">open関数</a>が失敗した場合のエラー処理には「or」が出てきます。
+</p>
+<p>
+  open関数が失敗して偽値が返された場合に、「or」の後ろの処理が実行されます。
+</p>
+<pre>
+open(my $fh, "&lt;", $file)
+  or die "Can't open $file:$!";
+</pre>
+<p>
+  主要な処理を先に書いて、補助的なエラー処理をorを使って、後ろ側に書いています。こんな風に自然言語のような表現でプログラミングが書けるのもPerlの面白いところのひとつです。
+</p>
+<h4>後置のifと後置のunless</h4>
+<p>
+  Perlではなんとifとunlessを、処理の後ろに記述することができます。
+</p>
+<pre>
+# 後置のif
+$num1 = 1 if !defined $num1;
+
+# 後置のunless
+$num2 = 1 unless defined $num2;
+</pre>
+<p>
+  これは正確には<a href="/blog/20080324120637.html">if修飾子</a>、<a href="/blog/20080324120637.html">unless修飾子</a>といいます。
+</p>
+<p>
+  1行で書ける条件分岐であれば、後置のif、unlessを使って書くこともできます。
+</p>
+<p>
+  後置のifとunlessの最大のメリットは、通常のifとunlessと違って、スコープを作成しないので、その分処理が速いということです。通常は意識する必要はありませんが、速度をどうしても稼ぎたいときには、少し早くなります。
+</p>
+<p>
+  僕は<a href="/blog/20170513149580.html">next文</a>や<a href="/blog/20170527149589.html">last文</a>と一緒に使うことが多いです。
+</p>
+<pre>
+for my $num (@nums) {
+  last if !defined $num;
+}
+
+for my $num (@nums) {
+  next if !defined $num;
+}
+</pre>
+<h4>三項演算子</h4>
+<p>
+  Perlには<a href="/blog/20080325120646.html">三項演算子</a>と呼ばれる演算子があります。
+</p>
+<p>
+  三項演算子を使うと、条件によって、返却する値を変えることができます。
+</p>
+<pre>
+# 三項演算子の構文
+条件 ? 値1 : 値2
+</pre>
+<p>
+  条件が真の場合は、値1が返り、偽の場合は値2が返ります。
+</p>
+<p>
+  以下の例では「$flag」が真の場合に「$animal」に「Cat」が代入され、偽の場合に「$animal」に「Dog」が代入されます。
+</p>
+<pre>
+my $flag = 1;
+
+# 3項演算子
+my $animal = $flag ? 'Cat' : 'Dog';
+</pre>
+<p>
+  ifを使った条件分岐でも、同じことができますが、三項演算子を使うと簡潔に書けます。
+</p>
+<b>三項演算子を複数重ねて使う</b>
+<p>
+  三項演算子は複数重ねて使うことができ、「if ～ elsif ～ else」に該当する書き方ができます。
+</p>
+<pre>
+my $flag = 2;
+
+my $animal =
+    $flag == 0 ? 'Cat'
+  : $flag == 1 ? 'Dog'
+  : $flag == 2 ? 'Mouse'
+  : 'Cow';
+</pre>
+<p>
+  「$flag」が「2」なので「$animal」には「Mouse」が代入されます。三項演算子を重ねて使うときは、見やすいように複数行にして書くのがお勧めです。
+</p>
+<h4>特殊な代入演算子「||=」「//=」でデフォルト値を設定</h4>
+<p>
+  Perlにはよく使われるデフォルト値の設定方法があります。それは<a href="/blog/20161005147566.html">特殊な代入演算子</a>である「||=」あるいは「//=」を使う方法です。
+</p>
+<pre>
+# もし「$x」が偽ならば「$x」に5を設定
+$x ||= 5;
+
+# もし「$x」が未定義であれば「$y」に7を設定
+$y //= 7;
+</pre>
+<p>
+  「A ||= B」は、「A」が偽であれば「A」に「B」の内容が代入されます。
+</p>
+<p>
+  「A //= B」は、「A」が未定義であれば「A」に「B」の内容が代入されます。
+</p>
+<p>
+  「A //= B」の構文はPerl 5.10で導入されたので、Perl 5.10以降であれば「A //= B」が使用できます。「A ||= B」はバグを生みやすいので、こちらを使用するのがお勧めです。たとえば「A ||= B」だと「A」が「0」の場合に、デフォルト値が設定されてしまいます。
+</p>
+<p>
+  頻繁に使う構文なので覚えてしましょう。
+</p>
+<h3>繰り返し文</h3>
+<p>
+  繰り返し文については以下の記事を参考にしてください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20100123126425.html">while文</a>
+  </li>
+  <li>
+    <a href="/blog/20080327120662.html">for文</a>
+  </li>
+  <li>
+    <a href="/blog/20080328120673.html">foreach文</a>
+  </li>
+  <li>
+    <a href="/blog/20080329120687.html">lastとnext</a>
+  </li>
+</ul>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

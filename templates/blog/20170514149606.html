@@ -1,0 +1,65 @@
+<h2 class="title">goto文 - 任意のラベルにジャンプする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文・文法</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<b>goto文</b>を使うを任意のラベルにジャンプすることができます。
+
+<pre>
+goto ラベル
+</pre>
+
+<h3>gotoは使わないのが良い作法</h3>
+
+<a href="/blog/20091120124667.html">Perlの現代的な記述方法</a>で解説していますが、gotoは、使わないのがよいプログラミングの作法です。
+
+エラー処理を行いたい場合は<a href="/blog/20100411127089.html">例外処理</a>を使い、ループから脱出したい場合は<a href="/blog/20170527149589.html">last文</a>を使いましょう。Perlには代替手段が用意されているので、gotoを使うことはまずありません。
+
+<h3>関数を再帰させる場合がgotoの唯一の使いどころ</h3>
+
+gotoはラベルにジャンプするほかに、関数をコールスタックを増やさずに、実行することができます。Perlは末尾再帰の最適化を行なわず、深いスタックになると警告が発生しますが、「goto &関数名」という構文で回避できます。
+
+<pre>
+goto &関数名
+</pre>
+
+末尾再帰でgotoを使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 末尾再帰する関数
+my $fact = fact(3, 2);
+
+print "$fact\n";
+
+sub fact {
+  my ($i, $n) = @_;
+  if ($n == 0){
+    return $i;
+  }
+  else {
+    @_ = ($i * $n, $n-1);
+    goto &fact;
+  }
+}
+</pre>
+
+gotoの唯一の使いどころは末尾再帰ですが、そもそも末尾再帰で書けることは<a href="/blog/20170521149524.html">for文</a>を使って、同じことを記述することができます。ですので、末尾再帰ではなくfor文を使って書いて、gotoをまったくソースコードで使わないようにするのが、お勧めです。
+

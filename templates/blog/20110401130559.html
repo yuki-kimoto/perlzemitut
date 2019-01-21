@@ -1,0 +1,191 @@
+<h2 class="title">DBIx::Custom - SQLでデータベースに簡単アクセス</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>DBIx::Custom</strong>は「insert,update,delete,select」などのデータベースへのクエリを簡単にするためモジュールです。<strong>O/Rマッパー</strong>としては、覚えることが少なく、生のSQLに近い記述ができます。
+
+DBIx::Customは以下のような便利な機能を備えています。
+
+<ul class="check-list">
+<ol>
+  <li>
+    insert, update, delete, selectを簡単に実行、高速insert文、バルクインサートサポート
+  </li>
+  <li>
+    柔軟なWhere句の生成、柔軟なorder by句の生成、名前つきプレースホルダのサポート
+  </li>
+  <li>
+    MySQL, PostgreSQL, SQLite, Oracle, Microsoft SQL Server, Microsoft Accessをサポート
+  </li>
+</ol>
+</ul>
+
+サンプルコードを見てください。
+
+<pre>
+use DBIx::Custom;
+my $dbi = DBIx::Custom->connect(dsn => $dsn);
+
+# 挿入
+$dbi->insert({id => 1, title => 'Perl'}, table => 'book');
+
+# 更新
+$dbi->update({title => 'Perl'}, table => 'book', where => {id => 1});
+
+# 削除
+$dbi->delete(where => {id => 1}, table => 'book');
+
+# 選択
+my $rows = $dbi->select(table => 'book')->all;
+</pre>
+
+簡単に書けるでしょう。
+
+<h3>インストール</h3>
+
+DBIx::Customを「インストール」してみましょう。
+
+<ul>
+  <li>
+    <a href="/blog/20110508130736.html">DBIx::Customのインストール</a>
+  </li>
+</ul>
+
+<h3>データベースへの接続</h3>
+
+DBIx::Customで「データベース接続」する方法を解説しています。さまざまなデータベースでも利用することができます。
+
+<ul>
+  <li>
+    <a href="/blog/20110516130787.html">データベースへ接続する</a>
+  </li>
+</ul>
+
+<h3>クエリの実行</h3>
+
+DBIx::Customでクエリを実行する方法を解説します。insert,update,delete,select文を覚えましょう。
+
+<ul>
+  <li>
+    <a href="/blog/20110210130016.html">行の選択 select</a>
+  </li>
+  <li>
+    <a href="/blog/20110129130016.html">行の挿入 insert</a>
+  </li>
+  <li>
+    <a href="/blog/20110130130016.html">行の更新 update</a>
+  </li>
+  <li>
+    <a href="/blog/20110202130016.html">行の削除 delete</a>
+  </li>
+  <li>
+    <a href="/blog/20110708131364.html">SQLを実行する execute</a>
+  </li>
+</ul>
+
+<h3>行のフェッチ</h3>
+
+DBIx::Customで「行をフェッチ」する方法を解説します。
+
+<ul>
+  <li>
+    <a href="/blog/20110709131364.html">行をフェッチする</a>
+  </li>
+</ul>
+
+<h3>Where句の動的な作成</h3>
+
+DBIx::Customで「動的にwhere句を作成」する方法を解説します。
+
+<ul>
+  <li>
+    <a href="/blog/20110924132031.html">動的にWhere句の生成する</a>
+  </li>
+</ul>
+
+<h3>Order By句の動的な生成</h3>
+
+DBIx::Customで「動的にorder by句を作成」する方法を解説します。
+
+<ul>
+  <li>
+    <a href="/blog/20110928132041.html">Order By句の生成</a>
+  </li>
+</ul>
+
+<h3>モデル</h3>
+
+DBIx::Customで「モデル」を利用する方法を解説します。
+
+<ul>
+  <li>
+    <a href="/blog/20110816131802.html">「モデル」を利用する</a>
+  </li>
+</ul>
+
+<h3>応用的な機能</h3>
+
+DBIx::Customの「応用的な機能」について紹介します。
+
+<h4>SQLの生成</h4>
+
+DBIx::Customで「SQLを生成」するための便利なメソッドを紹介します。
+
+<ul>
+  <li>
+    <a href="/blog/20110812131778.html">DBIx::Customで「SQLを生成」するためのメソッドの紹介</a>
+  </li>
+</ul>
+
+<h4>フィルタリング</h4>
+
+DBIx::Customで「フィルタリング」を利用する方法を解説します。
+
+<ul>
+  <li>
+    <a href="/blog/20110926132031.html">「フィルタリング」を利用する</a>
+  </li>
+</ul>
+
+<h4>テーブルと列の情報</h4>
+
+DBIx::Customの「テーブルと列の情報」を調べるメソッドを紹介します。
+
+<ul>
+  <li>
+    <a href="/blog/20110911131900.html">DBIx::Customの「テーブル」と「列」の情報を調べるメソッド</a>
+  </li>
+</ul>
+
+<h4>ユーティリティ</h4>
+
+DBIx::Customの「ユーティリティ」メソッドを紹介します。
+
+<ul>
+  <li>
+    <a href="/blog/20110904131900.html">DBIx::Customの「ユーティリティ」メソッドの紹介</a>
+  </li>
+</ul>
+

@@ -1,0 +1,175 @@
+<h2 class="title">複数モジュールを使うXSの簡単な実装方法</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100809127859.html">
+        <span itemprop="name">XS</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+XSを使ってモジュールを作ろうとしたときに、複数のモジュールに分割するときにふと困りました。たとえば、SomeModuleとSomeModule::Utilの両方でXSの実装を行いたい場合です。方法を調べていたのですが、実装方法が結構煩雑で難しいなと感じました。
+
+いろいろと試していたのですが、次の方法が簡単なように思えたので紹介しておきます。この方法の利点は、次のとおりです。
+
+<ol>
+  <li>
+    <a href="/blog/20150725143778.html">Makefile.PL</a>を修正する必要がない
+  </li>
+  <li>
+    SomeModule.xsというファイルの名前を修正する必要がない
+  </li>
+  <li>
+    SomeModule.xsという一枚のXSファイルだけでOK
+  </li>
+  <li>
+    標準ツールの<a href="/blog/20170209150055.html">h2xs</a>でも大丈夫
+  </li>
+</ol>
+
+<h4>h2xsでモジュールを作成</h4>
+
+最初にh2xsでXS用のモジュールを作成します。
+
+<pre>
+h2xs -A -n SomeModule
+</pre>
+
+こうすると「SomeModule」というディレクトリが作成されます。次のようなファイルとディレクトリが作成されます。
+
+<pre>
+Changes
+lib/
+Makefile.PL
+MANIFEST
+ppport.h
+README
+SomeModule.xs
+t/
+</pre>
+
+<h4>XSファイルの記述</h4>
+
+XSファイルを作成していきます。「foo」と表示するfooという関数をSomeModuleに追加、「bar」と表示するbarという関数をSomeModule::Utilに追加してみます。
+
+まず最初にXSファイルを開くと次のようになっていると思います。
+
+<pre>
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#include "ppport.h"
+
+
+MODULE = SomeModule		PACKAGE = SomeModule		
+</pre>
+
+まず覚えてほしいことは、「MODULE = SomeModule		PACKAGE = SomeModule」のセクションは一番下側に置く必要があるということです。この部分を最後においておかないとXSのロードに失敗してしまいます。
+
+では記述しましょう。「MODULE = SomeModule::Util PACKAGE = SomeModule::Util」を追加します。そしてXSでbarを定義します。また「MODULE = SomeModule		PACKAGE = SomeModule」のセクションに、fooを定義します。
+
+<pre>
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#include "ppport.h"
+
+MODULE = SomeModule::Util PACKAGE = SomeModule::Util
+
+void
+bar(...)
+  PPCODE:
+{
+  PerlIO_printf(PerlIO_stdout(), "bar\n");
+  XSRETURN(0);
+}
+
+MODULE = SomeModule		PACKAGE = SomeModule		
+
+void
+foo(...)
+  PPCODE:
+{
+  PerlIO_printf(PerlIO_stdout(), "foo\n");
+  XSRETURN(0);
+}	
+</pre>
+
+<h4>モジュールの作成</h4>
+
+ここまでできれば、SomeModuleとSomeModule::Utilを作成するだけです。
+
+<b>SomeModuleのソースコード</b>
+
+SomeModule.pmのソースコードは最初のままでもかまいません。少し整理して以下のようにしました。
+
+<pre>
+package SomeModule;
+
+use strict;
+use warnings;
+
+our $VERSION = '0.01';
+
+require XSLoader;
+XSLoader::load('SomeModule', $VERSION);
+
+1;
+</pre>
+
+<b>SomeModule::Utilのソースコード</b>
+
+SomeModule::Util::barも作ってみましょう。これは「lib/SomeModule/Util.pm」に保存してください。これはパッケージ名だけが宣言されたほとんど空のファイルです。
+
+<pre>
+package SomeModule::Util;
+
+1;
+</pre>
+
+<h4>テストスクリプト</h4>
+
+テストスクリプトを作成します。これは、XSファイルがあるディレクトリと同じディレクトリにおいてください。
+
+<pre>
+use strict;
+use warnings;
+
+use SomeModule;
+use SomeModule::Util;
+
+SomeModule::foo();
+SomeModule::Util::bar();
+</pre>
+
+<h4>コンパイルして実行</h4>
+
+コンパイルして実行してみましょう。
+
+<pre>
+perl Makefile.PL
+make
+perl -Mblib test.pl
+</pre>
+
+次のように出力されれば成功です。
+
+<pre>
+foo
+bar
+</pre>
+
+XSを複数モジュールで記述するのは、それほど難しくなさそうですね。
+

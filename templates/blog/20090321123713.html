@@ -1,0 +1,91 @@
+<h2 class="title">アクセサを生成する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">アクセサ</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+今回はアクセッサを作成してみましょう。
+
+<h3>1. アクセッサとは何か?</h3>
+
+オブジェクト指向では<b>データを直接いじって</b>は駄目です。オブジェクト指向ではオブジェクトに対するアクセスは<b>公開されたメソッド</b>を通じて行うのが正しい作法だからです。
+
+<pre>
+my $book = Book->new;
+
+# 駄目!
+$book->{title} = 'aaa';
+</pre>
+
+データをいじる場合は、アクセッサを通じて行います。アクセッサとは、<b>データを変更したり取得したりするためのメソッド</b>のことを言います。
+
+以下のようにアクセッサを使ってデータに値を設定するのが正しい作法です。
+
+<pre>
+my $book = Book->new;
+$book->title('aaa');
+</pre>
+クラスを作成する側は、アクセッサを作成して公開する義務があります。
+
+<h3>2. アクセッサの作成</h3>
+
+では早速アクセッサを作成してみましょう。Perlでは、値を取得するのにも、値を設定するのも同じアクセッサを使って行うというのが一般的です。
+
+(Perlベストプラスティスという本では、設定のためのアクセッサと取得するためのアクセッサは分けるべきだと書いてありますが、CPANなどの実際で見ると、アクセッサはひとつだけ作ることが好まれているようです。)
+
+<pre>
+sub title {
+  my $self = shift;
+  if (@_) {
+    $self->{title} = $_[0];
+  }
+  return $self->{title};
+}
+</pre>
+
+$self には、オブジェクトが入ってきます。それで、@_に値があった場合は、$_[0] を $self->{title} に設定しています。
+
+最後の行で$self->{title} を返却しています。
+
+<h3>3. 値が設定された場合は、古い値を返却するアクセッサを作成する</h3>
+
+上記のアクセッサのほかに、値が設定された場合に<b>古い値を返却</b>するように実装しているアクセッサも一般的です。
+
+<pre>
+my $book = Book->new(title => 'aaa');
+my $old_val = $book->title('bbb');
+</pre>
+
+古い値を返すアクセッサは以下のように作成します。
+
+<pre>
+sub title {
+  my $self = shift;
+  if (@_) {
+    my $old = $self->{title};
+    $self->{title} = $_[0];
+    return $old;
+  }
+  else {
+    return $self->{ title };
+  }
+}
+</pre>
+
+これで、コンストラクタとアクセッサの解説が終わりました。後は好きなメソッドを追加していけばよいだけですね。
+

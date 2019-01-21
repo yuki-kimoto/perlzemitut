@@ -1,0 +1,178 @@
+<h2 class="title">環境に応じたオブジェクトを作成する</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">環境に応じた振る舞い</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+クラスを少しだけ改造してOSに応じて振る舞いを変更するようにしてみましょう。
+
+<h3>1. 環境に応じて振る舞いを変えるポリモーフィズム</h3>
+
+環境がWindowsだった場合は、FilePath::Windowsクラスのオブジェクトを作成して、環境がそれ以外だったら、FilaPath::Unixクラスのオブジェクトを作成するクラスを書いてみました。
+
+<pre>
+use strict;
+use warnings;
+
+my $file_path = FilePath->new;
+
+my $result = $file_path->cat_path('a', 'b');
+
+print "結果: $result\n";
+
+# ユーザが利用するクラス
+package FilePath;
+
+sub new　{
+  my $self = shift;
+  if ($^O eq 'MSWin32') {
+    return FilePath::Windows->new;
+  }
+  else {
+    return FilePath::Unix->new;
+  }
+}
+
+# ファイルパスを扱うための基底クラス
+package FilePath::Base;
+
+sub new {
+  my $proto = shift;
+  my $class = ref $proto || $proto;
+  my $self = {};
+  bless $self, $class;
+  return $self;
+}
+
+sub cat_path {
+  my ($self, $str1, $str2) = @_;
+  return $str1 . $self->delimiter . $str2;
+}
+
+# Unix 用
+package FilePath::Unix;
+use base 'FilePath::Base';
+
+# Unixの場合の区切り文字
+sub delimiter{ return '/' }
+
+
+# Windows用
+package FilePath::Windows;
+use base 'FilePath::Base';
+
+# Windowsの場合の区切り文字
+sub delimiter{ return '\\' }
+</pre>
+
+実行結果は、環境がWindowsの場合は、
+
+<pre>
+結果: a\b
+</pre>
+
+それ以外の場合は、
+
+<pre>
+結果: a/b
+</pre>
+
+となります。環境がWindowsの場合は、FilePath::Windowsクラスのオブジェクトが生成されて、それ以外の場合は、FilePath::Unixクラスのオブジェクトが生成されているということです。
+
+<pre>
+print ref $file_path;
+</pre>
+
+とするとどのクラスのオブジェクトが作成されているかが見えると思います。
+
+<h3>2. コンストラクタで振る舞いを変える</h3>
+
+ユーザが利用するクラスとして、FilePathというクラスを準備しました。このクラスのコンストラクタが、環境に応じたオブジェクトを生成してくれます。(一般的には、ファクトリークラスと呼ばれるものになります。)
+
+<pre>
+package FilePath;
+
+sub new {
+  my $self = shift;
+  if ($^O eq 'MSWin32') {
+    return FilePath::Windows->new;
+  }
+  else {
+    return FilePath::Unix->new;
+  }
+}
+</pre>
+
+$^O を見てOSの種類を調べて、作成するオブジェクトを変更しています。この例のコンストラクタは引数を受け取りませんが、コンストラクタというのは、一般的には引数を受け取るので
+
+<pre>
+sub new {
+  my $self = shift;
+  if ($^O eq 'MSWin32') {
+    return FilePath::Windows->new(@_);
+  }
+  else {
+    return FilePath::Unix->new(@_);
+  }
+}
+</pre>
+と記述する場合のほうが多いです。３項演算子を使って書くとさらにすっきりします。
+
+<pre>
+sub new {
+  my $self = shift;
+  return $^O eq 'MSWin32' ? FilePath::Windows->new(@_) :
+                            FilePath::Unix->new(@_);
+}
+</pre>
+
+<h3>3. 継承の便利なところ</h3>
+
+継承をうまく使えば、環境に応じた振る舞いをさせる記述をすっきと記述することができることがわかると思います。
+
+また、ほかの環境にも対応させたい場合は「FilePath::ほにゃらら」というクラスを作って、FilePathクラスのコンストラクタを少し修正すれば良いだけです。
+
+つまりどのような場面で継承が威力を発揮するかといえば、数多くのパターンが存在して、拡張の可能性が高い場面ということになります。　
+
+<h3>4. 継承が難しいと感じる場合は</h3>
+
+このサンプルをデバッガでたどってください。クラスの間をどういう風に動き回っているかを、観察すれば、理解できてくるはずです。
+
+$^O の値を変えれば、Windows の場合や、Unixの場合をエミュレートできます。また、ref関数を使って、作成されたオブジェクトが属するクラスを見たりしてください。
+

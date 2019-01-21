@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>Perlデバッガの手引き - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">Perlデバッガの手引き</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">デバッガ</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<strong>Perlのとても便利な道具のひとつにデバッガがあります。</strong>デバッガを使うとスクリプトを一行づつたどって変数の中身を見たり、ブレークポイントを設定してその位置で停止したりすることができます。
+<p>
+  デバッガは本当に便利なのですがPerlをやっていても意外と知らない人がいます。ひとたびデバッガを覚えてしまうと試験をするときに手放せなくります。Perlを覚えたての時期からどんどん使っていって欲しいツールです。そんなデバッガのコマンドとテクニックをまとめてみました。
+</p>
+<h3>デバッグ用のスクリプト</h3>
+<p>
+  デバッグ用の簡単なスクリプトを準備しました。debug.plという名前で保存してください。このスクリプトを使用してデバッガの解説をします。
+</p>
+<pre>
+my $message = 'Hello';
+my @nums = (1, 2, 3);
+my %scores = (math =&gt; 80, english =&gt; 77);
+
+my $twice = twice(5);
+
+# ブレークポイント
+$DB::single = 1;
+
+for my $num (@nums) {
+    
+  # 条件付ブレークポイント
+  if ($num == 2) { $DB::single = 1 }
+  print "$num\n";
+}
+
+sub twice {
+  my $num = shift;
+  
+  return $num * 2;
+}
+</pre>
+<h3>デバッガの起動</h3>
+<strong>デバッガを起動するには「-d」オプションを指定してperlを起動します。</strong>
+<pre>
+perl -d debug.pl
+</pre>
+<p>
+  デバッガを起動すると最初の行で停止します。
+</p>
+<pre>
+main::(a.pl:4): my $message = 'Hello';
+</pre>
+<p>
+  デバッガを終了するには「q」を使用します。
+</p>
+<pre>
+q
+</pre>
+<p>
+  ヘルプを見るには「h」を使用します。
+</p>
+<pre>
+h
+</pre>
+<p>
+  では順番にデバッガのコマンドを覚えていきましょう。
+</p>
+<h3>1. 実行系のコマンド</h3>
+<p>
+  Perlデバッガの実行系のコマンドを解説します。
+</p>
+<h4>n - 一行実行</h4>
+<strong>スクリプトを一行実行するには「n」を使用します。</strong>「n」と入力して「Enter」を入力すると次の行に進みます。
+<p>
+  最初の状態で「n」を実行すると次のように表示され一行進んでいることが確認できます。
+</p>
+<pre>
+main::(a.pl:5): my @nums = (1, 2, 3);
+</pre>
+<p>
+  「n」「Enter」「n」「Enter」と入力していくとスクリプトの最後にたどり着いてスクリプトが終了します。
+</p>
+<pre>
+Debugged program terminated.  Use q to quit or R to restart,
+</pre>
+<p>
+  デバッグをやめるかリスタートするかを聞かれますが2回目のデバッグを行いたいときは必ずqでデバッグをいったん終えてください。
+</p>
+<p>
+  「n」「Enter」「n」「Enter」と入力するのは少し面倒です。実は「ｎ」「Enter」「Enter」「Enter」で行を進めていくことができます。「n」か「s」が直前に入力されていた場合は「Enter」で直前のコマンドを繰り返すことができます。
+</p>
+<strong>nは「next」のnだと覚えると覚えやすいです。</strong>
+<h4>s - シングルステップ実行</h4>
+<strong>スクリプトをシングルステップ実行するには「s」を使用します。</strong>「n」との違いはサブルーチンの内部の処理もたどってくれることです。
+<p>
+  「n」で一行実行を勧めてスクリプトをサブルーチンの呼び出しがある行まで進めてください。
+</p>
+<pre>
+main::(a.pl:8): my $twice = twice(5);
+</pre>
+<p>
+  この行で「s」を実行するとサブルーチンの内側の処理に移動することができます。
+</p>
+<pre>
+main::twice(a.pl:21):       my $num = shift;
+</pre>
+<h4>c - ブレークポイントあるいは指定した行まで実行</h4>
+<strong>「c」はブレークポイントあるいは指定した行まで実行するコマンドです。</strong>cはcontinueの頭文字のcです。
+<pre>
+c 5
+</pre>
+<p>
+  を実行すると5行目の直前までが実行されます。
+</p>
+<pre>
+main::(a.pl:5): my @nums = (1, 2, 3);
+</pre>
+<p>
+  次に引数を与えずに
+</p>
+<pre>
+c
+</pre>
+<p>
+  を実行すると文中のブレークポイントの次の位置まで進みます。
+</p>
+<pre>
+main::(a.pl:13):        for my $num (@nums) {
+</pre>
+<pre>
+# ブレークポイント
+$DB::single = 1;
+</pre>
+<p>
+  はスクリプトの中に埋め込むことができるブレークポイントです。変数の内容などを見たい場合にその直前の行あたりにブレークポイントを設定しておくと、そこで実行を停止することができるのでとても便利です。
+</p>
+<h3>2. 表示系のコマンド</h3>
+<p>
+  表示系のコマンドを解説します。
+</p>
+<h4>p - 変数の内容を表示</h4>
+<strong>「p」で変数の内容を表示することができます。</strong>たとえば$messageという変数を表示したい場合は以下のようにします。
+<pre>
+p $message
+</pre>
+<h4>x - 変数の内容を展開して表示</h4>
+<p>
+  「p」はスカラ変数の内容を表示するには便利ですがハッシュや配列、またもっと複雑なデータ構造を表示するには適していません。
+</p>
+<strong>「x」を使用するとデータの内部構造をわかりやすく表示することができます。</strong>「x」の引数にはリファレンスを渡す必要がありますので注意してください。
+<p>
+  たとえば%scoresの内容を表示するには次のようにします。\はリファレンスを取得するためのものです。
+</p>
+<pre>
+x \%scores
+</pre>
+<p>
+  次のように変数のデータがわかりやすく表示されます。
+</p>
+<pre>
+0  HASH(0x19b205c)
+   'english' =&gt; 77
+   'math' =&gt; 80
+</pre>
+<b>3. その他のよく使用するコマンド</b>
+<p>
+  その他のよく使用するコマンドを解説します。
+</p>
+<h4>v - 周辺の行の表示</h4>
+<p>
+  「v」で周辺の行を表示することができます。
+</p>
+<pre>
+v
+</pre>
+<p>
+  4行目で「v」を実行すると次のように周辺の行が表示されます。
+</p>
+<pre>
+1:      use strict;
+2:      use warnings;
+3
+4==&gt;    my $message = 'Hello';
+5:      my @nums = (1, 2, 3);
+6:      my %scores = (math =&gt; 80, english =&gt; 77);
+</pre>
+<p>
+  「v」を何回も実行すると下の行に表示を移していくことができます。
+</p>
+<h4>. - 現在行の表示</h4>
+<p>
+  「v」を何回も実行すると下の行に表示が移動してしまいます。そういうときに現在行に戻るために「.」を使用することができます。
+</p>
+<pre>
+.
+</pre>
+<h4>任意のperlの文</h4>
+<strong>デバッガでは任意のPerlの文を実行することができます。</strong>以下は変数が定義されているかどうかを確認してみるためにdefined関数を使った例です。
+<pre>
+print defined $message;
+</pre>
+<p>
+  どのような文でも実行することができるので確認に役立ちます。
+</p>
+<h3>4. デバッグのテクニック</h3>
+<p>
+  よく使用するデバッグのテクニックを紹介します。
+</p>
+<h4>文中ブレークポイント</h4>
+<strong>Perlではスクリプトの中にブレークポイントを埋め込むことができます。</strong>DBクラス(デバッガのためのクラス)のsingleという変数に1を代入しておくとその位置でシングルステップ実行に処理が切り替わる仕組みです。
+<pre>
+$DB::single = 1;
+</pre>
+<p>
+  これは本当に便利なのでどんどん使ってください。また試験を終えた後はスクリプトの中から削除するのを忘れないようにしましょう。
+</p>
+<h4>条件つきブレークポイント</h4>
+<p>
+  デバッグを行っているとある条件のときだけ処理をそこで止めて変数の内容を見たいというときがあります。そのような場合は、条件文と「$DB::single = 1」を組み合わせて使います。今回のサンプルでは$numが2のときにその位置でデバッガが停止するようにしています。
+</p>
+<pre>
+if ($num == 2) { $DB::single = 1 }
+</pre>
+<h4>警告が発生した位置を調べる</h4>
+<p>
+  スクリプトの試験をしていると以下のような未定義値を使用していますという意味の警告がよく発生します。
+</p>
+<pre>
+Use of uninitialized value
+</pre>
+<p>
+  特に原因を発見するのが大変なのはforやwhileなどのループの中で警告が発生した場合です。これはどこかで代入すべきだったのに代入できていないとうことなので、その場所を特定する必要があります。
+</p>
+<p>
+  ほとんどの人はこのような場合はなんとなくこの場所だろうという位置までデバッガを進めると思うのですが、実は警告をキャッチする方法があります。
+</p>
+<p>
+  Perlでは警告をシグナルとして受け取ることができるので、ループのブロックの中に次のようなブレークポイントを仕掛けてあげればよいです。
+</p>
+<pre>
+# 警告をキャッチしてブレークポイントしかける
+$SIG{__WARN__} = sub {
+    $DB::single = 1;
+};
+</pre>
+<h3>デバッガで上下キーがきかずにヒストリー機能を使えない</h3>
+<p>
+  Perlのデバッガで上下キーがきかずにヒストリー機能を使えない場合というのがあるかと思います。これは、Term::ReadLine::Gnuがインストールされていないことが原因です。
+</p>
+<p>
+  Term::ReadLine::Gnuをインストールするためには、以下のC言語のライブラリが必要です。
+</p>
+<h4>CentOS,RedHatの場合</h4>
+<pre>
+yum -y install readline-devel
+</pre>
+<h4>Term::ReadLine::Gnuのインストール</h4>
+<p>
+  cpanmかcpanでTerm::ReadLine::Gnuをインストールします。
+</p>
+<pre>
+# cpanm
+cpanm Term::ReadLine::Gnu
+</pre>
+<pre>
+# cpan
+cpan Term::ReadLine::Gnu
+</pre>
+<h3>任意の位置でブレークポイントを指定してデバッガを止める</h3>
+<p>
+  Perlのデバッガは便利です。デバッガを使うようになると、ぴたっと見たい位置で止めたいという気持ちがわいてくるかと思います。ぴたっと見たい位置で止めるにはどうすればよいでしょうか。
+</p>
+<p>
+  たとえば試験を書いているときに、同じ処理の同じ部分を何回も通過するということはよくあることです。こういう場合は「$DB::single = 1」というブレークポイントの記述だけではうまく止まることができませんね。以下の場合だと、最初のtotalが実行された時点で、ブレークポイントに引っかかってしまいます。
+</p>
+<pre>
+total(1, 2);
+
+# この処理のときだけ見たい
+total(3, 4);
+
+sub total {
+  my ($num1, $num2) = @_;
+  
+  $DB::single = 1;
+  my $total = $num1 + $num2;
+
+  return $total;
+}
+</pre>
+<p>
+  こういうときは条件付ブレークポイントを使います。
+</p>
+<pre>
+total(1, 2);
+
+# この処理のときだけ見たい
+$ENV{a} = 1;
+total(3, 4);
+
+sub total {
+  my ($num1, $num2) = @_;
+  
+  $DB::single = 1 if $ENV{a};
+  my $total = $num1 + $num2;
+
+  return $total;
+}
+</pre>
+<p>
+  環境変数というのは、グローバル変数なので、ちょっと利用させてもらいます。環境変数aをして、設定されているときだけ、ブレークポイントを設定すると記述すると、ぴたっと止まりたい位置で止まることができます。これは、結構便利なテクニックなので、覚えておきましょう。
+</p>
+<h3>デバッガを積極的に活用してみてください</h3>
+<p>
+  これでデバッガのコマンドとテクニックの解説を終わります。デバッガのコマンドはたくさんありますが、ここに書いておいてものだけ覚えておけばデバッグで困ることはないでしょう。デバッガは本当に有用なツールなので積極的に活用してみてください。
+</p>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

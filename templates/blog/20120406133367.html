@@ -1,0 +1,53 @@
+<h2 class="title">morbo - Mojoliciousの開発サーバー</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+<b>morbo</b>はMojoliciousにデフォルトでついている開発サーバーです。ファイルの変更を自動的に検知してサーバーを自動で再起動してくるので、Web開発がとても便利になります。
+
+<pre>
+morbo app.pl
+</pre>
+
+<h4>morboがWindowsでうまく動かない</h4>
+
+morboは、Windowsでは、ファイルを検出して、うまく再起動してくれません。(2018年4月27日現在)
+
+このためにWindows上での開発は非常にストレスがたまるものになります。
+
+この問題の解決のためにwinmorboというバッチファイルを作成したので、ご利用ください。
+
+<ul>
+  <li>
+    <a href="/blog/20180430152504.html">morboをWindowsで動かすツール - winmorbo</a>
+  </li>
+</ul>
+
+<h4>ポート番号を指定する</h4>
+
+morboで試験用のサーバーを起動すると、通常はポート番号3000でアプリケーションが起動します。
+
+これは、<b>--listen</b>オプションで変更することができます。
+
+<pre>
+morbo --listen=http://*:3001 myapp.pl
+</pre>
+
+また<b>MOJO_LISTEN</b>環境変数を設定することで指定することもできます。
+
+<pre>
+export MOJO_LISTEN=http://*:3001
+morbo a.pl
+</pre>
+

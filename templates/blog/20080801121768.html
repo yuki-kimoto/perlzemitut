@@ -1,0 +1,89 @@
+<h2 class="title">パイプの仕組みを理解する</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+
+現代的なOSでは、「あるプログラムの標準出力」を「別のプログラムの標準入力」に渡すことが可能です。このOSの機能をパイプと呼びます。
+
+パイプという機能は非常に便利な機能です。標準入力からデータを受け取り、標準出力に出力するようにプログラムを作成しておけば、複数のプログラムを連動させることができます。
+
+<h3>1. パイプのイメージ</h3>
+
+<pre>
+               |-----------|    |-----------|    |-----------|
+最初の入力 --->|プログラムA|--->|プログラムB|--->|プログラムC|---> 最終的な出力
+               |-----------|    |-----------|    |-----------|
+</pre>
+
+パイプを使えば、プログラムAの標準出力をプログラムBの標準入力に連結することができます。さらに、プログラムBの標準出力をプログラムCの標準入力に連結することもできます。このように、標準出力と標準入力を連結することで、中間ファイルを作らずに、データを連続的に処理することができます。
+
+<h3>2. パイプを使用する</h3>
+
+<pre>
+perldoc perlintro | perl -ne "print if /open/"
+</pre>
+
+| というのがパイプ記号です。この例では、perldoc perlintro の標準出力を、perl -ne "print if /open/"の標準入力に連結しています。
+
+perldocコマンドはperlのマニュアル表示コマンドです。perl -ne "print if /open/" は、unix の grepに該当するワンライナーです。openという文字を含む行を選択して出力します。
+
+全体として見ると、perlintoのマニュアルページから、openを含む行を取り出しています。パイプを利用すると、データを複数のプログラムで連続的に処理することができます。
+
+<h3>3.パイプの仕組み</h3>
+
+パイプとは、あるプログラムの標準出力を別のプログラムの標準入力に連結する機能だといいました。実際に内部的にOSがやっていることを知ると理解が深まると思いますので書いておきます。
+
+誤解を恐れずにいうと、パイプとは一時ファイル(※1)です。プログラムAは一時ファイルに出力し、その一時ファイルからプログラムBが読み取ります。以下のようなイメージです。
+
+<pre>
+|-----------|                               |-----------|
+|プログラムA|--->  一時ファイル(パイプ) --->|プログラムB|
+|-----------|                               |-----------|
+</pre>
+
+OSが暗黙的に一時ファイルを利用しているので、プログラムAの出力が直接プログラムBの入力になっているように見えます。これがパイプの背後にある仕組みです。
+
+もうひとつ大事な話をします。プログラムAとプログラムBはいつ一時ファイルを閉じるのかという話です。
+
+プログラムAは書き込みモードで一時ファイルを開いています。プログラムBは読み込みモードで一時ファイルを開いています。プログラムAは一時ファイルを読み取る必要はないし、プログラムBは一時ファイルに書き込む必要がないのでこのようにオープンされます。
+
+さて、プログラムAとプログラムBはいつ一時ファイルをクローズするのでしょうか?マルチタスクで、プログラムAとプログラムBが同時に起動している場合で考えます。
+
+プログラムAの答えは簡単です。プログラムAの出力が終わったら一時ファイルをクローズします。プログラムAの処理は、プログラムBに依存しません。
+
+では、プログラムBは、いつ一時ファイルををクローズするのでしょうか。答えは、プログラムAが一時ファイルをクローズして、かつ一時ファイルのデータを最後まで読み取った場合です。通常のファイルのようにEOFに到達しただけでは、クローズしません。なぜなら、プログラムAがまだ書き込みを続ける可能性が残っているからです。だから、プログラムBが、一時ファイルを閉じるためには、プログラムAが一時ファイルをクローズしている必要があるのです。
+
+※1 パイプの実装はOSによって異なります。Unix系OSでは、メモリ上でパイプが作成されます。Windowsでは、ディスク上に一時ファイルとしてパイプが作られます。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+

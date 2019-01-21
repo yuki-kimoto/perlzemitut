@@ -1,0 +1,86 @@
+<h2 class="title">Perlで人工知能・機械学習を行うAI::MXNetの出来が凄そうだ</h2>
+
+最近知った。Perlで<b>人工知能プログラミング</b>を行うAI::MXNetの出来が凄そうだ。ディープラーニングという手法を使った機械学習を行うライブラリです。
+
+これは公式のAmazonクラウドのMZNetでも、Perlの公式ライブラリとして受け入れられたそうだ。
+
+インターフェースはPythonのMXNetライブラリとほぼ一緒に仕上がっているみたい。C++で書かれたMXNetのPerlバインディングになっている。
+
+<q>
+<a href="https://metacpan.org/release/AI-MXNet">Perlで人工知能プログラミングを行うAI::MXNet(CPAN)</a>
+</q>
+
+MXNetのかなり多くの機能をPerlから利用できるようだ。Perlで人口知能プログラミングに興味がある方は、ぜひチャレンジしてみて!
+
+ライブラリがあるとPerlでも、人工知能プログラミングができるんだね。すごいね! GPUも使えるみたいよ!
+
+<pre>
+## Convolutional NN for recognizing hand-written digits in MNIST dataset
+## It's considered "Hello, World" for Neural Networks
+## For more info about the MNIST problem please refer to http://neuralnetworksanddeeplearning.com/chap1.html
+ 
+use strict;
+use warnings;
+use AI::MXNet qw(mx);
+use AI::MXNet::TestUtils qw(GetMNIST_ubyte);
+use Test::More tests => 1;
+ 
+# symbol net
+my $batch_size = 100;
+ 
+### model
+my $data = mx->symbol->Variable('data');
+my $conv1= mx->symbol->Convolution(data => $data, name => 'conv1', num_filter => 32, kernel => [3,3], stride => [2,2]);
+my $bn1  = mx->symbol->BatchNorm(data => $conv1, name => "bn1");
+my $act1 = mx->symbol->Activation(data => $bn1, name => 'relu1', act_type => "relu");
+my $mp1  = mx->symbol->Pooling(data => $act1, name => 'mp1', kernel => [2,2], stride =>[2,2], pool_type=>'max');
+ 
+my $conv2= mx->symbol->Convolution(data => $mp1, name => 'conv2', num_filter => 32, kernel=>[3,3], stride=>[2,2]);
+my $bn2  = mx->symbol->BatchNorm(data => $conv2, name=>"bn2");
+my $act2 = mx->symbol->Activation(data => $bn2, name=>'relu2', act_type=>"relu");
+my $mp2  = mx->symbol->Pooling(data => $act2, name => 'mp2', kernel=>[2,2], stride=>[2,2], pool_type=>'max');
+ 
+ 
+my $fl   = mx->symbol->Flatten(data => $mp2, name=>"flatten");
+my $fc1  = mx->symbol->FullyConnected(data => $fl,  name=>"fc1", num_hidden=>30);
+my $act3 = mx->symbol->Activation(data => $fc1, name=>'relu3', act_type=>"relu");
+my $fc2  = mx->symbol->FullyConnected(data => $act3, name=>'fc2', num_hidden=>10);
+my $softmax = mx->symbol->SoftmaxOutput(data => $fc2, name => 'softmax');
+ 
+# check data
+GetMNIST_ubyte();
+ 
+my $train_dataiter = mx->io->MNISTIter({
+    image=>"data/train-images-idx3-ubyte",
+    label=>"data/train-labels-idx1-ubyte",
+    data_shape=>[1, 28, 28],
+    batch_size=>$batch_size, shuffle=>1, flat=>0, silent=>0, seed=>10});
+my $val_dataiter = mx->io->MNISTIter({
+    image=>"data/t10k-images-idx3-ubyte",
+    label=>"data/t10k-labels-idx1-ubyte",
+    data_shape=>[1, 28, 28],
+    batch_size=>$batch_size, shuffle=>1, flat=>0, silent=>0});
+ 
+my $n_epoch = 1;
+my $mod = mx->mod->new(symbol => $softmax);
+$mod->fit(
+    $train_dataiter,
+    eval_data => $val_dataiter,
+    optimizer_params=>{learning_rate=>0.01, momentum=> 0.9},
+    num_epoch=>$n_epoch
+);
+my $res = $mod->score($val_dataiter, mx->metric->create('acc'));
+ok($res->{accuracy} > 0.8);
+</pre>
+
+<h3>参考記事</h3>
+
+<ul>
+  <li>
+    <a href="http://dokechin.hatenablog.com/entry/2017/07/15/204726">MacでAI::MXNetを動かして見た|鈍足ランナーのＩＴ日記</a>
+  </li>
+  <li>
+    <a href="http://codehex.hateblo.jp/entry/2017/09/06/150712">MXNet の基礎を Perl で学んでみた part 1|アルパカ三銃士</a>
+  </li>
+</ul>
+

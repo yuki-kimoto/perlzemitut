@@ -1,0 +1,69 @@
+<h2 class="title">バッククォート演算子 - 別プロセスを実行し標準出力を取得</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<b>バッククォート演算子</b>を使うと、別のプロセスを実行し、プロセスが生成した標準出力を取得することができます。
+
+<pre>
+# バッククォート演算子
+my $output = `$cmd`;
+</pre>
+
+<a href="/blog/20180124151680.html">system関数</a>とかなりよく似ていますね。system関数が戻り値として、終了ステータスを返すのに対して、バッククォート演算子は、プロセスの標準出力を返します。
+
+<h3>lsコマンドを実行する</h3>
+
+バッククォート演算子のひとつの例としてカレントディレクトリの内容を表示するLinuxのlsコマンドを実行してみます。
+
+<pre>
+my $output = `ls`;
+</pre>
+
+$outputには、カレントディレクトリの一覧が表示されます。
+
+<pre>
+a.pl              gperl                             module-starter.txt                not_important_project  ringowiki  static-perl.tar
+batch             Image-PNG-Simple                  mojo                              Object-Simple          role       taskdeal
+crontab.txt       imager-japanese-translation.wiki  mojo-examples
+</pre>
+
+<h3>呼び出したプロセスの戻り値をチェックするには</h3>
+
+バッククォート演算子で呼び出すプロセスが失敗したりエラーステータスを返したりした場合は、どのようにチェックするのでしょうか。
+
+それは、<a href="/blog/20161102147817.html">特殊変数</a>「$?」を使用します。$?は16bitの値で、上位8bitに、子プロセスの終了ステータスが格納されます。右8bitシフトをすれば、終了ステータスが取り出せます。
+
+<pre>
+my $output = `ls`;
+
+# 子プロセスの終了ステータスをチェック
+my $status = $? >> 8;
+if ($status != 0) {
+  # エラー処理
+}
+</pre>
+
+<h3>バッククォート演算子のセキュリティ</h3>
+
+バッククォート演算子は、セキュリティの問題が起こりやすい演算子です。たとえば、もしWebからの入力データが「rm」で、それをバッククォート演算子にチェックせずに渡したとしたらと考えてください。
+
+バッククォート演算子によって、意図しないコマンドを実行されてしまいます。
+
+ユーザーからの入力をプログラムで受け取っている場合は、バッククォート演算子に渡す文字列については、必ず入力が安全なものであることを確認してください。
+

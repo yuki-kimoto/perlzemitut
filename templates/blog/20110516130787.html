@@ -1,0 +1,391 @@
+<h2 class="title">DBIx::Customで「データベース接続」する方法</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+データベースへ接続するには<strong>connect</strong>メソッドを使用します。データベースとしてSQLiteに接続してみます。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:SQLite:dbname=bookshop"
+);
+</pre>
+
+データベースに接続するためにはdsnにデータソース名を指定します。データソースは各データベースに依存したものになります。接続に成功するとDBIx::Customオブジェクトが戻り値として返ります。
+
+<h3>ユーザー名とパスワード</h3>
+
+データベースへの接続にユーザー名とパスワードが必要な場合はuserとpasswordを使用します。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:SQLite:dbname=bookshop",
+  user => 'ken',
+  password => 'utj4857'
+);
+</pre>
+
+<h3>DBIのオプション</h3>
+
+DBIのオプションはoptionで指定することができます。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:SQLite:dbname=bookshop",
+  option => {sqlite_unicode => 1}
+);
+</pre>
+
+DBIのオプションにはデフォルトで以下の値が設定されます。エラーに対しては例外を投げ、コミットはオートコミットモードになっています。
+
+<pre>
+{
+  RaiseError => 1,
+  PrintError => 0,
+  AutoCommit => 1
+}
+</pre>
+
+デフォルトのDBIのオプションは必要であればdefault_optionメソッドで取得できます。
+<pre>
+my $default_option = DBIx::Custom->new->default_option;
+</pre>
+
+<h3>MySQLへ接続する</h3>
+
+connectメソッドを使用して<strong>MySQL</strong>に接続するには次のようにします。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:mysql:database=bookshop",
+  user => 'ken',
+  password => '!LFKD%$&',
+  option => {mysql_enable_utf8 => 1}
+);
+</pre>
+
+dsnにデータソース名、userにデータベースのユーザー名、passwordにデータベースのパスワードを指定します。optionにはDBIモジュールのオプションを指定します。戻り値はDBIx::Customオブジェクトになります。
+
+DBIのオプションとしてmysql_enable_utf8に1を設定しておくと、Perlの内部文字列を自動的にUTF-8バイト文字列に変換してくれるので便利です。
+
+またMySQLではホスト名やポート番号を指定してリモートにあるMySQLサーバーに簡単に接続することができます。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:mysql:database=bookshop;host=somehost.com;port=3306",
+  user => 'ken',
+  password => '!LFKD%$&',
+);
+</pre>
+
+<h3>PostgreSQLへ接続する</h3>
+
+connectメソッドを使用して<strong>PostgreSQL</strong>に接続するには次のようにします。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:Pg:dbname=bookshop",
+  user => 'ken',
+  password => '!LFKD%$&',
+  option => {pg_enable_utf8  => 1}
+);
+</pre>
+
+dsnにデータソース名、userにデータベースのユーザー名、passwordにデータベースのパスワードを指定します。optionにはDBIモジュールのオプションを指定します。戻り値はDBIx::Customオブジェクトになります。
+
+DBIのオプションとしてpg_enable_utf8に1を設定しておくと、Perlの内部文字列を自動的にUTF-8バイト文字列に変換してくれるので便利です。
+
+またMySQLではホスト名やポート番号を指定してリモートにあるPostgreSQLサーバーに簡単に接続することができます。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:Pg:dbname=$dbname;host=somehost.com;port=5432;",
+  user => 'ken',
+  password => '!LFKD%$&',
+);
+</pre>
+
+<h3>SQLiteへ接続する</h3>
+
+connectメソッドを使用して<strong>SQLite</strong>に接続するには次のようにします。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:SQLite:dbname=$database",
+  option => {sqlite_unicode => 1}
+);
+</pre>
+
+dsnにデータソース名を指定します。optionにはDBIモジュールのオプションを指定します。戻り値はDBIx::Customオブジェクトになります。
+
+DBIのオプションとしてsqlite_unicodeに1を設定しておくと、Perlの内部文字列を自動的にUTF-8バイト文字列に変換してくれるので便利です。
+
+またSQLiteでは試験などを行うときにメモリ上にデータベースを作成できるのが便利です。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:SQLite:dbname=:memory:"
+);
+</pre>
+
+<h3>Oracleへ接続する</h3>
+
+connectメソッドを使用して<strong>Oracle</strong>に接続するには次のようにします。
+
+<h4>ネットサービス名で接続する場合</h4>
+
+Oracleにはネットサービス名で接続する場合は次のような記述になります。
+ 
+<pre>
+# Connect to Oracle(Net servrice name)
+my $dbi = DBIx::Custom->connect(dsn => "dbi:Oracle:$net_service_name");
+</pre>
+
+ネットサービス名で接続する場合はtnsnames.oraというファイルにネットサービス名を定義しておく必要があります。
+
+tnsnames.oraは以下のパスに配置する必要があります。
+
+<pre>
+$ORACLE_HOME/network/admin/tnsnames.ora
+</pre>
+
+以下はtnsnames.oraのサンプルです。
+
+<pre>
+mydb =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = XE)
+    )
+  )
+</pre>
+
+この場合はmydbというのがネットサービス名になります。SIDの部分にデータベース名を指定します。この例ではXEがデータベース名です。
+
+<a href="http://www.shift-the-oracle.com/oracle-net/tnsnames.html">tnsnames.oraについてはこちらの解説</a>が詳しいです。
+
+<h4>直接データベース名を指定する場合</h4>
+
+直接データベース名を指定する場合は次のようにします。
+
+<pre>
+# Connect to Oracle (SID)
+my $dbi = DBIx::Custom->connect(
+  dsn => 'dbi:Oracle:host=localhost;port=1521;sid=$database',
+);
+</pre>
+
+sidがデータベース名を指定する部分になります。たとえばOracleのExpression版を利用してる場合はEXを指定すると接続できます。ポート番号を指定しない場合は1526,1521の順に自動的にポートを試してくれます。
+
+<h4>Oracleにおけるデータベース名</h4>
+
+Oracleにおいてはデータベース名と呼ばれるものが非常に多いです。<a href="http://www.shift-the-oracle.com/config/oracle_sid-db_name-global_name.html">Oracleのデータベース名についてはこちらの解説が詳しい</a>です。
+
+<h3>ODBC経由でMicrosoft SQL Serverへ接続する</h3>
+
+DBIx::Customのconnectメソッドを使用してODBC経由で<strong>Microsoft SQL Server</strong>に接続するには次のようにします。
+
+<h4>Windows認証の場合</h4>
+
+<pre>
+# Data source name (Windows authentication)
+my $dsn = "dbi:ODBC:driver={SQL Server};Server={localhost\\SQLEXPRESS};"
+  . "Trusted_Connection=yes;AutoTranslate=No;Database=master;";
+
+# Connect
+my $dbi = DBIx::Custom->connect(dsn => $dsn);
+</pre>
+
+データソース名の始まりは「dbi:ODBC:」になります。driverの値は{SQL Server}です。Serverに指定する値は、「ホスト名\\オブジェクト名」とする必要があります。
+
+Windows認証を使う場合はTrusted_Connectionに値をyesにします。AutoTranslateはデータの自動変換に関係しますが通常はNoに設定します。Databaseに、接続したいデータベース名を指定することができます。
+
+またポート番号を指定したい場合はServerの値は次のように設定します。
+
+<pre>
+# With port number
+Server={localhost\\SQLEXPRESS,1433}
+</pre>
+
+この設定はDBIx::Customではなくて普通のDBIを使って行う場合も同様です。
+
+<h4>SQL Server認証の場合</h4>
+
+<pre>
+# Data source name (SQL Server authentication)
+my $dsn = "dbi:ODBC:driver={SQL Server};Server={localhost\\SQLEXPRESS};"
+  . "Trusted_Connection=No;AutoTranslate=No;Database=master;";
+
+# Connect
+my $dbi = DBIx::Custom->connect(dsn => $dsn, user => 'kimoto', password => 'iejfid');
+</pre>
+
+Windows認証の場合とほとんどおなじですが、SQL Server 認証の場合はTrusted_Connectionの部分をNoにします。またSQL Server認証はパスワードによる認証ですのでpasswordも指定します。
+
+またSQL Server認証で接続したい場合は、SQL Server認証が有効になっていないと接続できませんので、どのような設定になっているかを確認する必要があります。
+
+<a href="http://msdn.microsoft.com/ja-jp/library/ms188670.aspx">Windows認証とSQL Server認証の切り替え</a>
+
+設定を変更した後はSQL Serverを再起動することを忘れないでください。
+
+<h3>Microsoft Accessへ接続する</h3>
+
+connectメソッドを使用してODBC経由で<strong>Microsoft Access</strong>に接続するには次のようにします。(この接続方法はPerlと生のDBIを使う場合も同じになります。)
+
+<h4>mdbファイル</h4>
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:ODBC:driver=Microsoft Access Driver (*.mdb);dbq=hoge.mdb",
+);
+</pre>
+
+dsnにデータソース名を指定します。戻り値はDBIx::Customオブジェクトになります。
+
+mdbファイルではjoinがサポートされていない点に注意してください。これはMicrosoft Accessの制限になっています。
+
+<h4>Microsoft Access 2007のaccdbファイル</h4>
+
+まず<a href="http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=7554F536-8C28-4598-9B72-EF94E038C891">こちらから2007用のODBCドライバをインストール</a>する必要があります。
+
+それからdsnを以下のように指定します。上記のmdbファイルを微妙に異なる({}で囲まれている)点に注意してください。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:ODBC:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=hoge.accdb",
+);
+</pre>
+
+accdbファイルではjoinを利用することができますが、列の中に.(ドット)を含めることができないようです。以下のようにセパレータを「-」などに変更すると正しく利用することができます。
+
+<pre>
+$dbi->separator('-');
+</pre>
+
+<h4>Microsoft Access 2010のaccdbファイル</h4>
+
+<a href="http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c06b8369-60dd-4b64-a44b-84b371ede16d">こちらから2010用のODBCドライバーをインストール</a>する必要があります。
+
+接続方法は2007のものと同じになります。
+
+<h3>DB2へ接続する</h3>
+
+connectメソッドを使用して<strong>DB2</strong>に接続するには次のようにします。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:DB2:db_name",
+  user => $username,
+  password => $password
+);
+</pre>
+
+dsnにデータソース名を指定します。戻り値はDBIx::Customオブジェクトになります。
+
+<h3>「DBIx::Connector」を利用する</h3>
+
+本番機でWebアプリケーションを動かす場合は、データベースのコネクションの管理が必要になってきます。たとえば、長時間接続がない場合は、データベース側でそのコネクションが利用されていないものと判断して、切断される場合もあるでしょう。またプリフォークサーバーやmod_perl環境でWebアプリケーションを実行する場合も、意図せずにデータベースの接続が切断される場合もあるでしょう。
+
+このような場合はコネクションマネージャーの出番です。データベースマネージャーであるDBIx::Connectorは、失われたコネクションを自動的に修復してくれます。DBIx::Customと一緒に使う場合は<b>connector</b>属性に<b>1</b>を設定します。
+
+<pre>
+my $dbi = DBIx::Custom->connect(
+  dsn => "dbi:mysql:database=$database",
+  user => $user,
+  password => $password,
+  dbi_option => {mysql_enable_utf8 => 1},
+  connector => 1
+);
+</pre>
+
+接続後はconnector属性で、DBIx::Connectorオブジェクトにアクセスできます。
+
+<pre>
+my $connector = $dbi->connector;
+</pre>
+
+トランザクションを実行したい場合は次のようにします。
+
+<pre>
+$dbi->connector->txn(sub {
+  # 処理1
+  ...
+
+  # 処理2
+  ...
+});
+</pre>
+
+より詳しい使い方については、DBIx::Connectorのドキュメントを見てください。
+
+<h4>別のコネクションマネージャを使う</h4>
+
+別のコネクションマネージャーを使うこともできます。コネクションマネージャーは<b>dbh</b>というメソッドを持っていることが必要です。
+
+<pre>
+my $connector = DBIx::SomeConnector->new(
+  "dbi:mysql:database=$database",
+  $user,
+  $password,
+  {
+    %{DBIx::Custom->new->default_dbi_option},
+    mysql_enable_utf8 => 1
+  }
+);
+
+my $dbi = DBIx::Custom->connect(connector => $connector);
+</pre>
+
+connectorにコネクションマネージャーオブジェクトを指定することができます。DBIのオプションには、DBIx::Customのデフォルトのオプションと、自分で指定したオプションを渡してください。
+

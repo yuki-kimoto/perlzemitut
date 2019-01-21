@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>DBIx::Customで「データベース接続」する方法 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">DBIx::Customで「データベース接続」する方法</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<p>
+  データベースへ接続するには<strong>connect</strong>メソッドを使用します。データベースとしてSQLiteに接続してみます。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:SQLite:dbname=bookshop"
+);
+</pre>
+<p>
+  データベースに接続するためにはdsnにデータソース名を指定します。データソースは各データベースに依存したものになります。接続に成功するとDBIx::Customオブジェクトが戻り値として返ります。
+</p>
+<h3>ユーザー名とパスワード</h3>
+<p>
+  データベースへの接続にユーザー名とパスワードが必要な場合はuserとpasswordを使用します。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:SQLite:dbname=bookshop",
+  user =&gt; 'ken',
+  password =&gt; 'utj4857'
+);
+</pre>
+<h3>DBIのオプション</h3>
+<p>
+  DBIのオプションはoptionで指定することができます。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:SQLite:dbname=bookshop",
+  option =&gt; {sqlite_unicode =&gt; 1}
+);
+</pre>
+<p>
+  DBIのオプションにはデフォルトで以下の値が設定されます。エラーに対しては例外を投げ、コミットはオートコミットモードになっています。
+</p>
+<pre>
+{
+  RaiseError =&gt; 1,
+  PrintError =&gt; 0,
+  AutoCommit =&gt; 1
+}
+</pre>
+<p>
+  デフォルトのDBIのオプションは必要であればdefault_optionメソッドで取得できます。
+</p>
+<pre>
+my $default_option = DBIx::Custom-&gt;new-&gt;default_option;
+</pre>
+<h3>MySQLへ接続する</h3>
+<p>
+  connectメソッドを使用して<strong>MySQL</strong>に接続するには次のようにします。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:mysql:database=bookshop",
+  user =&gt; 'ken',
+  password =&gt; '!LFKD%$&',
+  option =&gt; {mysql_enable_utf8 =&gt; 1}
+);
+</pre>
+<p>
+  dsnにデータソース名、userにデータベースのユーザー名、passwordにデータベースのパスワードを指定します。optionにはDBIモジュールのオプションを指定します。戻り値はDBIx::Customオブジェクトになります。
+</p>
+<p>
+  DBIのオプションとしてmysql_enable_utf8に1を設定しておくと、Perlの内部文字列を自動的にUTF-8バイト文字列に変換してくれるので便利です。
+</p>
+<p>
+  またMySQLではホスト名やポート番号を指定してリモートにあるMySQLサーバーに簡単に接続することができます。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:mysql:database=bookshop;host=somehost.com;port=3306",
+  user =&gt; 'ken',
+  password =&gt; '!LFKD%$&',
+);
+</pre>
+<h3>PostgreSQLへ接続する</h3>
+<p>
+  connectメソッドを使用して<strong>PostgreSQL</strong>に接続するには次のようにします。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:Pg:dbname=bookshop",
+  user =&gt; 'ken',
+  password =&gt; '!LFKD%$&',
+  option =&gt; {pg_enable_utf8  =&gt; 1}
+);
+</pre>
+<p>
+  dsnにデータソース名、userにデータベースのユーザー名、passwordにデータベースのパスワードを指定します。optionにはDBIモジュールのオプションを指定します。戻り値はDBIx::Customオブジェクトになります。
+</p>
+<p>
+  DBIのオプションとしてpg_enable_utf8に1を設定しておくと、Perlの内部文字列を自動的にUTF-8バイト文字列に変換してくれるので便利です。
+</p>
+<p>
+  またMySQLではホスト名やポート番号を指定してリモートにあるPostgreSQLサーバーに簡単に接続することができます。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:Pg:dbname=$dbname;host=somehost.com;port=5432;",
+  user =&gt; 'ken',
+  password =&gt; '!LFKD%$&',
+);
+</pre>
+<h3>SQLiteへ接続する</h3>
+<p>
+  connectメソッドを使用して<strong>SQLite</strong>に接続するには次のようにします。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:SQLite:dbname=$database",
+  option =&gt; {sqlite_unicode =&gt; 1}
+);
+</pre>
+<p>
+  dsnにデータソース名を指定します。optionにはDBIモジュールのオプションを指定します。戻り値はDBIx::Customオブジェクトになります。
+</p>
+<p>
+  DBIのオプションとしてsqlite_unicodeに1を設定しておくと、Perlの内部文字列を自動的にUTF-8バイト文字列に変換してくれるので便利です。
+</p>
+<p>
+  またSQLiteでは試験などを行うときにメモリ上にデータベースを作成できるのが便利です。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:SQLite:dbname=:memory:"
+);
+</pre>
+<h3>Oracleへ接続する</h3>
+<p>
+  connectメソッドを使用して<strong>Oracle</strong>に接続するには次のようにします。
+</p>
+<h4>ネットサービス名で接続する場合</h4>
+<p>
+  Oracleにはネットサービス名で接続する場合は次のような記述になります。
+</p>
+ 
+<pre>
+# Connect to Oracle(Net servrice name)
+my $dbi = DBIx::Custom-&gt;connect(dsn =&gt; "dbi:Oracle:$net_service_name");
+</pre>
+<p>
+  ネットサービス名で接続する場合はtnsnames.oraというファイルにネットサービス名を定義しておく必要があります。
+</p>
+<p>
+  tnsnames.oraは以下のパスに配置する必要があります。
+</p>
+<pre>
+$ORACLE_HOME/network/admin/tnsnames.ora
+</pre>
+<p>
+  以下はtnsnames.oraのサンプルです。
+</p>
+<pre>
+mydb =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = XE)
+    )
+  )
+</pre>
+<p>
+  この場合はmydbというのがネットサービス名になります。SIDの部分にデータベース名を指定します。この例ではXEがデータベース名です。
+</p>
+<a href="http://www.shift-the-oracle.com/oracle-net/tnsnames.html">tnsnames.oraについてはこちらの解説</a>が詳しいです。
+<h4>直接データベース名を指定する場合</h4>
+<p>
+  直接データベース名を指定する場合は次のようにします。
+</p>
+<pre>
+# Connect to Oracle (SID)
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; 'dbi:Oracle:host=localhost;port=1521;sid=$database',
+);
+</pre>
+<p>
+  sidがデータベース名を指定する部分になります。たとえばOracleのExpression版を利用してる場合はEXを指定すると接続できます。ポート番号を指定しない場合は1526,1521の順に自動的にポートを試してくれます。
+</p>
+<h4>Oracleにおけるデータベース名</h4>
+<p>
+  Oracleにおいてはデータベース名と呼ばれるものが非常に多いです。<a href="http://www.shift-the-oracle.com/config/oracle_sid-db_name-global_name.html">Oracleのデータベース名についてはこちらの解説が詳しい</a>です。
+</p>
+<h3>ODBC経由でMicrosoft SQL Serverへ接続する</h3>
+<p>
+  DBIx::Customのconnectメソッドを使用してODBC経由で<strong>Microsoft SQL Server</strong>に接続するには次のようにします。
+</p>
+<h4>Windows認証の場合</h4>
+<pre>
+# Data source name (Windows authentication)
+my $dsn = "dbi:ODBC:driver={SQL Server};Server={localhost\\SQLEXPRESS};"
+  . "Trusted_Connection=yes;AutoTranslate=No;Database=master;";
+
+# Connect
+my $dbi = DBIx::Custom-&gt;connect(dsn =&gt; $dsn);
+</pre>
+<p>
+  データソース名の始まりは「dbi:ODBC:」になります。driverの値は{SQL Server}です。Serverに指定する値は、「ホスト名\\オブジェクト名」とする必要があります。
+</p>
+<p>
+  Windows認証を使う場合はTrusted_Connectionに値をyesにします。AutoTranslateはデータの自動変換に関係しますが通常はNoに設定します。Databaseに、接続したいデータベース名を指定することができます。
+</p>
+<p>
+  またポート番号を指定したい場合はServerの値は次のように設定します。
+</p>
+<pre>
+# With port number
+Server={localhost\\SQLEXPRESS,1433}
+</pre>
+<p>
+  この設定はDBIx::Customではなくて普通のDBIを使って行う場合も同様です。
+</p>
+<h4>SQL Server認証の場合</h4>
+<pre>
+# Data source name (SQL Server authentication)
+my $dsn = "dbi:ODBC:driver={SQL Server};Server={localhost\\SQLEXPRESS};"
+  . "Trusted_Connection=No;AutoTranslate=No;Database=master;";
+
+# Connect
+my $dbi = DBIx::Custom-&gt;connect(dsn =&gt; $dsn, user =&gt; 'kimoto', password =&gt; 'iejfid');
+</pre>
+<p>
+  Windows認証の場合とほとんどおなじですが、SQL Server 認証の場合はTrusted_Connectionの部分をNoにします。またSQL Server認証はパスワードによる認証ですのでpasswordも指定します。
+</p>
+<p>
+  またSQL Server認証で接続したい場合は、SQL Server認証が有効になっていないと接続できませんので、どのような設定になっているかを確認する必要があります。
+</p>
+<a href="http://msdn.microsoft.com/ja-jp/library/ms188670.aspx">Windows認証とSQL Server認証の切り替え</a>
+<p>
+  設定を変更した後はSQL Serverを再起動することを忘れないでください。
+</p>
+<h3>Microsoft Accessへ接続する</h3>
+<p>
+  connectメソッドを使用してODBC経由で<strong>Microsoft Access</strong>に接続するには次のようにします。(この接続方法はPerlと生のDBIを使う場合も同じになります。)
+</p>
+<h4>mdbファイル</h4>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:ODBC:driver=Microsoft Access Driver (*.mdb);dbq=hoge.mdb",
+);
+</pre>
+<p>
+  dsnにデータソース名を指定します。戻り値はDBIx::Customオブジェクトになります。
+</p>
+<p>
+  mdbファイルではjoinがサポートされていない点に注意してください。これはMicrosoft Accessの制限になっています。
+</p>
+<h4>Microsoft Access 2007のaccdbファイル</h4>
+<p>
+  まず<a href="http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=7554F536-8C28-4598-9B72-EF94E038C891">こちらから2007用のODBCドライバをインストール</a>する必要があります。
+</p>
+<p>
+  それからdsnを以下のように指定します。上記のmdbファイルを微妙に異なる({}で囲まれている)点に注意してください。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:ODBC:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=hoge.accdb",
+);
+</pre>
+<p>
+  accdbファイルではjoinを利用することができますが、列の中に.(ドット)を含めることができないようです。以下のようにセパレータを「-」などに変更すると正しく利用することができます。
+</p>
+<pre>
+$dbi-&gt;separator('-');
+</pre>
+<h4>Microsoft Access 2010のaccdbファイル</h4>
+<a href="http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c06b8369-60dd-4b64-a44b-84b371ede16d">こちらから2010用のODBCドライバーをインストール</a>する必要があります。
+<p>
+  接続方法は2007のものと同じになります。
+</p>
+<h3>DB2へ接続する</h3>
+<p>
+  connectメソッドを使用して<strong>DB2</strong>に接続するには次のようにします。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:DB2:db_name",
+  user =&gt; $username,
+  password =&gt; $password
+);
+</pre>
+<p>
+  dsnにデータソース名を指定します。戻り値はDBIx::Customオブジェクトになります。
+</p>
+<h3>「DBIx::Connector」を利用する</h3>
+<p>
+  本番機でWebアプリケーションを動かす場合は、データベースのコネクションの管理が必要になってきます。たとえば、長時間接続がない場合は、データベース側でそのコネクションが利用されていないものと判断して、切断される場合もあるでしょう。またプリフォークサーバーやmod_perl環境でWebアプリケーションを実行する場合も、意図せずにデータベースの接続が切断される場合もあるでしょう。
+</p>
+<p>
+  このような場合はコネクションマネージャーの出番です。データベースマネージャーであるDBIx::Connectorは、失われたコネクションを自動的に修復してくれます。DBIx::Customと一緒に使う場合は<b>connector</b>属性に<b>1</b>を設定します。
+</p>
+<pre>
+my $dbi = DBIx::Custom-&gt;connect(
+  dsn =&gt; "dbi:mysql:database=$database",
+  user =&gt; $user,
+  password =&gt; $password,
+  dbi_option =&gt; {mysql_enable_utf8 =&gt; 1},
+  connector =&gt; 1
+);
+</pre>
+<p>
+  接続後はconnector属性で、DBIx::Connectorオブジェクトにアクセスできます。
+</p>
+<pre>
+my $connector = $dbi-&gt;connector;
+</pre>
+<p>
+  トランザクションを実行したい場合は次のようにします。
+</p>
+<pre>
+$dbi-&gt;connector-&gt;txn(sub {
+  # 処理1
+  ...
+
+  # 処理2
+  ...
+});
+</pre>
+<p>
+  より詳しい使い方については、DBIx::Connectorのドキュメントを見てください。
+</p>
+<h4>別のコネクションマネージャを使う</h4>
+<p>
+  別のコネクションマネージャーを使うこともできます。コネクションマネージャーは<b>dbh</b>というメソッドを持っていることが必要です。
+</p>
+<pre>
+my $connector = DBIx::SomeConnector-&gt;new(
+  "dbi:mysql:database=$database",
+  $user,
+  $password,
+  {
+    %{DBIx::Custom-&gt;new-&gt;default_dbi_option},
+    mysql_enable_utf8 =&gt; 1
+  }
+);
+
+my $dbi = DBIx::Custom-&gt;connect(connector =&gt; $connector);
+</pre>
+<p>
+  connectorにコネクションマネージャーオブジェクトを指定することができます。DBIのオプションには、DBIx::Customのデフォルトのオプションと、自分で指定したオプションを渡してください。
+</p>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

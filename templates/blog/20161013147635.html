@@ -1,0 +1,308 @@
+<h2 class="title">Perlのハッシュを理解しよう</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">ハッシュ</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Perlの「ハッシュ」についての解説です。Perlのハッシュは、他の言語でいうところの「連想配列」のことです。
+
+配列では、番号を指定して要素を取り出すことができましたが、「連想配列」では、文字列をキーとして指定して、要素を取り出すことができます。
+
+<h3>ハッシュの基礎</h3>
+
+ハッシュの基礎。ハッシュの宣言と初期化。ハッシュの出力と代入。ハッシュは、文字列を、添え字として、値を取得できる配列だと考えればよい。文字列をキーとして、値を取り出すことができる。
+
+<h4>ハッシュの宣言と初期化</h4>
+
+ハッシュの宣言と初期化は次のようにして行います。
+
+<pre>
+my %fathers = ('Taro' => 'Kenji', 'Naoko' => 'Yoshio');
+#あるいは
+my %fathers = (Taro => 'Kenji', Naoko => 'Yoshio');
+</pre>
+
+変数の接頭辞は<b>パーセント記号</b>です「%」。(キー1 => 値1, キー2 => 値2, ...)。Taroの父親はKenji, Naokoの父親はYoshioと読むことができる
+
+<h4>ハッシュの要素の出力</h4>
+
+<pre>
+print $mothers{'Taro'};
+</pre>
+
+出力する場合は、%ではなくて$ 。単一の要素を扱う場合は$ 。{  }を使ってキーを指定する。( 配列の場合は[ ]でした  )。{} はブラケットと読みます。( [] はブレース。 () はかっこ )
+
+<h3>ハッシュの要素の代入</h3>
+
+<pre>
+$mothers{'Naoko'} = 'Haruna';
+</pre>
+
+<h3>ハッシュの各要素の処理</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20080210120265.html">ハッシュのすべてのを取得する - keys関数</a><span style="color:red">【重要】</span>
+  </li>
+  <li>
+    <a href="/blog/20100222126425.html">ハッシュのすべての値を取得する - values関数</a>
+  </li>
+  <li>
+    <a href="/blog/20080212120283.html">ハッシュのすべてのキーと値を取得する - each関数</a>
+  </li>
+</ul>
+
+<h3>ハッシュの操作</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20080213120291.html">キーの存在を調べる - exists関数</a><span style="color:red">【重要】</span>
+  </li>
+  <li>
+    <a href="/blog/20080214120300.html">ハッシュのキーを削除する - delete関数</a><span style="color:red">【重要】</span>
+  </li>
+  <li>
+    <a href="/blog/20080227120413.html">ハッシュのキーと値を入れ替える reverse関数</a>
+  </li>
+  <li>
+    <a href="/blog/20080215120307.html">ハッシュスライス ･･･ ハッシュの複数の値を取り出す</a>
+  </li>
+</ul>
+
+<h3>ハッシュのリファレンス</h3>
+
+ハッシュのリファレンスは以下のように作ることができます。
+
+<pre>
+my $math_scores_ref = \%math_scores;
+</pre>
+
+%の前に \ をつけ、ハッシュへのリファレンスを生成。生成したリファレンスを、スカラー変数 $math_score_href に代入
+
+<h4>無名ハッシュを使って、直接ハッシュへのリファレンスを作る。</h4>
+
+<pre>
+my $math_scores_ref2 = { 
+  Aiko => 89,
+  Kenta => 100,
+  Taro => 34,
+};
+</pre>
+
+( ) の代わりに { } を使って、直接ハッシュへのリファレンスを作成できる
+
+<h4>ハッシュの要素にアクセスする</h4>
+
+<pre>
+$math_scores_ref->{Aiko}
+</pre>
+
+<h4>ハッシュのリファレンスからハッシュを取り出す</h4>
+
+ハッシュのリファレンスからハッシュを取り出すにはデリファレンスを行います。
+
+<pre>
+my %hash = %$hash_ref;
+my %hash = %{$hash_ref};
+</pre>
+
+ハッシュへのリファレンスをデリファレンスしてハッシュを取り出すこともできます。
+
+<pre>
+my %math_scores = %$math_scores;
+</pre>
+
+%$math_scoresでデリファレンスしてハッシュを取り出すことができる。
+
+ひとつの要素しか必要としないときは「->{key}」を使うことができます。
+
+<pre>
+$math_scores->{Taro};
+</pre>
+
+ハッシュのリファレンスについてはこちらで詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20180208151809.html">ハッシュのリファレンス</a>
+  </li>
+</ul>
+
+<h3>ハッシュを使った多次元データ構造</h3>
+
+ハッシュを使った多次元データ構造については、以下の記事で詳しく解説しています。「配列のハッシュ」「ハッシュの配列」「ハッシュのハッシュ」について学ぶことができます。
+
+<ul>
+  <li>
+    <a href="/blog/20100930127859.html">「配列」と「ハッシュ」で「多次元データ構造」を自由に操る</a>
+  </li>
+</ul>
+
+<h3>コラム「連想配列をハッシュと呼ぶようになったのはPerlのせい」</h3>
+
+Perlは、連想配列を言語の機能として取り入れるという素晴らしい決定をした。とてつもなく便利だ。これは、大成功で、他のほぼすべてのスクリプト言語は、影響を受けて、言語自体に連想配列を取り入れている。
+
+連想配列という名前は長かったのか、Perlはそれをハッシュと呼ぶことにした。これは、ハッシュ関数からの連想だね。
+
+でも、意外とぴったりと、データ構造を表現しているようにも思えるね。
+
+<h3>サンプルコード</h3>
+
+<h4>ハッシュの基礎</h4>
+
+ハッシュの基礎。ハッシュの宣言と初期化。ハッシュの出力と代入のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ハッシュとは
+# 文字列を、添え字として、値を取得できる配列だと考えればよい。
+# 文字列をキーとして、値を取り出すことができる。
+
+# ハッシュの宣言と初期化( 変数の接頭辞は、% )
+# ( キー1 => 値1, キー2 => 値2, ... )
+# Taroの父親はKenji, Naokoの父親はYoshioと読む
+my %fathers = ('Taro' => 'Kenji', 'Naoko' => 'Yoshio');
+
+# よりPerl的な書き方
+# => の左側の''は省略できる
+my %mathers = (Taro => 'Tomoko', Naoko => 'Shizuka');
+
+# 1: ハッシュの要素出力
+print "1:ハッシュの要素の出力\n";  
+# 出力する場合は、%ではなくて$
+# {} ブラケットを使う 
+print "\$mathers{'Taro'} = ", $mathers{'Taro'}, "\n"; 
+print "\n";
+
+# 2: ハッシュの要素の代入
+print "2:ハッシュの要素の代入\n";
+$mathers{'Naoko'} = 'Haruna';
+print "\$mathers{'Naoko'} = ", $mathers{'Naoko'} . "\n";
+</pre>
+実行結果
+<pre>
+1:ハッシュの要素の出力
+$mothers{'Taro'} = Tomoko
+
+2:ハッシュの要素の代入
+$mothers{'Naoko'} = Haruna
+</pre>
+
+<h4>ハッシュのリファレンス</h4>
+
+ハッシュのリファレンスを使ったのサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+
+# 生徒の数学の点数
+my %math_scores = ( 
+  Aiko => 89,
+  Kenta => 100,
+  Taro => 34,
+);
+
+# 1:ハッシュのリファレンス %の前に \ をつけ、ハッシュへのリファレンスを生成。
+# 生成したリファレンスを、スカラー変数 $math_scores_ref に代入
+my $math_scores_ref = \%math_scores;
+print "1:  ハッシュのリファレンス\n";
+print Data::Dumper->Dump([$math_scores_ref], ['$math_scores_ref']);
+print "\n\n";
+
+# 2:無名ハッシュ( { } )を使って、直接ハッシュへのリファレンスを作る。
+my $math_scores_ref2 = { 
+  Aiko => 89,
+  Kenta => 100,
+  Taro => 34,
+};
+
+print "2: 無名ハッシュ\n";
+print Data::Dumper->Dump([$math_scores_ref2], ['$math_scores_ref2']);
+print "\n\n";
+
+# 3:ハッシュの要素にアクセスする。($hash_ref->{key})
+print "3: ハッシュの要素にアクセスする。\n";
+print "\$math_scores_ref->{Aiko} = $math_scores_ref->{Aiko}\n";
+print "\$math_scores_ref->{Kenta} = $math_scores_ref->{Kenta}\n";
+
+</pre>
+
+実行結果
+<pre>
+1:  ハッシュのリファレンス
+$math_scores_ref = {
+                     'Aiko' => 89,
+                     'Kenta' => 100,
+                     'Taro' => 34
+                   };
+
+
+2: 無名ハッシュ
+$math_scores_ref2 = {
+                      'Aiko' => 89,
+                      'Kenta' => 100,
+                      'Taro' => 34
+                    };
+
+
+3: ハッシュの要素にアクセスする。
+$math_scores_ref->{Aiko} = 89
+$math_scores_ref->{Kenta} = 100
+</pre>
+
+<h4>ハッシュのリファレンスのデリファレンス</h4>
+
+ハッシュのリファレンスをデリファレンスするサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+
+# 生徒の数学の点数
+my $math_scores = {
+  Taro => 89,
+  Naoko => 54,
+  Kenji => 54
+};
+
+# 1:デリファレンスしてハッシュのすべての要素を出力する
+print "1: デリファレンスしてハッシュのすべての要素を出力する\n";
+for my $key (keys %$math_scores){
+  print "\$math_scores->{$key} = " . $math_scores->{$key} . "\n";
+}
+print "\n";
+
+# 2:ひとつの要素を参照するときは、-> 演算子を使う。
+print "2: ひとつのキーを削除\n";
+delete $math_scores->{Taro};
+
+print Data::Dumper->Dump([$math_scores], ['$math_scores']);
+</pre>
+実行結果
+<pre>
+1: デリファレンスしてハッシュのすべての要素を出力する
+$math_scores->{Kenji} = 54
+$math_scores->{Taro} = 89
+$math_scores->{Naoko} = 54
+
+2: ひとつのキーを削除
+$math_scores = {
+                 'Kenji' => 54,
+                 'Naoko' => 54
+               };
+</pre>
+

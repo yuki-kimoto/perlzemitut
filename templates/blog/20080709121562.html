@@ -1,0 +1,76 @@
+<h2 class="title">AUTOLOAD - サブルーチンのオートロード </h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">オートロード</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perlではサブルーチンが存在しなかった場合に呼び出される<strong>AUTOLOAD</strong>というサブルーチンを定義することができます。これをサブルーチンのオートロードと呼びます。
+
+<pre>
+package MyModule;
+
+aaaaiiiii( 1, 2 );
+
+our $AUTOLOAD;
+sub AUTOLOAD {
+  # ...
+}
+</pre>
+
+our $AUROLOADを定義しておくと、呼び出された関数名を取得できます。
+
+<h4>オートロードは何のために使うの</h4>
+
+日常の仕事でプログラミングをするときは、オートロードを使う必要性はほとんどありません。また、モジュールを作成するときも、オートロードを積極的に使う理由はありません。
+
+オートロードの呼び出しは、非常に遅く、代替的な手段がたいていの場合はあります。
+
+アクセッサを作りたい場合は、<a href="/blog/20100312126967.html">eval</a>で動的に生成したり、<a href="/blog/20080704121518.html">サブルーチンのリファレンス</a>を<a href="/blog/20080614121342.html">型グロブ</a>に代入する方法のほうが、パフォーマンス的にも優秀です。
+
+Perlで、唯一オートロードでしか実現できない機能があります。それは、オブジェクトにメソッドを生やすということです。普段は使うことはないですが、フレームワークでこの機能を実現したいという場合は、唯一の手法になります。
+
+<h3>サンプルプログラム</h3>
+
+サブルーチンのオートロードのサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# AUTOLOAD サブルーチン
+# ・定義しておくとサブルーチンの名前を発見できなかった場合に呼び出されます。
+
+print "1: AUTOLOAD で、存在しない関数を呼び出す\n";
+
+# どこにも定義していない関数を呼び出すと。
+aaaaiiiii( 1, 2 );
+
+# これが呼ばれます。
+sub AUTOLOAD {
+
+  # $AUROLOAD を定義しておくと、呼び出された関数名を取得できます。
+  our $AUTOLOAD; 
+
+  # 関数名と引数を受け取れます。
+  my (@arg) = @_; 
+  print "AUTOLOAD が呼び出されました。\n";
+  print "呼び出そうとした関数は、 $AUTOLOAD です。\n";
+  print "引数は、" . join(',', @arg) . "です。\n";
+}
+</pre>
+

@@ -1,0 +1,86 @@
+<h2 class="title">DBIx::Custom 0.38 リリース - 5年前に廃止予定になっていた機能の削除</h2>
+
+DBIx::Custom 0.38をリリースしました。今回のリリースは、5年前に廃止予定になっていた機能の削除です。5年以上前に、DBIx::Customを利用していて、今アップデートする方はご注意ください。
+
+余分な条件分岐がなくなったので、その分高速化しています。
+
+<q>
+<a href="http://search.cpan.org/dist/DBIx-Custom/lib/DBIx/Custom.pm">DBIx::Custom 0.38</a>
+</q>
+
+<b>DBIx::Customは今後は、SQL生成のみする機能、データベースへの非同期クエリ対応、DBIx::Custom::Fastを作って高速化する機能を追加する予定です。</b>
+
+<h4>Changes</h4>
+
+廃止された機能の一覧。
+
+<q>
+0.38
+  ---------------------------------------------------
+  NOTE: This release remove many DEPRECATED features. 
+  ---------------------------------------------------
+  - remove DEPRECATED default_filter method(DBIx::Custom::Result).
+  - remove DEPRECATED default_fetch_filter(DBIx::Custom).
+  - remove DEPRECATED default_bind_filter(DBIx::Custom).
+  - remove DEPRECATED DBIx::Custom::Query.
+  - remove DEPRECATED DBIx::Custom::QueryBuilder.
+  - remove DEPRECATED execute(DBIx::Custom) method's query option
+  - remove DEPRECATED execute method receiving query object
+  - remove DEPRECATED cache_method(DBIx::Custom).
+  - remove DEPRECATED query_builder(DBIx::Custom).
+  - remove DEPRECATED tag_parse(DBIx::Custom)
+  - remove DBIX_CUSTOM_TAG_PARSE environment variable
+  - remove DEPRECATED register_tag_processor(DBIx::Custom)
+  - remove DEPRECATED register_tag(DBIx::Custom)
+  - remove DEPRECATED tag parsing functionality
+  - remove DEPRECATED prepend method(DBIx::Custom::Order) array reference receiving
+  - remove DEPRECATED remote_end_filter(DIBx::Custom::Result)
+  - remote DEPRECATED remove_filter(DIBx::Custom::Result)
+  - remove DEPRECATED filter_on(DBIx::Custom::Result)
+  - remove DEPRECATED filter_off(DBIx::Custom::Result)
+  - remove DEPRECATED end_filter(DBIx::Custom::Result)
+  - remove DEPRECATED filter_check(DBIx::Custom::Result)
+  - remove DEPRECATED column(DBIx::Custom::Result)
+  - remove DEPRECATED fetch_first(DBIx::Custom::Result)
+  - remove DEPRECATED fetch_hash_first(DBIx::Custom::Result)
+  - remove DEPRECATED execute(DBIx::Custom::Model)
+  - remove DEPRECATED method(DBIx::Custom::Model)
+  - remove DEPRECATED filter(DBIx::Custom::Model)
+  - remove DEPRECATED name(DBIx::Custom::Model)
+  - remove DEPRECATED type(DBIx::Custom::Model)
+  - remove DEPRECATED DBIX_CUSTOM_DISABLE_MODEL_EXECUTE environment variable
+  - remove DEPRECATED default_dbi_option(DBIx::Custom)
+  - remove DEPRECATED dbi_option(DBIx::Custom)
+  - remove DEPRECATED data_source(DBIx::Custom)
+  - remove DEPRECATED dbi_options(DBIx::Custom)
+  - remove DEPRECATED filter_check(DBIx::Custom)
+  - remove DEPRECATED reserved_word_quote(DBIx::Custom)
+  - remove DEPRECATED select_at(DBIx::Custom)
+  - remove DEPRECATED delete_at(DBIx::Custom)
+  - remove DEPRECATED update_at(DBIx::Custom)
+  - remove DEPRECATED insert_at(DBIx::Custom)
+  - remove DEPRECATED insert_param_tag(DBIx::Custom)
+  - remove DEPRECATED update_param_tag(DBIx::Custom)
+  - remove DEPRECATED assign_param(DBIx::Custom)
+  - remove DEPRECATED update_param(DBIx::Custom)
+  - remove DEPRECATED insert_param(DBIx::Custom)
+  - remove DEPRECATED create_query(DBIx::Custom)
+  - remove DEPRECATED apply_filter(DBIx::Custom)
+  - remove DEPRECATED query caching system
+  - remove DEPRECATED cache(DBIx::Custom)
+  - remove DEPRECATED execute method(DBIx::Custom)'s sqlfilter option
+  - remove DEPRECATED update_timestamp
+  - remove DEPRECATED insert_timestamp
+  - remove DEPRECATED select method relation option
+  - remove DEPRECATED update timestamp option
+  - remove DEPRECATED insert timestamp option
+  - remove DEPRECATED update(DBIx::Custom) method's updated_at option
+  - remove DEPRECATED update(DBIx::Custom) method's param option
+  - remove DEPRECATED insert method param option
+  - remove DEPRECATED select method column option [COLUMN, as => ALIAS] format
+  - remove DEPRECATED select method column option [COLUMN => ALIAS] format
+  - remove DEPRECATED select method where_param option
+  - remove DEPRECATED delete method where_param option
+  - remove DEPRECATED update method where_param option
+  - remove DEPRECATED execute(DBIx::Custom) method's id option
+</q>

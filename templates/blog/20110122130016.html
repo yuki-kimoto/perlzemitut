@@ -1,0 +1,69 @@
+<h2 class="title">アプリケーションを実行する - hypnotoad / Mojolicious</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+<strong>hypnotoad</strong>コマンドはMojoliciousに組み込みのプリフォークサーバーであるMojo::Server::Hypnotoadを使って<strong>アプリケーションを実行</strong>するコマンドです。hypnotoadは本番環境でアプリケーションをデプロイするために用意されています。
+
+<h3>アプリケーションの起動</h3>
+
+<pre>
+hypnotoad myapp.pl
+</pre>
+
+アプリケーションの設定を記述したい場合は「hypnotoad.conf」というファイルを記述します。
+
+<pre>
+hypnotoad.conf
+</pre>
+
+<h3>アプリケーションの停止</h3>
+
+アプリケーションを停止するには、<strong>stop</strong>オプションを利用します。
+
+<pre>
+hypnotoad myapp.pl --stop
+</pre>
+
+<h3>ホットデプロイメント</h3>
+
+ホットデプロイメントとは、アプリケーションを停止せずにソフトウェアを置き換えることのできる技術のことです。アプリケーションを実行中に、サイドhypnotoadコマンドを実行するとホットデプロイメントを行うことができます。
+
+<pre>
+hypnotoad myapp.pl
+</pre>
+

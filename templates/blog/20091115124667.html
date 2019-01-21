@@ -1,0 +1,348 @@
+<h2 class="title">Net::FTP - FTPを使ったファイル転送</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+Net::FTPを使用すると、FTPでファイルのダウンロード・アップロードができます。
+
+IT関連の仕事ではサーバにアクセスしてファイルをダウンロード・アップロードすることが頻繁にあります。FFFTPなどのFTPのクライアントのソフトウェアなどを使用してこれを行うのは非常に手間がかかります。できれば自動化したいと思うことでしょう。
+
+PerlにはFTPを行うためのクライアントアプリケーションを作成するためのNet::FTPというモジュールが標準で添付されています。Net::FTPを使えばファイルのダウンロード・アップロード作業は自動化され業務の効率化を図ることができます。
+
+<h3>FTPとは</h3>
+
+FTPはファイルを転送するためのプロトコルです。FTPを使用すればファイルのアップロードやダウンロードを行うことができます。FTPのもうすこし解説は「<a href="http://www5e.biglobe.ne.jp/~aji/3min/56.html">第56回FTP(1) 概要(3分間Networking</a>」がわかりやすいと思います。
+
+ここでは詳しい解説は行わずにFTPサーバに接続してファイルをダウンロードする手順を簡単に解説します。FTPサーバに接続してファイルをダウンロードするには次の3つ手順を踏みます。
+
+<ol>
+  <li>
+    ホスト名(あるいはIPアドレス)を指定してFTPサーバに接続する。
+  </li>
+  <li>
+    ユーザ名とパスワードを入力してログインする
+  </li>
+  <li>
+    FTPコマンドを使用してファイルをダウンロードする
+  </li>
+  <li>
+    接続を終了する
+  </li>
+</ol>
+
+<h3>ファイルをダウンロードする簡単なサンプル</h3>
+
+実際にファイルをダウンロードする簡単なサンプルを書いてみます。
+
+<pre>
+# モジュールの読み込み
+use Net::FTP;
+
+# FTPサーバへの接続(ホスト名でもIPアドレスでもOK)
+my $ftp = Net::FTP->new('somehost');
+
+# ユーザ名とパスワードを指定してログイン
+$ftp->login('user', 'password');
+
+# getというファイルを取得するコマンドを使ってファイルをダウンロード
+$ftp->get('/dir/somefile');
+
+# 接続を終了する
+$ftp->quit;
+</pre>
+newメソッドに接続先を指定するとFTPサーバに接続することができます。また戻り値にはオブジェクトが返却されこれを利用してログインしたりFTPコマンドを発行したりします。
+
+loginメソッドにユーザ名とパスワードを指定するとFTPサーバにログインすることができます。ログインというのは簡単にいうとサーバによってFTPコマンドを実行する許可が与えられた状態のことをいいます。
+
+getというメソッドを使用するとファイルをダウンロードすることができます。ファイルはカレントディレクトリにダウンロードされます。ファイル名はディレクトリ名を含まない末尾の名前(このサンプルではsomefile)になります。
+
+<h3>よく使用するメソッド</h3>
+
+よく使用するメソッドについて紹介します。
+
+<h4>new</h4>
+
+Net::FTPオブジェクトを作成してFTPサーバに接続します。
+
+<pre>
+$ftp = Net::FTP->new($host);
+</pre>
+
+引数にはホスト名かIPアドレスを指定することができます。また第2引数以降はオプションを指定することができます。オプションはハッシュのリファレンスで指定します。よく使用するオプションとしてはタイムアウトの秒数を設定するためのTimeoutなどがあります。デフォルトのタイムアウトの秒数は120秒です。
+
+<pre>
+$ftp = Net::FTP->new($host, Timeout => 180)
+</pre>
+
+<h4>login</h4>
+
+ユーザ名とパスワードを指定してログインします。
+
+<pre>
+$ftp->login($user, $password)
+</pre>
+
+匿名でFTPサーバに接続する場合はユーザ名に「anonymous」を指定します。
+
+<pre>
+$ftp->login('anonymous')
+</pre>
+
+<h4>cwd</h4>
+
+接続先のカレントディレクトリを変更します。
+
+<pre>
+$ftp->cwd($dir)
+</pre>
+
+FTPはステートフルなプロトコルで接続先のディレクトリを変更することができます。ファイルをダウンロードする場合はカレントディレクトリを変更してからファイル名だけを指定するのが一般的かもしれません。
+
+<pre>
+$ftp->cwd('dir')     # カレントディレクトリ変更
+$ftp->get('somefile') # ファイルのダウンロード
+</pre>
+
+<h4>get</h4>
+
+ファイルをダウンロードするにはgetを使用します。
+
+<pre>
+$ftp->get($file)
+</pre>
+
+第2引数にファイル名を指定すると名前を変えてダウンロードを行うことができます。
+
+<pre>
+$ftp->get($file, $renamed_file)
+</pre>
+
+<h4>put</h4>
+
+ファイルをアップロードするにはputを使用します。
+
+<pre>
+$ftp->put($file$)
+</pre>
+
+第2引数にファイル名を指定すると名前を変えてアップロードを行うことができます。
+
+<pre>
+$ftp->put($file, $renamed_file)
+</pre>
+
+<h4>binary</h4>
+
+ファイルの転送モードをバイナリモードに変更します。
+
+<pre>
+$ftp->binary
+</pre>
+
+FTPにはファイルの転送モードという考え方があります。転送モードにはバイナリモードとアスキーモードの2種類があります。
+
+バイナリモードを指定するとファイルを転送するときに何の変換も行いません。画像ファイルや動画ファイルなどを転送する場合はかならずバイナリモードで転送する必要があります。
+
+<h4>ascii</h4>
+
+ファイルの転送モードをアスキーモードに変更します。
+
+<pre>
+$ftp->ascii
+</pre>
+
+アスキーモードを指定すると改行コードの自動変換を行ってくれます。たとえばWindowsのデフォルトの改行コードは\r\nです。Unixのデフォルトの改行コードは\nです。Windowsのメモ帳などで作成したファイルをそのままUnixに転送すると正しく表示することができません。アスキーモードで転送するとこの変換を自動で行ってくれます。
+
+<h4>ls</h4>
+
+ファイル名の一覧を取得します。
+
+<pre>
+@files = $ftp->ls($dir)
+</pre>
+
+ディレクトリ名を省略した場合は接続先のカレントディレクトリに含まれるファイルの一覧を取得します。
+
+<h4>dir</h4>
+
+ファイル名の一覧を詳細な情報を含めて取得します。
+
+<pre>
+@file_infos = $ftp->dir($dir)
+</pre>
+
+dirコマンドはOS依存です。そのOSで「ls -l」を実行した出力結果が得られます。たとえば私の現在使用しているFedora7の場合は次のような出力になります。
+
+<pre>
+-rw-r--r--  1 someuser  somegroup   6618 Aug  8 17:22 button.html
+-rwxr-xr-x  3 someuser  somegroup    512 Apr  1  2009 a.pl
+-rwx------  1 someuser  somegroup     77 Apr  1  2009 mm.txt
+</pre>
+
+<h4>quit</h4>
+
+FTPサーバーとの接続を閉じます。
+
+<pre>
+$ftp->quit;
+</pre>
+
+<h4>ときどき使用するメソッド</h4>
+
+ときどき使用するメソッドです。
+
+<table>
+  <tr>
+    <td>
+      メソッド名
+    </td>
+    <td>
+      機能
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      pwd
+    </td>
+    <td>
+      接続先のカレントディレクトリの取得
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      rename
+    </td>
+    <td>
+      ファイル名の変更
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      mkdir
+    </td>
+    <td>
+      ディレクトリの作成
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      rmdir
+    </td>
+    <td>
+      ディレクトリの削除
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      size
+    </td>
+    <td>
+      ファイルサイズの取得
+    </td>
+  </tr>
+
+</table>
+
+<h4>すべてのメソッドの一覧</h4>
+
+メソッドのすべての一覧はNet::FTPのマニュアルを参照してください。
+
+<a href="http://perldoc.jp/docs/modules/libnet-1.12/Net/FTP.pod">Net::FTP(perldocjp)</a>
+
+<h3>Net::FTPのエラー処理</h3>
+
+実は最初のサンプルではNet::FTPの使い方を簡潔に説明するためにエラー処理を省いていました。Net::FTPはコマンドなどが失敗した場合に例外を投げてくれないので自前でエラー処理を行う必要があります。最初のサンプルにエラー処理を加えると次のようになります。
+
+<pre>
+# FTPサーバへの接続
+my $ftp = Net::FTP->new('somehost')
+  or die "Cannot connect to '$host': $!";
+
+# ログイン
+$ftp->login('user', 'password')
+  or die "Cannot login '$host:$user:$password': " . $ftp->message;
+
+# ダウンロード
+$ftp->get('/dir/somefile');
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->quit;
+</pre>
+
+エラー処理はなぜ行う必要があるのでしょうか?それはFTPサーバは外部にあるため確実に成功する保障はどこにもないからです。ネットワークのエラーやサーバのダウンなどで接続できないというときのことについて考える必要があります。
+
+またホスト名が間違っていた場合は接続に失敗します。このような場合に残りの処理を続けたとしても意味がありません。わかりやすいエラーメッセージを表示してプログラムは止まるべきです。
+
+ではNet::FTPのエラー処理について簡単に解説します。
+
+<h4>[A]接続のエラー処理</h4>
+
+newメソッドでFTPサーバへの接続に失敗した場合は戻り値はundefになりますのでor dieをしてプログラムを終了させます。OSのエラーメッセージである$!を含めておきましょう。
+
+<pre>
+my $ftp = Net::FTP->new('somehost')
+  or die "Cannot connect to '$host': $!";
+</pre>
+
+<h4>[B]それ以外のエラー処理</h4>
+
+接続した後にエラーが発生した場合は$ftp->messageでエラーの内容を取得することができます。このエラーメッセージをエラーメッセージに含めるようにします。
+
+<pre>
+# ログイン
+$ftp->login('user', 'password')
+  or die "Cannot login '$host:$user:$password: '" . $ftp->message;
+
+# ダウンロード
+$ftp->get('/dir/somefile');
+  or die "FTP command fail: " . $ftp->message;
+</pre>
+
+<h3>Net::FTPの実行できるサンプル</h3>
+
+ユーザとパスワードを指定するFTPサーバにはサンプルでは接続することができません。パスワードを指定しないでもよい匿名サーバからファイルをダウンロードしてみます。CPANのミラーサイトからCPANのトップページ(index.html)をダウンロードするサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+use Net::FTP;
+
+my $host = 'ftp.u-aizu.ac.jp';
+my $user = 'anonymous';
+
+my $ftp = Net::FTP->new($host)
+  or die "Cannot connect to '$host': $!";
+
+$ftp->login($user)
+  or die "Cannot login '$host:$user':" . $ftp->message;
+
+$ftp->cwd('/pub/CPAN')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->get('index.html')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->quit;
+</pre>
+

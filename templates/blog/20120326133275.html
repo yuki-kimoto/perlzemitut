@@ -1,0 +1,189 @@
+<h2 class="title">【書籍案内】もっと自在にサーバを使い倒す 業務に役立つPerl 木本裕紀著</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">書籍案内</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Software Designで連載されていた「業務に役立つPerl」という連載に加筆修正を行い内容をまとめたものです。Perlにおける仕事で必要な幅広い話題を扱っており、巻末には、標準関数、標準モジュール、特殊変数のリファレンスがついています。一冊手元に置いておけば、とても便利だと思います。。
+
+[asin:4774150258:detail]
+
+コラムと新しいサンプルを各章に追加しているので、連載を読んでいただいた方にも楽しめる内容になっています。
+
+目次は以下のようになっています。
+
+<q>
+第01回 Perlを業務で活用しよう
+第02回 Perlの基本文法をマスターしよう
+第03回 知っておきたい!現代的なPerlの記述方法
+第04回 正規表現を覚えよう
+第05回 多次元データ構造を自由に扱おう
+第06回 ログの編集を行ってみよう
+第07回 日本語の扱いをマスターしよう
+第08回 ファイルとディレクトリを自由に操作す
+第09回 ログ編集をさらに自動化する
+第10回 Perlの重要テクニックの紹介
+第11回 オブジェクト指向Perl
+第12回 WebフレームワークMojolicious
+第13回 Perlデバッグ入門
+第14回 DBIを使ってデータベースを操作しよう
+</q>
+
+基本から応用までをもれなく扱った内容です。配列、ハッシュから多次元データ構造、リファレンス、正規表現、ログ編集によるテキスト処理の実践、ファイルやディレクトリの移動など、モダンPerlの基礎的な部分を網羅しています。
+
+またサブルーチンのリファレンスや例外処理など、頻繁に利用する大切なテクニックも仕事で必要な部分はもれなく解説しています。
+
+またモダンPerlにおける日本語処理をきちんと扱った書物は今まで多くはありませんが、この本ではきちんと扱っています。Windows, Mac OS X, Linuxで正しく扱う方法も学べます。
+
+オブジェクト指向、Webフレームワーク、データベース操作まで、Perlの応用的な部分をきちんと扱っています。
+
+Webから本書に掲載されているソースコードをダウンロードすることができます。こちらは無料なのでぜひダウンロードしてみてください。Perlで記述されているので、Windows, Mac OS X, Linuxなどの多くの環境でサンプルを実行することができます。
+
+<ul>
+  <li>
+    <a href="http://gihyo.jp/book/2012/978-4-7741-5025-3/support">本書掲載のソースコードのダウンロード</a>
+  </li>
+</ul>
+
+価格は2,919で、ページ数は352ページです。どんな内容なのかなぁと思う方のために内容をもう少し紹介。
+
+<ul>
+  <li>
+    <a href="/blog/20120401133310.html">「もっと自在にサーバを使い倒す 業務に役立つPerlの1章から4章の紹介</a>
+  </li>
+</ul>
+
+価格は2,919で、ページ数は352ページです。
+
+<h3>正誤表</h3>
+
+業務に役立つPerlの正誤表です。
+
+<table>
+  <tr>
+    <td>
+      箇所
+    </td>
+    <td>
+      誤
+    </td>
+    <td>
+      正
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      p171 リスト8-18 make_data.pl
+    </td>
+    <td>
+      push @$records, \$record;
+    </td>
+    <td>
+      push @$records, $record;
+    </td>
+  </tr>
+
+</table>
+
+<h3>第二版における「Mojolicious6」への対応</h3>
+
+おかげさまで、業務に役立つPerlが増刷されました。増刷分は、Mojoliciousがバージョン6に対応しています。古い版を購入された方のために、Mojoliciousの部分の修正部分を開示しておきます。ぜひお役立てください。
+
+<q>
+p252 上部 ソースコード $self->render_text('Hello!') を $self->render(text => 'Hello!') に修正
+p253 上部 「render_textメソッドを使用します」を「renderメソッドでtextオプションを使用します。」
+p255 上部 ソースコード $self->render_text($date) を $self->render(text => $date) に修正
+p256 下部 ソースコード $self->render_text(省略) の部分を $self->render(text => 省略) に修正
+p258 上部 ソースコード $self->render_text(省略) の部分を $self->render(text => 省略) に修正
+p258 上部 ソースコード url_for('create') の部分を url_for('/create') に修正
+p260 中 「またparamsメソッドを～することができます。my @param_names = $self->param」を削除して
+同じ位置に以下を挿入。
+
+　またevery_paramメソッドを使用すると、パラメーターが複数の値を持つ場合にすべての値を取得できます。
+　---------------
+    my $titles = $self->every_param('title');
+    ---------------
+p267 上部 「url_forメソッドはルート名と～で利用できます」を削除して以下に差し替え。
+url_forメソッドを使えば、ルート名とパラメータからURLを生成することもできます。
+
+p269 上部 ソースコード　「$self->render_json({message => 'Hello World'});」を
+「$self->render(json => {message => 'Hello World'});」に修正
+
+p270 下部 ソースコード 「$self->render_json({message => 'Hello World'});」を
+「$self->render(json => {message => 'Hello World'});」に修正
+
+p274 「Mojoliciousドキュメント 日本語訳プロジェクト」のURLを以下に修正。
+https://github.com/yuki-kimoto/mojolicious-guides-japanese/wiki
+</q>
+
+<h3>視覚障害をお持ちの方のためのテキストデータの提供について</h3>
+
+サンプルコードによるPerl入門は視覚障害をお持ちの方のためにテキストデータでの提供を行っています。Perlプログラミングの書籍「業務に役立つPerl」では、視覚障害をお持ちの方のためにテキストデータの提供ができることになりました。このテキストデータは音声読み上げソフトで、本書を読み上げるために提供されます。
+
+<h4>必要な手続き</h4>
+
+要件としては、下記の情報を郵送でお送りいただければと思います。
+
+<ol>
+  <li>
+    書籍購入の領収書のコピー
+  </li>
+  <li>
+    障害者手帳のコピー
+  </li>
+  <li>
+    テキストファイルをお送りするメールアドレス
+  </li>
+</ol>
+
+「業務に役立つPerl」を購入していることと、「障害者手帳のコピー」の提示が条件になります。また個人の利用にとどめてくださるようお願いします。
+
+郵送先は以下になります。
+
+<q>
+〒162-0846　東京都新宿区市谷左内町21-13
+株式会社技術評論社　雑誌編集部
+「もっと自在にサーバを使い倒す 業務に役立つPerl」係
+</q>
+
+<h4>経緯</h4>
+
+読者の方で、以前僕が開催していた「オンラインPerl勉強会」に参加してくださっていた方のひとりが、視覚障害を持っておられて、ぜひ「業務に役だつPerl」のテキストデータを提供してほしいという要望があったことがきっかけです。
+
+なんと全盲の方で、点字キーボードをつかって、プログラミングをするそうです。
+
+テキストデータの提供を、技術評論社の担当のTさんにお願いしたところ快く引き受けてくださいました。ありがとうございます。
+
+他の視覚障害の方にもテキストデータを提供できるようになったことをお知らせします。わからないことがあれば、「kimoto.yuki@gmail.com」まで、メールでお問い合わせください。
+

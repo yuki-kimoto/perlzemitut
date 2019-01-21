@@ -1,0 +1,64 @@
+<h2 class="title">モジュールの検索パス @INC</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161102147817.html">
+        <span itemprop="name">特殊変数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+<b>モジュールの検索パスの一覧</b>は特殊変数「@INC」に代入されています。
+
+<pre>
+@INC
+</pre>
+
+モジュールの検索パスとは、Perlが、モジュールを読み込むために、検索するディレクトリのことです。@INC に、含まれないディレクトリに置かれたモジュールは、読み込むことができません。
+
+<h4>モジュールの検索パスを追加する</h4>
+
+<a href="/blog/20100525127859.html">lib</a>モジュールを使うことで、コンパイル時に、@INC に、検索パスを追加できます。
+
+<pre>
+use lib './lib';
+</pre>
+
+<b>@INC の先頭に直接、モジュールの検索パスを追加する</b>
+
+<pre>
+unshift @INC, './lib2';
+</pre>
+
+<a href="/blog/20100105126425.html">unshift関数</a>で、直接先頭に追加します。このやり方より、libモジュールを用いるほうがよいです。libモジュールを使う利点は、コンパイル時に、検索パスが追加されることと、可読性が高まること、アーキテクチャに応じたパスも追加されることです。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161102147817.html">
+        <span itemprop="name">特殊変数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

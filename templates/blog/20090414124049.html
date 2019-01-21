@@ -1,0 +1,103 @@
+<h2 class="title">wait関数 - 子プロセスの終了を待つ</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+forkで分岐させた場合は親プロセスと子プロセスはどちらが先に終了するかはわかりません。今回は親プロセスが子プロセスの終了を待つ方法を解説します。
+
+<h3>1. waitで子プロセスの終了を待つ</h3>
+
+子プロセスの終了を待つには<b>wait</b>関数を使用します。wait関数は<b>ひとつの子プロセスが終了するまで待機</b>し続けます。戻り値は<b>終了した子プロセスのプロセスID</b>です。子プロセスが何らかの理由で自動的に回収されていた場合は-1が返却されます。
+
+<pre>
+my $pid = wait;
+</pre>
+
+子プロセスを待つサンプルです。前回のサンプルを少し修正します。結果がわかりやすいように、子プロセス側でprint文を実行する前に、<a href="/blog/20170522149546.html">sleep関数</a>で2秒待機しています。
+
+<pre>
+use strict;
+use warnings;
+
+my $pid = fork;
+
+die "Cannot fork: $!" unless defined $pid;
+
+if ($pid) {
+  # 子プロセスの終了を待機する。
+  wait;
+  print "親プロセス(子プロセスID: $pid)\n";
+}
+else {
+  # 子プロセスで2秒待つ
+  sleep 2;
+  print "子プロセス\n";
+}
+</pre>
+
+出力結果は
+
+<pre>
+子プロセス
+親プロセス( 子プロセスID: 25870 )
+</pre>
+
+となります。親プロセスが子プロセスを待機していることがわかると思います。
+
+<h3>2. 子プロセスの終了とプロセステーブルからの削除</h3>
+
+子プロセスが終了した場合、<b>即座にプロセステーブルから削除されるわけではありません</b>。(プロセステーブルはOSがプロセスを管理するために使用されます。)
+
+子プロセスは終了後にプロセステーブルから削除されるのを待ちます。この状態のことを指して「死んだ子プロセス」と呼ばれます。子プロセスがプロセステーブルからの削除を待つのは<b>親プロセスが子プロセスの終了スターテスを知る</b>必要があるからです。
+
+waitを呼び出すと終了した子プロセスがプロセステーブルから削除されます。また親プロセスが終了した場合も子プロセスはプロセステーブルから削除されます。
+
+<h3>3. 子プロセスの終了ステータス</h3>
+
+waitを呼ぶと
+
+<pre>
+$?
+</pre>
+
+という特殊変数に子プロセスの終了ステータスを含めた複数のデータが格納されます。$?の中に格納された子プロセスの終了ステータスの取得の仕方については次回解説します。
+
+<h3>4. waitが本当に行っていること</h3>
+
+実際は<b>waitは子プロセスの終了を待っているのではありません</b>。子プロセスが<b>CHLDシグナルを発生させる</b>のを待っています。CHLDシグナルは子プロセスの終了時だけではなく、子プロセスが停止した場合や、再開した場合にも発生します。
+
+これはwaitを使用しても<b>確実には死んだ子プロセスを回収できない</b>ということを意味します。確実に死んだ子プロセスを回収するには、CHLDシグナルのシグナルハンドラにIGNOREを設定するか、waitpid関数を適切に使用します。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

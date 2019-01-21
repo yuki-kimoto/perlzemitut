@@ -1,0 +1,68 @@
+<h2 class="title">Time::HiRes - マイクロ秒単位でスリープする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<b>Time::HiRes</b>は、高精度なsleepを提供します。
+
+usleep関数を使えば、マイクロ秒単位でスリープすることができます。<a href="/blog/20170522149546.html">sleep関数</a>は、1秒が最小単位ですが、usleep関数を使えば、ミリ秒やマイクロ秒の単位でスリープできます。
+
+<pre>
+use Time::HiRes 'usleep';
+
+usleep $microseconds;
+</pre>
+
+単位は、マイクロ秒です、ミリ秒はその千倍になります。たとえば、0.1秒スリープしたい場合は、以下のように書きます。
+
+<pre>
+usleep(100 * 1000);
+</pre>
+
+<h4>高精度のアラーム、時刻、インターバル・タイマー</h4>
+
+Time::HiResは、スリープ機能のほかに、高精度のアラーム、時刻、インターバル・タイマーを提供しています。
+
+1秒以下の単位で、アラームを設定したり、1秒以下の時間の感覚を取得することができます。
+
+詳しくは、Time::HiResのドキュメントをご覧ください。
+
+<ul>
+  <li>
+    <a href="http://perldoc.jp/docs/modules/Time-HiRes-1.55/HiRes.pod">Time::HiRes - 高精度のalarm, sleep, gettimeofday, インターバル・タイマー</a>
+  </li>
+</ul>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+

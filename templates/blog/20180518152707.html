@@ -1,0 +1,188 @@
+<h2 class="title">ファイルの存在を確認する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100820127859.html">
+      <span itemprop="name">ファイルテスト</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<b>ファイルが存在するかどうかを確認</b>するには、ファイルテスト演算子「-e」を使用します。
+
+<pre>
+-e $file
+</pre>
+
+ファイルが存在すると真値を、存在しないと偽値を返します。ディレクトリやシンボリックリンクなどもファイルとして扱われます。Unixではディレクトリも特別なファイルとみなしファイルという概念でとらえるからです。
+
+<h4>通常ファイルが存在するかどうかを確認</h4>
+
+ディレクトリではない通常のファイルが存在するかどうかを確認したい場合は、ファイルテスト演算子「-f」で確認できます。
+
+<pre>
+-f $file
+</pre>
+
+通常ファイルが存在すると真値を、存在しないと偽値を返します。通常ファイルとはテキストファイルやバイナリファイルなどのデータを格納しているファイルのことです。
+
+<h4>存在を確認できるファイルの種類</h4>
+
+その他に、ディレクトリの存在やシンボリックリンクの存在を確認できるファイルテスト演算子もあります。
+
+<table>
+  <tr>
+    <td>
+      <span style="font-weight:bold;">ファイルの種類</span>
+    </td>
+    <td>
+      <span style="font-weight:bold;">対応するファイル演算子</span>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      通常ファイル 
+    </td>
+    <td>
+                                             -f	
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ディレクトリ  
+    </td>
+    <td>
+                                            -d	
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="http://itpro.nikkeibp.co.jp/article/Keyword/20071025/285561/">シンボリックリンク</a>
+    </td>
+    <td>
+                                        -l	
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="http://e-words.jp/w/E5908DE5898DE4BB98E3818DE38391E382A4E38397.html">名前つきパイプ</a>、パイプであるファイルハンドル
+    </td>
+    <td>
+              -p	
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="http://e-words.jp/w/E382BDE382B1E38383E38388.html">ソケット</a>                                     
+    </td>
+    <td>
+             -S	
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="http://ja.wikipedia.org/wiki/%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">ブロックスペシャルファイル</a>                    
+    </td>
+    <td>
+            -b	
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="http://ja.wikipedia.org/wiki/%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">キャラクタースペシャルファイル</a>                 
+    </td>
+    <td>
+           -c	
+    </td>
+  </tr>
+
+</table>
+
+用語の解説のページにリンクを張っておきました。
+
+<h3>サンプルプログラム</h3>
+
+ファイルテスト演算子「-e」を使ってファイルの存在を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルの存在を確認する。
+# -e ファイル名
+# -e を使えば、ディレクトリやファイルやシンボリックリンクなど
+# を区別せずに、それが、存在するかどうかを確認できます。
+
+print "1: ファイルの存在を確認する。 -e \n";
+my $file_all_type = 'a';
+
+if (-e $file_all_type) {
+  print "'$file_all_type' は、存在します。\n";
+}
+else { print "'$file_all_type' は、存在しません。\n" }
+</pre>
+
+ファイル演算子 -f を使って通常ファイルの存在を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 通常ファイルの存在を確認する。
+# -f ファイル名
+
+print "1: 通常ファイルの存在を確認する。 -f \n";
+my $file = 'a.txt';
+if (-f $file) {
+  print "'$file' は、存在します。\n";
+}
+else { print "'$file' は、存在しません。\n" }
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100820127859.html">
+      <span itemprop="name">ファイルテスト</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+

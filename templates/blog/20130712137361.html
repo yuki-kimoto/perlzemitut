@@ -1,0 +1,49 @@
+<h2 class="title">Perlのコメント</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">コメント</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perlにおける<b>コメント</b>を行う方法を解説します。コメントは、実際に実行されない部分で、注釈のために記述します。
+
+<h3>コメント</h3>
+
+Perlで<strong>コメント</strong>を記述するには、<strong>#</strong>を使用します。
+
+<pre>
+# コメント
+</pre>
+
+#から末尾までがコメントになります。
+
+<h3>複数行コメント</h3>
+
+Perlで<strong>複数行コメント</strong>を行うには次のように「<strong>=pod =cut</strong>」という記法を利用します。
+
+<pre>
+=pod
+
+コメントにしたい部分。
+
+=cut
+</pre>
+
+実はPerlには複数行コメントのための構文が用意されていません。この記法はPerlドキュメントを書くための<a href="/blog/20170408149166.html">PODという記法</a>でこの部分がドキュメントであることを示すものです。POD記法を用いれば擬似的に複数行コメントを行うことができます。
+
+このコメントは、一時的にコメントアウトしたい場合だけに使って、リリースするソースコードには含めないほうがよいでしょう。
+

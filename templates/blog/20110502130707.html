@@ -1,0 +1,87 @@
+<h2 class="title">HTTPヘッダを取得する / Mojolicious</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+HTTPヘッダを取得するにはMojo::Headersクラスの<strong>header</strong>メソッドを使用します。
+
+<pre>
+my $x_forwarded_host = $headers->header('X-Forwarded-Host');
+</pre>
+
+またMojo::Headersクラスには一般的なヘッダを取得するためのショートカットメソッドがたくさん用意されています。
+
+<pre>
+my $content_type = $headers->content_type;
+my $accept_language = $headers->accept_language;
+</pre>
+
+<ul>
+  <li>
+    <a href="https://github.com/yuki-kimoto/mojolicious-guides-japanese/wiki/Mojo%3A%3AHeaders">HTTPヘッダのショートカットメソッド</a>
+  </li>
+</ul>
+
+以下はMojolicious::Liteのサンプルです。Mojo::Message::RequestオブジェクトをMojolicious::Controllerオブジェクトのreqメソッドによって取得し、Mojo::HeadersオブジェクトをMojo::Message::Requestオブジェクトのheadersメソッドによって取得しています。
+
+<pre>
+# Mojolicious::Lite
+use Mojolicious::Lite;
+
+get '/' => sub {
+  my $self = shift;
+  my $x_forwarded_host = $self->req->headers->header('X-Forwarded-Host');
+  my $content_type = $self->req->headers->content_type;
+  my $accept_language = $self->req->headers->accept_language;
+};
+</pre>
+
+以下はMojoliciousのサンプルです。
+
+<pre>
+package MyApp::Diary;
+
+use Mojo::Base 'Mojolicious::Controller';
+
+sub entry {
+  my $self = shift;
+  my $x_forwarded_host = $self->req->headers->header('X-Forwarded-Host');
+  my $content_type = $self->req->headers->content_type;
+  my $accept_language = $self->req->headers->accept_language;
+}
+</pre>
+

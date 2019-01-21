@@ -1,0 +1,76 @@
+<h2 class="title">最終アクセスから経過した日数を取得する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100820127859.html">
+      <span itemprop="name">ファイルテスト</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+最終アクセスから経過した日数を取得するには、ファイルテスト演算子「-A」を使用します。
+
+<pre>
+-A $file
+</pre>
+
+<h4>サンプルプログラム</h4>
+
+ファイル演算子 -A を使って最終アクセスから経過した日数を取得するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 最終アクセス(読み取り)から経過した日数を取得する。
+# -A $file
+
+print "1: 最終アクセスから経過した日数を取得する。\n";
+my $file = "a.txt";
+if (-e $file) {
+  my $from_last_access = -A $file;
+  print "最終アクセスから $from_last_access 日経過しています。\n";
+}
+else { print "$file は存在しません。\n" }
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100820127859.html">
+      <span itemprop="name">ファイルテスト</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+

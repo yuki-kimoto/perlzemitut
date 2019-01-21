@@ -1,0 +1,209 @@
+<h2 class="title">opcode.h</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20130416136637.html">
+      <span itemprop="name">言語実装</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>opcode.h</strong>には、それぞれのオペレーションに関する情報が記載されている。Perl言語研究では、「OP型」のデータのことを、オペレーションと呼ぶことにしています。Perlは、構文解析が終わると、構文木に変換されますが、このそれぞれのノードは「OP型」になっています。
+
+オペレーションは、オペレーションコードによって、分類され、それぞれが情報を持ちます。その情報が記述されています。
+
+<h3>オペレーションの名前</h3>
+
+たとえば、オペレーションの名前が記述されています。
+
+<pre>
+EXTCONST char* const PL_op_name[] = {
+  "null",
+  "stub",
+  "scalar",
+  "pushmark",
+  "wantarray",
+  "const",
+  "gvsv",
+  ...
+};
+</pre>
+=====
+<h3>オペレーションの解説</h3>
+
+次に、オペレーションの解説が記述されています。
+
+<pre>
+EXTCONST char* const PL_op_desc[] = {
+  "null operation",
+  "stub",
+  "scalar",
+  "pushmark",
+  "wantarray",
+  "constant item",
+  "scalar variable",
+  "glob value",
+  ...
+};
+</pre>
+
+<h3>オペレーションが実行する関数のアドレス</h3>
+
+各オペレーションは、対応する関数がありますが、その関数へのアドレスが記述されています。
+
+<pre>
+EXT Perl_ppaddr_t PL_ppaddr[] /* or perlvars.h */
+#  endif
+#endif /* PERL_GLOBAL_STRUCT */
+#if (defined(DOINIT) && !defined(PERL_GLOBAL_STRUCT)) || defined(PERL_GLOBAL_STRUCT_INIT)
+#  define PERL_PPADDR_INITED
+= {
+  Perl_pp_null,
+  Perl_pp_stub,
+  Perl_pp_scalar, /* implemented by Perl_pp_null */
+  Perl_pp_pushmark,
+  Perl_pp_wantarray,
+  Perl_pp_const,
+  Perl_pp_gvsv,
+  Perl_pp_gv,
+  ...
+}
+</pre>
+
+「pp」というプレフィックスは、「push pop」という意味で、実行される関数は、引数スタックを操作する関数です。
+
+<h3>オペレーションの最適化を行う関数</h3>
+
+各オペレーションは「ck」というプレフィックスがつく関数で、最適化されます。その関数のアドレスが記述されています。「ck」は「check」の略です。
+
+<pre>
+#if (defined(DOINIT) && !defined(PERL_GLOBAL_STRUCT)) || defined(PERL_GLOBAL_STRUCT_INIT)
+#  define PERL_CHECK_INITED
+= {
+  Perl_ck_null,   /* null */
+  Perl_ck_null,   /* stub */
+  Perl_ck_fun,    /* scalar */
+  Perl_ck_null,   /* pushmark */
+  Perl_ck_null,   /* wantarray */
+  Perl_ck_svconst,  /* const */
+  Perl_ck_null,   /* gvsv */
+};
+</pre>
+
+<h3>関数の引数の情報</h3>
+
+実行される関数の引数情報が、記述されています。
+
+<pre>
+EXTCONST U32 PL_opargs[] = {
+  0x00000000, /* null */
+  0x00000000, /* stub */
+  0x00001b04, /* scalar */
+  0x00000004, /* pushmark */
+  0x00000004, /* wantarray */
+  0x00000604, /* const */
+  0x00000644, /* gvsv */
+  0x00000644, /* gv */
+  ...
+};
+</pre>
+
+これは、数値で記述されていて、なにがなんだかわかりませんね。これは「op.h」で定義されています。上記の値は、以下の値の、ビット演算の論理和の値です。
+
+<pre>
+/* op.h */
+
+/* Lowest byte of PL_opargs */
+#define OA_MARK 1
+#define OA_FOLDCONST 2
+#define OA_RETSCALAR 4
+#define OA_TARGET 8
+#define OA_TARGLEX 16
+#define OA_OTHERINT 32
+#define OA_DANGEROUS 64
+#define OA_DEFGV 128
+
+/* The next 4 bits (8..11) encode op class information */
+#define OCSHIFT 8
+
+#define OA_CLASS_MASK (15 << OCSHIFT)
+
+#define OA_BASEOP (0 << OCSHIFT)
+#define OA_UNOP (1 << OCSHIFT)
+#define OA_BINOP (2 << OCSHIFT)
+#define OA_LOGOP (3 << OCSHIFT)
+#define OA_LISTOP (4 << OCSHIFT)
+#define OA_PMOP (5 << OCSHIFT)
+#define OA_SVOP (6 << OCSHIFT)
+#define OA_PADOP (7 << OCSHIFT)
+#define OA_PVOP_OR_SVOP (8 << OCSHIFT)
+#define OA_LOOP (9 << OCSHIFT)
+#define OA_COP (10 << OCSHIFT)
+#define OA_BASEOP_OR_UNOP (11 << OCSHIFT)
+#define OA_FILESTATOP (12 << OCSHIFT)
+#define OA_LOOPEXOP (13 << OCSHIFT)
+#define OA_METHOP (14 << OCSHIFT)
+#define OA_UNOP_AUX (15 << OCSHIFT)
+
+/* Each remaining nybble of PL_opargs (i.e. bits 12..15, 16..19 etc)
+ * encode the type for each arg */
+#define OASHIFT 12
+
+#define OA_SCALAR 1
+#define OA_LIST 2
+#define OA_AVREF 3
+#define OA_HVREF 4
+#define OA_CVREF 5
+#define OA_FILEREF 6
+#define OA_SCALARREF 7
+#define OA_OPTIONAL 8
+</pre>
+
+そして、上記には、この値の説明がありませんが、それは「regen/opcodes」にあります。
+
+<pre>
+# Other options are:
+#   needs stack mark                    - m  (OA_MARK)
+#   needs constant folding              - f  (OA_FOLDCONST)
+#   produces a scalar                   - s  (OA_RETSCALAR)
+#   produces an integer                 - i  (unused)
+#   needs a target                      - t  (OA_TARGET)
+#   target can be in a pad              - T  (OA_TARGET|OA_TARGLEX)
+#   has a corresponding integer version - I  (OA_OTHERINT)
+#   make temp copy in list assignment   - d  (OA_DANGEROUS)
+#   uses $_ if no argument given        - u  (OA_DEFGV)
+</pre>
+
+<h3>オペレーションに関するプライベートなフラグ</h3>
+
+そして、オペレーションに関するプライベートなフラグ情報があります。これらの詳細な説明は「regen/op_private」にあります。
+
+<pre>
+#define OPpLVREF_SV             0x00
+#define OPpARG1_MASK            0x01
+#define OPpCOREARGS_DEREF1      0x01
+#define OPpENTERSUB_INARGS      0x01
+#define OPpSORT_NUMERIC         0x01
+#define OPpTRANS_FROM_UTF       0x01
+#define OPpCONST_NOVER          0x02
+#define OPpCOREARGS_DEREF2      0x02
+#define OPpEVAL_HAS_HH          0x02
+#define OPpFT_ACCESS            0x02
+#define OPpHINT_STRICT_REFS     0x02
+#define OPpITER_REVERSED        0x02
+...
+</pre>
+
+<hr>
+<a href="/blog/20130416136637.html">Perl言語研究</a>
+

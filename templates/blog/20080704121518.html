@@ -1,0 +1,428 @@
+<h2 class="title">サブルーチンのリファレンス</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161025147739.html">
+        <span itemprop="name">サブルーチン</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+サブルーチンのリファレンスとは、サブルーチンを指し示すもののことです。
+
+<pre>
+# リファレンスを作成
+my $twice_ref = \&twice;
+# デリファレンスして呼び出し
+my $twice_num = $twice_ref->($num); 
+ 
+sub twice {
+  return $_[0] * 2;
+}
+</pre>
+
+&twiceで、サブルーチンそのものを表現します。( @がつけられると配列、%がつけられるとハッシュというのと同じように、&がつけられるとサブルーチンを表します。) 普段は、twice($num) のようにサブルーチンを呼び出していますが、&twice( $num ) のように明示的に呼び出すこともできます。
+
+サブルーチンへのリファレンスを表現するには、\&twice のようにします。サブルーチンを呼び出すには、$twice_ref->(1) のように、サブルーチンへのリファレンスをデリファレンスしてます。ハッシュや配列のデリファレンスによく似た記述です。
+
+リファレンスについての詳しい解説は以下の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20100930127859.html">リファレンスの使い方をマスターしよう</a>
+  </li>
+</ul>
+
+<h4>無名サブルーチンへのリファレンス</h4>
+
+sub{ } といった名前のないサブルーチンへのリファレンスを作成することができます。my $sum_ref = sub{ }; のように記述します。サブルーチンそのものが実行されるわけではなく、サブルーチンへのリファレンスが、$sum_ref に代入されます。
+
+<pre>
+my $sum_ref = sub {
+  my @nums = @_;
+  my $total;
+  for my $num (@nums){
+    $total += $num;
+  }
+  return $total;
+};
+</pre>
+
+サブルーチンへのリファレンスを作成すれば、引数としてサブルーチンに渡すことができます。Perlでは、サブルーチンのリファレンスを利用して、サブルーチンにサブルーチンを渡すことができるのです。
+
+また、サブルーチンへのリファレンスを使用すれば、選択的にサブルーチンを実行することができます。次回に具体例を見ます。
+
+<h3>サブルーチンへのリファレンスを利用したポリモーフィズム</h3>
+
+サブルーチンへのリファレンスを利用したポリモーフィズムを実現したサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my @nums = (1, 2, 3);
+
+print "1: サブルーチンへのリファレンスを使って合計と平均を順番に求める。\n";
+
+# サブルーチンへのリファレンスの# 配列を作成。
+my @calc_funcs = (\&sum, \&average); 
+                                       
+for my $calc_func (@calc_funcs) {
+  my $result = $calc_func->(@nums);
+  print "結果: $result\n";
+}
+print "\n";
+
+sub sum {
+  my @nums = @_;
+  my $total;
+  for my $num (@nums) {
+    $total += $num;
+  }
+  return $total;
+}
+
+sub average {
+  return sum(@_) / @_;
+}
+
+
+print "2: サブルーチンへのリファレンスを使って選択的に処理する。\n";
+my $how_to_calc = 'sum';
+my $calc_func;
+
+if ($how_to_calc eq 'sum') {
+  $calc_func = \&sum;
+}
+else {
+  $calc_func = \&average;
+}
+
+my $result = $calc_func->(@nums);
+
+print "計算方法 : $how_to_calc\n" .
+  "結果 : $result\n\n";
+
+
+print "3: サブルーチンへのリファレンスとハッシュを使って選択的に処理する。\n";
+$how_to_calc = 'average';
+my %calc_table = (sum => \&sum, average => \&average);
+
+# $calc_table{'average'} には、サブルーチンへのリファレンス
+# が入っているので、-> 演算子でデリファレンスして
+# サブルーチンを呼び出す。
+$result = $calc_table{ $how_to_calc }->(@nums); 
+
+print "計算方法 : $how_to_calc\n" .
+  "結果 : $result\n\n";
+</pre>
+
+<h4>変数に対してサブルーチンを順番に適用する</h4>
+
+<pre>
+my @calc_funcs = (\&sum, \&average);
+for my $calc_func (@calc_funcs) {
+  my $result = $calc_func->(@nums);
+}
+</pre>
+
+ある<a href="/blog/20161107147852.html">変数</a>に対してサブルーチンを順番に適用するには、サブルーチンへのリファレンスを利用します。サブルーチンへのリファレンスを配列に格納して<a href="/blog/20170521149524.html">forループ</a>で繰り返しサブルーチンを呼び出します。
+
+<h4>変数とサブルーチンのイメージ</h4>
+
+<pre>
+|----------|
+|          |<-------- サブルーチン1
+|          |
+|  変数    |<-------- サブルーチン2
+|          |
+|          |<-------- サブルーチン3
+|----------|
+</pre>
+
+ある種類の引数に対して、順番にサブルーチンを適用していくイメージ。引数は固定で、サブルーチンが移り変わってゆくイメージ。
+
+<h4>サブルーチンへのリファレンスを利用したポリモーフィズム</h4>
+
+<pre>
+# if文で分岐する方法
+my $how_to_calc = 'sum';
+my $calc_func;
+
+if ($how_to_calc eq 'sum') {
+  $calc_func = \&sum;
+}
+else {
+  $calc_func = \&average;
+}
+
+my $result = $calc_func->(@nums);
+</pre>
+
+ポリモーフィズムとは、「同じ記述であるのに異なる関数が呼び出される」ということを意味する言葉です。オブジェクト指向では、「オブジェクトに応じて異なるメソッドが適用される」ということを意味する場合が多いです。
+
+この例の場合は、 $calc_func->(@num) という記述は、$calc_func に何が代入されているかによって意味を変えます。\$sum が代入されている場合は、sum サブルーチンが呼びだされ、\$average が代入されている場合は、average サブルーチンが呼びだされます。
+
+javaでは、オーバーロードとオーバーライドがポリモーフィズムを実現するための方法で、C言語では関数ポインタです。
+
+<h4>ハッシュを利用した美しい方法</h4>
+
+<pre>
+$how_to_calc = 'average';
+my %calc_table = (sum => \&sum, average => \&average);
+$result = $calc_table{$how_to_calc}->(@nums); 
+</pre>
+
+<a href="/blog/20161013147635.html">ハッシュ</a>を利用した方法が関数リファレンスによるポリモーフィズムのもっとも洗練された形だとわたしは思っています。
+
+選択的な処理であるのに、if文をいっさい使っていません。ハッシュのキーに対応したサブルーチンを呼ぶことで、処理を分岐させています。
+
+<h3>サブルーチンでシグナルハンドラの実装</h3>
+
+<strong>シグナルハンドラ</strong>とは、シグナルをきっかけとして実行されるサブルーチンのことです。シグナルとはOSがプロセスに送る合図です。Ctrl + c は「現在実行中のプロセスにINTシグナルを送ってね。」とOSに依頼します。また、alerm関数は「現在実行中のプロセスにn秒後にLARMシグナルを送ってね」とOSに依頼します。
+
+<pre>
+$SIG{INT} = sub {
+  die "INTシグナルがこのプロセスに送られました。";
+};
+
+$SIG{ALRM} = sub {
+  die "ALRMシグナルがこのプロセスに送られました。";
+};
+</pre>
+
+INTシグナルを捕らえるには、$SIG{ INT } に対して、サブルーチンへのリファレンスを代入します。この例では、無名サブルーチンを定義してそのリファレンスを代入しています。
+
+シグナルに関する注意点はたくさんありますがここでは書きません。プロセス間通信について書くときに書きます。
+
+<h3>イベント駆動型プログラミングの初歩的な実装</h3>
+
+イベント駆動型プログラミングの初歩的な実装のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# イベントハンドラ
+my $text = "aIue!!!o";
+
+# 引数に、イベントハンドラを渡す。
+parse( 
+  $text, 
+  start_h => \&start,
+  lc_h => \&found_lc,
+  end_h => \&end,
+);
+
+# 文字列を解析するサブルーチン( イベント検知関数 )
+sub parse {
+  # テキストとイベントハンドラのハッシュを受け取る。
+  my ($text, %handler) = @_;
+  
+  # 最初に呼ばれるハンドラ
+  $handler{start_h}->();
+  
+  # 一文字づつ解析していく。
+  for my $i (0 .. length($text) - 1) { 
+    my $char = substr($text, $i, 1);
+    
+    # 小文字を発見したときにイベントハンドラを呼ぶ。
+    # コールバック関数で利用できるように
+    # 文字と位置を引数に渡す。
+    if ($char =~ /[a-z]/) { 
+      $handler{lc_h}->($char, $i); 
+    }
+  }
+  
+  # 最後に呼ばれるハンドラ
+  $handler{end_h}->();
+}
+
+# イベントハンドラ( コールバック関数 )
+sub start {
+  print "文字列の解析が始まりました。\n";
+}
+
+sub found_lc {
+  # 小文字を発見した場合に呼び出される。
+  
+  # 引数に文字とポジションを受け取れる。
+  my ($char, $pos) = @_; 
+                             
+  print "$charの位置は、$pos です。\n";
+}
+
+sub end {
+  print "文字列の解析が終わりました。\n";
+}
+</pre>
+
+(参考)<a href="/blog/20080224120386.html">substr関数</a>
+
+<h4>(1)イベントを検出するためのサブルーチン</h4>
+
+<pre>
+# イベントを検出する関数の呼び出し。
+parse( 
+  $text, 
+  start_h => \&start,
+  lc_h => \&found_lc,
+  end_h => \&end,
+);
+
+# イベントを検出する関数
+sub parse {
+  # テキストとイベントハンドラのハッシュを受け取る。
+  my ( $text, %handler ) = @_; 
+  
+  # 最初に呼ばれるハンドラ
+  $handler{start_h}->();
+  # ...
+}
+</pre>
+
+イベント駆動型のプログラミングでは、「イベントを検出する処理」と「イベントが発生したときに実行される処理」を分離します。そのために、まずイベントを検出する処理をサブルーチンとして実装します。
+
+引数には、ハッシュを使って、サブルーチンへのリファレンスを渡しています。このサブルーチンはイベントが発生したときに実行されます。
+
+<h4>(2)イベントが発生したときに実行されるサブルーチン(コールバック関数)</h4>
+
+<pre>
+sub start {
+  print "文字列の解析が始まりました。\n";
+}
+
+sub found_lc {
+  # 小文字を発見した場合に呼び出される。
+  # 引数に文字とポジションを受け取れる。
+
+  my ($char, $pos) = @_; 
+                             
+  print "$charの位置は、$pos です。\n";
+}
+
+sub end {
+  print "文字列の解析が終わりました。\n";
+}
+</pre>
+
+イベントが発生したときに実行されるサブルーチンは、一般的には、コールバック関数と呼ばれます。ここに、イベントが発生したときに行う処理を書きます。
+
+イベントを検出する関数で、コールバック関数を呼ぶときに引数を渡してあげると、コールバック関数で受け取って利用することができます。
+
+<h3>サンプルコード</h3>
+
+サブルーチンのサンプルコードです。
+
+<h4>サブルーチンのリファレンス</h4>
+
+サブルーチンへのリファレンスを作成するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# サブルーチンへのリファレンス
+# 接頭に\をつけてあげるとサブルーチンへの
+# リファレンスになります。
+# &twice が、twiceサブルーチン自体を指します。
+print "1: サブルーチンへのリファレンス\n";
+my $twice_ref = \&twice; 
+
+# 呼び出すときは、
+# $sub_ref->( arg1, arg2 ) 
+# のように呼び出します。
+# 引数がいらないときは、
+# $sub_ref->() です。
+my $num = 1;
+my $twice_num = $twice_ref->($num); 
+
+print "$num の2倍は、$twice_numです。\n\n";
+
+sub twice {
+  return $_[0] * 2;
+}
+
+
+# sub{ } という名前を持たないサブルーチンへのリファレンスを$sum_refに代入。
+print "2: 無名サブルーチンへのリファレンス\n";
+my $sum_ref = sub {
+  my @nums = @_;
+  my $total;
+  for my $num (@nums) {
+    $total += $num;
+  }
+  return $total;
+};
+
+my $total = $sum_ref->(1, 2, 3);
+print "1,2,3の和は$totalです。\n\n";
+</pre>
+
+<h4>シグナルハンドラ</h4>
+
+シグナルハンドラを使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+print "1: シグナルハンドラでINTシグナルを捕獲する。\n";
+
+$SIG{INT} = sub {
+  die "INTシグナルがこのプロセスに送られました。";
+};
+
+# 無限ループ
+while(1){ };
+
+# INTシグナルを実行中のプロセスに送るには、Ctrl + c とします。
+</pre>
+
+<pre>
+use strict;
+use warnings;
+
+print "2: シグナルハンドラでALRMシグナルを捕獲する。\n";
+
+$SIG{ALRM} = sub {
+  die "ALRMシグナルがこのプロセスに送られました。";
+};
+
+# 2秒後に、ALRM シグナルを実行中のプロセスに送る。
+alarm 2; 
+
+# 無限ループ
+while( 1 ){ }; 
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161025147739.html">
+        <span itemprop="name">サブルーチン</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

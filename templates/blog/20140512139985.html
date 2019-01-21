@@ -1,0 +1,158 @@
+<h2 class="title">日本語の扱い | Mojolicious入門</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Mojoliciousにおける<strong>日本語の扱い</strong>について解説しておきます。Perlを使う場合に、学習するのを難しく感じるのは、文字コードの扱いでしょう。Perlでの文字コードの扱い自体はきわめて簡単なのですが、現代的な方法を知らないという理由で混乱されている方も多いと思います。
+
+過去の歴史や理論はおいておいて、ここでは実用的な項目に絞って絞って解説します。詳しい解説については「<a href="/blog/20091118124667.html">Encode - 日本語などのマルチバイト文字列を適切に処理する / Perlモジュール徹底解説</a>」を参考にしてください。
+
+<h3>バイト文字列と内部文字列</h3>
+
+Perlでは、プログラムの内部では<b>内部文字列</b>を使って、プログラムの外部に対しては、特定の文字コードで表現された<b>バイト文字列</b>を入力として受け取ったり、出力したりします。
+
+プログラムの内部では内部文字列、プログラムの外部ではバイト文字列と考えてください。
+
+<pre>
+プログラムの内部 - 内部文字列
+
+プログラムの外部 - バイト文字列
+</pre>
+
+Javaを知っているのであれば、単純に文字列ストリームとバイトストリームだと考えてみてください。
+
+つまりPerlでは、内部文字列とバイト文字列の変換が必要だということです。この変換を行うモジュールが、<strong>Encode</strong>モジュールです。
+
+<pre>
+use Encode qw/encode decode/;
+
+# デコード(特定の文字コードで表現されたバイト文字列を内部文字列に変換)
+my $str_internal = decode('UTF-8', $str_byte);
+
+# エンコード(内部文字列を特定の文字コードで表現されたバイト文字列に変換)
+my $str_byte = encode('UTF-6', $str_internal);
+</pre>
+
+Encodeモジュールのencode関数とdecode関数を使って、内部文字列とバイト文字列の変換を行います。
+
+<h3>utf8プラグマ</h3>
+
+次にもうひとつutf8プラグマの利用方法を見ておきましょう。ソースコードがUTF-8で保存された場合は、ソースコードの中の文字列は、UTF-8バイト文字列です。
+
+<pre>
+# UTF-8バイト文字列
+my $str_byte = 'あいうえお';
+</pre>
+
+utf8プラグマを有効にすると、ソースコードの中の文字列は、内部文字列として解釈されます。
+
+<pre>
+# 内部文字列
+my $str_internal = 'あういうえお';
+</pre>
+
+Perlでソースコードの中で日本語を扱う場合は、必ずutf8を有効にして、ソースコードをUTF-8で保存するようにしてください。
+
+<h3>Mojoliciousにおける日本語の扱い</h3>
+
+Mojoliciousというフレームワークも、この現代的なPerlの文字列の扱いとまったく同じ考え方になっています。かつ、それらすべてを自動的に行ってくれるので非常に楽です。前提としてソースコードとテンプレートはUTF-8で必ず保存しましょう。
+
+Mojoliciousというフレームワークは、以下の機能を提供します。
+
+<ol>
+  <li>
+    utf8プラグマは自動的に有効になります。
+  </li>
+  <li>
+    テンプレートに描画するときは内部文字列がUTF-8バイト文字列に自動的に変換されます
+  </li>
+  <li>
+    フォームから受け取るときはUTF-8バイト文字列が内部文字列に自動的に変換されます
+  </li>
+</ol>
+
+ひとつづつ解説します。
+
+<h4>utf8プラグマは自動的に有効になる</h4>
+
+Mojoliciousでは、Mojo::Baseというクラスを継承しているクラスは、utf8プラグマが自動的に有効になります。Mojoliciousの機能を使うときは、必ずMojo::Baseを継承しているクラスを使うことになるので、すべてのクラスとテンプレートでutf8プラグマが自動的に有効になることになります。
+
+<pre>
+# 自動的に有効になる
+use utf8;
+</pre>
+
+ですから、ソースコードとテンプレートで記述する文字列は、すべて内部文字列になります。
+
+<h4>テンプレートに描画するときは内部文字列がUTF-8バイト文字列に自動的に変換</h4>
+
+テンプレートに描画するときは、内部文字列がUTF-8バイト文字列に自動的に変換されます。
+
+<pre>
+get '/' => sub {
+  my $self = shift;
+
+  $c->render('index', message => 'あいうえお');
+};
+
+@@ index.html
+<%
+  my $message = stash('message');
+%>
+
+日本語を書く
+<%= $message %>
+</pre>
+
+普通に記述すれば、普通に自動変換されるので、普段は特別に意識する必要はないです。
+
+<h3>フォームから受け取るときはUTF-8バイト文字列が内部文字列に自動的に変換</h3>
+
+フォームから文字列を受け取るときは、自動的に内部文字列に変換されます。
+
+<pre>
+post '/' => sub {
+  my $self = shift;  
+  my $message = $self->param('message');
+  ...
+}
+</pre>
+
+paramメソッドで受け取った文字列は内部文字列へと自動的に変換されています。
+
+このようにMojoliciousではバイト文字列と内部文字列の変換を自動的に行ってくれるので、普段はあまり意識する必要がありませんが、仕組み自体は覚えておいてほしいと思います。
+

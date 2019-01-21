@@ -1,0 +1,92 @@
+<h2 class="title">List::Util - リストに関するユーティリティ</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+List::Utilは<a href="/blog/20100308126967.html">リスト</a>と<a href="/blog/20161012147627.html">配列</a>に対するさまざまな操作を提供するモジュールです。
+
+<h4>max関数 - 最大値</h4>
+
+配列の要素の最大値を求めるにはmaxを使用します。
+
+<pre>
+# List::Util
+use List::Util qw(max min ...);
+</pre>
+
+<pre>
+# 最大
+$max = max @array;
+</pre>
+
+<h4>min関数 - 最小値</h4>
+
+配列の要素の最小値を求めるにはminを使用します。
+
+<pre>
+# 最小
+$min = min @array;
+</pre>
+
+<h4>sum関数 - 合計</h4>
+
+配列の要素の合計を求めるにはsumを使用します。
+
+<pre>
+# 合計
+$total = sum @array;
+</pre>
+
+<h4>shuffle関数 - 要素の順番をランダムに入れ替え</h4>
+
+配列の要素の順番をランダムに入れ替えるにはshuffleを使用します。
+
+<pre>
+# 配列の要素をランダムに入れ替え
+@shuffled = shuffle @array;
+</pre>
+
+<h4>first関数 - 条件にマッチした最初の要素を取得</h4>
+
+条件にマッチした最初の要素を取得するにはfirstを使用します。配列のそれぞれの要素は<a href="/blog/20180118151628.html">デフォルト変数「$_」</a>に渡されてきます。
+
+<pre>
+# 条件にマッチした最初の要素を取得
+$first = first { 条件 } @array;
+</pre>
+
+map関数と構文が似ているので<a href="/blog/20100118126425.html">map関数</a>についても参考にしてください。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+

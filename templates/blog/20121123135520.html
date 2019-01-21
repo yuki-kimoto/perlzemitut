@@ -1,0 +1,167 @@
+<h2 class="title">複素数を表現する / PDLによる統計解析</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20121214135538.html">
+      <span itemprop="name">PDL</span>
+    </a>
+    <meta itemprop="position" content="4" />
+  </li>
+</ol>
+
+複素数は<b>PDL::Complex</b>を読むと使えるようになる虚数単位を表す<b>i</b>関数を使って表現します。
+
+たとえば<b>3 + 2i</b>という複素数を表現するには次のようにします。
+
+<pre>
+use PDL;
+use PDL::Complex;
+
+my $num = 3 + 2*i;
+</pre>
+
+この複素数を出力すると以下のように表示されます。
+
+<pre>
+3 +2i
+</pre>
+
+<h3>虚数単位iを使用する</h3>
+
+PDLでは虚数を扱うことができます。虚数を扱うためには、<b>PDL::PDL::Complex</b>を読み込みましょう。
+
+<pre>
+use PDL::Complex;
+</pre>
+
+すると虚数単位を表す<b>i</b>関数がインポートされます。
+
+<pre>
+i
+</pre>
+
+虚数単位を出力すると以下のように出力されます。
+
+<pre>
+0 +1i
+</pre>
+
+虚数単位iというのは二乗して-1になる数のことでした。二乗してみましょう。
+
+<pre>
+my $ret = i * i;
+</pre>
+
+これを出力すると以下のように表示されます。
+
+<pre>
+-1 +0i
+</pre>
+
+<h3>複素数の四則演算</h3>
+
+複素数の四則演算は通常の演算と同じく<b>+</b>, <b>-</b>, <b>*</b>, <b>/</b>を使って行うことができます。
+
+<pre>
+use PDL;
+use PDL::Complex;
+
+my $num1 = 1 + 2*i;
+my $num2 = 3 + 4*i;
+</pre>
+
+<h4>和</h4>
+<pre>
+# 4 +6i
+my $sum = $num1 + $num2;
+</pre>
+
+<h4>差</h4>
+
+<pre>
+# 2 +2i
+my $sub = $num2 - $num1;
+</pre>
+
+<h4>積</h4>
+
+<pre>
+# -5 +10i
+my $multi = $num1 * $num2;
+</pre>
+
+<h4>商</h4>
+
+<pre>
+# 0.44 +0.08i
+my $div = $num1 / $num2;
+</pre>
+
+<h3>n乗根を計算する</h3>
+
+n乗根を計算するには<b>Croots</b>関数を使用します。
+
+<pre>
+use PDL;
+use PDL::Complex;
+
+# 5の3乗根
+my $nums = Croots(5, 3);
+</pre>
+
+計算結果の出力は以下のようになります。
+
+<pre>
+[1.85398 +0.496773i  -1.35721 +1.35721i  -0.496773 -1.85398i]
+</pre>
+
+<h3>実数を複素数に変換する</h3>
+
+実数を複素数に変換するには<b>r2C</b>関数を使用します。
+
+<pre>
+use PDL;
+use PDL::Complex;
+
+my $num = r2C 5;
+</pre>
+
+出力結果は以下のようになります。
+
+<pre>
+5 +0i
+</pre>
+

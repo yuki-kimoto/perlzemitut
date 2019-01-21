@@ -1,0 +1,221 @@
+<h2 class="title">stat関数 - ファイルの詳細な情報を取得する</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+ファイルの詳細な情報を取得するには<strong>stat</strong>関数を使用します。
+
+<pre>
+my @infos = stat $file;
+</pre>
+
+以下がstatで取得できる情報です。
+
+<table>
+  <tr>
+    <td>
+      0  
+    </td>
+    <td>
+      ファイルシステムのデバイス番号
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      1 
+    </td>
+    <td>
+       iノード番号
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      2  
+    </td>
+    <td>
+      ファイルモード
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      3  
+    </td>
+    <td>
+      このファイルへのハードリンク数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      4  
+    </td>
+    <td>
+      ファイルの所有者のユーザID( 数字 )
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      5  
+    </td>
+    <td>
+      ファイルの所有者のグループID( 数字 )
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      6  
+    </td>
+    <td>
+      デバイス識別子
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      7  
+    </td>
+    <td>
+      ファイルのサイズ( バイト )
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      8  
+    </td>
+    <td>
+      最終アクセスしてからの経過したエポックからの秒数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      9  
+    </td>
+    <td>
+      最終更新してからの経過したエポックからの秒数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      10 
+    </td>
+    <td>
+      iノードが変更されてから経過したエポック時からの秒数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      11 
+    </td>
+    <td>
+      ファイルの読み書きに適切だと考えられるブロックサイズ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      12 
+    </td>
+    <td>
+      割り当てられている実際のブロック数
+    </td>
+  </tr>
+
+</table>
+
+<h3>サンプル</h3>
+
+stat関数を使ってファイルの詳細な情報を取得するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルの詳細な情報を取得する stat
+
+my $file = 'a.txt';
+my @stat_inf = stat $file;
+
+# statの解説の作成
+my @stat_exp = ( 
+  '0  dev      ファイルシステムのデバイス番号',
+  '1  ino      iノード番号',
+  '2  mode     ファイルモード',
+  '3  nlink    このファイルへのハードリンク数',
+  '4  uid      ファイルの所有者のユーザID( 数字 )',
+  '5  gid      ファイルの所有者のグループID( 数字 )',
+  '6  rdev     デバイス識別子',
+  '7  size     ファイルのサイズ( バイト )',
+  '8  atime    最終アクセスしてからの経過したエポック時からの秒数',
+  '9  mtime    最終更新してからの経過したエポック時からの秒数',
+  '10 ctime    iノードが変更されてから経過したエポック時からの秒数',
+  '11 blksize  ファイルの読み書きに適切だと考えられるブロックサイズ',
+  '12 blocks   割り当てられている実際のブロック数',
+);
+
+if (@stat_inf) {
+  for my $i (0 .. 12) {
+    # statの情報と解説を結びつけて、出力。
+    printf("%-15s%s\n", $stat_inf[$i], $stat_exp[$i]);
+  }                                              
+}
+else { print "stat $file は失敗しました。\n" }
+</pre>
+
+<h3>簡単な補則</h3>
+
+<ul>
+  <li>
+     <span style="font-weight:bold;">デバイス番号:</span>ファイルシステムは、デバイス(ハードディスク)に関連づけられて、構築されます。そのハードディスクを識別する番号です( たぶん )。 → <a href="http://ja.wikipedia.org/wiki/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0">ファイルシステム</a>
+  </li>
+  <li>
+     <span style="font-weight:bold;">iノード:</span> Unix系OSにおいて、ファイルを管理するための識別子のようなものです。→ <a href="http://itpro.nikkeibp.co.jp/article/Keyword/20070207/261208/">iノード</a>
+  </li>
+  <li>
+    <span style="font-weight:bold;">ファイルモード:</span> Unixにおける<a href="http://www.tech-faq.com/lang/ja/unix-file-permissions.shtml">ファイルタイプ</a>と<a href="/blog/20080822121950.html">パーミッション</a>を表す値です。→ 
+  </li>
+  <li>
+     <span style="font-weight:bold;">ハードリンク:</span> Unix系のOSでは、ファイルに別名をつけることができます。ハードリンク数とは、このファイルを指す別名の総数のことです。→ <a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%BC%E3%83%89%E3%83%AA%E3%83%B3%E3%82%AF">ハードリンク</a>
+  </li>
+</ul>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

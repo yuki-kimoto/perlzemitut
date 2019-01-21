@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>Mojoliciousの「テンプレート」の使い方 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">Mojoliciousの「テンプレート」の使い方</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<strong>テンプレート</strong>について解説したいと思います。今までは、簡単なテキストを出力してきただけでしたが、Webアプリケーションなので、HTMLを出力したいですね。Mojoliciousのテンプレートという機能を使うと、HTMLを出力することができます。
+<pre>
+use Mojolicious::Lite;
+
+get '/' =&gt; sub {
+  my $self = shift;
+  
+  # テンプレートの指定
+  $self-&gt;render('index');
+};
+
+get '/company/info' =&gt; sub {
+  my $self = shift;
+
+  # テンプレートの指定
+  $self-&gt;render('company/info');
+};
+
+app-&gt;start;
+
+__DATA__
+
+@@ index.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Index&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+@@ company/info.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Company Information&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Company Information
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  アプリケーションを起動して「/」と「/company/info」にアクセスしてみてください。それぞれ「Index」「Company Informatiomn」が太字で表示されます。
+</p>
+<h3>テンプレートの指定方法</h3>
+<p>
+  まずテンプレートの指定部分についてみてみましょう。テンプレートは<strong>render</strong>メソッドで指定することができます。
+</p>
+<pre>
+# テンプレートの指定
+$self-&gt;render('index');
+$self-&gt;render('company/info');
+</pre>
+<p>
+  二番目の例のように「<b>/</b>」を使ってディレクトリ階層を表現することも可能です。
+</p>
+<h3>テンプレートの記述方法</h3>
+<p>
+  次にテンプレートの記述方法を見てみましょう。
+</p>
+<pre>
+__DATA__
+
+@@ index.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Index&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+@@ company/info.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Company Information&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Company Information&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  テンプレートは<storng>__DATA__</strong>という記述をした行の下に書く必要があります。この部分はデータセクションと呼ばれます。
+</p>
+<p>
+  次にテンプレート名は次のような表現で記述します。
+</p>
+<pre>
+@@ テンプレート名.html.ep
+</pre>
+<p>
+  「<b>@@</b>」の後ろに半角の空白が必要なことに注意してください。Mojoliciousのテンプレート名の拡張子は、特別なことを行わない限りは「<b>html.ep</b>」になります。
+</p>
+<p>
+  今回のサンプルでは、テンプレートはふたつありますが、それぞれ次のような記述になっています。
+</p>
+<pre>
+@@ index.html.ep
+@@ company/info.html.ep
+</pre>
+<p>
+  そしてテンプレート名の後ろにHTMLを記述します。
+</p>
+<pre>
+@@ index.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Index&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  これが表示される内容になります。
+</p>
+<h3>テンプレート内にはPerlが書ける</h3>
+<p>
+  MojoliciousのテンプレートにはPerlを記述することができます。少しだけ記法を覚えてしまえば、特別な文法を覚える必要がないので便利です。
+</p>
+<p>
+  Perlを記述するには先頭に「<b>%</b>」を記述します。
+</p>
+<pre>
+% my $name = 'kimoto';
+</pre>
+<p>
+  また複数にわたってPerlを記述するときは「<b>&lt;% %&gt;</b>」という記法を使うことができます。
+</p>
+<pre>
+&lt;%
+  my $title = 'kimoto';
+  my $age = 19;
+%&gt;
+</pre>
+<h4>値の埋め込み</h4>
+<p>
+  また「<b>%=</b>」あるいは「<b><%= %></b>」を使って、直接、値をHTMLに埋め込むことができます。
+</p>
+<pre>
+%= $title;
+&lt;%= $title %&gt;
+</pre>
+<h4>Perlの記述を使ったサンプル</h4>
+<p>
+  では、実際にテンプレート内でPerlを使ったサンプルを書いてみましょう。サンプルの中では、if文やfor文を使っています。
+</p>
+<pre>
+use Mojolicious::Lite;
+
+get '/' =&gt; sub {
+  my $self = shift;
+  
+  $self-&gt;render('index');
+};
+
+app-&gt;start;
+
+__DATA__
+
+@@ index.html.ep
+&lt;%
+  my $name = 'kimoto';
+  my $age = 19;
+  my @nums = (1, 2, 3);
+%&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Index&lt;/h1&gt;
+    % if ($name eq 'kimoto') {
+      Kimoto
+    % } else {
+      Other
+    % }
+    &lt;br&gt;
+    He is &lt;%= $age %&gt; years old.&lt;br&gt;
+    
+    % for my $num (@nums) {
+      &lt;%= $num %&gt;&lt;br&gt;
+    % }
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  こんな風にテンプレートの中にPerlを記述することができるので便利です。
+</p>
+<h4>値は自動的にHTMLエスケープされる</h4>
+<pre>
+%= 値
+&lt;%= 値 %&gt;
+</pre>
+<p>
+  上記の記述で埋め込んだ値は、自動的にXMLエスケープされます。XMLエスケープは、HTMLの中で危険な文字列を安全な文字に置き換える処理のことです。以下の変換が行われます。
+</p>
+<pre>
+&  =&gt; &amp;
+&lt;  =&gt; &lt;
+&gt;  =&gt; &gt;
+"  =&gt; &quot;
+'  =&gt; &#39;
+</pre>
+<p>
+  もし「&lt;」などが、置き換えられないとすれば「<script></script>」のような文字列を、ユーザーから送り込まれた場合に、javascriptが実行される危険性を持つことになります。ですので、Mojoliciousでは、このような危険性を下げるために、デフォルトでXMLエスケープ処理を行うようになっています。
+</p>
+<p>
+  もしXMLエスケープを行いたくない場合は「<b><%==</b>」あるいは「<b><%== %></b>」という記法を使います。
+</p>
+<pre>
+%== 値
+&lt;%== 値 %&gt;
+</pre>
+<h3>データの受け渡しはスタッシュと呼ばれる変数を使う</h3>
+<p>
+  コントローラーとテンプレートではスタッシュと呼ばれる変数を共有しています。データをテンプレート側に渡したい場合はstashメソッドを使って、値を設定することができます。
+</p>
+<pre>
+# コントローラーでのスタッシュの値の設定
+$c-&gt;stash('name' =&gt; 'Kimoto');
+
+# コントローラーでのスタッシュの値の取得
+my $name = $c-&gt;stash('name')
+</pre>
+<p>
+  またテンプレートの中ではstashヘルパーを使って、値の設定と取得を行うことができます。テンプレートの中で利用できる関数のことをヘルパーと呼びますので、覚えておいてください。
+</p>
+<pre>
+# テンプレートでのスタッシュの値の設定
+stash('name' =&gt; 'Kimoto');
+
+# テンプレートでのスタッシュの値の取得
+my $name = stash('name');
+</pre>
+<p>
+  また<b>render</b>メソッドの第二引数以降を利用すると、スタッシュの値を設定できるので、便利です。短く書けるので、これを利用しましょう。
+</p>
+<pre>
+# renderメソッド
+$c-&gt;render($template, 'name' =&gt; 'Kimoto', 'age' =&gt; 19);
+
+# これと同じ
+$c-&gt;stash('name' =&gt; 'Kimoto');
+$c-&gt;stash('age' =&gt; 19);
+$c-&gt;render($template);
+</pre>
+<h4>スタッシュの予約語</h4>
+<p>
+  スタッシュのキーとしては、次のものは予約語になっているので、値を保存したい場合には、使わないでください。もし使えば、予測外の挙動を起こして、正しい処理が行われなくなるので、気をつけてください。
+</p>
+<pre>
+action app cb controller data extends format handler json layout
+namespace partial path status template text variant
+</pre>
+<h4>スタッシュを使ったサンプル</h4>
+<p>
+  スタッシュを使ったサンプルを書いてみます。
+</p>
+<pre>
+use Mojolicious::Lite;
+
+# コントローラー
+get '/' =&gt; sub {
+  my $self = shift;
+  
+  # スタッシュに値を設定してindexを描画
+  $self-&gt;render('index', 'name' =&gt; 'Kimoto', age =&gt; 19);
+};
+
+app-&gt;start;
+
+__DATA__
+
+@@ index.html.ep
+&lt;%
+  # スタッシュから値を取得
+  my $name = stash('name');
+  my $age = stash('age');
+%&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;&lt;%= $name %&gt;:&lt;%= $age %&gt;&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  コントローラー内でrenderメソッドを使ってスタッシュを設定しています。
+</p>
+<pre>
+# スタッシュに値を設定してindexを描画
+$self-&gt;render('index', 'name' =&gt; 'Kimoto', age =&gt; 19);
+</pre>
+<p>
+  テンプレート内でstashヘルパーを使ってスタッシュの値を取得しています。
+</p>
+<pre>
+
+</pre>
+<h3>レイアウト</h3>
+<p>
+  次に<strong>レイアウト</strong>という機能を解説します。もう一度最初のサンプルを見てみましょう。
+</p>
+<pre>
+@@ index.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Index&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+@@ company/info.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Company Information&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Company Information
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  htmlタグやbodyタグというのは、二つのテンプレートで共通のものとなっていますね。bodyの中身は異なりますが、骨格となっているhtmlタグやbodyタグは同じです。こういう場合は、レイアウトという機能を使えば、記述の繰り返しを避けることができます。
+</p>
+<p>
+  最初のサンプルをレイアウトを使って書き直してみましょう。
+</p>
+<pre>
+@@ layouts/common.html.ep
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;&lt;%= stash('title') %&gt;&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    %= content;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+@@ index.html.ep
+% layout 'common', title =&gt; 'Index';
+  &lt;h1&gt;Index&lt;/h1&gt;
+
+@@ company/info.html.ep
+% layout 'common', title =&gt; 'Company Information';
+  &lt;h1&gt;Company Information&lt;/h1&gt;
+</pre>
+<h4>レイアウト名</h4>
+<p>
+  まずレイアウトを定義してみましょう。まずテンプレート名を見てください。
+</p>
+<pre>
+layouts/common.html.ep
+</pre>
+<p>
+  「layouts/」で始まっています。これはレイアウトを作成するときの規則です。その後ろにレイアウト名「common」が続きます。そして、拡張子は、テンプレートと同じ「.html.ep」です。
+</p>
+<h4>レイアウトの内容</h4>
+<p>
+  次にレイアウトの内容を見てみましょう。
+</p>
+<pre>
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;&lt;%= stash('title') %&gt;&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    %= content;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  すべてのテンプレートで共有する部分をレイアウトには記述します。htmlタグとbodyタグを書いています。レイアウトに埋め込む内容は、<b>contentヘルパー</b>で取得することができます。contentヘルパーの部分が、実際の内容に置き換わります。
+</p>
+<p>
+  レイアウトの中でも、stashを利用することができますので、テンプレートからレイアウトにstashを通してデータを渡すことができます。これを利用すれば、タイトルだけを変更するということも簡単です。
+</p>
+<h4>レイアウトの呼び出し</h4>
+<p>
+  次に、実際のテンプレートでレイアウトを呼び出している記述を見てみましょう。
+</p>
+<pre>
+@@ index.html.ep
+% layout 'common', title =&gt; 'Index';
+  &lt;h1&gt;Index&lt;/h1&gt;
+</pre>
+<b>layoutヘルパー</b>を使えば、レイアウトを呼び出すことができます。第一引数にはレイアウト名を指定します。第二引数以降の値は、stashの値として設定されます。
+<p>
+  実際にこれは以下のようなHTMLに展開されます。
+</p>
+<pre>
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+      &lt;h1&gt;Index&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+  「&lt;h1&gt;Index&lt;/h1&gt;」が、呼び出したレイアウトに埋め込まれていることを確認してください。レイアウトは必須で使う機能になると思います。ぜひ覚えてください。
+</p>
+<h3>他のテンプレートをインクルードする</h3>
+<p>
+  次に他のテンプレートを「インクルード」できる機能を紹介します。「ヘッダ」や「フッタ」などの共通部品を作成して読み込むことができます。
+</p>
+<p>
+  他の<strong>テンプレート</strong>を<strong>インクルード</strong>するには<strong>include</strong>関数を使用します。複数の部分で利用するコンポートネントを共通の部品として定義しておいて読み込むのに利用できます。
+</p>
+<h4>インクルードされるテンプレートの記述</h4>
+<p>
+  インクルードされるテンプレートを記述します。名前はcomponent.html.epとします。
+</p>
+<pre>
+コンポーネント
+%= $name
+</pre>
+<p>
+  $nameという部分に注目してみてください。このようにしておくと、テンプレートをインクルードするときに、一部分だけ内容を変更することができます。
+</p>
+<h4>テンプレートのインクルード</h4>
+<p>
+  テンプレートをインクルードするには、include関数を使用します。
+</p>
+<pre>
+%= include 'component', name =&gt; 'Ken';
+</pre>
+<p>
+  第一引数はインクルードしたいテンプレート名です。「.html.ep」は省略することができます。第二引数以降はインクルードされるテンプレートに渡したいデータをハッシュで指定することができます。
+</p>
+<h3>テンプレートの外部化</h3>
+<p>
+  Mojolicious::Liteのサンプルでは、テンプレートは、ファイルの中に記述しましたが、「ファイル」として配置することもできます。規模が大きくなってきた場合は、ファイルとして外部に保存すると、見通しがよくなります。
+</p>
+<p>
+  「templates」ディレクトリを作成して、その中に配置すると、Mojoliciousはそれを読み込んでくれます。
+</p>
+<pre>
+templates / index.html.ep
+          / list.html.ep
+</pre>
+<h3>テンプレートで使うテクニック</h3>
+<p>
+  テンプレートでよく使うテクニックを紹介します。
+</p>
+<h4>テキストをHTMLエスケープから保護する</h4>
+<p>
+  テキストをHTMLエスケープから保護するには、文字列をMojo::ByteStreamオブジェクトに変換してからテンプレートに渡します。
+</p>
+<pre>
+&lt;%= Mojo::ByteStream-&gt;new('&lt;p&gt;test&lt;/p&gt;') %&gt;
+</pre>
+<p>
+  タグなどをHTMLエスケープしたくない場合は、Mojo::ByteStreamオブジェクトに変換して、テンプレートに渡します。
+</p>
+<p>
+  また<b>b</b>というヘルパーもあり、こちらを使うと短くかけます。
+</p>
+<pre>
+&lt;%= b('&lt;p&gt;test&lt;/p&gt;') %&gt;
+</pre>
+<h4>コントローラーオブジェクトの取得</h4>
+<p>
+  テンプレートの中でコントローラーオブジェクを取得するには<strong>$self</strong>という変数にアクセスします。
+</p>
+<pre>
+% my $controller = $self;
+</pre>
+<p>
+  $selfはテンプレートの中で暗黙的に宣言される変数です。これがMojolicious::Controllerオブジェクトになっています。
+</p>
+<p>
+  このオブジェクトからコントローラクラスのメソッドを呼び出すことができます。
+</p>
+<pre>
+# コントローラークラスのメソッドの呼び出し
+my $req = $self-&gt;req;
+</pre>
+<h4>テンプレートブロックを作成する</h4>
+<p>
+  テンプレートの中で「テンプレートブロック」を作成することができます。テンプレートブロックは再利用可能なテンプレートの部品として利用することができます。
+</p>
+<pre>
+# Template block
+&lt;% my $div = begin %&gt;
+  % my ($id, $text) = @_;
+  &lt;div id="&lt;%= $id %&gt;" &gt;
+    %= $text
+  &lt;/div&gt;
+&lt;% end %&gt;
+</pre>
+<p>
+  テンプレートブロックは実質的にはサブルーチンのリファレンスですが、HTMLの内容をテンプレートにおけるのと同じように記述できるのがポイントです。テンプレートブロックはbeginで始まりendで終わります。
+</p>
+<p>
+  テンプレートブロックはPerlのサブルーチンのリファレンスとして利用することができます。
+</p>
+<pre>
+&lt;%= $div-&gt;('foo', 'Hello') %&gt;
+</pre>
+<p>
+  以下はMojolicious::Liteでのサンプルです。
+</p>
+<pre>
+use Mojolicious::Lite;
+get '/' =&gt; 'index';
+app-&gt;start;
+
+__DATA__
+
+@@ index.html.ep
+&lt;% my $div = begin %&gt;
+  % my ($id, $text) = @_;
+  &lt;div id="&lt;%= $id %&gt;" &gt;
+    %= $text
+  &lt;/div&gt;
+&lt;% end %&gt;
+
+&lt;%= $div-&gt;('foo', 'Hello') %&gt;
+</pre>
+<h4>タグの前後の空白を取り除く</h4>
+<p>
+  Mojoliciousのテンプレートを使っているときに、タグの前後の空白を取り除きたい場合があります。前後の空白を取り除きたい場合は次のような特別なタグを利用します。
+</p>
+<pre>
+&lt;%= 内容 =%&gt;
+</pre>
+<p>
+  通常のタグの場合はは「<%= 内容 %>」です。後ろの%の前に<b>=</b>がついているところがポイントです。
+</p>
+<h4>テンプレートでは関数の名前空間が共有される</h4>
+<p>
+  Mojoliciousのテンプレートの中でPerlのコードを自由に書くことができますが、ひとつだけ注意するべきことがあります。それは、すべての<strong>テンプレート</strong>で、関数の<strong>名前空間が共有される</strong>ということです。
+</p>
+<pre>
+# テンプレートA
+use Encode 'encode';
+</pre>
+<pre>
+# テンプレートB
+encode('UTF-8', $str);
+</pre>
+<p>
+  テンプレートBではencode関数をインポートしていないのですが、テンプレートAでインポートしているのでテンプレートBで利用することができます。これはMojoliciousがすべてのテンプレートをひとつの名前空間の中に作成しているからです。
+</p>
+<p>
+  ですので、混乱したくないのであれば、テンプレートの中では関数のインポートを行わないで、完全修飾名で利用するのが安全でしょう。
+</p>
+<pre>
+use Encode ();
+Encode::encode('UTF-8', $str);
+</pre>
+<h3>まとめ</h3>
+<p>
+  MojoliciousのテンプレートはPerlが使えるのがとてもよい! 「if」も「for」もテンプレート用の構文をいちいち覚える必要がないしね。「レイアウト」と「インクルード」の記述を使えば、ヘッダやフッタの記述を共有化できる。コピペしまくらなくっていいから、便利だ。
+</p>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

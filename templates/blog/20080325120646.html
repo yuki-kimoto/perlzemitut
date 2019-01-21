@@ -1,0 +1,149 @@
+<h2 class="title">三項演算子 A ? B : C</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+Perlには、条件によって、返却する値を変えることができる<b>三項演算子</b>というものがあります。
+
+<pre>
+条件 ? 真の場合に返す値 : 偽の場合に返す値
+</pre>
+
+上の構文だけ見ると少しわかりにくいので、実際にサンプルを書いてみます。
+
+<pre>
+my $flag = 1;
+my $num = $flag ? 3 : 5;
+</pre>
+
+「$flag」が「1」で真の値です。三項演算子は条件が真の場合には「?」の直後の値を返却します。ですので「3」が「$num」に代入されます。
+
+次は、条件が偽の場合のサンプルです。
+
+<pre>
+my $flag = 0;
+my $num = $flag ? 3 : 5;
+</pre>
+
+「$flag」が「0」で偽の値です。三項演算子は条件が真の場合には「:」の直後の値を返却します。ですので「5」が代入されます。
+
+三項演算子は慣れるまでは少し読みにくい構文です。前半だけを見ると「$num」に「$flag」が代入されているように思えるかもしれません。
+
+でも「$flag」が代入されるのではなく、「$flag」が条件になっていて、条件に応じて「?の直後」あるいは「:の直後」の値が返却されます。
+
+Perlの真偽値について詳しく知りたい場合は、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080323120628.html">Perlの真偽値</a>
+  </li>
+</ul>
+
+<h4>ifで書くのとの違いは?</h4>
+
+三項演算子で書けることは<a href="/blog/20161023147731.html">if文</a>でもそのまま書けます。
+
+<pre>
+my $flag = 1;
+my $num;
+if ($flag) {
+  $num = 3;
+}
+else {
+  $num = 5;
+}
+</pre>
+
+違いは、三項演算子は<b>短く書ける</b>ということと<b>値を返せる</b>ということです。
+
+この利点を生かすと、たとえば<a href="/blog/20140405139642.html">Mojoliciousのテンプレート</a>の中で、こんな風に書けます。
+
+<pre>
+<%= $flag ? 3 : 5 %>
+</pre>
+
+if文で書くより省略でき、1行で短くスッキリ書けましたね。
+
+<h4>複数の条件が連続する三項演算子</h4>
+
+三項演算子は、複数の条件を連続させて使用することができます。ネストされている場合も読めるようにしておきましょう。
+
+<pre>
+my $flag = 1;
+my $num
+  = $flag == 1 ? 3
+  : $flag == 2 ? 5
+  : 7;
+</pre>
+
+少し読みにくいですが、最初に書いたとおり読んでいきます。
+
+<ul>
+  <li>
+    「$flag」が「1」の場合は「3」が返却されます。
+  </li>
+  <li>
+     そうでない場合は「:」の後ろが実行されます。つまり、その後に続く三項演算子が実行されます。
+  </li>
+  <li>
+     「$flag」が「2」の場合は「5」が返却されます。
+  </li>
+  <li>
+     そうでない場合は「:」の後ろが実行されます。つまり「7」が返却されます。
+  </li>
+</ul>
+
+
+<h3>サンプルプログラム</h3>
+
+三項演算子のサンプルプログラムです。
+
+<pre>
+use strict;
+use warnings;
+
+# 三項演算子 
+
+my $num1 = 1;
+my $num2 = 2;
+
+print "1. 三項演算子の例( if ～ else を置き換える )\n";
+my $max_num = $num1 > $num2 ? $num1 : $num2;
+print "\$max_num = $max_num\n\n";
+
+#以下のif ～ else 文と同じ
+if ($num1 > $num2) { $max_num = $num1 }
+else { $max_num = $num2 }
+
+my $age = 23;
+print "2. 三項演算子の例(if ～ elsif ～ を置き換える)\n";
+my $generation =
+  $age < 20 ? 'child' :
+  $age < 60 ? 'middle' :
+  $age < 80 ? 'old' :
+  'very old';
+                  
+print "\$generation = $generation\n";
+
+#以下のif ～ elsif文と同じ
+if ($age < 20) { $generation = 'child' }
+elsif ($age < 60) { $generation = 'middle' }
+elsif ($age < 80) { $generation = 'old' }
+else { $generation = 'very old' }
+</pre>
+

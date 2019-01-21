@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>SQLiteで学ぶデータベース操作の基礎 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">SQLiteで学ぶデータベース操作の基礎</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<p>
+  Perlを使ってデータベースは初級者が学ぶには今までは少し敷居の高いものでした。まずSQLの実行環境を構築する必要がありすぐに勉強したいという需要を満たすことはできていませんでした。
+</p>
+<p>
+  ですが現在はこの状況は変わりました。現在ではActivePerlをダウンロードするとDBD::SQLiteと呼ばれるSQLiteを利用するためのモジュールがパッケージングされています。
+</p>
+<p>
+  またデータベースに接続するためのユーザから見たインターフェイス部分にあたるDBIというモジュールもパッケージングされています。
+</p>
+<p>
+  ですのでActivePerlの最新版をダウンロードするだけで何の環境構築も行わないでデータベースを学習し始めることができます。
+</p>
+<h3>DBD::SQLiteとDBIがインストールされていることを確認する</h3>
+<p>
+  まずDBD::SQLiteとDBIがインストールされているかどうかを最初に確認してください。コマンドプロンプトからPerlのドキュメントを見るためのコマンド「perldoc」でこれらのモジュールがインストールされているかどうかを確認することができます。
+</p>
+<pre>
+perldoc DBD::SQLite
+</pre>
+<pre>
+perldoc DBI
+</pre>
+<p>
+  もしこれらのモジュールがインストールされていなかった場合はppmと呼ばれるWindows用のパッケージマネージャを使用してDBD::SQLiteをインストールすることができます。また最新版のActivePerlをインストールするのも良いかもしれません。
+</p>
+<p>
+  新しくActivePerlをインストールする場合の手順はこちらになります。
+</p>
+<a href="/blog/20080602121231.html">ActivePerlのインストール</a>
+<p>
+  古いActivePerlがインストールされている場合は「コントロールパネル」→「プログラムの追加と削除」から古いActivePerlをアンインストールしてからインストールするか、Perlをインストールするディレクトリの名前を変更する必要があります。
+</p>
+<p>
+  最新のActivePerlをインストールできたら「DBD::SQLite」と「DBI」がインストールされていることを確認しましょう。
+</p>
+<p>
+  ppmでインストールする手順はこちらになります。
+</p>
+<pre>
+ppm install DBD-SQLite
+</pre>
+<pre>
+ppm install DBI
+</pre>
+<p>
+  UnixやLinuxを使用している人cpanコマンドでDBD::SQLiteとDBIをインストールするだけです。(Windowsでもcpanコマンドを使用してインストールできるかもしれませんがDBD::SQLiteのコンパイルに失敗する可能性があります。)
+</p>
+<pre>
+cpan DBD::SQLite
+</pre>
+<pre>
+cpan DBI
+</pre>
+<p>
+  これでデータベースを学習する準備は整いました。
+</p>
+<h3>データベースに接続する</h3>
+<p>
+  では早速データベースに接続してみましょう。データベースに接続するにはDBIモジュールのconnectメソッドを使用します。connectの第1引数はデータソースと呼ばれるデータベースに接続するための情報を指定します。フォーマットは少し特殊ですが覚えてしまいましょう。
+</p>
+ データソースの中で接続するデータベース名を指定することができます。SQLiteではデータベースは単純にファイルとして作成されるのでデータベース名として好きな名前を指定します。戻り値にはデータベースハンドルと呼ばれるデータベースと通信するためのオブジェクトが返されます。
+<pre>
+use DBI;
+my $database = 'test.db';
+my $data_source = "dbi:SQLite:dbname=$database";
+my $dbh = DBI-&gt;connect($data_source);
+</pre>
+<p>
+  これでカレントディレクトリにtest.dbというファイルができているはずです。
+</p>
+<h3>データベースを切断する</h3>
+<p>
+  データベースの接続と対になるデータベースの切断の処理をここで覚えておきましょう。データベースを切断するにはdisconnectを使用します。
+</p>
+<pre>
+$dbh-&gt;disconnect;
+</pre>
+<p>
+  データベースへ接続する必要がなくなった場合は切断しておくのが賢明です。
+</p>
+<h3>SQLを実行する</h3>
+<p>
+  SQLとはテーブルを作成したり、データベースにデータを登録したり、データを取り出したりするために使用する問い合わせ言語のことです。基本的なSQLについてはこれから解説します。ここではまずSQLを実行する方法を解説します。
+</p>
+<p>
+  SQLを実行する方法には2通りの方法があります。
+</p>
+<ol>
+  <li>
+    doメソッドを使用して直接実行する方法
+  </li>
+  <li>
+    prepareメソッドでSQL文を準備してからexecuteメソッドで実行する方法
+  </li>
+</ol>
+<p>
+  ふたつめの方法はSQLでselect文と呼ばれるものを実行する場合に使用します。ひとつめの方法はselect文以外のSQLを実行するために使用します。「selectはprepareとexecute」で「それ以外はdo」と覚えます。
+</p>
+<h3>テーブルを作成する</h3>
+<p>
+  ではテーブルを作成するための一番簡単なSQLを作成してみましょう。テーブルを作成するには「create table」文を使用します。「create table」文では作成するテーブルの名前、テーブルに含むフィールド名を指定します。「SQLiteではフィールドのデータ型を必ずしも指定する必要はないのでここでは簡単のために型を省略します。
+</p>
+ bookというテーブル名で、titleとauthorというフィールドを持つテーブルを作成するSQLです。
+<pre>
+create table book (
+  title,
+  author
+);
+</pre>
+<p>
+  ではdoメソッドを使用して実際にテーブルを作成してみましょう。
+</p>
+<pre>
+my $create_table = &lt;&lt;'EOS';
+create table book (
+  title,
+  author
+)
+EOS
+
+$dbh-&gt;do($create_table);
+</pre>
+<p>
+  これでbookという名前のテーブルが作成されました。
+</p>
+<h3>テーブルを削除する</h3>
+<p>
+  テーブルを作成する方法を覚えたので反対の操作であるテーブルを削除する方法も覚えて起きましょう。テーブルを削除するには「drop table」文を使用します。
+</p>
+<pre>
+drop table テーブル名
+</pre>
+<p>
+  doを使用してテーブルを削除してみましょう。
+</p>
+<pre>
+my $drop_table = "drop table book";
+$dbh-&gt;do($drop_table);
+</pre>
+<h3>レコードの追加 insert</h3>
+<p>
+  テーブルにレコードを挿入するにはinsert文を使用します。
+</p>
+<pre>
+insert into テーブル名 (フィールド名1, フィールド名2, ..) values (値1, 値2, 値3);
+</pre>
+<p>
+  「title」が「Perl」で、「author」が「taro」のレコードをテーブルに追加するには次のようなSQLになります。データが文字列の場合はシングルクォートで囲みます(ですがこれはセキュリティ的にとても危険な方法なので回避策は後で解説します)。
+</p>
+<pre>
+insert into book (title, author) values ('Perl', 'taro');
+</pre>
+<p>
+  doを使ってinsert文を実行してみましょう。insertされたかどうかの確認はもう少し先のselect文を解説するまで待ってください。
+</p>
+<pre>
+my $insert = "insert into book (title, author) values ('Perl', 'taro');";
+$dbh-&gt;do($insert);
+</pre>
+<p>
+  これで以下のようなレコードがテーブルに追加されます。
+</p>
+<pre>
++--------+----------+
+|title   |author    | # ヘッダ(これはテーブルを作成したときにできる)
++--------+----------+
+|Perl    |taro      | # レコード(insert文で追加されたレコード)
++--------+----------+
+</pre>
+<h3>レコードの更新 update</h3>
+<p>
+  テーブルにあるデータを更新するにはupdate文を使用します。一般的にはwhere区で検索条件を指定して更新対象を絞ります。select文のところで解説しますが、where区には複数の条件を指定することもできます。
+</p>
+<pre>
+update テーブル名 set フィールド名1 = 値1, フィール名2 = 値2, .. where 検索するフィールド名 = 値
+</pre>
+<p>
+  「author」が「taro」であるレコードのtitleの値をRubyに変更するSQLは次のようになります。
+</p>
+<pre>
+update book set title = 'Ruby' where author = 'taro'
+</pre>
+<p>
+  doを使ってupdate文を実行してみましょう。
+</p>
+<pre>
+my $update = "update book set title = 'Ruby' where author = 'taro'";
+$dbh-&gt;do($update);
+</pre>
+<p>
+  先ほどのレコードは更新され次のようになります。
+</p>
+<pre>
++--------+----------+
+|title   |author    | # ヘッダ(これはテーブルを作成したときにできる)
++--------+----------+
+|Ruby    |taro      | # レコード(update文で更新されたレコード)
++--------+----------+
+</pre>
+<h3>レコードの削除 delete</h3>
+<p>
+  レコードを削除するにはdelete文を使用します。一般的にはwhere区で検索条件を指定して削除対象を絞ります。
+</p>
+<pre>
+delete from テーブル名 where 検索するフィールド名 = 値
+</pre>
+<p>
+  「author」が「taro」であるレコードを削除するSQLは次のようになります。
+</p>
+<pre>
+delete from book where author = 'taro';
+</pre>
+<p>
+  doを使ってdelete文を実行してみましょう。
+</p>
+<pre>
+my $delete = "delete from book where author = 'taro';";
+$dbh-&gt;do($delete);
+</pre>
+<p>
+  レコードが削除されます。
+</p>
+<h3>レコードの取得 select</h3>
+<p>
+  いよいよselect文です。ここまでは追加したレコードや削除したレコードの確認ができていませんでしたがselect文を覚えれば確認できるようになります。それでは一番簡単なselect文を書いてみましょう。指定したテーブルのすべての列を取得するには次のようにします。*はすべてのフィールドという意味です。
+</p>
+<pre>
+select * from テーブル名;
+</pre>
+<p>
+  bookのすべてレコードを取得するには次のようなSQLになります。
+</p>
+<pre>
+select * from book;
+</pre>
+<p>
+  select文の実行はdoではできません。select文を実行するにはSQL文をprepareというメソッドで準備してからexecuteで実行する必要があります。prepareメソッドは準備されたSQLを含んでいるステートメントハンドルと呼ばれるものを返します。このステートメントハンドルからexecuteを実行します。
+</p>
+<p>
+  では実際にselect文を実行してみましょう。
+</p>
+<pre>
+my $select = "select * from book;";
+my $sth = $dbh-&gt;prepare($select);
+$sth-&gt;execute;
+</pre>
+<p>
+  これでselect文を実行することができました。次の行う必要のあることはフェッチという操作によって実際に各行を取得することです。行をフェッチして配列に代入するにはステートメントハンドルからfetchrow_arrayというメソッドを使用します。
+</p>
+<pre>
+$sth-&gt;fetchrow_array;
+</pre>
+<p>
+  通常これはwhileループの中で使用してすべての行を取得するまで繰り返します。
+</p>
+<pre>
+while (my @row = $sth-&gt;fetchrow_array) {
+  ...
+}
+</pre>
+<h3>SQLiteではメモリ上にデータベースを作成することがで便利</h3>
+<p>
+  SQLiteではメモリ上にデータべースを作成することができます。ファイル名を指定する必要はなく、データベースを切断するとテーブルは自動的に削除されますので、ちょっとした動作を確認したい場合にとても便利です。ここでの解説の大部分ではメモリ上にデータベースを作成して解説しようと思います。
+</p>
+<p>
+  メモリ上にデータベースを作成するにはデータソースのデータベース名に「:memory:」を指定します。
+</p>
+<pre>
+my $dbh = DBI-&gt;connect("dbi:SQLite:dbname=:memory:");
+</pre>
+<p>
+  これでメモリ上のデータベースに接続することができます。
+</p>
+<h3>実際に動かせるinsert,update,delete,selectのサンプルコード</h3>
+<p>
+  ここまでは解説ばかりでしたのでイメージをつかみにくかったのではないかと思います。ここでいくつかサンプルを記述します。実際にソースコードを実行してみてデータベースでのレコード操作になれてください。これが理解できればデータベースの基礎の基礎をマスターしたことになります。
+</p>
+<pre>
+use strict;
+use warnings;
+
+use DBI;
+
+# メモリ上のデータベースへ接続
+my $dbh = DBI-&gt;connect("dbi:SQLite:dbname=:memory:");
+
+# テーブルの作成
+my $create_table = &lt;&lt;'EOS';
+create table book (
+  title,
+  author
+)
+EOS
+
+$dbh-&gt;do($create_table);
+
+# insert文の実行
+$dbh-&gt;do("insert into book (title, author) values ('Perl', 'taro');");
+$dbh-&gt;do("insert into book (title, author) values ('C++', 'taro');");
+$dbh-&gt;do("insert into book (title, author) values ('Python', 'ken');");
+$dbh-&gt;do("insert into book (title, author) values ('Java', 'mamoru');");
+
+# update文の実行
+$dbh-&gt;do("update book set title = 'Ruby' where author = 'mamoru'");
+
+# delete文の実行
+$dbh-&gt;do("delete from book where author = 'ken';");
+
+# select文の実行
+my $sth = $dbh-&gt;prepare("select * from book;");
+$sth-&gt;execute;
+
+# 各行のフェッチ
+while (my @row = $sth-&gt;fetchrow_array) {
+  # 各行を出力
+  print join(', ', @row), "\n";
+}
+
+# データベースの切断
+$dbh-&gt;disconnect;
+</pre>
+<p>
+  次のような出力が得られます。
+</p>
+<pre>
+Perl, taro
+C++, taro
+Ruby, mamoru
+</pre>
+<h3>ユーザ名とパスワードを指定して接続する</h3>
+<p>
+  SQLiteで作成したデータベースへの接続にはユーザ名やパスワードは必要ありません。ですがMySQLやPostgreSQLやOracleなどの標準的なデータベースではユーザ名とパスワードを接続のときに指定する必要があります。
+</p>
+<p>
+  DBIを使用してユーザ名とパスワードを指定して接続するには次のようにします。第2引数にユーザ名、第3引数にパスワードを指定します。
+</p>
+<pre>
+my $dbh = DBI-&gt;connect($data_source, $user, $password);
+</pre>
+<h3>DBIのオプションの標準的な設定</h3>
+<p>
+  DBIではconnectメソッドの第4引数にDBIのオプションを指定することができます。
+</p>
+<pre>
+DBI-&gt;connect($data_source, $user, $password, {opt1 =&gt; $val1, opt2 =&gt; $val2, ..});
+</pre>
+<p>
+  DBIのデフォルトの動作はエラーが発生した場合に警告を標準エラー出力に出力するようになっています。
+</p>
+<p>
+  ですが警告ではなく、エラーメッセージを出力してプログラムを終了するほうがよりよいように思います。
+</p>
+<p>
+  警告を出力しないようにするには次のようにします。
+</p>
+<pre>
+PrintError =&gt; 0
+</pre>
+<p>
+  またエラーメッセージを出力してプログラムを終了するようにするには次のようにします。
+</p>
+<pre>
+RaiseError =&gt; 1
+</pre>
+<p>
+  またDBIにはAutoCommitと呼ばれるオプションがあります。これはコミットと呼ばれる処理を自動的に行うか行わないかを決めるオプションです。データベースのドライバによってデフォルトの値が異なる可能性がありますので明示的に指定しておいたほうが良いと思います。わたしの場合は自動的にコミットするようにしておいてトランザクションが必要になった場合にAutoCommitを0に設定します。
+</p>
+<p>
+  ですのでこのようなことを踏まえてデータベースに接続する場合は次のような記述にしておくのがよいかもしれません。
+</p>
+<pre>
+my $dbh = DBI-&gt;connect(
+  $data_source,
+  $user,
+  $password,
+  {
+    RaiseError =&gt; 1,
+    PrintError =&gt; 0,
+    AutoCommit =&gt; 1,
+  }
+);
+</pre>
+<p>
+  ユーザ名もパスワードも必要なくオプションだけを指定したい場合は次のようにします。
+</p>
+<pre>
+my $dbh = DBI-&gt;connect(
+  $data_source,
+  undef,
+  undef,
+  {
+    RaiseError =&gt; 1,
+    PrintError =&gt; 0,
+    AutoCommit =&gt; 1,
+  }
+);
+</pre>
+<h3>SQLiteのクライアントsqlite3のインストール</h3>
+<p>
+  SQLiteをWindowsにインストールすれば、コマンドプロンプトから直接SQLを実行することができるようになります。プログラムからでもSQLはDBIを使用して実行できますが対話的に実行できる環境があったほうがSQLの学習には適しています。
+</p>
+<p>
+  WindowsにSQLiteをインストールする方法こちらで解説しています。
+</p>
+<a href="/blog/20091203126018.html">WindowsにSQLiteをインストールする</a>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

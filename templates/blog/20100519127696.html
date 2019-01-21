@@ -1,0 +1,68 @@
+<h2 class="title">Net::Ping - リモートホストの生存確認</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>Net::Ping</strong>モジュールを利用すれば、リモートホストの生存を確認することができます。
+
+<pre>
+# モジュールの読み込みとオブジェクトの作成
+use Net::Ping;
+my $p = Net::Ping->new;
+</pre>
+
+リモートホストの生存を確認するには<strong>ping</strong>メソッドを使用します。引数にはホスト名(ドメイン名)とIPアドレスを使用することができます。
+
+<pre>
+# リモートホストの生存確認
+my $alive = $p->ping('localhost');
+</pre>
+
+少し注意して欲しいことがあるのですが、Net::Pingのpingメソッドはpingコマンドの代替ではありません。pingコマンドICMPというプロトコルを使用しますが、Net::PingはデフォルトではTCPプロトコルを使用して、エコーポート(ポート番号は7)に対して生存確認を行います。たとえばHTTP(ポートは80)でリモートホストに接続できたとしても、セキュリティ上の理由でエコーポートを閉じていれば、生存していないという判定が返ってきます。
+
+ICMPを利用した生存確認を行うには、コンストラクタでicmpを指定します。ただしこれを行うにはroot権限が必要になります(※1)。
+<pre>
+# ICMPを利用した生存確認
+my $p = Net::Ping->new('icmp');
+my $alive = $p->ping('somehost');
+</pre>
+
+HTTPで生存確認を行いたい場合は<strong>port_number</strong>メソッドを使用してポート番号に80を指定します。(v5.10.0以降)
+<pre>
+# HTTPを利用した生存確認
+$p->port_number(80);
+my $alive = $p->ping('www.google.co.jp');
+</pre>
+
+pingメソッドの第二引数にはタイムアウト値(秒)を指定することができます。
+
+<pre>
+# タイムアウト値の指定
+my $alive = $p->ping('www.google.co.jp', 2);
+</pre>
+
+<h3>ドキュメント</h3>
+<ul>
+  <li>
+    <a href="http://search.cpan.org/dist/Net-Ping/">Net::Ping(CPAN)</a>
+  </li>
+</ul>
+
+<h3>注</h3>
+※1 root権限がなければ生存確認できないのは少し不便です。CPANには<a href="/blog/20100520127696.html">Net::Ping::External</a>というモジュールがあり、これはpingコマンドのPerlインターフェースになっています。これを利用すれば、root権限なしてICMPを利用して生存確認を行うことができます。
+

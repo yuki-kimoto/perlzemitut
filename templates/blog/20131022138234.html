@@ -1,0 +1,330 @@
+<h2 class="title">PDLの基礎を学ぼう</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">PDL</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+R言語で統計解析を行っている人が、PerlでのPDLを使った統計解析作業を行えるように、PDLの入門を書いてみたいと思います。Perlの統計解析ライブラリであるPDLが使えるようになれば、Excelで行うような複数列のデータの統計処理が行えるようになります。
+
+まずもっとも簡単な1次元のデータ構造を作成してみましょう。次のコードを見てください。<strong>pdl</strong>関数を利用すると、1次元のデータ構造を作成することができます。
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+
+# データの作成
+my $nums = pdl [2, 4, 7];
+
+# データの出力
+print $nums;
+</pre>
+
+このサンプルを実行すると、画面には次のように出力されます。
+
+<pre>
+[2 4 7]
+</pre>
+
+<h3>PDL変数の作成</h3>
+
+まずpdl関数を使用するとPDL変数を作成することができます。まずPDLの最低限の機能を利用するためのPDL::Liteを読み込みます。
+
+<pre>
+use PDL::Lite;
+</pre>
+
+PDL::Liteを読み込むとpdl関数を使用できるようになります。PDL変数を作成するにはpdl関数を使用します。
+
+<pre>
+my $nums = pdl [2, 4, 7];
+</pre>
+
+<h3>データの取得と変更</h3>
+
+pdl関数で作成されたデータは、PDL変数と呼ばれます。1次元のPDL変数の要素を取得してみましょう。データを取得するには<strong>at</strong>メソッドを使用します。
+
+<pre>
+my $first = $nums->at(0);
+my $second = $nums->at(1);
+</pre>
+
+上記の例では、PDL変数に含まれる要素の値を取得しましたけれど、PDL変数として取得することもできます。
+
+一部のデータをPDL変数として取得するには、いくつかの方法がありますがナイススライス記法で記述するのが簡単です。ナイススライス記法を記述するためのPDL::NiceSliceモジュールを読みましょう。これはスクリプトの先頭で行っておきます。
+
+<pre>
+use PDL::NiceSlice;
+</pre>
+
+要素をPDL変数として取得するには<strong>$変数名(要素番号)</strong>という記法を使用します。
+
+<pre>
+# 要素をPDL変数として取得
+my $pdl_first = $nums(0);
+my $pdl_second = $nums(1);
+</pre>
+
+これらはPDL変数ですから、要素の値自体を取得したければ<strong>at</strong>メソッドで取り出すことができます。
+
+<pre>
+my $first = $pdl_first->at(0);
+my $second = $pdl_second->at(0);
+</pre>
+
+要素の値の変更を行う場合はも、ナイススライス記法を使用します。<strong>.=</strong>演算子を使用します。.=は文字列の結合ではなくて、代入のためにオーバーライドされています。
+
+<pre>
+# 要素の値を変更
+$nums(0) .= 5;
+</pre>
+
+PDLではPDL変数の複数の部分を新しいPDL変数として切り出すこともできます。二番目と三番目の要素を切り出して見ましょう。次のように<strong>$変数名(n:m)</strong>という記法を利用すると、PDL変数の一部を切り出すことができます。
+
+<pre>
+my $pdl_parts = $nums(1:2);
+</pre>
+
+切り出したPDL変数のすべての要素に値を代入することもできます。
+
+<pre>
+$nums(1:2) .= 8;
+</pre>
+
+このように切り出した部分の集合に対して、同じ演算を行うことができるのがPDLの特徴になっています。
+
+1次元のデータの長さを取得してみましょう。データの長さを取得するには<strong>dims</strong>メソッドを使用します。
+
+<pre>
+my $length = $nums->dims;
+</pre>
+
+<h3>サンプル</h3>
+
+実行できるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::NiceSlice;
+
+# データの作成
+my $nums = pdl [2, 4, 7];
+
+# 要素の出力
+print $nums->at(0) . "\n";
+print $nums->at(1) . "\n";
+
+# PDL変数の取り出し
+my $pdl_first = $nums(0);
+my $pdl_second = $nums(1);
+
+# 代入
+$nums(0) .= 5;
+
+# 複数要素のPDL変数の取得
+my $pdl_parts = $nums(1:2);
+
+# PDL変数として取り出した複数の要素への代入
+$nums(1:2) .= 8;
+
+print $nums . "\n";
+</pre>
+
+<h3>定数の四則演算</h3>
+
+<strong>PDL変数のすべての値に同じ値を加算する</strong>には<strong>+</strong>演算子を使用します。
+
+<pre>
+use PDL::Lite;
+my $pdl = pdl [1, 1, 2, 2, 2, 3];
+my $pdl_add = $pdl + 3;
+</pre>
+
+<strong>引き算</strong>、<strong>掛け算</strong>、<strong>割り算</strong>、<strong>商</strong>、<strong>べき乗</strong>も同じように計算することができます。
+
+<pre>
+# 引き算
+my $pdl_sub = $pdl - 3;
+
+# 掛け算
+my $pdl_product = $pdl * 3;
+
+# 割り算
+my $pdl_div = $pdl / 3;
+
+# 商
+my $pdl_quotient = $pdl % 3;
+
+# べき乗
+my $pdl_pow = $pdl + 3;
+</pre>
+
+掛け算と割り算にによるものは、ベクトルの定数倍に該当します。PDL変数どうしの演算ではなくて、PDL変数と普通の値との演算を行っていることを意識に止めておきましょう。
+
+<h3>ユニークな値を取り出す</h3>
+
+<strong>ユニークな値</strong>を取り出すには<strong>uniqメソッド</strong>を使用します。
+
+<pre>
+my $pdl_uniq = $pdl->uniq;
+</pre>
+
+<h3>PDL変数どうしの四則演算</h3>
+
+<strong>PDL変数どうしを加算する</strong>には、PDL変数どうしに対して<strong>+</strong>演算子を使用します。各要素が加算されます。
+
+<pre>
+# PDL変数どうしの加算
+my $pdl1 = pdl [1, 2, 3];
+my $pdl2 = pdl [4, 5, 6];
+my $pdl_add = $pdl1 + $pdl2;
+</pre>
+
+<strong>引き算</strong>、<strong>掛け算</strong>、<strong>割り算</strong>、<strong>商</strong>、<strong>べき乗</strong>も同じように計算することができます。各要素が計算されます。
+
+<pre>
+# 引き算
+my $pdl_sub = $pdl1 - $pdl2;
+
+# 掛け算
+my $pdl_product = $pdl1 * $pdl2;
+
+# 割り算
+my $pdl_div = $pdl1 / $pdl2;
+
+# 商
+my $pdl_quotient = $pdl1 % $pdl2;
+
+# べき乗
+my $pdl_pow = $pdl1 + $pdl2;
+</pre>
+
+加減算は、ベクトルの加減算に該当します。
+
+<h3>内積</h3>
+
+内積を計算する特別な方法はありません。<strong>内積</strong>を計算するにはPDL変数どうしの掛け算を行ってから、その和を求めます。
+
+<pre>
+# 内積
+my $inner_product = ($pdl1 * $pdl2)->sum;
+</pre>
+
+内積の結果は、PDL変数ではなくって、ただの値になります。
+
+<h3>サンプル</h3>
+
+実行できるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+
+# 足し算
+my $pdl = pdl [1, 1, 2, 2, 2, 3];
+my $pdl_add = $pdl + 3;
+
+# 引き算
+my $pdl_sub = $pdl - 3;
+
+# 掛け算
+my $pdl_product = $pdl * 3;
+
+# 割り算
+my $pdl_div = $pdl / 3;
+
+# 商
+my $pdl_quotient = $pdl % 3;
+
+# ユニークな値を取得
+my $pdl_uniq = $pdl->uniq;
+
+# 計算結果
+print "$pdl_add\n";
+print "$pdl_sub\n";
+print "$pdl_product\n";
+print "$pdl_div\n";
+print "$pdl_quotient\n";
+print "$pdl_uniq\n";
+</pre>
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+
+# PDL変数どうしの加算
+my $pdl1 = pdl [1, 2, 3];
+my $pdl2 = pdl [4, 5, 6];
+my $pdl_add = $pdl1 + $pdl2;
+
+# 引き算
+my $pdl_sub = $pdl1 - $pdl2;
+
+# 掛け算
+my $pdl_product = $pdl1 * $pdl2;
+
+# 割り算
+my $pdl_div = $pdl1 / $pdl2;
+
+# 商
+my $pdl_quotient = $pdl1 % $pdl2;
+
+# べき乗
+my $pdl_pow = $pdl1 + $pdl2;
+
+# 内積
+my $inner_product = ($pdl1 * $pdl2)->sum;
+
+# 計算結果
+print "$pdl_add\n";
+print "$pdl_sub\n";
+print "$pdl_product\n";
+print "$pdl_div\n";
+print "$pdl_quotient\n";
+print "$inner_product\n";
+</pre>
+

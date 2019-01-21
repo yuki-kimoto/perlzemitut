@@ -1,0 +1,136 @@
+<h2 class="title">パラメーターを取得する / Mojolicious</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Mojoliciousでパラメーターといった場合次の三つの要素を含むことが多いので、まず次の三つのものの区別をしておきましょう。
+
+<ol>
+  <li>
+    クエリ文字列に含まれるデータ
+  </li>
+  <li>
+    POSTで送信されたHTTPボディに含まれるデータ
+  </li>
+  <li>
+    URLの中でキャプチャされたデータ
+  </li>
+</ol>
+
+<h4>(1)クエリ文字列に含まれるデータ</h4>
+
+クエリ文字列とはURLの?以降に設定されるデータのことです。
+
+<pre>
+http://somehost.com/search?name=Ken&age=19
+</pre>
+
+それぞれのパラメーター「パラメータ名:値」は「&」で結ばれた形になっています。クエリ文字列によるパラメータは、何かを検索するときによく利用されいます。
+
+<h4>(2)POSTで送信されたHTTPボディに含まれるデータ</h4>
+
+これはフォームの送信などでHTTPボディに含まれるデータです。
+
+<h4>URLの中でキャプチャされたデータ</h4>
+
+MojoliciousではURLの中の一部分をパラメータとしてキャプチャすることができます。
+
+<pre>
+get '/entry/:id' => sub { ... };
+</pre>
+
+この値もパラメータとして扱われます。
+
+<h3>パラメーターの値の取得</h3>
+
+パラメーターの値を取得するにはMojolicious::Controllerのparamメソッドを使用します。これは上記の(1),(2),(3)すべてを含みます。
+
+<pre>
+my $age = $c->param('age');
+</pre>
+
+<h3>複数の値の取得</h3>
+
+チェックボックスなどで複数選択された値を取得するにはevery_paramメソッドを呼び出します。
+
+<pre>
+my $contries = $c->every_param('country');
+</pre>
+
+<b>注意</b>:リストコンテキストでのparam($name)は、セキュリティ上の問題のために、Mojolicious 6で機能が削除されました。every_paramを使うようにしてください。
+
+<h3>すべてのパラメーターの名前と値を取得</h3>
+
+パラメーター名をすべて取得するには「$c->req->params->to_hash」を使います。
+
+<pre>
+my $params = $c->req->params->to_hash
+</pre>
+
+<b>注意</b>:リストコンテキストにおける$c->paramは、セキュリティ上の理由で、Mojolicious 6から廃止されています。すべての名前を取得するには、上記で名前と値を取得した後に「keys @$params」にキーを取得してください。
+
+以下はMojolicious::Liteにおけるサンプルです。
+
+<pre>
+# Mojolicious::Lite
+use Mojolicious::Lite;
+
+use utf8;
+
+get '/entry/:id' => sub {
+  my $self = shift;
+  my $age = $self->param('age');
+  my @countries = $self->param('country');
+  my @names = $self->param;
+};
+</pre>
+
+以下はMojoliciousにおけるサンプルです。
+
+<pre>
+package MyApp::Diary;
+
+use Mojo::Base 'Mojolicious::Controller';
+
+sub entry {
+  my $self = shift;
+  my $age = $self->param('age');
+  my @countries = $self->param('country');
+  my @names = $self->param;
+}
+</pre>
+

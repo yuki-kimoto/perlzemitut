@@ -1,0 +1,292 @@
+<h2 class="title">Mojoliciousの便利なAPI</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+<h3>リクエストオブジェクト</h3>
+
+リクエストオブジェクトはコントローラオブジェクトを通して取得することができます。
+
+<pre>
+get '/' => sub {
+  my $self = shift;
+  my $req = $self->req;
+};
+</pre>
+
+リクエストオブジェクトは<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Message/Request.pm">Mojo::Message::Request</a>です。<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Message/Request.pm">Mojo::Message::Request</a>は<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Message.pm">Mojo::Message</a>を継承しています。
+
+リクエストオブジェクトの便利なAPIを紹介します。
+
+<h4>params</h4>
+
+paramsメソッドを使用すると、GETとPOSTで渡されたパラメータを保持するパラメータオブジェクトにアクセスすることができます。
+
+<pre>
+my $params = $req->params;
+</pre>
+
+<h4>query_params</h4>
+
+query_paramsメソッドを使用すると、GETで渡されたパラメータを保持するパラメータオブジェクトにアクセスすることができます。
+
+<pre>
+my $params = $req->query_params;
+</pre>
+
+<h4>json</h4>
+
+jsonメソッドを使うと、JSON形式で送信されたデータをPerlのデータ構造として取得できます。
+
+<pre>
+my $data = $req->json;
+</pre>
+
+<h4>is_secure</h4>
+
+<pre>
+my $secure = $req->is_secure;
+</pre>
+
+コネクションがセキュアかどうかを調べます。つまり「https://」で接続されているかどうかを調べます。
+
+<h4>is_xhr</h4>
+
+<pre>
+$xhr = $req->is_xhr;
+</pre>
+
+「Check X-Requested-With」ヘッダに「XMLHttpRequest」と文字列が含まれているかどうかを調べます。つまりAJAXで通信されているかどうかを調べます。
+
+<h3>パラメータオブジェクト</h3>
+
+パラメータオブジェクトはGETやPOSTで渡されたパラメータを保持するオブジェクトです。これは<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Parameters.pm">Mojo::Parameters</a>オブジェクトです。
+
+パラメータオブジェクトの便利なAPIを紹介します。
+
+<h4>to_hash</h4>
+
+to_hashメソッドを使うとパラメータをハッシュのリファレンスに変換することができます。
+
+<pre>
+my $hash = $params->to_hash;
+</pre>
+
+これはコントローラオブジェクトから次のように利用されることが多いと思います
+
+<pre>
+get '/' => sub {
+  my $self = shift;
+  my $data = $self->req->params->to_hash;
+}
+</pre>
+
+<h3>アプリケーションオブジェクト</h3>
+
+アプリケーションオブジェクトはapp関数を使って取得することができます。
+
+<pre>
+my $app = app;
+</pre>
+
+アプリケーションオブジェクトは<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojolicious.pm">Mojolicious</a>オブジェクトです。<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojolicious.pm">Mojolicious</a>は<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo.pm">Mojo</a>を継承しています。
+
+アプリケーションオブジェクトの便利なAPIを紹介します。
+
+<h4>home</h4>
+
+ホームオブジェクトを取得するにはhomeメソッドを使用します。
+
+<pre>
+my $home = $app->home;
+</pre>
+
+ホームオブジェクトは<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Home.pm">Mojo::Home</a>オブジェクトで、アプリケーションのホームディレクトリの情報を持ちます。
+
+<h4>log</h4>
+
+ログオブジェクトを取得するにはlogメソッドを使用します。
+
+<pre>
+my $log = $app->log;
+</pre>
+
+ログオブジェクトは<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Log.pm">Mojo::Log</a>オブジェクトです。
+
+<h4>secrets</h4>
+
+クッキーを暗号化するためのパスワードを設定するにはsecretsメソッドを使用します。
+
+<pre>
+$app->secrets(['lkjiji!&F']);
+</pre>
+
+クッキーを使用してセッション管理する場合は必ず設定しましょう。
+
+<h4>start</h4>
+
+アプリケーションをスタートさせるにはstartメソッドを使用します。
+
+<pre>
+$app->start;
+</pre>
+
+<h4>types</h4>
+
+タイプオブジェクトを取得するにはtypesメソッドを使用します。
+
+<pre>
+my $types = $app->types;
+</pre>
+
+タイプオブジェクトは<a href="http://search.cpan.org/dist/Mojolicious/lib/MojoX/Types.pm">MojoX::Types</a>オブジェクトです。これはファイルの拡張子とコンテントタイプのマッピングを定義しているオブジェクトです。
+
+<h4>defaults</h4>
+
+スタッシュのデフォルト値を設定しておくにはdefaultsメソッドを使用します。
+
+<pre>
+# Set
+$app->defaults({foo => 'bar'});
+$app->defaults->{foo} = 'bar';
+
+# Get
+my $foo = $app->defaults->{foo};
+</pre>
+
+<h4>helper</h4>
+ヘルパーメソッドを追加するにはhelperメソッドを使用します。
+<pre>
+$app->helper(
+  foo => sub { ... },
+  bar => sub { ... }
+);
+</pre>
+
+helperメソッドで追加したヘルパーメソッドは、アプリケーションオブジェクト、コントローラオブジェクト、テンプレートの内部で利用することができます。
+
+<pre>
+$app->foo;
+</pre>
+
+<pre>
+$c->foo;
+</pre>
+
+<pre>
+@@ index.html.ep
+% foo;
+</pre>
+
+<h4>mode</h4>
+
+アプリケーションのモードを取得・設定するにはmodeメソッドを使用します。
+
+<pre>
+my $mode = $app->mode;
+$app->mode('production');
+</pre>
+
+これは環境変数を使って行うこともできます。
+
+<pre>
+export MOJO_MODE=production
+</pre>
+
+
+<h3>Mojolicious::Liteでインポートされる関数</h3>
+
+Mojolicious::Liteを読み込んだときにインポートされる関数です。(Mojolicious::Liteの詳細については<a href="http://wiki.livedoor.jp/mojolicious/d/Mojolicious::Lite">Mojolicious::Liteのドキュメント</a>を参考にしてください。)
+
+<h4>app</h4>
+
+アプケーションオブジェクトを取得するにはapp関数を定義します。
+<pre>
+my $app = app;
+</pre>
+
+<h4>get</h4>
+
+HTTPのGETメソッドでアクセスされるURLに対する処理を定義するにはget関数を使用します。。
+
+<pre>
+get '/:foo' => sub {...};
+</pre>
+
+<h4>post</h4>
+
+HTTPのPOSTメソッドでアクセスされるURLに対する処理を定義するにはpost関数を使用します。
+
+<pre>
+post '/:foo' => sub {...};
+</pre>
+
+<h4>any</h4>
+
+HTTPの任意のメソッドでアクセスされるURLに対する処理を定義するにはany関数を使用します。。また複数のHTTPメソッドを指定することも可能です。
+
+<pre>
+any '/:foo' => sub {...};
+any [qw/get post head put delete/] => '/:foo' => sub {...};
+</pre>
+
+<h4>under</h4>
+
+getやpostメソッドで定義した処理を実行する前に実行したい処理を定義するにはunder関数を使用します。これは認証などに利用することができます。
+
+<pre>
+under sub {...};
+</pre>
+
+<h4>websocket</h4>
+
+WebSocketハンドシェイク(Webソケットへの接続)でアクセスされるURLに対する処理を定義するにはwebsocket関数を使用します。
+
+<pre>
+websocket '/:foo' => sub {...};
+</pre>
+
+<h4>plugin</h4>
+
+プラグインを追加するにはplugin関数を使用します。
+
+<pre>
+plugin 'JsonConfig';
+</pre>
+
+デフォルトの名前空間はMojolicious::Pluginでこの配下にあるモジュール名を指定してプラグインを読み込むことができます。
+

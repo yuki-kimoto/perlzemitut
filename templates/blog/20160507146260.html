@@ -1,0 +1,148 @@
+<h2 class="title">GitPrep 2.0 リリース - プルリクエストのサポートなど、大幅に機能が強化</h2>
+
+GitHubのポータブルなクローンGitPrep 2.0を、2016年５月７日にリリースしました。GitPrepは、CGIと組み込みサーバーで起動でき、GitPrep 2.0は、GitPrepのメジャーバージョンアップです。待望のプルリクエスト機能が追加されました。その他、多くの機能強化が含まれています。
+
+<q>
+<a href="https://github.com/yuki-kimoto/gitprep">GitPrep</a>
+</q>
+
+<ul>
+  <li>
+    メールアドレスのサポート。ユーザーをメールアドレスで識別できるようになりました。
+  </li>
+  <li>
+    ユーザーIDに加えて、ユーザー名を設定できるようになりました。
+  </li>
+  <li>
+    データベースのテーブルの大幅な内部改善が行われており、一貫性が増しました。
+  </li>
+  <li>
+    プロジェクト単位で、エンコーディングの設定、diffの結果で、空白を無視するのオプションの設定が可能になりました。設定ファイルに指定している場合は、各プロジェクトで設定してください。
+  </li>
+  <li>
+    リバースプロキスのために利用されるヘッダは、X-Forwarded-HTTPSからX-Forwarded-Protoに変更されました。
+  </li>
+  <li>
+    必要な一時ファイルは、gitprep内のディレクトリに作成されるようになりました。/tmpに依存しません。
+  </li>
+</ul>
+
+=====
+
+<h3>GitPrepのイメージとサンプル</h3>
+
+GitPrepのイメージです。
+
+[f:id:perlcodesample:20160507145758p:image]
+
+GitPrepのサンプルURLです。これは、さくらレンタルサーバーにおいてCGIで実行しているものです。アクセスすると、GitPrepの使い心地を試してみることができます。SSLにも対応しています。
+
+<q>
+<a href="https://perlcodesample.sakura.ne.jp/gitprep/gitprep.cgi/kimoto/gitprep">GitPrepのサンプル</a>
+</q>
+
+<h3>互換性のない変更</h3>
+
+GitPrepの、必要なPerlのバージョンが5.8.7から5.10.1にあがりました。最新版のMojoliciousを利用するようにしているので、古いMojoliciousが、潜在的に抱えていたセキュリティ問題も、解決されています。
+
+cygwinの公式なサポートを落としました。理論的には利用可能ですが、公式に動作をチェックすることはしなくなります。近い将来Windows10において、bash上でperlがサポートされますので、こちらでの利用を勧めていきたいと思います。
+
+<h3>GitPrep 1.0からのアップロードする場合</h3>
+
+Perlのバージョンが5.8の場合は、perlbrewを使って、新しいバージョンのPerlをインストールしてください。
+
+<pre>
+curl -L http://install.perlbrew.pl | bash
+echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bash_profile
+source ~/.bash_profile
+
+perlbrew install perl-5.16.3
+perlbrew switch perl-5.16.3
+perl -v
+</pre>
+
+クリーンインストールを行うために、一度extlibディレクトリを削除してください。
+
+<pre>
+cd gitprep
+rm -rf extlib
+</pre>
+
+<h3>GitPrepのインストール</h3>
+
+ここからは、始めて利用する方も、アップグレードする方もほぼ同じ手順になります。
+
+モジュールのセットアップを行います。
+
+<pre>
+./setup_module
+</pre>
+
+モジュールが正しくインストールされているかチェックします。
+
+<pre>
+prove t
+</pre>
+
+次にGitPrepを1.0からバージョンアップする方は、データベースのアップグレード作業を行う必要があります。
+
+<pre>
+# 安全のために、gitprepのディレクトリをバックアップ
+cd ..
+cp -rp gitprep gitprep.bak
+
+# データベースのアップグレード
+cd gitprep
+mv data/gitprep.db data/gitprep_v1bak.db
+./setup_database
+old/copy_database_v1_to_v2 data/gitprep_v1bak.db data/gitprep.db
+</pre>
+
+GitPrep 2.0を始めて使う方は、次のコマンドを実行します。
+
+<pre>
+./setup_database
+</pre>
+
+GitPrepの利用にはgitがインストールされていることが必要です。もし、ローカルのディレクトリに自分でgitをインストールしている場合は、<b>gitprep.conf</b>でgitの場所を指定する必要があります。
+
+<pre>
+[basic]
+;;; Git command path
+git_bin=/home/yourname/local/bin/git
+</pre>
+
+GitPrepを利用するための手順はこれだけです。インストールがとても簡単にできるように工夫されています。
+
+<h3>GitPrepの開始と終了</h3>
+
+次のコマンドでGitPrepを開始することができます。
+
+<pre>
+./gitprep
+</pre>
+
+次のURLでGitPrepにアクセスすることができます。
+
+<q>
+http://localhost:10020
+</q>
+
+次のコマンドでGitPrepを終了することができます。
+
+<pre>
+./gitprep --stop
+</pre>
+
+<h3>GitPrepプロジェクトからのお願い</h3>
+
+GitPrepは、オープンソースのプロジェクトです。GitHubと同等の機能を、オープンソース上で実現することを目指して開発が続けられています。もし今GitPrepを使っておられる方がおられましたら、ぜひGitPrep2.0のリリースを、知り合いの方に、お知らせしてほしいです。企業や、コミュニティ、学校の知り合いなどで、GitHubの機能を簡単にインストールして、自前のサーバーで運用したいという方がおられましたら、GitPrepの情報を一度お伝えください。
+
+オープンソースの作者にとっては、作成した作品を多くの人に使っていただけるのが、ひとつの喜びです。賛同いただけましたら、Twitterでの紹介や、はてなブックマークなども、よろしくお願いします。
+
+今後は、1年以内に、イシューのシステムとWikiのシステムを追加することが目標です。GitHub上で、スターをつけていただけるとありがたいです。ご支援お願いします。
+
+<q>
+<a href="https://github.com/yuki-kimoto/gitprep">GitPrep</a>
+</q>
+

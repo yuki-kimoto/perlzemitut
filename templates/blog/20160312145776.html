@@ -1,0 +1,85 @@
+<h2 class="title">close関数 - ファイルハンドルを閉じる</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+<strong>ファイルハンドルを閉じる</strong>には<strong>close関数</strong>を使用します。
+
+<pre>
+close $fh;
+</pre>
+
+もう少し詳しく書くと、close関数が呼ばれると、現在のバッファがフラッシュされて、その後にファイルハンドルが閉じられます。
+
+<h3>close関数でファイルハンドルを閉じる必要はあるか</h3>
+
+open関数で、ファイルオープンをした後に、close関数でファイルハンドルを閉じる必要はあるでしょうか。必ずしも必要ではありません。
+
+一般的には、次のようにファイルをオープンします。
+
+<pre>
+open(my $fh, '<', $file);
+</pre>
+
+「$fh」はレキシカル変数です。そして、スコープが終われば、レキシカル変数は解放されます。そして、解放されるタイミングで、自動的にclose関数が呼び出されます。ファイルもひとつのスコープです。ですから、レキシカル変数にファイルハンドルが代入されている場合は、close関数を呼び出す必要は通常はありません。
+
+close関数を使用する必要がある場合のいつくかの例を書いておきます。
+
+<h4>型グロブやシンボルに、ファイルハンドルを代入した場合</h4>
+
+ファイルハンドルは、型グロブやファイルハンドルに代入することもできます。古いソースコードでは、次のようなopenはよく見ると思います。
+
+<pre>
+# 型グロブ
+open(*FH, '<', $file)
+
+# シンボル
+open(FH, '<', $file)
+</pre>
+
+このような場合は、明示的にcloseしないと、スコープが終わってもファイルハンドルが開きっぱなしになるので、closeしてあげましょう。短いプログラムで、プログラムがすぐに終了する場合は、グローバルデストラクションで、ファイルが閉じられるので、closeしないでもよいですが、しておいたほうが無難でしょう。
+
+<h4>すぐにバッファをフラッシュして、ファイルハンドルを閉じたい場合</h4>
+
+close関数は、バッファをフラッシュしてから、ファイルハンドルを閉じます。バッファというのは、まだファイルに書き込まれていないデータのことです。
+
+書き込みモードで、ファイルハンドルを開いて、print関数で、データを書き込んだとします。けれども、このデータはすぐには書き込まれずに、バッファに蓄積にされます。これは効率のためです。一定のバッファが蓄積された後に、書き込まれるという動作をします。
+
+このような場合に、すぐにフラッシュしたい場合は、close関数を使うとよいでしょう。
+
+<h4>パイプやソケットなどを開いて、明示的に閉じる必要がある場合</h4>
+
+forkとopen関数を使って、複数のパイプやソケットなどを開いた場合は、書き込み側だけ、あるいは、読み込み側だけ、閉じたいという場合があると思います。そういう場合は、明示的にclose関数を呼び出します。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

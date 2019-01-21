@@ -1,0 +1,343 @@
+<h2 class="title">サブルーチンの動的な生成</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20101130129876.html">
+        <span itemprop="name">サブルーチン</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perlでは、サブルーチンを動的に生成することもできます。
+
+<h3>関数ジェネレータ</h3>
+
+関数ジェネレータとは、サブルーチンを生成するためのサブルーチンのことです。関数ジェネレータは、動的にサブルーチンを生成したいときに用いられるテクニックのひとつです。
+
+一般的な名称にしたがって関数ジェネレータと呼びますが、Perlの用語でいえばサブルーチンジェネレータのことです。この解説では、関数もサブルーチンも同じ意味です。
+
+<h4>関数ジェネレータの作成と呼び出し</h4>
+
+<pre>
+# 呼び出し
+my $func = func_generator();
+$func->();
+
+# 定義
+sub func_generator {
+
+  my $func = sub {
+    print "これは、実行時に生成されたサブルーチンです。\n";
+  };
+  # サブルーチンへのリファレンスを返す。
+  return $func; 
+}
+</pre>
+
+関すジェネレータを作成するには、無名サブルーチンを作成して、そのリファレンスを、戻り値として返します。
+
+関数ジェネレータを呼び出す( func_generator() )と、生成されたサブルーチンへのリファレンスが戻りち値として取得できます。生成さえたサブルーチンのリファレンスをデリファレンスして( $func->() )して、サブルーチンを呼び出します。
+
+<h4>少しだけ異なった複数のサブルーチンを生成する</h4>
+
+<pre>
+# 関数ジェネレータ呼び出し
+my $create_safe_msg = message_factory("is safe."); 
+my $create_danger_msg = message_factory("is danger."); 
+
+# 生成したサブルーチンの呼び出し
+my $safe_msg1 = $create_safe_msg->("cat"); 
+my $danger_msg1 = $create_danger_msg->("mamushi");
+
+# 伝えるメッセージを指定できるサブルーチンを作成する関数ジェネレータ
+sub message_factory {
+  my $message = shift; 
+  
+  return sub {
+    my $word = shift;
+    return $word . ' ' . $message; 
+  }
+}
+</pre>
+
+関数ジェネレータで引数を受け取って、その引数を生成するサブルーチンの中で利用することができます。こうすることで、少しだけ異なったサブルーチンを複数生成することができます。
+
+<h3>型グロブを使ってサブルーチンの名前を動的に決定する</h3>
+
+型グロブを使ってサブルーチンの名前を動的に決定するサンプルです。
+
+<h4>無名サブルーチンに名前をつける</h4>
+
+<pre>
+ *sum = sub {
+  return $_[0] + $_[1];                         
+};
+</pre>
+
+型グロブを利用することで、サブルーチンに別名をつけることができます。左辺は型グロブ( *name )、右辺はサブルーチンへのリファレンス( \&subroutin )にします。
+
+今回の例の場合は、右辺は無名サブルーチンへのリファレンスになっており、無名サブルーチンに別名をつけていることになります。
+
+無名サブルーチンに名前をつけるくらいなら、最初から名前をつけておけばよいと考えるかもしれません。無名サブルーチンに名前をつけることの利点は、実行時にサブルーチンに名前を与えることができるということです。サブルーチン名を動的に決定することができます。
+
+<h4>動的にサブルーチンに名前をつける</h4>
+
+<pre>
+my $word = 'cat';
+my $func_name = "${word}_repeat";
+
+no strict 'refs';
+*{$func_name} = sub {
+  return "$word $word";                 
+};
+</pre>
+
+型グロブ名には、変数を使うことができます。$func_name に入る値によって、サブルーチン名が変化します。
+
+*{$name} という記述は、use strict; を使用していると、エラーになります。no strict 'refs'として、シンボリックリンクの制限を無効にします。( ところで、*{ $name }という記述はなぜシンボリックリファレンスなんでしょうか?  )今回の場合は、cat_repeat という名前を動的につけています。
+
+もう少しよく書いてみましょう。
+
+<pre>
+BEGIN {
+  my $word = 'cat';
+  my $func_name = "${word}_repeat";
+
+  my $code = sub{
+    return "$word $word"; 
+  };
+    
+  no strict 'refs';    
+  *{$func_name} = $code;
+}
+</pre>
+
+BEGINを使って、コンパイル時に動的にサブルーチン名を決定するようにしておきます。my $code = sub{ }; という記述でいったん無名サブルーチンへのリファレンスを変数に格納しておき、最後に *{ $func_name } = $code; として名前をつけます。このようにして、no strict 'refs' の有効範囲をできるだけ狭めておいたほうがよいです。
+
+<h3>関数テンプレート</h3>
+
+<strong>関数テンプレート</strong>とは、動的に複数のサブルーチンを作成するプログラム技法です。プログラムが始まる前にサブルーチンに名前をつけておくのではなくて、プログラムが始まってからサブルーチンに名前をつけます。
+
+無名サブルーチンと型グロブを利用することで、サブルーチンを動的に生成し、動的に名前をつることができます。関数テンプレートを使えば、サブルーチン名に応じた処理を作成することができます。
+
+<h4>関数テンプレートの書き方</h4>
+
+<pre>
+my %numbers = (
+  one => 1,
+  two => 2,
+  three => 3,
+  four => 4,
+);
+
+for my $num (keys %numbers) {
+  # 無名サブルーチンへのリファレンスを繰り返し作成
+  my $code = sub {
+    # 数の名前に対応した戻り値が返る
+    return $numbers{$num}; 
+  };
+  
+  # シンボリックリファレンスの制限を解除
+  no strict 'refs';
+  # 型グロブを利用して無名サブルーチンに名前をつける。  
+  *{$num} = $code;
+}
+</pre>
+
+注目する点は、「サブルーチン名」と「サブルーチンの処理」に関連性があることです。サブルーチン名が、one であればそれに対応する $numbers{ 'one' },すなわち 1 が、戻り値として返却されます。
+
+関数テンプレートを作成するには、まずforeach文にサブルーチン名の配列を渡して繰り返し呼びます。次に無名サブルーチンを作成して、関数名を利用した処理を行います。最後に、型グロブを利用して無名サブルーチンに名前をつけてあげます。
+
+実際の利用としては、Class::Accessor などのモジュールで、アクセッサーの作成の部分で利用されています。
+
+もう少しよく書いてみましょう。
+
+<pre>
+BEGIN{
+  my %numbers = (
+    one => 1,
+    two => 2,
+    three => 3,
+    four => 4,
+  );
+
+  for my $num (keys %numbers) {
+    # 無名サブルーチンへのリファレンスを繰り返し作成
+    my $code = sub {
+      return $numbers{ $num }; # 数の名前に対応した戻り値が返る
+    };
+   
+    # シンボリックリファレンスの制限を解除
+    no strict 'refs';
+    # 型グロブを利用して無名サブルーチンに名前をつける。 
+    *{$num} = $code;
+  }
+}
+</pre>
+
+BEGINブロックで囲って、コンパイル時に動的にサブルーチンを作成しておいたほうがよいです。そうしないと、この記述を行うまでは、サブルーチンを呼び出すことができません。
+
+もっと良いのは、モジュールとして別ファイルに作成して、use を使ってコンパイル時に読み込む方法です。
+
+<h3>サンプルコード</h3>
+
+<h4>関数ジェネレーター</h4>
+
+関数ジェネレーターのサンプルコードです。
+
+関数ジェネレータをコードを使って解説します。
+
+<pre>
+use strict;
+use warnings;
+
+print "1: 関数ジェネレータでサブルーチンを生成する\n";
+
+my $func = func_generator();
+$func->();
+print "\n";
+
+# 関数ジェネレータ
+sub func_generator {
+
+  my $func = sub {
+    print "これは、実行時に生成されたサブルーチンです。\n";
+  };
+
+  # サブルーチンへのリファレンスを返す。
+  return $func; 
+}
+
+print "2: 関数ジェネレータで複数のサブルーチンを生成する。\n";
+# サブルーチンへのリファレンスが返る
+my $create_safe_msg = message_factory("is safe.");
+my $create_danger_msg = message_factory("is danger.");
+
+print "'is safe' を与えて生成したサブルーチン\n";
+# デリファレンスして呼び出す
+my $safe_msg1 = $create_safe_msg->("cat");
+my $safe_msg2 = $create_safe_msg->("dog");
+
+print "${safe_msg1}\n${safe_msg2}\n\n";
+
+print "'is danger' を与えて生成したサブルーチン\n";
+my $danger_msg1 = $create_danger_msg->("mamushi");
+my $danger_msg2 = $create_danger_msg->("suzumebachi");
+
+print "${danger_msg1}\n${danger_msg2}\n\n";
+
+# 伝えるメッセージを指定できるサブルーチンを作成する関数ジェネレータ
+sub message_factory {
+  # 関数ジェネレータの引数によって、生成するサブルーチンを動的に変更できる。
+  my $message = shift; 
+
+  return sub {
+    my $word = shift;
+    return $word . ' ' . $message;
+  }
+}
+</pre>
+
+<h4>動的に生成したサブルーチンに名前をつける</h4>
+
+型グロブを使って、動的に生成したサブルーチンに名前をつけるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# サブルーチンの名前を実行時に決定する。
+# 型グロブと無名サブルーチンを利用することで実現できます。
+
+print "1: 無名サブルーチンに名前をつける。\n";
+*sum = sub {
+  # *sum は型ブログという機能で、別名を作成することができます。
+  # ここでは名前のないサブルーチンにsumという名前をつけています。
+  return $_[0] + $_[1];                         
+};
+
+print "1と2の和は、" . sum(1, 2) . "です。\n\n";
+
+print "2: 動的にサブルーチンに名前をつける。\n";
+
+my $word = 'cat';
+my $func_name = "${word}_repeat";
+
+no strict 'refs';
+*{$func_name} = sub {
+  # 無名サブルーチンに、cat_repeat 名前を実行時に
+  # 与えることができます。
+  return "$word $word"; 
+};
+
+my $repeat_word = cat_repeat();
+print $repeat_word . "\n";
+</pre>
+
+<h4>関数テンプレート</h4>
+
+関数テンプレートを使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 関数テンプレート
+
+print "1: 関数テンプレートを使って動的に複数のサブルーチンを作成する。\n";
+
+# one というサブルーチンを呼んだら 1 が返却されるようにする。
+# two というサブルーチンを呼んだら 2 が返却されるようにする。
+my %numbers = (
+  one => 1,
+  two => 2,
+  three => 3,
+  four => 4,
+);
+
+for my $num (keys %numbers) {
+  # 無名サブルーチンへのリファレンスを繰り返し作成
+  my $code = sub {
+    # 数の名前に対応した戻り値が返る
+    return $numbers{ $num }; 
+  };
+  
+  # シンボリックリファレンスの制限を解除
+  no strict 'refs';
+  # 型グロブを利用して無名サブルーチンに名前をつける。
+  *{$num} = $code; 
+}
+
+print one(),two(),three(),four(),"\n";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20101130129876.html">
+        <span itemprop="name">サブルーチン</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

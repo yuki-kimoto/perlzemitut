@@ -1,0 +1,54 @@
+<h2 class="title">文字列に日本語が含まれているかどうかを調べる</h2>
+
+文字列に日本語が含まれているかどうかを調べるには、<a href="/blog/20100827127859.html">正規表現</a>を利用することができます。次のメタ文字を使って、漢字かひらがなかカタカナが含まれていることをチェックします。文字列は、内部文字列になっている必要があります。
+
+<table>
+  <tr>
+    <td>
+      文字種
+    </td>
+    <td>
+      メタ文字
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      漢字
+    </td>
+    <td>
+      \p{Han}
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ひらがな
+    </td>
+    <td>
+      \p{Hiragana}
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      カナカナ
+    </td>
+    <td>
+      \p{Katakana}
+    </td>
+  </tr>
+
+</table>
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+my $str = 'あいウエ三';
+if ($str =~ /[\p{Han}\p{Hiragana}\p{Katakana}]/) {
+  # 日本語を含んでいる
+}
+</pre>
+

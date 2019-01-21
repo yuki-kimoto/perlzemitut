@@ -1,0 +1,366 @@
+<h2 class="title">DBIx::Customの「execute」メソッドで「SQLを実行」する</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+SQLを実行するにはexecuteメソッドを使用します。
+
+<pre>
+# Execute SQL
+my $result = $dbi->execute("select * from book");
+</pre>
+
+戻り値は<a href="/blog/20110709131364.html">DBIx::Custom::Result</a>オブジェクトです。すべての行を取得するにはallメソッドを使用します。
+
+<pre>
+# Fetch all rows
+my $rows = $result->all;
+</pre>
+
+<h3>名前つきプレースホルダー</h3>
+
+DBIx::CustomはOracleでサポートされているような名前つきプレースホルダーをすべてのRDBMSでサポートします。
+
+<pre>
+# Named placeholder
+my $result = $dbi->execute("select * from book where title = :title",
+  {title => 'Perl'});
+</pre>
+
+名前つきプレースホルダは「:title」のようにコロンで始まります。埋め込む値はハッシュリファレンスで指定することができます。これは以下の実行文と同じ意味があります。
+
+<pre>
+my $title = 'Perl';
+my $sql = "select * from book where title = ?";
+my $dbh = DBI->connect(...);
+my $sth = $dbh->prepare($sql);
+$sth->execute($title);
+</pre>
+
+名前つきプレースホルダーは、パラメータの値の順番を気にする必要がないのでとても便利です。
+
+<h3>同名の名前つきプレースホルダーを利用したい場合</h3>
+
+名前つきプレースホルダーで同名の名前を利用した場合があります。たとえば開始日付と終了日付を指定したいような場合です。このような場合は次のように記述します。
+
+<pre>
+# Use named placeholder more than once
+my $result = $dbi->execute(
+  "select * from book where date > :date and date < :date",
+  {date => [3, 5]});
+</pre>
+
+複数の値を渡したい場合は、パラメータの値を「date => [3, 5]」のように配列のリファレンスとして指定します。
+
+<h3>名前つきプレースホルダーの簡略表記</h3>
+名前つきプレースホルダーは「title = :title」のように同じ名前を二度繰り返すことがとても多いので、簡略表記が用意されています。
+
+<pre>
+# プレースホルダーの簡略表記
+:プレースホルダー名{演算子}
+</pre>
+
+たとえば「:title{=}」は「title = :title」と同じ意味になります。他の演算子でも同様に利用することができます。
+
+<pre>
+# Named placeholder suger syntax
+:title{like}    ->  title like :title
+:title{<}       ->  title < :title
+:title{>}       ->  title > :title
+</pre>
+
+これを利用すると最初のほうで紹介したexecuteのサンプルは次のように書き直すことができます。
+
+<pre>
+# Named placeholder suger syntax example
+my $result = $dbi->execute("select * from book where :title{=}",
+  {title => 'Perl'});
+</pre>
+
+<h3>テーブル名を含んだ列名を利用する</h3>
+
+プレースホルダー名としてテーブル名を含んだ列名を利用することもできます。
+<pre>
+my $result = $dbi->execute("select * from book where :book.title{=}",
+  {'book.title' => 'Perl'});
+</pre>
+
+<h3>executeメソッドのオプション</h3>
+
+DBIx::Customにはさまざまなオプションを指定することができます。第３引数以降を利用して次のように記述することができます。
+
+<pre>
+$dbi->execute($sql, $param, オプション名 => オプションの値, ...)
+</pre>
+
+<h3>executeメソッドのオプション</h3>
+
+<a href="/blog/20110708131364.html">executeメソッド</a>のオプションの一覧です。
+
+<h4>SQLの加工 after_build_sql</h4>
+
+after_build_sqlを使うと、SQLが構築された後に、SQLを加工することができます。値としては、変換のためのコードリファレンスを指定します。
+
+<pre>
+after_build_sql => $code_ref
+</pre>
+
+以下は例です。実行したSQLの列数を取得するサンプルです。
+
+<pre>
+$dbi->select(
+  table => 'book',
+  column => 'distinct(name)',
+  after_build_sql => sub {
+    "select count(*) from ($_[0]) as t1"
+  }
+);
+
+次のようなSQLが実行されます。
+
+<pre>
+select count(*) from (select distinct(name) from book) as t1;
+</pre>
+
+<h4>SQLの末尾に追加 append</h4>
+
+appendオプションを使うとSQLの末尾にステートメントを追加することできます。
+
+<pre>
+append => 'order by name'
+</pre>
+
+<h4>バインドタイプの指定 bind_type</h4>
+
+インサートをするデータがバイナリデータの場合は、そのことを明示的に指定しなければならない場合があります。たとえばSQLiteではBLOB型のデータを挿入したい場合はDBIを使う場合は次のように書く必要があります。
+
+<pre>
+$sth->bind_param($pos, $value, DBI::SQL_BLOB);
+</pre>
+
+これと同じことをexecuteメソッドで実行するにはbind_typeオプションを使用します。
+
+<pre>
+# Bind type option
+bind_type => {image => DBI::SQL_BLOB}
+bind_type => [image => DBI::SQL_BLOB]
+bind_type => [[qw/image audio/] => DBI::SQL_BLOB]
+</pre>
+
+bind_typeの値はハッシュリファレンスで指定します。複数の列に同じ値を指定したい場合は配列のリファレンスを利用することもできます(3番目の方法)。
+
+<h4>フィルターの指定 filter</h4>
+
+filterオプションを利用すれば、パラメータの値をプレースホルダーに埋め込む前に値をフィルタリングすることができます。
+
+<pre>
+# Filter option
+filter => {title  => sub { uc $_[0] }}
+filter => {title  => 'upper_case'}
+filter => [[qw/title author/]  => sub { uc $_[0] }]
+</pre>
+
+フィルタは「{列名 => フィルタ(サブルーチンあるいはフィルタ名)}」というフォーマットで記述します。フィルタ名で利用した場合はregister_filterメソッドを使ってあらかじめフィルタを登録しておく必要があります。
+
+複数の列名に対して、同じフィルタを利用したい場合は、配列のリファレンスを使って指定することもできます(3番目の方法)
+
+<h4>ID指定 id</h4>
+
+idオプションを指定すると、primary_keyが設定されている場合に、列名を指定せずにパラメータを指定することができます。
+
+<pre>
+id => 4
+id => [4, 5]
+</pre>
+
+たとえばprimary_keyに[id1, id2]が設定されてしたとすればid => [4, 5]は、executeの第二引数であるパラメーターに{id1 => 4, id2 => 5}を指定したことと同じになります。
+
+<pre>
+$dbi->execute(
+  "select * from book where id1 = :id1 and id2 = :id2",
+  {},
+  primary_key => ['id1', 'id2'],
+  id => [4, 5],
+);
+</pre>
+
+上記のexecuteは、以下と同じになります。
+
+<pre>
+$dbi->execute(
+  "select * from book where id1 = :id1 and id2 = :id2",
+  {id1 => 4, id2 => 5}
+);
+</pre>
+
+<h4>クエリオブジェクトの取得 query</h4>
+
+queryオプションに1を設定するとSQLを実行する代わりに戻り値として、DBIx::Custom::Queryオブジェクトを取得することができます。
+
+<pre>
+query => 1
+</pre>
+
+DBIx::Custom::Queryオブジェクトは、どのようなクエリが実際に実行されているかを調べたるのに便利です。
+
+<pre>
+my $sql = $query->sql;
+my $columns = $query->columns;
+</pre>
+
+クエリオブジェクトをexecuteメソッドに渡すことは廃止予定の機能になっていますので利用しないでください。これは潜在的に非常にバグの多い実装でした。実行速度を上昇させるには代わりにreuseオプションを使用してください。
+
+<h4>プライマリーキーの設定 primary_key</h4>
+
+idオプションで利用するprimary_keyを設定します。
+
+<pre>
+primary_key => 'id'
+primary_key => ['id1', 'id2']
+</pre>
+
+<h4>クエリの再利用 reuse </h4>
+
+reuseオプションを使用すると、同一のSQLを連続して実行する場合に実行速度を上昇させることができます2～3倍のスピードになることが確認されています。クエリを保存するためのハッシュリファレンスを引数として指定します。
+
+<pre>
+reuse => $hash_ref
+</pre>
+
+以下はサンプルです。
+
+<pre>
+my $queries = {};
+for my $param (@params) {
+  $dbi->execute($sql, $row, reuse => $queries);
+}
+</pre>
+
+もちろんinsert, update, delete, selectメソッドでも使用することができます。
+
+<pre>
+my $queries = {};
+for my $row (@rows) {
+  $dbi->insert($row, table => 'book', reuse => $queries);
+}
+</pre>
+
+<h4>テーブル名 table</h4>
+
+tableオプションでテーブル名を指定することができます。
+
+<pre>
+table => 'author'
+</pre>
+
+一般的にはexecuteメソッドでは、指定したSQLが実行されるのでtableオプションを指定する必要はありません。
+
+tableオプションは次のような効果を持ちます。もし名前付きプレースホルダーの列名が完全修飾名で与えられなかった場合は、指定したテーブル名で、列名が完全修飾されます。またパラメータで利用されている列名も、完全修飾されます。
+
+<pre>
+$dbi->execute("select * from book where title = :title and author = :author",
+  {title => 'Perl', author => 'Ken'}, table => 'book');
+</pre>
+
+上記のexecuteは以下と同じ意味になります。
+
+<pre>
+$dbi->execute(
+  "select * from book where title = :book.title and author = :book.author",
+  {'book.title' => 'Perl', 'book.author' => 'Ken'});
+</pre>
+
+tableオプションはtype_ruleのinto1やinto2が設定されている場合に利用するためのものです。なぜなら、完全修飾名でなければどのテーブルの列名なのかが判断できないので、type_ruleによるフィルタリングがうまくいきません。
+
+ですから、type_ruleでinto1やinto2を設定しているときにだけ意識する必要があります。
+
+<h4>テーブルのエイリアス table_alias</h4>
+
+table_aliasオプションで、テーブルのエイリアスを設定することができます。
+
+<pre>
+table_alias => {worker => 'user'} # {エイリアス名 => テーブル名}
+</pre>
+
+キーはエイリアス名、値はテーブル名になります。テーブルのエイリアスを設定しておくと、C<type_rule>メソッドで指定し<b>into1</b>と<b>into2</b>のフィルタリングの効果が、エイリアス名でも機能するようになります。
+
+この例ではuserテーブルの列に設定したC<into1>とC<inot2>のフィルタが、workerテーブルの列でも有効になります。
+
+<h4>タイプルールを無効にする type_rule_off</h4>
+
+type_rule_offオプションを使うと、type_ruleで設定したinto1とinto2のフィルタを無効にすることができます。
+
+<pre>
+type_rule_off => 1
+</pre>
+
+from1とfrom2のフィルタには何の影響も与えません。
+
+<h4>タイプルール1を無効にする type_rule1_off</h4>
+
+type_rule1_offオプションを使うと、type_ruleで設定したinto1のフィルタを無効にすることができます。
+
+<pre>
+type_rule1_off => 1
+</pre>
+
+from1とfrom2のフィルタには何の影響も与えません。
+
+<h4>タイプルール2を無効にする type_rule2_off</h4>
+
+type_rule2_offオプションを使うと、type_ruleで設定したinto2のフィルタを無効にすることができます。
+
+<pre>
+type_rule2_off => 1
+</pre>
+
+from1とfrom2のフィルタには何の影響も与えません。
+

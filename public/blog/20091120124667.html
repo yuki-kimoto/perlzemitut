@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>現代的なPerlの記述方法一覧 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">現代的なPerlの記述方法一覧</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<p>
+  Perl5.8以降における標準的なPerlの書き方を解説します。
+</p>
+<img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018090520180905152847.png">
+<p>
+  インターネットで検索するとPerl4のころの古い記述がたくさんあります。また書籍などの多くもPerl4の記法で書かれています。Perl4の記法は複雑になりやすく間違いを生みやすいのでこれからPerlを書く人はPerl5の現代的な記法で記述することを強くお勧めします。 
+</p>
+<h3>strictプラグマとwarningsプラグマ (必須)</h3>
+<p>
+  strictプラグマとwarningsプラグマを有効にします。
+</p>
+<pre>
+use strict;
+use warnings;
+</pre>
+<p>
+  use strict;とuse warnings;の２行はスクリプトの最初に必ず記述してください。これらはPerlの文法チェックを厳しくするためのものです。面倒だという軽い気持ちでこれを記述しないと後々本当に面倒なことになります。
+</p>
+<p>
+  use strict;とuse warningsを書かなくてもよいのはワンライナーと呼ばれるコマンドラインスクリプトを記述するときだけだという風に考えてください。
+</p>
+<h3>ファイルハンドルにはレキシカル変数を使うこと (本当に特別な用途がない限りは必須)</h3>
+<p>
+  ファイルハンドルには宣言したばかりのレキシカル変数を使います。レキシカル変数を宣言してそれをopen関数の第1引数に指定するとレキシカル変数にファイルハンドルが設定されます。
+</p>
+<pre>
+# レキシカル変数
+my $fh;
+my $file = 'file1';
+
+open $fh, '&lt;', $file
+  or die "Cannot open '$file': $!";
+
+while (my $lien = &lt;$fh&gt;) {
+  ...
+}
+</pre>
+<p>
+  レキシカル変数はスコープを持つということと他の関数に引数として渡すことができるという大きな利点があります。古い解説にあるようなFHや*FHなどのシンボルを使わないようにします。
+</p>
+<p>
+  またレキシカル変数の宣言をopen関数の中にまとめてしまうのがより現代的であるといえるでしょう。
+</p>
+<pre>
+open my $fh, '&lt;', $file
+</pre>
+<h3>3引数のopen関数を使う (必須)</h3>
+<p>
+  3引数のopen関数を使用するようにします。
+</p>
+<pre>
+open my $fh, '&lt;', $file
+</pre>
+<p>
+  古い解説では2引数のopen関数を解説しているものがありますが使わないようにしましょう。2引数のopen関数はセキュリティ的に脆いので使用してはいけません。
+</p>
+<pre>
+open my $fh, "&lt; $file"; # 2引数のopen関数を使用してはいけない
+</pre>
+<p>
+  これはパイプをオープンするときにも当てはまります。
+</p>
+<pre>
+# ○ (三引数)
+open my $pipe, '-|', 'dir';
+
+# × (二引数)
+open my $pipe, 'dir |';
+</pre>
+<h3>ファイルオープン時のエラー処理を行う (必須)</h3>
+<p>
+  ファイルオープンを行ったときは必ずエラー処理を行うようにします。
+</p>
+<pre>
+open my $fh, '&lt;', $file
+  or die "Cannot open '$file': $!";
+</pre>
+<p>
+  open関数は失敗するとundefを返すのでorを使ってエラー処理を行います。$!にはOSが返したエラーメッセージが含まれているのでユーザに見せるエラーメッセージに含めるようにします。
+</p>
+<p>
+  プログラムをエラーメッセージを表示して終了させるにはdie関数を使用します。他のプログラムから見た場合は終了コードは255になります。
+</p>
+<p>
+  ファイルオープンに限らずプログラムの外部と通信する場合はかならずエラー処理を行うようにします。外部というのはメモリの操作を除くすべてです。ファイルやネットワークなどが外部になります。
+</p>
+<h3>レキシカル変数とサブルーチンの名前には小文字とアンダーバーを使用する (強く推奨)</h3>
+<p>
+  「myで宣言されるレキシカル変数」と「サブルーチン」の名前には小文字とアンダーバーを使用します。
+</p>
+<pre>
+# レキシカル変数
+my $user_name;
+my $search_word;
+my $max_database_connection;
+
+# サブルーチン
+sub parse_data {
+  ...
+}
+
+sub create_table {
+  ...
+}
+</pre>
+<p>
+  この記法が良いか悪いかは別にしてCPANにある新しいモジュールのほとんどはこの記法で書かれています。この習慣にしたがっておいたほうがユーザに統一されたインターフェイスを提供できるという点で非常に多くの益があります。
+</p>
+<p>
+  変数の命名方法には別に記事を書いていますのでこちらも参考にしてください。
+</p>
+<a href="/blog/20081103122562.html">＜変数に適切な名前をつける＞</a>
+<p>
+  サブルーチンの命名方法は原則として「動詞 + 名詞」です。意味がはっきりとわかるものについてはユーザの利便性を考えて「動詞」だけにしても良いかもしれません。ただし後で困ることがあるので「動詞 + 名詞」にしておくのが無難だと思います。
+</p>
+<h3>パッケージ変数には大文字とアンダーバーを使用する (強く推奨)</h3>
+<p>
+  パッケージ変数には大文字とアンダーバーを使用します。
+</p>
+<pre>
+our $OBJECT_COUNT;
+our $CLASS_INFO;
+</pre>
+<h3>パッケージ変数は使わずにレキシカル変数を使うようにする (必須)</h3>
+<p>
+  もしあなたがモジュールの作者でないのであればパッケージ変数を使う機会はありません。もし単体のスクリプトの中でパッケージ変数を使っているとしたらそれは間違った使い方です。myを使ったレキシカル変数に変更しましょう。
+</p>
+<h3>標準的(?)なコードのフォーマットで書く (少し推奨)</h3>
+<p>
+  コードの書き方には好き嫌いがあるのですが、Perlベストプラクティスで紹介されている書き方やPerltidyと呼ばれるコード整形ツールが出力する形式にあわせておいたほうが幾分よいと思います。
+</p>
+<p>
+  サンプルとしてMojo::URLのソースコードのリンクを張っておきます。これをまねして書けば覚えられます。
+</p>
+<a href="http://github.com/kraih/mojo/blob/master/lib/Mojo/URL.pm">＜Mojo::URLのソースコード＞</a>
+<p>
+  まねするポイントを少しだけ書いておきます。
+</p>
+<h4>1. ifやforeach文やサブルーチンなどのスペースの入る位置を見る</h4>
+<pre>
+# ifの直後にスペースがあって、()の中にはスペースがないなど
+if ($flg) { 
+  ...
+}
+</pre>
+<h4>2. コメントの書き方やスペースの入れ方などを見る</h4>
+<p>
+  コメントの書き方や行のスペースの入れ方などをみましょう。CPANに存在するほとんどのモジュールには親切なコメントがないのですが、個人的は簡潔なコメントをソースコードに書いてくれるとありがたいと思っています。
+</p>
+<h4>3. タブは使わないでインデントの幅はスペースで4(あるいは2)</h4>
+<p>
+  一応これはPerlベストプラクティスでいわれていることです。(最近の僕はスペース2です)。またタブを使いたいという人も中にはいると思いますので、これは個人の好みで。
+</p>
+<h3>日本語などのマルチバイト文字を適切に扱うためにEncodeモジュールを使用する (強く推奨)</h3>
+<p>
+  日本語などのマルチバイト文字を適切に扱うにはEncodeモジュールを使用します。こちらは記事にしましたのでリンクを張っておきます。
+</p>
+<a href="/blog/20091118124667.html">＜Encode 日本語などのマルチバイト文字列を適切に処理する＞</a>
+<p>
+  古い解説にあるようなJcode.pmやJcode.plを使うような手法は現在では推奨できません。Perl5.8以降はEncodeモジュールを使用するのが標準的で問題が少ない方法です。
+</p>
+<h3>デフォルト変数 $_ は使用しない (強く推奨)</h3>
+<p>
+  Perlにはデフォルト変数 $_ というものが存在します。デフォルト変数は関数に引数を指定しなかった場合に暗黙的に受け取る変数です。プログラムの中で使用すると可読性が落ちるので使うのは控えましょう。
+</p>
+<p>
+  デフォルト引数を使用するのは次の場合だけです。
+</p>
+<h4>1. ワンライナー</h4>
+<p>
+  ワンライナーの中では使用してもよいと思います。printの引数や正規表現の対象として$_が利用されています。
+</p>
+<pre>
+# AAAという文字を含む行を取り出すワンライナー
+perl -ne "print if /AAA/";
+</pre>
+<h4>2. map関数とgrep関数と後置のfor</h4>
+<p>
+  map関数やgrep関数や後置のforには$_ がわたってきますのでこれは利用せざるをえないです。
+</p>
+<pre>
+my @greped_array = grep { $_ =~ /AAA/ } @array;
+my @mapped_array = map  { $_ * 2 } @array;
+print $_ for @array;
+</pre>
+<p>
+  有名なCPANモジュールの中にはデフォルト変数を使用しているものがありますが個人的には推奨しません。できるだけ明示的であったほうが可読性の高いプログラムになります。
+</p>
+<h3>foreach文ではレキシカル変数を宣言する (強く推奨)</h3>
+<p>
+  Perl5ではforeach文の先頭でレキシカル変数を宣言することができます。
+</p>
+<pre>
+my @students = ('taro', 'kenji', 'naoya');
+for my $student (@students) {
+  ...
+}
+</pre>
+<p>
+  この例の場合は@studentsの各要素が$studentに入ってきます。$studentはレキシカル変数でforeachのブロックの先頭から終わりまでのスコープを持ちます。
+</p>
+<p>
+  レキシカル変数を省略するような書き方もできますが推奨しません。
+</p>
+<pre>
+# 推奨できない書き方
+for (@students) {
+  ...
+}
+</pre>
+<h3>コマンドライン引数の受け取りかた (参考)</h3>
+<a href="/blog/20080108132865.html">コマンドライン引数</a>はこんな感じで受け取るのがよいです。
+<pre>
+# コマンドライン引数がひとつの場合
+my $file = shift;
+</pre>
+<pre>
+# コマンドライン引数が複数の場合
+my ($file, $option) = @ARGV;
+</pre>
+<h3>サブルーチンの引数の受け取り方 (参考)</h3>
+<p>
+  コマンドライン引数の場合と同様になります。
+</p>
+<pre>
+# 引数がひとつの場合
+sub func {
+  my $file = shift;
+}
+</pre>
+<pre>
+# 引数が複数の場合
+sub func {
+  my ($file, $option) = @_;
+}
+</pre>
+<h3>日付処理の標準モジュールを使用する (参考)</h3>
+<p>
+  もしPerl5.10以降を使用しているならTime::Pieceというモジュールが標準で添付されており日付処理に使えます。
+</p>
+<a href="/blog/20091105124627.html">＜Time::Piece - 日付・時刻を扱うための標準モジュール＞</a>
+<p>
+  またCPANからインストールできる環境であればDataTimeモジュールをインストールするのも良いかもしれません。こちらは高機能ですが少し重いです。
+</p>
+<a href="/blog/20090815124848.html">＜日付を汎用的に扱うモジュール DateTime＞</a>
+<p>
+  それもできないならlocaltimeやTime::Localでがんばります。
+</p>
+<a href="/blog/20090809124848.html">＜Perlでの日付・時刻の扱い＞</a>
+<h3>不必要なモジュールの読み込みは行わないこと (必須)</h3>
+<p>
+  他のプログラムのソースコードをコピーしてきた場合にそのプログラムでは使用しないのに余計なモジュールが読み込まれている場合があります。これは後で読んだ人に対していらぬ誤解を招くので必ず削除するように心がけましょう。
+</p>
+<pre>
+# 他のプログラムからソースコードをコピーしてきたために
+# 不必要なモジュールの読み込みが残る場合があるので
+# 気をつける
+use File::Spec;
+use File::Basename 'basename'; 
+                               
+</pre>
+<h3>Perlのドキュメントの書き方 (参考)</h3>
+<p>
+  仕事で使用する小さなスクリプトの場合はスクリプトの中にドキュメントを埋め込んでおくのがよいと思います。CPANモジュールの場合はソースコードの末尾がドキュメントになりますが、小さなスクリプトの場合は先頭に書いておくと利用者がソースコードを開いたときにぱっとみることができるので便利です。
+</p>
+<p>
+  PerlのドキュメントはPODと呼ばれる記法で書きます。簡単な書き方だけ紹介しておきます。「=head1」というのが見出しになります。「=head1」の右にタイトルを書きます。その下に一行あけて本文を書きます。一行あけるというのには意味があるので注意してください。ドキュメントの終わりは「=cut」という行になります。英語で書いた場合は次のようになります。
+</p>
+<pre>
+=head1 SCRIPT NAME
+
+SomeScript.pl
+
+=head1 DESCRIPTION
+
+This script is used to do ....
+
+=head1 USAGE
+
+perl SomeScript.pl file1 file2 ...
+
+=cut
+
+# ソースコードの始まり
+use strict;
+use warnings;
+
+</pre>
+<p>
+  ローカルなプロジェクトの場合は同僚にわかりやすく伝えるために日本語で書くのがよいと思います。
+</p>
+<pre>
+=head1 スクリプト名
+
+SomeScript.pl
+
+=head1 概要
+
+～するためのものです。
+
+=head1 使用方法
+
+perl SomeScript.pl file1 file2 ...
+
+=cut
+
+# ソースコードの始まり
+use strict;
+use warnings;
+
+</pre>
+<h3>コメントの#の嵐は避ける (推奨)</h3>
+<p>
+  よく#だらけのコメントを仕事をしててみるのですが個人的にはお勧めしません。一番の理由は一度そのコメントの記述を行うと後から来た人がそれをまねしないといけないからです。関数ひとつ記述するのにこれをまねしないといけないのかと思うと気持ちが萎えます。またコードの品質を上げるどころか関数を書き換えたときにコメントが追いついていないということが頻繁に起きます。ですのでやめましょう。
+</p>
+<pre>
+#################################################################
+# 関数名     : ほにゃらら                                       #
+# 引数       : 引数1 引数2                                      #
+# 戻り値     : ほにゃらら                                       #
+# 作成日時   : あああああ                                       #
+# 作成者     : ほれほれ                                         #
+# 関数の説明 : いいいいいい                                     #
+# 更新履歴   : その1                                            #
+#            : その2                                            #
+#            : その3                                            #
+#################################################################
+sub func {
+    
+}
+</pre>
+<p>
+  こちらの書き方をお勧めします。
+</p>
+<pre>
+# 簡単な解説(1行で)
+sub func{
+    
+}
+</pre>
+<a href="http://github.com/kraih/mojo/blob/master/lib/Mojo/URL.pm">＜Mojo::URLのソースコード＞</a>
+<p>
+  も参考にしてください。
+</p>
+<h3>文字列リスト演算子 (参考)</h3>
+<p>
+  文字列リスト演算子はよく使用されるので解説しておきます。文字列リスト演算子は文字列の配列を作成するのによく利用されれます。
+</p>
+<pre>
+my @strings = qw/aa bb cc/;
+</pre>
+<p>
+  次の記述と同じ意味があります。
+</p>
+<pre>
+my @strings = ('aa', 'bb', 'cc');
+</pre>
+<h3>モジュールの関数をインポートするときは明示する (強く推奨)</h3>
+<p>
+  モジュールで関数をインポートするときは明示するようにしたほうがよいでしょう。ソースコードを読んだ人がその関数はどのモジュールのものなのかを簡単に理解することができます。
+</p>
+<pre>
+use File::Basename 'basename';
+use File::Copy qw/copy move/;
+use File::Path 'mkpath';
+use Encode qw/encode decode/;
+
+# mkpath関数を使用する。
+mkpath $dir;
+</pre>
+<p>
+  もし明示的なインポートの記述がなかった場合はどうなるでしょう。
+</p>
+<pre>
+use File::Basename;
+use File::Copy;
+use File::Path;
+use Encode;
+
+# これはどこからインポートされたかわからない 
+mkpath $dir; 
+</pre>
+<p>
+  このような場合はuseされているすべてのモジュールのドキュメントを読むということになりかねません。あなたは関数がどのモジュールからインポートされたのかを知っているかもしれませんが、ソースコードを読む人には明示的ではありません。ですのでインポートする関数はどんなにあなたにとって明らかに思えても明示的に指定するようにしましょう。
+</p>
+<p>
+  (参考)<a href="/blog/20100409127089.html">File::Path</a>、<a href="/blog/20100408127089.html">File::Copy</a>
+</p>
+<h3>gotoは使用しない (本当に特別な場合を除いて必須)</h3>
+<p>
+  Perlには<a href="/blog/20170514149606.html">goto文</a>がありますが使用してはいけません。gotoを使うプログラミングはPerlに限らずもう過去のものです。もしあなたが何らかの理由でgotoを使いたくなった場合代替する手段は必ず用意されていると思ってください。
+</p>
+<p>
+  ループ制御を行いたいなら「last」「next」を使用してください。エラー処理を行いたいならdieを使って例外を投げてください。
+</p>
+<p>
+  (gotoを使用しなければならない場面は、無限再帰呼び出しなどで、関数の階層を深くしたくないなどという本当に特殊な場合だけです。)
+</p>
+<h3>do ～ whileは使用しない (推奨)</h3>
+<p>
+  do whileで記述できる文はwhileで必ず記述できます。do whileを使ったからといって記述が簡潔になるかといえばそうでもないです。逆に普段使用していない分だけ意図がわかりにくくなると感じます。
+</p>
+<p>
+  do whileで記述できる文はwhileで必ず記述できるのでwhileを使うロジックを考えることをお勧めします。
+</p>
+<h3>redoは使用しない (推奨)</h3>
+<p>
+  Perlには<a href="/blog/20170515149615.html">redo文</a>がありますが、redoを使わなくても同じロジックを記述することができます。redoは何回か使用したことがあるのですが、redoを使ったプログラミングはとてもわかりにくくなると感じます。redoを使用しなくても同じロジックは必ず記述できるのでredoを使わないロジックを考えることをお勧めします。
+</p>
+<h3>プロトタイプは使用しない (強く推奨)</h3>
+<p>
+  サブルーチンを定義するときにプロトタイプという型を指定できる機能がありますがこれは使用しません。
+</p>
+<pre>
+# プロトタイプは使用しないこと
+sub func ($@) {
+  ...
+}
+</pre>
+<p>
+  Perlでは明示的に型を指定しなくてもどのような型の引数も受け取れますし、引数の個数もいくつでもかまいません。ですのでプロトタイプで型を指定したり個数を指定したりする必要はまったくないのです。ですので必ずプロトタイプを指定しないサブルーチンの定義を行いましょう。
+</p>
+<pre>
+sub func {
+  ...    
+}
+</pre>
+<h3>エラーを伝えるときはundefを戻り値として返却するのではなくdieを使用する。(推奨)</h3>
+<p>
+  Perlには例外処理がないと思っている人もいるかもしれません。Javaのような例外オブジェクトというものはありませんが、簡潔な例外機構を備えています。
+</p>
+<p>
+  まずは旧来のエラー処理であった戻り値に<a href="/blog/20100220126425.html">undef</a>を返却する方法を見ます。エラーが発生したときに単独のreturnを記述するとスカラコンテキストの場合はundefがリストコンテキストの場合は空のリスト () が返却されます。
+</p>
+<pre>
+# エラーが発生したときにundefを返却する
+sub func {
+  my $arg = shift;
+  
+  ...
+  
+  # エラー処理
+  if ($error) {
+    return; 
+  }
+  # エラーが起こらなかった場合の正しい値
+  return $val;
+}
+</pre>
+<p>
+  そして関数を呼び出す側でエラー処理を記述します。
+</p>
+<pre>
+my $val = func();
+
+# $valが偽値だったらプログラムを終了
+die "Error" unless $val;
+</pre>
+<p>
+  この記述の問題点はfuncを使う人が戻り値のチェックを怠るとプログラムは先に進んでしまうということです。
+</p>
+<p>
+  ですので現在的なPerlではエラーを伝えるときにdieを使って例外を投げます。
+</p>
+<pre>
+# エラーが発生したときにdieを使って例外を投げる
+sub func {
+  my $arg = shift;
+  
+  # なんらかの処理
+  
+  # dieを使って例外を投げる
+  if ($error) {
+    die "Error message";
+  }
+
+  # エラーが起こらなかった場合の正しい値
+  return $val;
+}
+</pre>
+<p>
+  このようにするとfuncを呼び出してエラーが発生したときはエラーメッセージを表示してプログラムは終了します。
+</p>
+<pre>
+# エラーが発生した場合はエラーメッセージを表示してプログラムが終了
+func(); 
+</pre>
+<p>
+  プログラムを終了させたくない場合は<a href="/blog/20100312126967.html">evalブロック</a>で受けます。これはJavaでいうcatchだと思ってください。エラーが発生した場合は$@という特殊変数にエラーの内容が設定されますので、この変数をチェックすることでエラーが発生したかどうかを調べることができます。
+</p>
+<pre>
+eval { func() };
+
+if ($@) {
+  # エラーが発生した場合の処理を記述
+}
+</pre>
+<h3>コンストラクタの呼び出しではアロー演算子を利用する</h3>
+<p>
+  コンストラクタの呼び出しはアロー演算子を使用するのがよいでしょう。Perlではコンストラクタと他のメソッドに実質的な違いはありません。
+</p>
+<pre>
+my $obj = SomeClass-&gt;new;
+</pre>
+<p>
+  間接オブジェクト呼び出しは、将来的には非推奨になる可能性があります。
+</p>
+<pre>
+# 間接オブジェクト呼び出し
+my $obj = new SomeClass();
+</pre>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

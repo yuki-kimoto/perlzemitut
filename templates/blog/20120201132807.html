@@ -1,0 +1,37 @@
+<h2 class="title">Encode::UTF8Mac - Mac OS Xのファイル名のエンコーディング</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+Mac OS XはUTF-8をファイルシステムのエンコーディングとして採用していると思いきや、実は少し異なり、Mac OX X独自の仕様になっています。これを正しく扱うためにはEncode::UTF8Macというモジュールを利用すると簡単です。
+
+<pre>
+use Encode qw/encode decode/;
+use Encode::UTF8Mac;
+
+# エンコード
+my $byte = encode('utf-8-mac', $string);
+
+# デコード
+my $string = decode('utf-8-mac', $byte);
+</pre>
+
+useを使ってEncode::UTF8Macを読み込むと、Encodeモジュールのエンコーディングとして<b>utf-8-mac</b>を利用できるようになります。このエンコーディングを利用すれば、Mac OS Xのファイル名を正しく扱うことができます。
+
+Encode::UTF8Macを利用する方法は、Text::IconvなどのMac OS X独自の方法を利用しないで、標準的なEncodeモジュールを利用できるという点でおすすめです。
+

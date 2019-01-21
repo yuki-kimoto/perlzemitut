@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>Perlの最新バージョンPerl 5.26リリース。インデント可能ヒアドキュメント、Unicode 9.0、長いキーのハッシュの性能改善 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">Perlの最新バージョンPerl 5.26リリース。インデント可能ヒアドキュメント、Unicode 9.0、長いキーのハッシュの性能改善</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<p>
+  2017年5月30日にPerl 5.26がリリースされました! Perlの登場が1987年ですから、ついに30年目を迎えます!
+</p>
+<h3>機能の追加</h3>
+<p>
+  Perl 5.26におけるいくつかの機能の追加です。便利そうなものをピックアップしてみます。
+</p>
+<h4>インデント可能ヒアドキュメント</h4>
+<p>
+  インデント可能<a href="/blog/20080619121405.html">ヒアドキュメント</a>の構文が追加されました。これは便利そうです。
+</p>
+<pre>
+my $message = &lt;&lt;~EOS;
+  Hello
+  World
+  EOS
+</pre>
+<p>
+  末尾の文字(ここではEOS)の位置が、左の位置になって、出力結果は以下のようになります。
+</p>
+<pre>
+Hello
+World
+</pre>
+<p>
+  エディタで、ソースコードの色付けがうまくできるようになるとさらによい感じです。
+</p>
+<h4>Unicode 9.0のサポート</h4>
+<p>
+  Unicode 9.0がサポートされました。Unicode 9.0でさらに追加された顔文字などを扱うことができます。
+</p>
+<h4>レキシカルサブルーチンの機能が正式なものに</h4>
+<p>
+  レキシカル<a href="/blog/20101130129876.html">サブルーチン</a>の機能が正式なものになりました。
+</p>
+<pre>
+{
+  my sub foo {
+    ...
+  }
+  
+  # 現在のスコープだけから呼び出せる。
+  title();
+}
+</pre>
+<h4>正規表現の名前付きキャプチャがわかりやすくなった</h4>
+<a href="/blog/20100827127859.html">正規表現</a>の名前付きキャプチャの利用がわかりやすくなりました。以下のハッシュ変数から、名前付きキャプチャを取り出せます。
+<pre>
+%{^CAPTURE}
+</pre>
+<pre>
+my $foo = "I am Tom";;
+if ($a =~ m/ (?&lt;name&gt;.+)$/) {
+  my $name = ${^CAPTURE}{name};
+}
+</pre>
+<p>
+  「$+{name}」で参照するのは、ちょっとわかりづらかったので、これはいい機能追加だと思います。
+</p>
+<h3>パフォーマンスの改善</h3>
+<p>
+  Perl 5.26におけるパフォーマンスの改善についてピックアップします。
+</p>
+<h4>64bit環境でハッシュのパフォーマンス改善</h4>
+<p>
+  よりバランスを取るためにハイブリッド<a href="/blog/20161013147635.html">ハッシュ</a>になりました。
+</p>
+<p>
+  16バイト以下の短いキーでは「At A Time Hard」長いキーは「Siphash 1-3」アルゴリズムを使用します。
+</p>
+<p>
+  とても長いキーではパフォーマンスが大幅に向上します、短いキーでは少しの改善があります。
+</p>
+<h4>ファイルからの行読み込みの高速化</h4>
+<p>
+  ファイルを行から読み込むreadline、および「<>」演算子のパフォーマンスが向上しました。改行文字の検索方法の実装がより速いものになりました。
+</p>
+<h4>リファレンスの代入の高速化</h4>
+<p>
+  他の変数にリファレンスを代入する操作が速くなりました。
+</p>
+<pre>
+my $obj1 = SomeModule-&gt;new;
+my $obj2 = $obj1;
+</pre>
+<h4>split関数のパフォーマンスの改善</h4>
+<a href="/blog/20080301120434.html">split関数</a>がわずかに速くなっています。
+<pre>
+my @elements = split ...;
+</pre>
+<h4>リスト代入のパフォーマンスの改善</h4>
+<a href="/blog/20100308126967.html">リスト</a>代入のパフォーマンスが、3倍程度速くなりました。
+<pre>
+my @elements = (1,2,3);
+</pre>
+<h3>後方互換性のない変更</h3>
+<p>
+  後方互換性のない変更です。
+</p>
+<h4>@INCの末尾にデフォルトで追加されていた「.」が取り除かれました</h4>
+<p>
+  Perl 5.26においては、これは、一番大きな影響のある互換性のない変更です。モジュールの読み込みパスにカレントディレクトリがあると、セキュリティ上のリスクがあるため、これを取り除く変更が行われています。
+</p>
+<p>
+  詳しくは以下の記事に書いたのでご覧ください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20170410149183.html">Perl 5.26への@INC問題にアップグレード前に対処しておきましょう</a>
+  </li>
+</ul>
+<h4>正規表現の中のエスケープされていない「{」は許可されません</h4>
+<p>
+  これは、5.16から廃止予定になっていますが、Perl 5.26で許可されなくなりました。
+</p>
+<pre>
+# 正規表現の中で「{」を使うときは必ずエスケープ
+/\{/;
+</pre>
+<h4>${^ENCODING}の機能が取り除かれました</h4>
+<p>
+  Perl 5.18でencodingプラグマは、廃止予定になっていましたが、今回のリリースでencodingプラグマは、そのままでは動かなくなりました。encodingプラグマと内部的につながっていた、${^ENCODING}変数が取り除かれたためです。
+</p>
+<p>
+  ソースコードはUTF-8で記述して、utf8プラグマを使うようにしましょう。
+</p>
+<p>
+  もし、どうしてもencodingプラグマを使い続けたい場合は、以下のように「Filter」オプションを追加することで、対処することができます。
+</p>
+<pre>
+use encoding "euc-jp", Filter=&gt;1;
+</pre>
+<h3>感想</h3>
+<p>
+  Perlをわかりやすくする変更や、パフォーマンスの改善は、歓迎です。新しいUnicodeにすぐに対応になるのもとてもよい。
+</p>
+<p>
+  「.」が@INCから取り除かれたのは、かなりのソースコードに影響を与えますが、セキュリティ上の問題を放置し続けることよりは、よい決定だと思います。
+</p>
+<p>
+  Perl 5.26へのアップグレードは、かなりの注意が必要です。事前に対処しておくのがベストです。モジュールやファイルを読み込むパスは、FindBinモジュールで、絶対パスで設定するようにするのが、よいでしょう。
+</p>
+<p>
+  Perl 5.20までは、安定で、Perl 5.22とPerl 5.24では、内部APIを使っているCoroが動かなくなるという問題が発生しました。現在はPerl 5.22では最新版のCoroは動くようですが、Perl 5.24以降では動きません。Perl 5.26では、「.」が@INCから取り除かれます。
+</p>
+<p>
+  アップグレードの注意は、Coroを利用していないことを確認することと、「.」が@INCに含まれなくなることに対する対応をすることです。
+</p>
+<p>
+  古いPerlを使っている場合は、Perl 5.20まで、まずアップグレードして、さらにそこから、最新版にアップグレードするという流れにすると、問題が起こりにくくてよいんじゃないかと思います。
+</p>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

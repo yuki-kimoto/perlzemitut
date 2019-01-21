@@ -1,0 +1,82 @@
+<h2 class="title">標準出力をリダイレクトしてファイルに書き込む</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161124147999.html">
+      <span itemprop="name">ファイル入出力</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+ファイルに出力する最も簡単で頻繁に使われる方法があります。リダイレクトというOSの機能を使って、print関数で行っているディスプレイへの出力を、ファイルに変更します。
+
+以下は、ディスプレイに文字列を表示するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルへの書き込み
+print "writed to file\n";
+</pre>
+
+上記のファイルを、sample20080726.pl という名前で保存して、コマンドプロンプトかシェルで
+
+<pre>
+perl sample20080726.pl > 出力するファイル名
+</pre>
+
+と入力してください。( ディスプレイへの出力が、指定したファイルへの出力に変更されます。)
+
+<h3>コード解説</h3>
+
+<h3>(1)標準出力とは</h3>
+
+「標準出力」とはディスプレイのことです。print 関数は、デフォルトで標準出力であるディスプレイに出力を行います。以下のように明示的に標準出力を意味するSTDOUTを指定することもできます。
+
+<pre>
+print "writed to file\n";
+
+# 以下と同じ
+print STDOUT "writed to file\n"+
+</pre>
+
+<h3>(2)リダイレクトで、標準出力を切り替える</h3>
+
+<pre>
+perl sample20080726.pl > 出力するファイル名
+</pre>
+
+> 記号で、標準出力をファイルに切り替えることができます。この機能をリダイレクトと呼びます。ディスプレイに表示されるはずの内容が、ファイルに書き込まれます。
+
+print関数で標準出力に出力しておけば、ディスプレイに出力することもファイルに出力することもできます。
+

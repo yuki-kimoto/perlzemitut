@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>for/while文を使った繰り返し処理 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">for/while文を使った繰り返し処理</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li>
+    <span itemprop="name">here</span></a>
+  </li>
+</ol>
+<p>
+  Perlの繰り返しの構文について解説します。繰り返しの構文を覚えるとプログラムの幅がすごく広がります。
+</p>
+<h3>for文の基礎</h3>
+<p>
+  まず最初に繰り返しの構文である<b>for文</b>について解説します。最初に次のサンプルを見てください。これは、0から9までの数を画面に出力するプログラムです。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i++) {
+  print "$i\n";
+}
+</pre>
+<p>
+  これの出力結果は以下のようになります。0から9までの数が出力されていますね。
+</p>
+<pre>
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre>
+<p>
+  では構文について順番に解説します。for文は以下のような構文になっています。
+</p>
+<pre>
+for (ループ変数の初期化; ループする条件; ループ変数の更新) {
+  ...
+}
+</pre>
+<h4>1. ループ変数の初期化</h4>
+<p>
+  最初の部分はループ変数の初期化です。この部分でループ変数が最初にどの値で始まるかを決めます。ループ変数というのは、ループ内で利用される変数のことだと思ってください。
+</p>
+<p>
+  最初の例をもう一度見てみましょう。「my $i = 0」という部分に注目してください。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i++) {
+  print "$i\n";
+}
+</pre>
+<p>
+  ループ変数の初期化部分では、変数宣言を同時に行うことができます。「$i」という変数を宣言し「0」で初期化しています。
+</p>
+<p>
+  この部分を「my $i = 5」とするとどうなるでしょうか。
+</p>
+<pre>
+for (my $i = 5; $i &lt; 10; $i++) { ... }
+</pre>
+<p>
+  「$i」が「5」で初期化されるので、出力結果は以下のようになります。
+</p>
+<pre>
+5
+6
+7
+8
+9
+</pre>
+<h4>2. ループする条件</h4>
+<p>
+  さて次に、ループする条件について見ていきましょう。
+</p>
+<pre>
+for (ループ変数の初期化; ループする条件; ループ変数の更新) {
+  ...
+}
+</pre>
+<p>
+  for文では、ループする条件が満たされる間、ブロックが繰り返し実行されます。最初の例を見ると「$i」が「10」より小さいという条件になっています。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i++) {
+  print "$i\n";
+}
+</pre>
+<p>
+  ですので「$i」が「10」より小さい間ブロックが実行されます。
+</p>
+<p>
+  この部分を「$i < 7」とするとどうなるでしょうか。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 7; $i++) { ... }
+</pre>
+<p>
+  出力結果は以下のようになります。「$i」が「7」より小さい間ループするので、「6」まで出力されているのがわかります。
+</p>
+<pre>
+0
+1
+2
+3
+4
+5
+6
+</pre>
+<h4>3. ループ変数の更新</h4>
+<p>
+  最後に、ループ変数の更新の部分を解説します。
+</p>
+<pre>
+for (ループ変数の初期化; ループする条件; ループ変数の更新) {
+  ...
+}
+</pre>
+<p>
+  ループ変数の更新の部分では、次のブロックを実行する前に、ループ変数の値を変えることができます。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i++) {
+  print "$i\n";
+}
+</pre>
+<p>
+  最初の例では「$i++」と書いています。これは<a href="/blog/20180224151948.html">インクリメント</a>と呼ばれ、$iの値を1増やすことができます。
+</p>
+<p>
+  次のループに進む前に「$i」の値が1増えます。つまりループを進むたびに「1」「2」「3」という風に増えていくことになります。
+</p>
+<p>
+  この部分を「$i += 2」とすればどうなるでしょうか。これは<a href="/blog/20161005147566.html">特殊な代入演算子</a>で「$i」の値を「2」増やすことができます。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i += 2) {
+  print "$i\n";
+}
+</pre>
+<p>
+  2づつ増えていきますので、出力結果は以下のようになります。
+</p>
+<pre>
+0
+2
+4
+6
+8
+</pre>
+<p>
+  「0」から始まり「2」ずつ増え「10」より小さい間ループしていることを確認してください。
+</p>
+<h3>for文のサンプルプログラム</h3>
+<p>
+  繰り返しの構文はいくつかのサンプルを実際に動かしてみると理解が早まると思います。
+</p>
+<h4>「9」から初めて「0」まで出力する</h4>
+<p>
+  次は「9」から初めて「0」まで出力するプログラムを見てみましょう。
+</p>
+<pre>
+for (my $i = 9; $i &gt;= 0; $i--) {
+  print "$i\n";
+}
+</pre>
+<p>
+  「my $i = 9」と初期化されているので「$i」は「9」から始まりますね。条件は「$i >= 0」なので「$i」が「0以上」のとき繰り返されます。最後の「$i--」で、次のループに移る前に「$i」の値をひとつ減らしています。「--」というのは変数の値を「1」減らす<a href="/blog/20180226151973.html">デクリメント演算子</a>です。
+</p>
+<p>
+  出力結果は以下のようになります。
+</p>
+<pre>
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+</pre>
+<h4>ふたつ飛ばしで「9」から初めて「1」まで出力する</h4>
+<p>
+  次はふたつ飛ばしで「9」から「1」まで出力してみます。
+</p>
+<pre>
+for (my $i = 9; $i &gt;= 0; $i -= 2) {
+  print "$i\n";
+}
+</pre>
+<p>
+  ループ変数の更新の部分が「$i -= 2」となっているので、次のループに入る前に「$i」の値が「2」小さくなります。
+</p>
+<p>
+  出力結果は以下のようになります。
+</p>
+<pre>
+9
+7
+5
+3
+1
+</pre>
+<h4>for文とif文を組み合わせる</h4>
+<p>
+  for文とif文を組み合わせてみましょう。for文とif文を組み合わせられるようになるとプログラミングが上達していきます。
+</p>
+<p>
+  「0」から「10」までループしますが、ループ変数が3の倍数だったときだけ、出力するというサンプルプログラムを書いてみます。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i++) {
+  if ($i % 3 == 0) {
+    print "$i\n";
+  }
+}
+</pre>
+<p>
+  if文を使った条件分岐の部分について注目してみてください。「$i % 3 == 0」という記述で、「$i」が「3」の倍数であることを確認できます。「3」で割った余りが「0」だった場合に、その数は3の倍数といえるからです。
+</p>
+<p>
+  剰余演算子については以下の記事を参考にしてください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20080910122105.html">数値計算を行う演算子</a>
+  </li>
+</ul>
+<p>
+  3の倍数の時だけif文のブロックが実行されるので出力結果は以下のようになります。
+</p>
+<pre>
+0
+3
+6
+9
+</pre>
+<p>
+  if文とfor文を組み合わせると、プログラムをうまく制御できるようになります。if文についての詳しい解説は以下の記事を参考にしてください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20161023147731.html">if文を使った条件分岐の構文を覚えよう</a>
+  </li>
+</ul>
+<h3>while文</h3>
+<p>
+  次は<b>while</b>について学びましょう。while文は、for文と同じようにループを行うための構文です。
+</p>
+<p>
+  for文と異なるのは、while文は「ループする条件」の部分しか持たないことです。次のサンプルを見てください。
+</p>
+<pre>
+my $i = 0;
+
+while ($i &lt; 10) {
+  
+  print "$i\n";
+  
+  $i++;
+}
+</pre>
+<p>
+  これを実行すると「0」から「9」までの数が画面に出力されます。
+</p>
+<pre>
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre>
+<p>
+  「$i < 10」という部分がwhile文でループする条件の部分です。for文と違って、初期化の部分やループ変数の更新の部分は、while文にはありません。
+</p>
+<pre>
+while (ループする条件) { ... }
+</pre>
+<p>
+  「ループ変数の初期化」と「ループ変数の更新」の部分は、Perlの文として書く必要があります。
+</p>
+<pre>
+# ループ変数の初期化
+my $i = 0;
+
+while ($i &lt; 10) {
+  
+  print "$i\n";
+  
+  # ループ変数の更新
+  $i++;
+}
+</pre>
+<p>
+  上記のwhile文のサンプルは、次のfor文と対応しています。
+</p>
+<pre>
+for (my $i = 0; $i &lt; 10; $i++) {
+  print "$i\n";
+}
+</pre>
+<p>
+  for文の方がシンプルに書けていますね。ループ変数が必要な場合はfor文の方が書きやすいです。
+</p>
+<h3>foreach文</h3>
+<b>foreach文</b>は<a href="/blog/20161012147627.html">配列</a>の要素を順番に処理するときに利用できます。次のサンプルプログラムを見てください。
+<pre>
+my @animals = ('Cat', 'Dog', 'Mouse');
+
+foreach my $animal (@animals) {
+  print "$animal\n";
+}
+</pre>
+<p>
+  これは('Cat', 'Dog', 'Mouse')という配列の要素を順番出力するプログラムです。出力結果は以下のようになります。
+</p>
+<pre>
+Cat
+Dog
+Mouse
+</pre>
+<h4>for文とforeach文と同じ</h4>
+<p>
+  Perlでは、foreach文はfor文の別名になっていて、foreachと書くべきところをforと書くこともできます。
+</p>
+<pre>
+my @animals = ('Cat', 'Dog', 'Mouse');
+
+for my $animal (@animals) {
+  print "$animal\n";
+}
+</pre>
+<p>
+  最近のPerlの書き方を見ているとforeachよりは常にforを使う傾向があるように思います。短いほうに落ち着くという感じでしょうかね。
+</p>
+<h4>範囲演算子と一緒に使う</h4>
+<a href="/blog/20170520149523.html">範囲演算子</a>と一緒に使うこともできます。
+<pre>
+for my $num (3 .. 6) {
+  print "$num\n";
+}
+</pre>
+<h3>next文</h3>
+<a href="/blog/20170513149580.html">next文</a>を使うと次の繰り返しの先頭にジャンプすることができます。次のサンプルプログラムを見てください。
+<pre>
+my @nums = (3, 5, 6, 7);
+for my $num (@nums) {
+  if ($num == 5) {
+    next;
+  }
+  print "$num\n";
+}
+</pre>
+<p>
+  (3, 5, 6, 7)という配列の要素を出力していますが「$num」が「5」の時だけ次の繰り返しの先頭にジャンプします。出力結果は以下のようになります。
+</p>
+<pre>
+3
+6
+7
+</pre>
+<p>
+  「5」の時だけ、ループの先頭にジャンプしているので「print関数」が実行されません。
+</p>
+<h3>last文</h3>
+<a href="/blog/20170527149589.html">last文</a>を使うと繰り返しを終了して、for文を脱出することができます。次のサンプルプログラムを見てください。
+<pre>
+my @nums = (3, 5, 6, 7);
+for my $num (@nums) {
+  if ($num == 6) {
+    last;
+  }
+  print "$num\n";
+}
+</pre>
+<p>
+  (3, 5, 6, 7)という配列の要素を出力していますが「$num」が「6」の時にループを脱出します。そのため、出力結果は以下のようになります。
+</p>
+<pre>
+3
+5
+</pre>
+<p>
+  ここではforと組み合わせる例を紹介しましたが、nextとforはwhile文の中でも使うことができます。
+</p>
+<h3>forとwhileとforeachの使い分け</h3>
+<p>
+  三つの繰り返しの構文について解説しましたが「実際はどうやって使い分けたらいいの」と感じることと思います。そこで、使い分けの指針について書いておきます。
+</p>
+<h4>まずはforeachで書けないか考える</h4>
+<p>
+  まず最初にforeachを使って書けないかを考えます。foreachはループを最も簡単に書けるので、foreachで十分なのであれば、foreachを使います。配列の要素を順番に処理するというのは、頻繁にでてきますが、これはforeachで書けます。
+</p>
+<pre>
+my @animals = ('Cat', 'Dog', 'Mouse');
+
+foreach my $animal (@animals) {
+  print "$animal\n";
+}
+</pre>
+<p>
+  あるいはエイリアスのforを使って以下のように書きます。
+</p>
+<pre>
+my @animals = ('Cat', 'Dog', 'Mouse');
+
+for my $animal (@animals) {
+  print "$animal\n";
+}
+</pre>
+<p>
+  まずはこの方法で書けないかを検討します。
+</p>
+<h4>要素番号が必要なときは通常のfor文</h4>
+<p>
+  次に要素番号が必要な場合があるとします。そのときは通常のfor文を使います。次のサンプルプログラムは、要素番号と配列の要素を出力するものになっています。「@animals」をスカラコンテキストで評価すると、配列の長さが取得できることに注意してください。
+</p>
+<pre>
+my @animals = ('Cat', 'Dog', 'Mouse');
+
+for (my $i = 0; $i &lt; @animals; $i++) {
+  my $animal = $animals[$i];
+  print "$i : $animal\n";
+}
+</pre>
+<p>
+  出力結果は以下のようになります。
+</p>
+<pre>
+0 : Cat
+1 : Dog
+2 : Mouse
+</pre>
+<h4>要素番号を増やしていかないような繰り返しはwhile文</h4>
+<p>
+  最後に要素番号を増やしていかないような繰り返しであればwhile文を使いましょう。よくあるサンプルをいくつか書いておきます。
+</p>
+<b>1. ファイルから行を読み込む</b>
+<p>
+  ファイルから行を読み込む場合はwhile文を使用します。
+</p>
+<pre>
+while (my $line = &lt;&gt;) {
+  print $line;
+}
+</pre>
+<p>
+  ファイル入出力については以下で詳しく解説しています。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20110212130370.html">ファイル入出力の基礎</a>
+  </li>
+</ul>
+<b>2. 配列をpopする</b>
+<p>
+  配列をpop関数を使って取り出してなくなったら終わりというような処理はwhile文で書きます。
+</p>
+<pre>
+my @animals = ('Cat', 'Dog', 'Mouse');
+
+while (my $animal = pop @animals) {
+  print "$animal\n";
+}
+</pre>
+<p>
+  出力結果は以下になります。
+</p>
+<pre>
+Mouse
+Dog
+Cat
+</pre>
+<p>
+  popされて空になったら、ループが終了します。
+</p>
+<b>3. 無限ループを書きたい</b>
+<p>
+  無限ループを書きたいときはwhile文を使用します。条件を1にすると、while文をずっと実行され続けます。
+</p>
+<pre>
+while (1) {
+  # 処理
+}
+</pre>
+<p>
+  何らかの条件が満たされた場合に、無限ループから脱出したい場合はlastを使いましょう。
+</p>
+<pre>
+while (1) {
+  # 処理
+  
+  if ($flag) {
+    last;
+  }
+}
+</pre>
+<h3>多次元データ構造と繰り返し</h3>
+<p>
+  最後に多次元データ構造と繰り返しのサンプルプログラムを一つ書いておきます。Perlにおいては、ハッシュの配列というデータ構造を頻繁に使うので、そのサンプルを書いておきます。
+</p>
+<pre>
+# ハッシュの配列のサンプルプログラム
+my $students = [
+  {name =&gt; 'kimoto', age =&gt; 36},
+  {name =&gt; 'kana', age =&gt; 21},
+  {name =&gt; 'jiro', age =&gt; 56}
+];
+
+for my $student (@$students) {
+  my $name = $student-&gt;{name};
+  my $age = $student-&gt;{age};
+  
+  print "Name : $name, Age : $age\n";
+}
+</pre>
+<p>
+  出力結果は以下のようになります。
+</p>
+<pre>
+Name : kimoto, Age : 36
+Name : kana, Age : 21
+Name : jiro, Age : 56
+</pre>
+<p>
+  ここではまだ一度も解説していない「[]」や「{}」「@$students」「$student->{name}」というものが登場しています。これはリファレンスと呼ばれるPerlの構文です。多次元データ構造の処理については、以下で詳しく解説していますので、参考にしてください。
+</p>
+<ul>
+  <li>
+    <a href="/blog/20100930127859.html">リファレンスと多次元データ構造</a>
+  </li>
+</ul>
+<h3>ループを簡単に書くための関数</h3>
+<h4>grep関数</h4>
+<p>
+  Perlには<a href="/blog/20100119126425.html">grep関数</a>というものがあり、配列の要素の中でマッチするものだけを取り出すことができます。
+</p>
+<pre>
+my @matches = grep { $_ &gt; 5 } @values;
+</pre>
+<p>
+  これは、for文で次のように書くのと同じですが、より簡潔です。
+</p>
+<pre>
+my @matches;
+for my $value (@$values) {
+  if ($value &gt; 5) {
+    push @matches, $value;
+  }
+}
+</pre>
+<h4>map関数</h4>
+<p>
+  Perlには<a href="/blog/20100118126425.html">map関数</a>というものがあり、すべての配列の要素の変換を簡単に書くことができます。
+</p>
+<pre>
+my @values2 = map { "$_.txt" } @values1;
+</pre>
+<p>
+  これは、for文で次のように書くのと同じですが、より簡潔です。
+</p>
+<pre>
+my @values2;
+for my $value1 (@values1) {
+  my $value2 = "$value1.txt";
+  push @values2, $value2;
+}
+</pre>
+<h3>後置のfor - for修飾子</h3>
+<p>
+  特殊なforの構文として、forを文の後ろに置くことができるfor修飾子というものがあります。1行でfor文が書ける場合には、この書き方もシンプルです。
+</p>
+<p>
+  以下は、配列のすべての要素を出力するサンプルです。配列の要素は順番にデフォルト引数である「$_」に代入されます。
+</p>
+<pre>
+my @values = (3, 4, 5);
+print "$_\n" for @values;
+</pre>
+<p>
+  読みやすさを考えると通常のfor文を常に使うようにするのがよいと思います。
+</p>
+<p>
+  でも実は、後置のforには明らかな利点があります。それは、<b>後置のforはスコープを作らないので、通常のforよりもパフォーマンスがよい</b>ということです。
+</p>
+<p>
+  日常の業務で書くほとんどのプログラムにおいては、パフォーマンスが問題にならないでしょう。でも、1行で実行できるもので、速さをどうしても稼ぎたい場合は、後置のforを使うとよいでしょう。
+</p>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

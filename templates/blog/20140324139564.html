@@ -1,0 +1,78 @@
+<h2 class="title">Mojoliciousのインストール</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161205148094.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">入門</span>
+    </a>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+<strong>Mojolicious</strong>を<strong>インストール</strong>しましょう。Perlでは、モジュールをインストールするのにcpanコマンドあるいはcpanmコマンドを使用します。CPANは有志によって作られたたくさんのモジュールが、登録されているサイトです。モジュールというのは、プログラムの部品のことです。
+
+MojoliciousもモジュールとしてCPANに登録されているので、インストールして利用することができます。
+
+<h3>Windowsの場合</h3>
+
+Windowsの場合はモジュールをインストールするには、cpanコマンドを使用します。cpanコマンドを使ってMojoliciousをインストールすることができます。
+
+<pre>
+cpan Mojolicious
+</pre>
+
+<h3>Mac OS X, Linux, Unix系OSの場合</h3>
+
+Mac OS X, Linux, Unix系OSの場合は、Perlのインストールの手順で、cpanmをインストールしていると思います。cpanmを使えば、個人ユーザー環境にモジュールをインストールすることができますので、モジュールのインストールにはcpanmを使いましょう。
+
+<pre>
+cpanm Mojolicious
+</pre>
+
+<h3>Mojoliciousがインストールされていることの確認</h3>
+
+Mojoliciousがインストールされているかを確認するには、Mojoliciousのドキュメントが存在するかを確認するのが一番簡単です。perldocコマンドを使えば、モジュールのドキュメントを読むことができます。
+
+Mojoliciousがインストールされたかperldocコマンドを使って確認しましょう。
+
+<pre>
+perldoc Mojolicious
+</pre>
+
+Mojoliciousのドキュメントが表示されれば、Mojoliciousのインストールが完了しています。
+

@@ -1,0 +1,146 @@
+<h2 class="title">strict - 文法チェックを厳しくする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+文法チェックを厳しくするには<b>strictモジュール</b>を使用します。
+
+<pre>
+use strict;
+</pre>
+
+strictプラグマはPerlの文法チェックを厳しくするためのプラグマです。strictプラグマは、Perlのスクリプトを書くときには、必ず記述するようにしてください。宣言されていない変数が利用されていた場合は、スクリプトを実行しようとしたときに、コンパイルエラーで止まります。
+
+<h3>strictプラグマの解説</h3>
+
+strictモジュールとは呼ばずに、strictプラグマと呼んでいますが、これはモジュールの一種で、Perlのコンパイル時の挙動を変化させるものは、プラグマと呼ばれ、小文字で始める習慣になっています。
+
+strictプラグマの効果を見ていきましょう。strictプラグマには、みっつの効果があります。
+
+<h4>変数宣言を強制する</h4>
+
+ひとつめは<strong>変数宣言を強制する</strong>という効果です。Perlではmyで宣言された変数はレキシカル変数と呼ばれます。strictプラグマを使用した場合は、宣言されていない変数を使用することができなくなります。
+
+<pre>
+use strict;
+
+# 変数を宣言して利用しているのでエラーにならない
+my $num;
+$num = 1
+</pre>
+
+<pre>
+use strict;
+
+# 宣言しないで利用しているのでエラーになる
+$num2 = 2
+</pre>
+
+二番目のケースでは、以下のようなエラーメッセージが表示されて、プログラムは実行されずに、終了します。
+
+<pre>
+Global symbol "$num2" requires explicit package name at a.pl line 4.
+</pre>
+
+英語で書かれているので翻訳します。
+
+<pre>
+グローバルなシンボル「$num2」は明示的なパッケージ名を必要とします。4行目。
+</pre>
+
+このメッセージが表示されたら、宣言されていない変数が利用されていると考えて、ほぼ間違いはありません。行番号がわかるので、その行番号を見て、変数名に間違いがないか、事前に変数宣言をしているかをチェックしましょう。
+
+<h4>クォートされていない文字列の文字列の禁止</h4>
+
+strictプラグマは、<strong>クォートされていない文字列の使用を禁止</strong>します。実はPerlでは、strictプラグマが有効になっていない場合は、クォートされていない文字列を使用することができます。strictプラグマを有効にした場合は、クォートされていない文字列を使用できなくなります。
+
+<pre>
+use strict;
+
+# 文字列をクォートしているのでエラーにならない
+my $str = 'abcde';
+</pre>
+
+<pre>
+use strict;
+
+# 文字列をクォートしているのでエラーになる
+my $str = abcde;
+</pre>
+
+二番目のケースでは、以下のようなエラーメッセージが表示されて、プログラムは実行されずに、終了します。
+
+<pre>
+Bareword "abcde" not allowed while "strict subs" in use at a.pl line 3.
+</pre>
+
+英語で書かれているので翻訳します。
+
+<pre>
+裸の「abcde」は「strict subs」の利用下では許可されていません。3行目。
+</pre>
+
+ このような間違いを避けるためにも、strictプラグマは必ず有効にしましょう。
+
+<h4>シンボリックリファレンスの禁止</h4>
+
+三つ目の効果は<strong>シンボリックリファレンスの禁止</strong>です。Perlにはシンボリックリファレンスと呼ばれる機能がありますが、strictプラグマはシンボリックリファレンスの使用を禁止します。
+
+シンボリックリファレンスとは、間単にいうと文字列によって、シンボル(変数や関数)を参照できる機能のことです。
+
+以下のスクリプトを見てください。
+
+<pre>
+# 足し算をする関数
+sub total {
+  my ($num1, $num2) = @_;
+  
+  return $num1 + $num2;
+}
+
+# シンボリックリファレンスで関数を参照して実行
+my $num = &{'total'}(1 + 2);
+
+print $num;
+</pre>
+
+このスクリプトではtatalという関数がありますが。「total(1 + 2)」とは呼び出さずに「&{'total'}(1 + 2)」として、シンボリックリファレンスで関数を参照して呼び出しています。
+
+strictプラグマが有効になっている場合は、次のようなエラーメッセージを表示してスクリプトは終了します。
+
+<pre>
+Can't use string ("total") as a subroutine ref while "strict refs" in use at a.pl line 11.
+</pre>
+
+英語で書かれているので翻訳します。
+
+<pre>
+「strict refs」の利用下では、文字列「total」をサブルーチンとして利用することはできません。11行目。
+</pre>
+
+ときには、シンボリックリファレンスを使用しなければならない場合が発生すると思います。動的にサブルーチンやメソッド名を決定したい場合などです。そういう場合は、次のようにして、シンボリックリファレンスの禁止を解除することができます。
+
+<pre>
+use strict;
+
+# シンボリックリファレンスの禁止だけを解除
+no strict 'refs';
+</pre>
+
+このようにstrictプラグマには「変数宣言を強制する」「クォートされていない文字列の文字列の禁止」「シンボリックリファレンスの禁止」という三つの効果があることを、覚えておきましょう。
+

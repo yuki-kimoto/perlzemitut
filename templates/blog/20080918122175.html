@@ -1,0 +1,139 @@
+<h2 class="title">Math::Trig - さまざまな三角関数</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+三角関数関連の関数は標準関数としては、<a href="/blog/20180513122166.html">cos関数</a>と<a href="/blog/20180514122166.html">sin関数</a>しかありませんが、標準モジュールにMath::Trigという三角関数関連のモジュールがあります。簡単に内容を紹介します。
+
+<h3>三角関数の逆数</h3>
+
+逆数とは、分母と分子を入れ替えた数のことです。逆関数とは意味がことなるので注意しましょう。sin,cos,tanの逆数をそれぞれ、cosec( コセカント ), sec( セカント ), cot( コタンジェント )と呼びます。
+
+Math::Trigモジュールで、cosec関数、sec関数、cot関数を使用することができます。
+
+<table>
+  <tr>
+    <td>
+      　
+    </td>
+    <td>
+      意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cosec
+    </td>
+    <td>
+      1/sin
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      sec
+    </td>
+    <td>
+      1/cos
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cot
+    </td>
+    <td>
+      1/tan
+    </td>
+  </tr>
+
+</table>
+
+<h3>三角関数の逆関数</h3>
+
+逆関数とは、y = f( x ) という関係が成り立つときに、x = g( y ) を満たすような g のことです。y = f( x ) は、x に対して f を作用させると yになると読みます。 x = g( y ) は、y に g を作用させると x になると読みます。
+つまり、 x にfを作用させて、さらにgを作用させたときに x に戻るような g を f の逆関数と呼びます。記号で書くと
+
+<q>
+x = g( f( x ) ) 
+</q>
+
+を満たすような g が存在するとき g を f の逆関数と呼びます。
+
+sin,cos,tanの逆関数をそれぞれ、asin(アークサイン), acos(アークコサイン), atan(アークタンジェント)と呼びます。
+
+Math::Trigモジュールの、asin関数、acos関数、atan関数を使用することができます。
+
+<table>
+  <tr>
+    <td>
+      　
+    </td>
+    <td>
+      意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      asin
+    </td>
+    <td>
+      sinの逆関数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      acos
+    </td>
+    <td>
+      cosの逆関数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      atan
+    </td>
+    <td>
+      tanの逆関数
+    </td>
+  </tr>
+
+</table>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

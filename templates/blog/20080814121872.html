@@ -1,0 +1,235 @@
+<h2 class="title">flock関数 - ファイルの排他制御</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+<strong>flock関数</strong>を使用すれば、ファイルの排他制御を行うことができます。今回は、flock関数を実際に使って順番を守ってファイルに読み書きを行います。(一般的には、排他処理と呼びます。)
+
+以下は、実際に順番を守って読み書きしているとことを実感するサンプルです。sample_20080814.pl という名前で保存してください。
+
+<pre>
+use strict;
+use warnings;
+use Fcntl qw/:DEFAULT :flock :seek/;
+
+# 上書きするので注意
+my $file = "data_20080814.txt";
+
+# 読み書きモードでオープン(あまり安全でない)
+# O_CREATでファイルがなければ作成する。
+sysopen(my $fh, $file, O_RDWR | O_CREAT)
+  or die "Cannot open $file: $!"; 
+
+# 排他ロック( 読み込んで書き込むので排他ロック )
+flock($fh, LOCK_EX)
+  or die "Cannot lock $file: $!";
+
+my $cnt;
+$cnt = <$fh>;
+if (!defined $cnt && $!){ die "Cannot read $file: $!"; }
+
+$cnt++;
+
+# ファイルポインタを先頭に移動
+seek($fh, 0, SEEK_SET)
+  or die "Cannot seek $file: $!";
+
+# 書き込み。
+print { $fh } $cnt
+  or die "Cannot Write $file: $!";
+
+# 書き込みサイズにファイルを切り詰める
+truncate($fh, length $cnt);
+
+# closeの際にファイルロックは解除される。
+close $fh
+  or die "Cannot close $file: $!";
+
+print "現在のカウント: $cnt\n";
+</pre>
+
+上記のスクリプトを、ランダムな時間間隔で繰り返すスクリプトです。 write_loop_20080814.pl という名前で保存してください。
+
+<pre>
+use strict;
+use warnings;
+use FindBin;
+use Time::HiRes 'usleep';
+
+my $script = "$FindBin::Bin/sample_20080814.pl";
+
+while (1) {
+  # 上記のスクリプトを繰り返し呼び出す。
+  system("perl $script");
+
+  # 100,000(1秒)より小さいランダムな数    
+  my $random = rand 1000_000;
+  usleep $random;
+}
+</pre>
+
+(参考)<a href="/blog/20100524127696.html">FindBin</a>、<a href="/blog/20180309152509.html">Time::HiRes</a>
+
+コマンドプロンプトを3つくらい立ち上げて、write_loop_20080814.plをすべてのプロンプトで実行してください。data_20080814.txtを読み込んで、カウントアップして書き戻すということを3並列で行います。
+
+もし順番が守られていなければ、書き込み内容に重複が発生するか、あるいはファイルが破損します。順番が守られていれば正しくカウントアップされるはずです。
+
+プロセスを、Ctrl + C で3つとも強制終了して、カウントが重複していないことを確認してください。カウントが重複していなければ、順番を守って読み書きしていることがわかります。(一部のOS(Winows98など)ではflockは機能しませんがたいていのOSで機能するでしょう。)
+
+<h3>コード解説</h3>
+
+<h4>Fcntl - ファイルロック用の定数を読み込む</h4>
+
+<a href="/blog/20180310152509.html">Fcntl</a>モジュールを使うとflockで使用するファイルロック用の定数を利用することができるようになります。
+
+<pre>
+use Fcntl qw/:DEFAULT :flock :seek/;
+</pre>
+
+flockで使用する定数を読み込むために、use Fcntl qw( :flock ) とします。:flockタグによって読み込まれる定数は、LOCK_SH, LOCK_EX,LOCK_UN の3つです。
+
+<table>
+  <tr>
+    <td>
+      LOCK_SH
+    </td>
+    <td>
+      共有ロック
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      LOCK_EX
+    </td>
+    <td>
+      排他ロック
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      LOCK_NB
+    </td>
+    <td>
+      ノンブロックモード
+    </td>
+  </tr>
+
+</table>
+
+LOCK_NB は、LOCK_SH LOCK_EX と一緒に使用され、ロックがすでにかかっていた場合に、ロックが解除されるのを待たずに制御をプログラムに返す場合にしようされます。
+
+補足ですが、:DEFAULT は、<a href="/blog/20080804121794.html">sysopen関数</a>の  O_RDWR と O_CREAT を使用するために、:seek は、seek関数の SEEK_SET を使用するために、指定しています。
+
+<h4>(2)ファイルが存在しない場合は作成して、読み書きモードでオープンする</h4>
+
+<pre>
+# 読み書きモードでオープン(あまり安全でない)
+# O_CREATでファイルがなければ作成する。
+sysopen(my $fh, $file, O_RDWR | O_CREAT)
+  or die "Cannot open $file: $!";
+</pre>
+
+sysopenで、オープンフラグに、O_RDWR と O_CREAT を指定します。
+
+<h4>(3)flock関数で、排他ロックを行う</h4>
+
+<pre>
+# 排他ロック( 読み込んで書き込むので排他ロック )
+flock($fh, LOCK_EX)
+  or die "Cannot lock $file: $!";
+</pre>
+
+今回は、データを読み込んでカウントアップして書き戻すので、排他ロック(書き込みロック)を使います。排他ロックを行うためには、flock関数の第2引数に、LOCK_EX を指定します。読み込みを行うだけの場合は、LOCK_SH を指定します。
+
+第一引数は、ファイルではなくて、オープンしたファイルハンドルであることに注意してください。すべてのプロセスが、ファイルにアクセスする場合は、flockによってロックを取得するという約束を守ることで、順番を守ってファイルにアクセスすることができます。
+
+<h4>(4)カウントアップして書き込み</h4>
+
+<pre>
+my $cnt;
+$cnt = <$fh>;
+if (!defined $cnt && $!){ die "Cannot read $file: $!"; }
+
+$cnt++;
+
+# ファイルポインタを先頭に移動
+seek($fh, 0, SEEK_SET)
+  or die "Cannot seek $file: $!";
+
+# 書き込み。
+print { $fh } $cnt
+  or die "Cannot Write $file: $!";
+
+# 書き込みサイズにファイルを切り詰める
+truncate($fh, length $cnt);
+</pre>
+
+ファイルから読み込んで、エラーがなければ、カウントアップします。読み込んだ時点でファイルポインタが進んでいるので、seek関数で先頭に戻します。print関数で書き込んで、書き込んだサイズまでtruncate関数で切り詰めます。( 今回は数字がアップしていくだけなので、truncateの必要はないですが。)
+
+<h4>(5)ロックの解除</h4>
+
+<pre>
+# closeの際にファイルロックは解除される。
+close $fh
+  or die "Cannot close $file: $!";
+</pre>
+
+close 関数を呼び出すことで、ファイルへのロックが解除されます。
+
+<h3>ループスクリプトの簡単な解説</h3>
+
+<pre>
+use FindBin;
+use Time::HiRes 'usleep';
+
+my $script = "$FindBin::Bin/sample_20080814.pl";
+
+while (1) {
+  # 上記のスクリプトを繰り返し呼び出す。
+  system("perl $script"); 
+
+  # 100,000(1秒)より小さいランダムな数    
+  my $random = rand 1000_000;
+  usleep $random;
+}
+</pre>
+
+FindBinは、スクリプトのパスを知ることができるモジュールです。system関数は、指定したコマンドを実行することができる関数です。rand関数は、ランダムな数を発生させるための関数です。usleep関数は一定時間スクリプトを停止する関数です。<a href="/blog/20170522149546.html">sleep関数</a>と異なり秒数をマイクロ秒単位で指定することができます。
+
+usleep関数に1秒以下のランダムな値を与えて、このプロセスを平行して走らせたときに、ファイルへの競合が起こるような工夫になっています。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

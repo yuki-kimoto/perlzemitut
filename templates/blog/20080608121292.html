@@ -1,0 +1,197 @@
+<h2 class="title">Perlのコンテキストを理解しよう</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perlにはコンテキストと呼ばれる概念があります。コンテキストとは文脈という意味で、次の二つのコンテキストがあります。
+
+<ul>
+  <li>
+    <a href="/blog/20180531152777.html">スカラコンテキスト</a>
+  </li>
+  <li>
+    <a href="/blog/20180530152777.html">リストコンテキスト</a>
+  </li>
+</ul>
+
+スカラとして評価される文脈をスカラコンテキスト、リストとして評価される文脈をリストコンテキストと呼びます。
+
+一例としてあげれば、<a href="/blog/20081009122357.html">localtime関数</a>は、スカラコンテキストでは、日付・時刻を表示する文字列を返却し、リストコンテキストでは、日付・時刻情報をリストにして返します。
+
+<pre>
+# スカラコンテキスト
+$date_string = localtime;
+
+# リストコンテキスト
+@date_info = localtime;
+</pre>
+
+もうひとつの一例をあげると、配列は、スカラコンテキストでは、配列の個数を、リストコンテキストでは、要素のリストを返します。
+
+<pre>
+# スカラコンテキスト
+$count = @values;
+
+# リストコンテキスト
+@elements = @values;
+</pre>
+
+リストについての詳しい解説は以下で行っています。
+
+<ul>
+  <li>
+    <a href="/blog/20100308126967.html">リスト</a>
+  </li>
+</ul>
+
+<h4>スカラコンテキスト</h4>
+
+スカラコンテキストとして評価される場所を挙げておきます。
+
+<b>スカラ変数への代入</b>
+
+<a href="/blog/20161107147852.html">スカラ変数</a>への代入はスカラコンテキストです。配列はスカラコンテキストで評価すると、配列の長さを返します。
+
+<pre>
+my $num = @values;
+</pre>
+
+<b>比較演算子の項</b>
+
+<a href="/blog/20080318120585.html">比較演算子</a>の左右の項はスカラコンテキストです。
+
+<pre>
+$x < @values
+$x == @values
+</pre>
+
+<a href="/blog/20170521149524.html">for文</a>のループで頻繁に目にします。
+
+<pre>
+for (my $i = 0; $i < @nums; $i++) {
+  ...
+}
+</pre>
+
+<b>ifの条件部</b>
+
+<a href="/blog/20161023147731.html">if</a>の条件部はスカラコンテキストです。以下では@valuesはスカラコンテキストで評価されるので、配列の個数を返します。
+
+<pre>
+if (@values) {
+  ...
+}
+</pre>
+
+スカラコンテキストの詳しい解説は以下で行っています。
+
+<ul>
+  <li>
+    <a href="/blog/20180531152777.html">スカラコンテキスト</a>
+  </li>
+</ul>
+
+<h4>リストコンテキスト</h4>
+
+リストコンテキストとして評価される場所を上げておきます。
+
+<b>配列への代入</b>
+
+<a href="/blog/20161012147627.html">配列</a>への代入はリストコンテキストです。
+
+<pre>
+my @values2 = @values;
+</pre>
+
+<b>リスト</b>
+
+<a href="/blog/20100308126967.html">リスト</a>の内側はリストコンテキストです。
+
+<pre>
+(@values);
+</pre>
+
+<b>サブルーチンの引数</b>
+
+<a href="/blog/20101130129876.html">サブルーチン</a>の引数は、リストコンテキストです。
+
+<pre>
+func(@values);
+</pre>
+
+リストコンテキストの詳しい解説は以下で行っています。
+
+<ul>
+  <li>
+    <a href="/blog/20180530152777.html">リストコンテキスト</a>
+  </li>
+</ul>
+
+<h3>サンプル</h3>
+
+スカラコンテキストとリストコンテキストを理解するためのサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# スカラコンテキストとリストコンテキスト
+
+print "1:localtime関数で、コンテキストの意味を知る。\n";
+my $scalar;
+my @list;
+
+# 左辺が、スカラなので、スカラ用
+# の戻り値が返ります。
+$scalar = localtime;
+                      
+# 左辺が、配列なので、リスト用
+# の戻り値が返ります。                       
+@list = localtime;
+
+print "スカラコンテキストでは、書式化された日付\n",
+  "'$scalar'\n\n";
+
+print "リストコンテキストでは、年月日と時間の値のリスト\n" .
+  join(',', @list) . "\n\n";
+</pre>
+
+Perlの関数は、スカラを要求される場所では、スカラ用の戻り値を、リストを要求される場所では、リスト用の戻り値を返却することができます。
+
+スカラコンテキストとリストコンテキストの区別は、Perlを触っているうちに自然に覚えていきます。ここで示したのはひとつの例です。左辺がスカラなら、スカラコンテキスト、左辺が配列ならば、リストコンテキストになります。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">コンテキスト</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

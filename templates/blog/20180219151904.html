@@ -1,0 +1,107 @@
+<h2 class="title">加算演算子「+」 - 数値の足し算</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20080910122105.html">
+      <span itemprop="name">算術演算子</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<b>加算演算子「+」</b>を使用すると、<a href="/blog/20161026147748.html">数値</a>の足し算を行うことができます。
+
+<pre>
+my $num3 = $num1 + $num2;
+</pre>
+
+3と5を足し算するサンプルです。
+
+<pre>
+my $total = 3 + 5;
+</pre>
+
+Perlでは、少数の足し算も型を意識しないで行うことができます。
+
+<pre>
+my $total = 3.5 + 2.7;
+</pre>
+
+<h3>数値型の自動拡張</h3>
+
+Perlは、プログラミング言語上は、数値型を持っていませんが、内部では、数値型を持っています。
+
+32ビット整数で計算できない場合は、環境がサポートしていれば、64bit整数に拡張され計算されます。
+
+また、64bit整数でも表現できない場合は、倍精度浮動小数点型に拡張され計算されます。
+
+<h3>文字列連結は文字列連結演算子で行う</h3>
+
+Perlでは「+」という演算子は、数値を加算するためだけに使用します。文字列を連結したい場合は<a href="/blog/20080221120361.html">文字列連結演算子「.」</a>を使用してください。
+
+<pre>
+my $str = 'ABC' . 'DEF';
+</pre>
+
+<h3>文字列の足し算もそのまま行える</h3>
+
+Perlでは<a href="/blog/20161003147558.html">文字列</a>と数値の変換は自動的に行われ、文字列であっても、数値を含んでいれば、加算演算子で足し算ができます。
+
+<pre>
+my $num_str1 = "34";
+my $num_str2 = "56";
+
+my $total = $num_str1 + $num_str2;
+</pre>
+
+テキストファイルから、数値を含んでいる文字列を取得し、そのまま足し算できるので、ちょっとした作業には、Perlが抜群に便利です。
+
+<h3>算術演算子の解説</h3>
+
+加算演算子は、算術演算子の一つです。算術演算子の詳しい解説については、算術演算子の解説のページをご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20080910122105.html">算術演算子</a>
+  </li>
+</ul>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20080910122105.html">
+      <span itemprop="name">算術演算子</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+

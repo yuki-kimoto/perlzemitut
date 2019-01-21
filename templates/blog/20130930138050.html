@@ -1,0 +1,49 @@
+<h2 class="title">DDP - データをわかりやすく出力する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>データをわかりやすく出力するのにDDPというモジュールを利用することができます。</strong> ハッシュや配列が入れ子になった複雑なデータの内容を見るのに便利です。
+
+<pre>
+# データをわかりやすく出力
+use DDP;
+p $data;
+</pre>
+
+DDPはData::Printerというディストリビューションに含まれているので。Data::Printerをインストールすれば、DDPもインストールされます。
+
+Perlのデータを出力するためのツールとしてコアモジュールとしてData::Dumperがあります。Data::Dumperは次の点で使いにくい部分があります。一つ目は、文字列が内部表現で出力されるので、どのような文字列が含まれているかを、確認しにくということです。もうひとつは、データのダンプはよく使う機能なのに、タイピングが少し長いという点です。
+
+DDPには以下のような特徴があります。
+
+<ul>
+  <li>
+    UTF-8で書かれている文字列を表示することができます
+  </li>
+  <li>
+    pという関数でデータを出力することができます。
+  </li>
+</ul>
+
+データを出力したい場所で以下のように書くと、一行で書くこともできます。
+
+<pre>
+use DDP;p $data;
+</pre>
+

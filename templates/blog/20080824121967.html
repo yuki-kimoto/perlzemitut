@@ -1,0 +1,168 @@
+<h2 class="title">umask関数 - ビットマスクでパーミッションを制限する</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+ビットマスクを指定するには<strong>umask</strong>関数を使用します。
+
+<pre>
+# 8進数で指定
+umask 0022;
+</pre>
+
+ビットマスクを指定するには、umask関数を使います。<a href="/blog/20080822121950.html">パーミッション</a>の指定は3桁の8進数で行います。Perlでは先頭に0をつけることで8進数をあらわすことができます。
+
+ファイル作成時のパーミッションはビットマスクに影響を受けます。ビットマスクとはファイルやディレクトリの作成時のパーミッションを制限するビット列です。以下は、ビットマスクを指定するサンプルです。
+
+<h3>ビットマスクとは</h3>
+
+ビットマスクは<a href="/blog/20080804121794.html">sysopen関数</a>やmkdir関数でのファイルやディレクトリの作成時のパーミッションに影響を及ぼします。
+
+たとえばsysopen関数で指定するパーミッションが666で、ビットマスクの設定が022だった場合、作成されるファイルのパーミッションは644になります。
+
+ファイルをプログラムで作成する場合は、パーミッションの値をファイルの場合は666、実行ファイルやディレクトリの場合は777にしておくほうがよいです。こうしておけば、そのプログラムを使う人はビットマスクを指定することで作成するパーミッションを自由に変更できます。
+
+(ただし他人に絶対に書き込まれてはいけないファイルなどの場合は、644のパーミッションなどで作成します。)
+
+<h3>ビットマスクによる演算</h3>
+
+ビットマスクの演算は以下のようになります。
+
+<pre>
+作成されるパーミッション = 指定したパーミッション & ビットマスクの否定
+</pre>
+
+わかりにくいので例で解説します。指定するパーミッションが8進数で666、ビットマスクが022だとします。
+
+ビット演算を行うので、2進数に直して考えます。8進数の666は2進数で110110110で、8進数の022は2進数で000010010です。
+
+否定とは、ビットを反転させることです。& は、ビットの論理積で、両方が1のときは1,それ以外は0になります。
+
+<table>
+  <tr>
+    <td>
+      ファイルパーミッション
+    </td>
+    <td>
+      1
+    </td>
+    <td>
+      1
+    </td>
+    <td>
+      0
+    </td>
+  </tr>
+1|1|0|1|1|0|
+  <tr>
+    <td>
+      (ビットマスク)
+    </td>
+    <td>
+      0
+    </td>
+    <td>
+      0
+    </td>
+    <td>
+      0
+    </td>
+  </tr>
+0|1|0|0|1|0|
+  <tr>
+    <td>
+      ビットマスクの否定
+    </td>
+    <td>
+      1
+    </td>
+    <td>
+      1
+    </td>
+    <td>
+      1
+    </td>
+  </tr>
+1|0|1|1|0|1|
+  <tr>
+    <td>
+      作成されるパーミッション
+    </td>
+    <td>
+      1
+    </td>
+    <td>
+      1
+    </td>
+    <td>
+      0
+    </td>
+  </tr>
+1|0|0|1|0|0|
+</table>
+
+「ファイルパーミッション」と「ビットマスクの否定」の論理積が「作成されるパーミッション」になります。
+
+<h3>サンプル</h3>
+
+ビットマスクを設定するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルモード指定のための定数をインポート
+use Fcntl;
+
+# ビットマスクの設定 8進数で指定
+umask 0022;
+
+# 上書きするので注意
+my $file = "file_20080824_$$";
+
+# パーミッションの値はビットマスクに影響を受けて644となる。
+sysopen(my $fh, $file, O_CREAT | O_WRONLY, 0666)
+  or die "Cannot open $file: $!";
+    
+close $fh
+  or die "Cannnot close $file";
+
+# パーミッションの値はビットマスクに影響を受けて755になる。
+# 上書きするので注意
+my $dir = "dir_20080824_$$"; 
+mkdir($dir, 0777)
+  or die "Cannot make $dir";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

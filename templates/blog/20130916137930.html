@@ -1,0 +1,150 @@
+<h2 class="title">warningsモジュール</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+警告を表示するには<strong>warnings</strong>プラグマを使用します。
+
+<pre>
+use warnings;
+</pre>
+
+Perlにおいては、デフォルトの状態では、警告は表示されず、スクリプトが実行されます。warningsプラグマを使えば、警告を表示させることができます。スクリプトを書く場合は、strictプラグマとあわせて、必ず記述するようにしましょう。
+
+<h3>よく見る警告</h3>
+
+よく見るであろう警告についていくつか解説しておきます。
+
+<h4>未定義値の使用</h4>
+
+未定義値を使用すると警告が表示されます。以下のスクリプトでは、未定義の値をそのままprint関数で出力してしまっています。
+
+<pre>
+use warnings;
+
+# 未定義値を使用
+my $str;
+print $str;
+</pre>
+
+次のような警告が表示されます。
+
+<pre>
+Use of uninitialized value $str in print at a.pl line 6
+</pre>
+
+英語なので翻訳します。
+
+<pre>
+printにおいて未定義値$strを使用しています。6行目。
+</pre>
+
+未定義を利用しているという内容の警告が発生した場合は、変数に値が代入さないままになっているということです。つまり、スクリプトにミスがあるということです。スクリプトを修正して、この警告が表示されないようにしましょう。
+
+<h3>文字列がエンコードされていない</h3>
+
+日本語などのマルチバイト文字を使用するときに、文字列がエンコードされていないことを知らせる警告が表示される場合があります。以下は警告が発生するスクリプトです。
+
+<pre>
+use warnings;
+use utf8;
+
+# 文字列がエンコードされていない
+my $str = 'こんにちは';
+print $str;
+</pre>
+
+次のような警告が表示されます。
+
+<pre>
+Wide character in print at a.pl line 7.
+</pre>
+
+英語なので翻訳します。
+
+<pre>
+ワイド文字が使用されています。7行目。
+</pre>
+
+これは、文字列がエンコードされずに出力されているということを意味しています。ですから、きちんとエンコードしましょう。
+
+<pre>
+use warnings;
+use utf8;
+use Encode 'encode';
+
+# 文字列がエンコードされていない
+my $str = 'こんにちは';
+print encode('UTF-8', $str);
+</pre>
+
+<h3>サブルーチンが再定義されている</h3>
+
+サブルーチンを、二回以上定義したときは、サブルーチンが再定義されているという警告が発生します。以下は警告が発生するスクリプトです。
+
+<pre>
+use warnings;
+
+# サブルーチンの再定義
+sub one { 1 }
+sub one { 1 }
+</pre>
+
+次のような警告が表示されます。
+
+<pre>
+Subroutine one redefined at a.pl line 5.
+</pre>
+
+英語なので翻訳します。
+
+<pre>
+サブルーチンoneが再定義されています。5行目。
+</pre>
+
+サブルーチンを再定義しているときは、通常は間違いの可能性が高いのですが、一時的にサブルーチンを置き換えたいという場合がときどき発生します。そのような場合は、この警告を抑止することができます。
+
+<pre>
+no warnings 'redefine';
+</pre>
+
+この定義を行うと、サブルーチンの再定義の警告は発生しなくなります。
+
+<pre>
+use warnings;
+no warnings 'redefine';
+
+# サブルーチンの再定義の警告は発生しない
+sub one { 1 }
+sub one { 1 }
+</pre>
+
+サブルーチンの再定義の警告以外の警告も似たような方法で抑止することができますけれど、原則として警告は抑止してはいけません。警告が発生している原因の部分のほうを修正すべきです。
+
+<h3>サブルーチンの再定義の警告を抑制する</h3>
+
+開発中にバグがあって、急遽修正しないといけないときは、モンキーパッチを当てることがときどきありますね。モンキーパッチというのは、サブルーチンやメソッドの定義を上書きして、正しい動きにしてあげることです。
+
+でもサブルーチンの再定義を行うと、警告が発生します。この警告を表示しないようにするには<b>warnings</b>プラグマでサブルーチンの再定義の警告をとめるようにコンパイラに指示してあげます。
+
+<pre>
+no warnings 'redefine';
+</pre>
+
+これで警告が表示されなくなります。これはレキシカルなスコープを持ちます。以下はモジュールのメソッドを上書きするサンプルです。
+

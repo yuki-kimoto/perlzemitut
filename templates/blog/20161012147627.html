@@ -1,0 +1,598 @@
+<h2 class="title">Perlの配列を理解しよう</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+配列は複数の値を保存することのできる変数です。同じ種類のデータを複数扱う必要がある場合に配列を使用します。Perlの配列は動的配列と呼ばれるものでサイズを自動的に拡張してくれるので便利です。
+
+<h3>配列の基礎</h3>
+
+配列の基礎について解説します。
+
+<ul>
+  <li>
+    配列の宣言
+  </li>
+  <li>
+    初期化
+  </li>
+  <li>
+    要素の参照
+  </li>
+  <li>
+    要素への代入
+  </li>
+  <li>
+    配列の個数
+  </li>
+  <li>
+    繰り返し処理
+  </li>
+</ul>
+
+<h4>配列の宣言</h4>
+
+配列を宣言するにはスカラ変数の場合と同じようにmyを使用します。配列を表す@(アットマーク)を先頭につけます。
+
+<pre>
+my @numbers;
+</pre>
+
+<h4>配列の初期化</h4>
+
+配列には<a href="/blog/20100308126967.html">リスト</a>と呼ばれる複数の値を表現するデータを代入することができます。リストは
+
+<pre>
+(値1, 値2, 値3)
+</pre>
+
+のように()を使って表現します。
+
+配列にリストを代入するには次のようにします。
+<pre>
+@numbers = (10, 25, 40, 4, -6);
+</pre>
+
+配列の宣言と代入を同時に行うこともできます。
+
+<pre>
+my @numbers = (10, 25, 40, 4, -6);
+</pre>
+
+<h4>配列の要素の参照</h4>
+
+配列の要素を参照するには次のようにします。先頭の文字が@ではなくて$であることに注意しましょう。添え字は0から始まります。
+
+<pre>
+$配列[添え字]
+</pre>
+
+次のようにして、先頭の要素と2番目の要素を出力できます。
+
+<pre>
+print $numbers[0];
+print $numbers[1];
+</pre>
+
+<h4>配列の要素の代入</h4>
+
+代入を行うには次のようにします。
+
+<pre>
+$配列[添え字] = 値
+</pre>
+
+先頭の要素に20を代入してみます。
+
+<pre>
+$numbers[0] = 20;
+</pre>
+
+<h4>配列の要素の個数</h4>
+
+配列の個数を取得するには配列をスカラコンテキストで評価します。スカラコンテキストについての解説は別のところで行いますが、最初のうちは配列をスカラ変数に代入すると配列の個数が取得できると覚えておきましょう。
+
+<pre>
+my $cnt = @nums;
+</pre>
+
+配列の要素数の取得する方法の詳しい解説は以下の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20180604152811.html">配列の要素数を取得する</a>
+  </li>
+</ul>
+
+<h4>配列の要素を順番に処理する</h4>
+
+配列の要素を順番に処理するにはfor文かforeach文を使用します。forは添え字を使用して順番にアクセスしたい場合に利用し、foreachは単純に配列を順番に処理したい場合に使用します。foreachで処理できない場合にforを使用するようにするのがPerlでの良い習慣です。
+for文で配列の要素を順番に出力してみます。
+
+<pre>
+for (my $i = 0; $i < @nums; $i++) {
+  print $nums[$i], "\n";
+}
+</pre>
+
+foreach文で配列の要素を順番に出力してみます。
+
+<pre>
+foreach my $num (@nums) {
+  print $num, "\n";
+}
+</pre>
+
+<h3>配列の要素の操作</h3>
+
+関数を使用して配列に要素を追加したり、取り出したりすることができます。
+
+<ul>
+  <li>
+    shift関数
+  </li>
+  <li>
+    unshift関数
+  </li>
+  <li>
+    pop関数
+  </li>
+  <li>
+    push関数
+  </li>
+</ul>
+
+<h4>shift関数</h4>
+
+「shift関数」を使えば、配列の「先頭の要素を取得」することができます。@arrayが(1, 2, 3)であった場合は$firstには1が代入され、@arrayは(2, 3)になります。
+
+<pre>
+my $first = shift @array;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100104126425.html">shift関数</a>
+  </li>
+</ul>
+
+<h4>unshift関数</h4>
+
+「unshift関数」を使えば、配列の「先頭に要素を追加」することができます。@arrayが(1, 2, 3)であった場合は@arrayは(5, 1, 2, 3)になります。
+
+<pre>
+unshift @array, 5;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100105126425.html">unshift関数</a>
+  </li>
+</ul>
+
+<h4>pop関数</h4>
+
+「pop関数」を使えば、配列の「末尾の要素を取り出す」ことができます。@arrayが(1, 2, 3)であった場合は$lastには3が代入され@arrayは(1, 2)になります。
+
+<pre>
+my $last = pop @array;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100106126425.html">pop関数</a>
+  </li>
+</ul>
+
+<h4>push関数</h4>
+
+「push関数」を使えば、配列の「末尾に要素を追加」することができます。。@arrayが(1, 2, 3)であった場合は@arrayは(1, 2, 3, 5)になります。
+
+<pre>
+push @array, 5;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100107126425.html">push関数</a>
+  </li>
+</ul>
+
+<h3>配列の並べ替え</h3>
+
+配列を並べ替えるにはsort関数を使用します。
+
+<h4>sort関数</h4>
+
+第1引数には比較のためのコードブロックを渡します。昇順で並べ替える場合は$aを$bより先に記述し、降順で並べ替えるには$bを$aより先に記述します。比較演算子には数値として比較したい場合は<=>を使用し、辞書順で比較したい場合はcmpを使用します。
+
+<pre>
+# 昇順で並べ替え
+@sorted = sort { $a 演算子 $b } @array;
+
+# 降順で並べ替え
+@sorted = sort { $b 演算子 $a } @array;
+</pre>
+
+数値の昇順で並べ替えるてみます。@numsは(2, 3, 5, 8)になります。
+
+<pre>
+# 数値の昇順で並び替え
+my @nums = (5, 8, 3, 2);
+@nums = sort {$a <=> $b} @nums;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100110126528.html">sort関数</a>
+  </li>
+</ul>
+
+<h4>簡単に逆順に並び替える</h4>
+
+簡単に逆順に並び替えたい場合は「reverse関数」を使うこともできます。
+
+<pre>
+@reverse = reverse @elements;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20080227120413.html">reverse関数</a>
+  </li>
+</ul>
+
+<h3>配列のリファレンス</h3>
+
+<span style="font-weight:bold;">リファレンスとは、配列の入っているメモリの位置を指すもの</span>。C言語を知っているなら、「アドレス演算ができないポインタ」だと考える。Javaを知っているなら、「参照」だと考える。
+
+<h4>配列のリファレンスの作成</h4>
+
+<pre>
+my $numbers_ref1 =  \@numbers ;
+</pre>
+
+<span style="font-weight:bold;">@の前に、\をつけると、配列のリファレンスを作成できる。
+
+<h4>直接配列のリファレンスを作成する</h4>
+
+<pre>
+my $numbers_ref2 = [1, 2, 3, 4];
+</pre>
+
+<span style="font-weight:bold;">リストを [ ] でくくると、配列のリファレンスになる。</span>
+
+<h4>配列の要素の参照</h4>
+
+<pre>
+$numbers_ref2->[0]
+</pre>
+
+<span style="font-weight:bold;">配列のリファレンス->[ 要素番号 ]</span>
+
+<h3>配列と配列のリファレンスの比較</h3>
+
+配列と配列のリファレンスの比較をしてみました。見間違いやすので、ふたつの違いをよく理解できるようになりましょう。
+
+<h4>要素の参照</h4>
+
+<pre>
+# 配列
+$numbers[0]
+
+#配列のリファレンス
+$numbers_ref->[0]
+</pre>
+
+<h4>配列のリファレンスのデリファレンス</h4>
+
+<pre>
+@$numbers_ref
+</pre>
+
+for文や、配列を引数にとる関数など配列に戻したいときはデリファレンスする
+
+配列のリファレンスについては以下のページでも詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20180214151861.html">配列のリファレンス</a>
+  </li>
+</ul>
+
+<h3>リスト</h3>
+
+<strong>リスト</strong>とは複数の値の並びを表現したものです。リストと配列とは異なります。リストは表記方法なのに対して、配列は変数です。
+
+<pre>
+# リスト
+('a',    case  :
+
+  break;b', 'c', 'd')
+</pre>
+
+リストは配列に代入することができます。
+
+<pre>
+# 配列への代入
+my @array = ('a', 'b', 'c', 'd');
+</pre>
+
+リストについての詳細は「<a href="/blog/20100308126967.html">リスト - 複数の値の並び</a>」をご覧ください。
+
+<h3>配列に関する関数・構文・演算子</h3>
+
+<h4>splice関数</h4>
+
+<strong>配列の要素に対して複雑な操作</strong>を行うには<strong>splice関数</strong>を使用します。複数の要素を取り出したり、置換したりすることができます。複数要素の取り出しにおいて$lengthを省略すると$posの位置から配列の末尾までが対象になります。
+
+<pre>
+# 複数要素の取り出し
+@parts = splice @array, $pos, $length;
+
+# 複数要素の置換
+splice @array, $pos, $length, @replace;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20080127120141.html">splice関数</a>
+  </li>
+</ul>
+
+<h4>grep関数</h4>
+
+「<strong>grep関数</strong>」を使用すると配列の中で条件にマッチした要素のみを取り出すことができます。デフォルト引数$_に@arrayの各要素が渡されてきます。条件文を満たした要素のみが@matchedに追加されます。
+
+<pre>
+# 条件にマッチした要素のみを取り出す
+@matched = grep { 条件文 } @array;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100119126425.html">grep関数</a>
+  </li>
+</ul>
+
+<h4>map関数</h4>
+
+<strong>配列のすべての要素を変換</strong>するには<strong>map関数</strong>を使用します。@arrayの各要素がデフォルト変数$_に渡されてきますので、コードブロック{ }の中で必要な変換を行います。変換文で最後に評価されたものが@mappedに順番に追加されます。
+
+<pre>
+# 配列のすべての要素の変換
+@mapped = map { 変換文 } @array;
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20100118126425.html">map関数</a>
+  </li>
+</ul>
+
+<h4>文字列リスト演算子</h4>
+
+文字列のリストを簡潔に記述するための<strong>文字列リスト演算子</strong>と呼ばれる演算子があります。文字列リスト演算子を使用するとシングルクォートやカンマを記述することなく文字列のリストを表現できます。
+
+<pre>
+qw(文字列1 文字列2 文字列3)
+</pre>
+
+実際に文字列リスト演算子を使用した例です。
+
+<pre>
+my @strings = qw/cat dog mouse/; 
+</pre>
+
+次の文字列のリストと同じ意味になります。
+
+<pre>
+my @strings = ('cat', 'dog', 'mouse');
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20080222120369.html">演算子辞典 - 文字列リスト演算子「qw」</a>
+  </li>
+</ul>
+
+<h4>配列スライス</h4>
+
+配列から要素番号を指定して複数の要素を取り出すには<strong>配列スライス</strong>と呼ばれるテクニックを使います。
+
+<pre>
+# 配列スライス
+my @values = @array['m', 'n', ...]
+</pre>
+
+<ul>
+  <li>
+    <a href="/blog/20080216120316.html">構文辞典 - 配列スライス</a>
+  </li>
+</ul>
+
+<h3>配列とハッシュを組み合わせた「多次元データ構造」</h3>
+
+「配列」と「ハッシュ」と「リファレンス」を組み合わせた「多次元データ構造」を理解することは、中級者になるためには、必要不可欠です。
+
+<pre>
+# ハッシュの配列
+my $persons = [
+  {name => 'Kimoto', age => 36},
+  {name => 'Tanaka', age => 20}
+]
+</pre>
+
+「多次元データ構造」については次の記事で詳しく解説していますので、参考にしてください。
+
+<div class="icon-arrow">「<a href="/blog/20100930127859.html">Perlの「配列」と「ハッシュ」で「多次元データ構造」を自由に操る</a>」</div>
+
+<h3>サンプルプログラム</h3>
+
+<h4>配列の要素の検索、配列の重複した要素を取り除く、重複を数える</h4>
+
+配列の要素の検索、配列の重複した要素を取り除く、重複を数えるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my @numbers = (1, 2, 3, 3, 4, 5, 6, 6, 6, 7, 8);
+print '配列 : @numbers = (' . join(',', @numbers) . ")\n\n";
+
+# 1:配列に指定した要素が含まれているかどうかを調べる。
+# grepを応用します。
+my $saerch_number = 3;
+if (grep { $_ == $saerch_number } @numbers) {
+  # 検索する要素が、見つかったら、if文の中は真になります。
+  print "1: $saerch_numberは存在します。\n";
+}
+
+# 2:配列から重複を取り除く( 順序は保障されない )
+#ハッシュのキーは重複を許さないという性質を持つ。
+my %no_duplicate_hash;
+for my $number (@numbers) {
+  $no_duplicate_hash{$number}++;
+}
+
+# ハッシュのキーのリストを取得
+my @no_duplicate_numbers = keys %no_duplicate_hash; 
+print '2: @no_duplicate_numbers = (' . join(',', @no_duplicate_numbers) . ")\n\n";
+
+# 3:配列に含まれる重なる要素の個数を数える(上の続き)
+print "3: 要素の個数\n";
+for my $key (sort keys %no_duplicate_hash) {
+  print "$keyは$no_duplicate_hash{$key}個含まれます。\n";
+}
+</pre>
+
+<h4>配列のリファレンス</h4>
+
+配列のリファレンス、配列への変換、要素の参照についてのサンプルプログラムです。
+
+<pre>
+use strict;
+use warnings;
+
+my @numbers = (1, 2, 3, 4, 5, 6, 7, 8);
+print "配列 : \@numbers = ( " , join(',', @numbers) . " )\n\n";
+
+# 1:配列のリファレンス @の前に \ をつけると、配列のリファレンスになる。
+my $numbers_ref1 =  \@numbers ;
+
+# 配列のリファレンスの前に@をつけると元の配列に戻すことができる。
+# これを、デリファレンスという。
+print "配列 : \@\$numbers_ref1 = (" . join(',', @$numbers_ref1),")\n";
+
+# 2: けれど、普通は上のような書き方はしない。
+# 無名配列( [ ] )というものを使って、直接配列のリファレンスを作る。
+my $numbers_ref2 = [1, 2, 3, 4]; 
+print "配列 : \$numbers_ref2 = [" , join(',', @$numbers_ref2) . "]\n\n";
+
+#3: 配列の要素にアクセスする。( $array_ref->[ 要素番号 ] )
+print "\$numbers_ref2->[0] = $numbers_ref2->[0]\n";
+print "\$numbers_ref2->[1] = $numbers_ref2->[1]\n";
+</pre>
+
+実行結果
+<pre>
+配列 : @numbers = (1,2,3,4,5,6,7,8)
+
+配列 : @$numbers_ref1 = (1,2,3,4,5,6,7,8)
+配列 : $numbers_ref2 = [1,2,3,4]
+
+$numbers_ref2->[0] = 1
+$numbers_ref2->[1] = 2
+</pre>
+
+<h4>配列と配列のリファレンスの比較のサンプル</h4>
+
+配列と配列のリファレンスがどう違うかが見ることができるサンプルプログラムです。
+
+<pre>
+use strict;
+use warnings;
+
+my @numbers = (1, 2, 3);
+print "配列 : \@numbers = (" , join(',', @numbers), ")\n\n";
+
+my $numbers_ref = [1, 2, 3];
+
+# 1. 要素の参照
+print "1. 要素の参照\n";
+print "\$numbers[0] = ", $numbers[0], "\n";
+
+# 配列のリファレンス
+print "\$numbers_ref->[0] = ", $numbers_ref->[0], "\n";
+print "\n";
+
+# 2. 各要素の処理
+print "2. 各要素の処理\n";
+
+# 配列
+print "\@numbers = "  ;
+for my $number (@numbers) {
+  print $number . "," ;
+}
+print "\n";
+
+# 配列のリファレンス( for文に、デリファレンスしてわたす)
+print "\@{ \$numbers_ref } = ";
+for my $number (@$numbers_ref){
+  print $number . ","
+}
+print "\n\n";
+
+# 3. 関数の使い方
+print "3. 関数の使い方\n";
+
+# 配列
+push @numbers, 4;
+@numbers = sort { $b <=> $a } @numbers;
+print "\@numbers = (" , join(',', @numbers),")\n";
+
+# 配列のリファレンス(デリファレンスして関数に渡す)
+push @$numbers_ref, 4;
+
+# sort関数は、配列を返すので、無名配列[ ]を使って
+# 配列のリファレンスを再作成している。
+$numbers_ref = [sort { $b <=> $a } @$numbers_ref]; 
+print "\@\$numbers_ref = (" , join(',', @$numbers_ref),")\n\n";
+</pre>
+
+実行結果
+
+<pre>
+配列 : @numbers = (1,2,3)
+
+1. 要素の参照
+$numbers[0] = 1
+$numbers_ref->[0] = 1
+
+2. 各要素の処理
+@numbers = 1,2,3,
+@{ $numbers_ref } = 1,2,3,
+
+3. 関数の使い方
+@numbers = (4,3,2,1)
+@$numbers_ref = (4,3,2,1)
+</pre>
+
+<h3>コラム「動的配列を言語機能に組み入れたPerl」</h3>
+
+Perlに言語機能として組み込まれている配列は、自由に値を追加したり、削除したりできるので、動的配列と呼ばれます。
+
+Perlは言語機能として、動的配列を言語に組み入れる素晴らしい決定をした。配列を自由に扱えるとても便利なアイデアだ。これは大成功で、後発のほとんどのスクリプト言語は動的配列を言語に組み入れている。
+
+言語学者ラリーウォールが作成したアイデアの宝庫としてのPerlは今でも生きている。
+

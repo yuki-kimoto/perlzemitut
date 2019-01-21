@@ -1,0 +1,78 @@
+<h2 class="title">time関数 - エポックから現在までの経過秒数を取得</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+        <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<b>time関数</b>を使用すると、エポックから現在までの経過秒数を取得することができます。エポックとは時刻の基準となるある時点のことです。多くのシステムでは、協定世界時の 1970年1月1日0時0分0秒00:00:00がエポックとなります。
+
+<pre>
+my $sec_from_epoch = time;
+</pre>
+
+time関数を使用するとエポックから数えた秒数を取得することができます。この秒数はうるう秒が考慮されていないので実際の時刻と少しの誤差があります。(うるう秒とは毎年地球の自転が遅れるために数年に一度時刻の調整のために挿入される秒のことです。)
+
+日付・時刻に関する一般的な情報については、以下を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20161123147990.html">Perlで日付・時刻を扱う</a>
+  </li>
+</ul>
+
+<h4>エポックとは</h4>
+
+エポックとは時刻の基準となるある時点のことです。多くのシステムでは、協定世界時の 1970年1月1日0時0分0秒00:00:00がエポックとなります。
+
+<h4>時刻の範囲</h4>
+
+32bitのマシンにおいてはエポックを基準として、-2,147,483,648秒～2,147,483,647秒までの時刻を表現することができます。
+
+日付に直すと（協定世界時で)1901年12月13日(金)20時45分52秒から2038年1月19日(火)3時14分7秒までとなります。　この範囲を超える時刻の計算はPerlの標準関数では行うことができません。
+
+<h3>time関数のサンプル</h3>
+
+time関数を使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# エポックから現時点までの経過秒数を取得する
+my $sec_from_epoch = time;
+
+print "$sec_from_epoch sec\n";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+        <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">here</span>
+  </li>
+</ol>
+

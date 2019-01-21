@@ -1,0 +1,147 @@
+<h2 class="title">Kent WebのASKA BBSをMojoliciousを使った実装に移植しました。</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+        <span itemprop="name">Mojolicious</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Kent WebのASKA BBSをMojoliciousを使った実装に移植しました。
+
+<q>
+<a href="https://github.com/yuki-kimoto/kent-aska-mojo">ASKA BBS(Mojoliciosu version)</a>
+</q>
+
+もともとのASKA BBSのページとサンプルはこちらです。
+
+<q>
+<a href="http://www.kent-web.com/bbs/aska.html">ASKA BBS</a>
+<a href="http://www.kent-web.com/bbs/aska/aska.cgi">サンプル</a>
+</q>
+
+プログラムの利用規定です。Kent Webのものを引き継いでいます。
+
+<q>
+<a href="http://www.kent-web.com/pubc/kitei.html">プログラム利用規定</a>
+</q>
+移植版のASKA BBSは以下のような特徴があります。
+
+<h3>特徴</h3>
+
+特徴は以下のようになっています。
+
+<ul>
+  <li>
+    WebフレームワークMojoliciousを使った掲示板の実装
+  </li>
+  <li>
+    cpanmが内部的には利用され、ワンコマンドで、セットアップが完了
+  </li>
+  <li>
+    Perl 5.10.1以上であることだけが要件。
+  </li>
+  <li>
+    CGIと組み込みのWebサーバーで実行が可能。たとえば、さくらのレンタルサーバー・スタンダードで動かすことができます。
+  </li>
+</ul>
+ 
+内部実装の具体的な改善は以下のとおりです。
+
+<ul>
+  <li>
+    WebフレームワークとしてMojoliciousを利用。 
+  </li>
+  <li>
+    -HTTPリクエスの解析、パラーメータの受け取り、クッキーの取得処理
+  </li>
+  <li>
+    -URLのルーティングの改善、テンプレートの記述を改善、ヘッダ、フッタを部品に
+  </li>
+  <li>
+    グローバルなファイルハンドルは利用せずに、レキシカル変数を使用
+  </li>
+  <li>
+    必要モジュールのインストールのシステムとしてcpanmを使用
+  </li>
+  <li>
+    Emailの送信にMIME::Liteを使用して簡潔にした
+  </li>
+  <li>
+    ページ送りの処理にData::PageとData::Page::Navigationを利用して簡潔にした。
+  </li>
+  <li>
+    文字コードのエンコードにはEncodeモジュールを使用。JCodeの使用をなくした。
+  </li>
+  <li>
+    データ保存のときのエンコード処理のロジックを共通化して改善
+  </li>
+  <li>
+    CGIに加えて組み込みWebサーバーで起動ができるので、非常に高速でスケーラビリティがある。
+  </li>
+  <li>
+    開発サーバーが利用できるので、開発が非常に楽になった。
+  </li>
+</ul>
+
+<h3>目的</h3>
+
+このプロジェクトの目的は、古きよきPerl/CGIを、現代的な記述で、記述しなおすことです。レンタルサーバーで、簡単に動かすことができる完成されたWebアプリケーションを、現代的な記述することです。
+
+ひとつのサンプルを示すことによって、それをお手本にして書き直すことで、現代的なPerlの記述を覚えることができます。古きよきPerlの記述と比較することで、どのような部分が、簡潔で改善されたのかを理解することができるでしょう。
+
+<h3>改善点の詳細</h3>
+
+このプロジェクトにおけるいくつかの改善点を、もう少し説明しておきます。
+
+<h4>スケーラビリティ</h4>
+
+まずCGIの最大の問題点として、スケーラビリティがないことがあげられます。CGIは、毎回プロセスを起動するので、ある程度のアクセス数が増えてきたところで、パフォーマンスがネックになってきます。
+
+Mojoliciousを使った、今回の実装においては、CGIで利用できますが、パフォーマンスネックがもし現れてきたならば、組み込みサーバーやPlack/PSGI対応サーバーを使って、スケールアップすることができます。
+
+これは、PHPの利点によくにています。まず最初は、PHP/CGIで設置するのですが、もしパフォーマンスネックがあらわれるならば、mod_phpを使って、動かせばスケールアップすることができます。
+
+CGIの欠点は、そう簡単には、スケープアップできないのですが、今回改良されたCGIにおいては、スケープアップを行うことができます。
+
+<h4>CPANの利用</h4>
+
+CPANはPerlとはきっても切り離せない存在です。Perlのライブラリの宝庫であるCPANという存在を利用できることが、Perlの大きな利点のひとつです。
+
+CGIアプリケーションにおいても、CPANを簡単に利用できたら、どんなにうれしいことでしょう。
+
+現代的なPerlにおいては、cpanmというツールとcpanfileという設定ファイルを利用することで、CPANにあるモジュールを簡単に利用することができるのです。
+
+cpanfileの中には、モジュールの一覧を記述しています。そして、これらのモジュールをcpanmというツールを使って、プロジェクトのディレクトリ以下に簡単にインストールすることができます。
+
+このプロジェクトでは、たとえば、MIME::Liteを使って、メール送信の記述を簡略にしたり、Data::Pageというモジュールを使って、ページ送りの記述を簡潔に記述しています。
+
+<h3>文字コードをUTF-8、利用するモジュールをEncodeに</h3>
+
+古きよきPerlの時代は、まだUTF-8が存在していませんでしたから、文字コードといえば、EUC-jpやShift_JISでありました。
+
+そして、文字コードの変換処理といえば、Jcodeでした。
+
+けれども、現代的なPerlの記述においては、文字コードはUTF-8を、文字コードの扱いには、Encodeモジュールを使うのが、もっともよいです。
+
+そうすることで、文字列を統一的に扱うことができますし、正規表現も完全に正しく動きます。
+
+<h3>ルーティングとテンプレートをWebフレームワークで</h3>
+
+ルーティングとテンプレートはMojoliciousというWebフレームワークで行っています。
+
+古きよき時代のPerlにおいては、ルーティングとテンプレートは、コードに、べた書きということも少なくありません。非常に記述が、複雑なものになっていました。
+
+ルーティングとテンプレートをWebフレームワークのものを利用することで、記述が簡潔になっています。
+
+PHPの利点は、HTMLの中にPHPの記述をかけることですが、Mojoliciousのテンプレートを利用すれば、HTMLの中にPerlの記述を行うことができます。
+
+ぜひコードを読んで、古きよきPerlと、現代的なPerlの差について、学んでみてください。
+

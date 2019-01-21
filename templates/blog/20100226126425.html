@@ -1,0 +1,77 @@
+<h2 class="title">Pod::Usage - PODドキュメントの出力</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>Pod::Usage</strong>はPODドキュメントの出力するためのモジュールです。ドキュメントを表示してプログラムを終了させる<strong>pod2usage</strong>という関数を使用することができます。
+
+関数を使用する場合は明示的にインポートするのがよいでしょう。
+
+<pre>
+# 関数のインポート
+use Pod::Usage 'pod2usage';
+</pre>
+
+pod2usageのもっとも基本的な使い方のサンプルです。ドキュメントの中の「SYNOPSIS」という項目を表示してプログラムを終了します。
+
+<pre>
+# Pod::Usageのもっとも基本的な使い方
+
+=head1 SYNOPSIS
+
+script.pl FILE
+
+=cut
+
+use Pod::Usage 'pod2usage';
+
+# コマンドライン引数
+my $file = shift;
+
+# 引数がない場合はSYNOPSISを表示してプログラムを終了
+pod2usage() unless $file;
+</pre>
+
+<a href="/blog/20080108132865.html">コマンドライン引数</a>がなかった場合は次のように表示されプログラムは終了します。
+
+<pre>
+Usage:
+    script.pl FILE
+</pre>
+
+Pod::UsageとGetopt::Longを組み合わせたサンプルです。
+<pre>
+# Pod::UsageとGetopt::Longを組み合わせる
+
+=head1 SYNOPSIS
+
+script.pl [--force] FILE
+
+=cut
+
+use Pod::Usage 'pod2usage';
+use Getopt::Long 'GetOptions';
+
+# コマンドラインオプションの解析
+my $force;
+GetOptions('force' => \$force) or pod2usage;
+
+my $file = shift;
+pod2usage unless $file;
+</pre>
+

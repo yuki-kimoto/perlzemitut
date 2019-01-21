@@ -1,0 +1,147 @@
+<h2 class="title">Time::Local - 時刻情報をエポック秒に変換</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+Time::Localモジュールは<a href="/blog/20081009122357.html">localtime関数</a>、<a href="/blog/20081010122376.html">gmtime関数</a>とは逆向きの日付・時刻の変換を行うためのモジュールです。
+
+日付と時刻(ローカル時間)をエポック秒に変換するには<strong>Time::Local</strong>モジュールの<strong>timelocal関数</strong>を使用します。
+
+<pre>
+use Time::Local 'timelocal';
+my $sec_from_epoch = timelocal($sec, $min, $hour, $mday, $month, $year);
+</pre>
+
+日付と時刻(協定世界時)をエポック秒に変換するにはTime::Localモジュールのtimegm関数を使用します。
+
+<pre>
+my $sec_from_epoch = timegm($sec, $min, $hour, $mday, $month, $year);
+</pre>
+
+日付・時刻に関する一般的な情報については、以下を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20161123147990.html">Perlで日付・時刻を扱う</a>
+  </li>
+</ul>
+
+<h3>Time::Localのサンプル</h3>
+
+Time::Localモジュールのサンプルです。
+
+<h4>日付と時刻(ローカル時間)をエポック秒に変換するサンプルです。</h4>
+
+<pre>
+use strict;
+use warnings;
+
+use Time::Local 'timelocal';
+
+print "(1)日付と時刻(ローカル時間)をエポック秒に変換する。\n";
+my $sec = 10;
+my $min = 30;
+my $hour = 12;
+my $mday = 1;
+
+# 1月は0、2月は1 のようになるので1を引く。
+my $month = 10 -1;
+
+# Perlでは年は1900年からの日数で扱うので1900を引く
+my $year = 2000 - 1900;
+
+my $sec_from_epoch = timelocal($sec, $min, $hour, $mday, $month, $year);
+print $sec_from_epoch;
+</pre>
+
+<h4>日付と時刻(ローカル時間)をエポック秒に変換する</h4>
+
+<pre>
+my $sec = 10;
+my $min = 30;
+my $hour = 12;
+my $mday = 1;
+
+# 1月は0、2月は1 のようになるので1を引く。
+my $month = 10 -1;
+
+# Perlでは年は1900年からの日数で扱うので1900を引く
+my $year = 2000 - 1900;
+
+my $sec_from_epoch = timelocal($sec, $min, $hour, $mday, $month, $year);
+</pre>
+
+日付と時刻(ローカル時間)をエポック秒に変換するにはTime::Localモジュールのtimelocal関数を使用します。
+
+timelocal関数は組み込み関数のlocaltimeとまったく逆の変換を行います。　timelocal関数に渡す引数は、localtime行われる変換規則と同じである必要があります。
+
+月は0から始まるので、実際の月から1を引いた値を用いる必要があります。年は1900年からの年数なので1900を引く必要があります。
+
+また日付と時刻(協定世界時)をエポック秒に変換するには、Time::Localモジュールのtimegm関数を使用します。
+
+<h4>timegm関数を使ったサンプル</h4>
+
+<pre>
+use strict;
+use warnings;
+
+use Time::Local 'timegm';
+
+print "(1)日付と時刻(協定世界時)をエポック秒に変換する。\n";
+my $sec = 10;
+my $min = 30;
+my $hour = 12;
+my $mday = 1;
+
+# 1月は0、2月は1 のようになるので1を引く。
+my $month = 10 - 1;
+
+# Perlでは年は1900年からの日数で扱うので1900を引く
+my $year = 2000 - 1900;
+
+my $sec_from_epoch = timegm($sec, $min, $hour, $mday, $month, $year);
+print $sec_from_epoch;
+</pre>
+
+<h4>日付と時刻(協定世界時)をエポック秒に変換する。</h4>
+
+<pre>
+use Time::Local 'timegm';
+
+my $sec = 10;
+my $min = 30;
+my $hour = 12;
+my $mday = 1;
+
+# 1月は0、2月は1 のようになるので1を引く。
+my $month = 10 - 1;
+
+# Perlでは年は1900年からの日数で扱うので1900を引く
+my $year = 2000 - 1900;
+
+my $sec_from_epoch = timegm($sec, $min, $hour, $mday, $month, $year);
+</pre>
+
+日付と時刻(協定世界時)をエポック秒に変換するには、timegm関数を使用します。
+
+timegm関数は組み込み関数のgmtimeとまったく逆の変換を行います。timegm関数に渡す引数は、gmtime行われる変換規則と同じである必要があります。
+
+月は0から始まるので、実際の月から1を引いた値を用いる必要があります。年は1900年からの年数なので1900を引く必要があります。
+
+また日付と時刻(ローカル時間)をエポック秒に変換するには、Time::Localモジュールのtimelocal関数を使用します。
+

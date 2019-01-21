@@ -1,0 +1,425 @@
+<h2 class="title">sprintf関数 - 文字列の書式指定</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>sprintf関数</strong>を使用すると書式指定した<a href="/blog/20161003147558.html">文字列</a>を作成することができます。<a href="/blog/20161026147748.html">数値</a>の左側を0で埋めて出力したい場合や、浮動小数点の少数の桁数を指定したい場合などに、sprintf関数を使うと便利です。
+
+<pre>
+my $str = sprintf("%08d", $num1);
+my $str = sprintf("%.2f", $num2);
+my $str = sprintf("aiueo%08daiueo%.2f", $num1, $num2);
+</pre>
+
+数値や文字列をある規則にしたがって出力したい場合があります。たとえば、足りない部分を空白で埋めた固定長の文字列を作成したい場合 "18&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" のようにわざわざ空白を作っておくのは面倒です。
+
+sprintf関数で書式指定を行えば、 "18" を "18&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" のように変換できます。
+
+またたとえば足りない部分を0で埋めた数値を出力することもできます。 18 を '00000018' にすることができます。
+
+小数点をある桁で丸めて出力することもできます。 12.3456 を 小数点第一位で丸めて '12.3' にできます。
+
+<h3>書式指定の記述方法</h3>
+
+<pre>
+my $str = sprintf("%08d", $num1);
+my $str = sprintf("%.2f", $num2);
+my $str = sprintf("aiueo%08daiueo%.2f", $num1, $num2);
+</pre>
+
+書式指定は%で始まります。最後は d や f などの決められた英数字で終わります。dは第2引数を整数として解釈するという意味で、fは浮動小数点として解釈するという意味です。
+
+% と 英文字 の間にはどのような書式で文字列を作成するかということを指定します。"%08d"は「$num1を整数として解釈して8文字に満たない場合は0で埋める」と読みます。"%.2f"は「$num2を浮動小数点として解釈して小数点以下2桁で丸める」と読みます。
+
+<h3>sprintf関数の書式指定子一覧</h3>
+
+sprintf関数には書式を設定するさまざまな指定子が存在します。一覧を作成しました。
+
+<h4>%c</h4>
+
+%cはASCII文字コードに対応する文字に変換するフォーマット指定子です。
+
+<h4>%s</h4>
+
+%sは引数を文字列として解釈するフォーマット指定子です。'002'のように先頭に0がついている場合は、そのまま文字列として'002'になります。
+
+<h4>%d</h4>
+
+%dは引数を符号付整数として解釈します。たとえば'0003'を渡した場合は、数値としてみれば 3であるので 3 に変換されます。
+
+<h4>%u</h4>
+
+%uは引数を正の整数として解釈します。
+
+<h4>%o</h4>
+
+%oは引数を正の整数として解釈して8進文字列に変換します。
+
+<h4>%x %X</h4>
+
+%xは引数を正の整数として解釈して16進文字列に変換します。%xの場合は表記が小文字に、%Xの場合は表記が大文字になります。
+
+<h4>%b</h4>
+
+%bは引数を正の整数として解釈して2進文字列に変換します。
+
+<h4>%f</h4>
+
+%fは引数を浮動小数点として解釈します。
+
+<h4> %e %E</h4>
+
+%eは%fと同じですが、指数表記にフォーマットしてくれます。%eの場合は表記が小文字に、%Eの場合は表記が大文字になります。
+
+<h4>%g %G</h4>
+
+%gは引数を浮動小数点として解釈して %e か %f にフォーマットします。小数点以下が短い場合などは、%fのフォーマットに、長い場合は%eのフォーマットになったりします。
+
+また、%gは%f,%e と異なり末尾の余分な0はつきません。
+
+<h4>%p</h4>
+
+%pで引数で与えられた変数のメモリ上のアドレスを16進表記で取得できます。
+
+<h3>固定長文字列にフォーマットする</h3>
+
+<strong>sprintf</strong>関数で<strong>固定長文字列</strong>にフォーマットするには以下の例のような書式指定を使います。
+
+<table>
+  <tr>
+    <td>
+      %5s
+    </td>
+    <td>
+      右詰めスペース埋め
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %-5s
+    </td>
+    <td>
+      左詰めスペース埋め
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %0s
+    </td>
+    <td>
+      0埋め
+    </td>
+  </tr>
+
+</table>
+
+sprintf関数で固定長文字列にフォーマットするには、%に続けて数値を記述します。%5s のように書きます。
+
+デフォルトでは右詰めのスペース埋めになります。左詰めにするためには、数値の前にマイナス(-)をつけて%-5sのようにします。足りない部分を0で埋めるには、%05sのように記述します。
+
+フォーマット後の文字列が指定した文字列超を越える場合は、切り詰められることはされず指定が無視されます。
+
+<h3>2進数、8進数、16進数を進数表記でフォーマットする</h3>
+
+2進数、8進数、16進数を数値リテラルとして表現するときに、0b, 0, 0X をつけて表現しました。2進数、8進数、16進数をこの表現にフォーマットするには、# 記号を使います。
+
+<pre>
+sprintf("1: %#o", 8);
+sprintf("2: %#x", 255);
+sprintf("3: %#X", 255);
+sprintf("4: %#b", 4); 
+</pre>
+
+進数表記でフォーマットするには、#を使用します。
+
+他のフォーマットと組み合わせることもできます。
+
+<pre>
+# 10進数を8進数に変換 左詰でスペース埋め
+$formated[5]  = sprintf("1: <%-#5o>", 8);
+</pre>
+
+# というのはフォーマット指定の中で「フラグ」と呼ばれるものに分類されます。- も「フラグ」に分類されます。5は「文字列幅」と呼ばれるものに分類されます。
+
+「フラグ」どうしの順序はどんな順序でもかまいませんが、「フラグ」は「文字列幅」よりも前にくる必要があります。
+
+<pre>
+"%-#5o" # OK
+"%#-5o" # OK
+"%5-#o" # 駄目
+</pre>
+
+<h3>小数点以下のけた数で精度を指定する</h3>
+
+sprintf関数を使って小数点以下の桁数で精度を指定するには、フォーマット指定子 %f と .5 .10 のような「精度」の表記を使用します。
+
+<pre>
+# 小数点以下3位
+$formated[1] = sprintf("%.3f", 0.45674);
+</pre>
+
+小数点以下の桁数で精度を指定するには、引数を浮動少数点として解釈するフォーマット指定子 %f と .5 .10 のような「精度」の表記を使用します。.3 とすると小数点以下第3位で丸められます。
+
+他のフォーマットと組み合わせることもできます。
+
+<pre>
+# 左詰スペース埋めの文字幅10で小数点以下3位に丸める
+$formated[2]  = sprintf("<%-10.3f>", 0.45674);
+</pre>
+
+<ul>
+  <li>
+     は「フラグ」と呼ばれるものに分類されます。10 は「文字列幅」と呼ばれるものに分類されます。.3 は「精度」と呼ばれるものに分類されます。fは公式に名前はないようですがここでは、フォーマット指定子と呼んでいます。
+  </li>
+</ul>
+
+フォーマット指定の順番は、
+
+<pre>
+% フラグ 文字列幅 精度 フォーマット指定子
+</pre>
+
+である必要があります。「フラグ」「文字列」「精度」はフォーマット指定のオプションになっていて必要に応じて指定します。
+
+<h3>有効桁数で精度を指定する</h3>
+
+sprintf関数を使って有効桁数で精度を指定するには、フォーマット指定子 %g と .5 .10 のような「精度」の表記を使用します。
+
+<pre>
+# 有効桁3桁
+my $formated = sprintf("%.3g", 45.674);
+</pre>
+
+小数点以下の桁数で精度を指定するには、引数を浮動少数点として解釈するフォーマット指定子 %g と .5 .10 のような「精度」の表記を使用します。%.3g とすると有効桁３けたで丸められます。
+
+<h3>sprintf関数のサンプル</h3>
+
+sprintf関数のサンプルです。
+
+<h4>sprintfの簡単なサンプル</h4>
+
+sprintf関数の簡単なサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my $num1 = 3;
+
+# 8桁で足りない部分は0で埋める
+my $formated1 = sprintf("%08d", $num1); 
+print $formated1 . "\n\n";
+
+# 小数点以下2桁に丸める
+my $num2 = 3.1415;
+my $formated2 = sprintf("%.2f", $num2);
+print $formated2 . "\n\n";
+
+# 複数の引数を指定する
+my $formated3 = sprintf("aiueo%08daiueo%.2f", $num1, $num2);
+print $formated3 . "\n";
+</pre>
+
+<h4>さまざまな書式指定のサンプル</h4>
+
+さまざまな書式指定のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+print "(1)書式指定子一覧\n";
+my @formated;
+
+# 65 はASCIIコードで 'A'
+$formated[1]  = sprintf("1: %c", 65);
+
+# 文字列として解釈
+$formated[2]  = sprintf("2: %s", '00002');
+
+# 符号付整数として解釈 
+$formated[3]  = sprintf("3: %d", '-00002');
+
+# 符号なし整数として解釈
+$formated[4]  = sprintf("4: %u", '00002');
+
+# 10進数を8進数に変換
+$formated[5]  = sprintf("5: %o", 8);
+
+# 10進数を16進数に変換(小文字表記)
+$formated[6]  = sprintf("6: %x", 255);
+
+# 10進数を16進数に変換(大文字表記)
+$formated[7]  = sprintf("7: %X", 255);
+
+# 10進数を2進数に変換 
+$formated[8]  = sprintf("8: %b", 4);
+
+# 浮動少数点として解釈
+$formated[9]  = sprintf("9: %f", 0.00004560);
+
+# 浮動小数点として解釈
+# (指数表記小文字)
+$formated[10] = sprintf("10: %e",0.00004560);
+
+# 浮動小数点として解釈
+# (指数表記大文字)
+$formated[11] = sprintf("11: %E",0.00004560);
+
+# 浮動小数点として解釈
+# (末尾0は削除される)
+$formated[12] = sprintf("12: %g", 0.00004560);
+
+# 浮動小数点として解釈
+# (末尾の0は削除される。大文字)
+$formated[13] = sprintf("13: %G", 0.00004560);
+
+# $num のメモリ上のアドレス
+my $num = 3;                                              
+$formated[14] = sprintf("14: %p", $num); 
+
+for my $i (1 .. 14) {
+  print $formated[$i] . "\n"; 
+}
+</pre>
+
+<h4>固定長文字列にフォーマットする</h4>
+
+sprintf関数を使って固定長文字列にフォーマットするサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+print "(1)固定長文字列にフォーマットする。\n";
+my @formated;
+
+# 右詰めスペース埋め
+$formated[1] = sprintf("1: %5s", 1);
+
+# 左詰めスペース埋め
+$formated[2] = sprintf("2: %-5s", 1);
+
+# 0埋め
+$formated[3] = sprintf("3: %05s", 1);
+
+# 指定した文字の長さを超える場合は無視される
+$formated[4] = sprintf("4: %5d", 123456);
+
+# %s以外でもOK。
+$formated[5] = sprintf("5: %5d", 1);
+
+# %s以外でもOK。
+$formated[6] = sprintf("6: %5g", 1.23);
+
+for my $i (1 .. 6) {
+  print $formated[$i] . "\n"; 
+}
+</pre>
+
+<h4>2進数、8進数、16進数を進数表記でフォーマット</h4>
+
+sprintfで2進数、8進数、16進数を進数表記でフォーマットするサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+print "(1)2進数、8進数、16進数を進数表\記でフォーマットする\n";
+my @formated;
+
+# 10進数を8進数に変換
+$formated[1]  = sprintf("1: %#o", 8);
+
+# 10進数を16進数に変換(小文字表記)
+$formated[2]  = sprintf("2: %#x", 255);
+
+# 10進数を16進数に変換(大文字表記)
+$formated[3]  = sprintf("3: %#X", 255);
+
+# 10進数を2進数に変換
+$formated[4]  = sprintf("4: %#b", 4); 
+
+for my $i (1 .. 4) {
+  print $formated[$i] . "\n";
+}
+print "\n";
+
+# 10進数を8進数に変換 左詰でスペース埋め
+print "(2)他のフォーマットと組み合わせる。\n";
+$formated[5]  = sprintf("1: <%-#5o>", 8);
+
+print $formated[5] . "\n";
+</pre>
+
+<h4>小数点以下のけた数で精度を指定</h4>
+
+小数点以下のけた数で精度を指定するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+printf "(1)小数点以下のけた数で精度を指定する。\n";
+my @formated;
+# 小数点以下3位までの精度で
+# フォーマットする。
+$formated[1] = sprintf("%.3f", 0.45674);
+print $formated[1] . "\n\n";
+
+# 左詰スペース埋めの文字幅10で小数点以下3位に丸める
+print "(2)他のフォーマットと組み合わせる。\n";
+$formated[2]  = sprintf("<%-10.3f>", 0.45674);
+print $formated[2] . "\n";
+</pre>
+
+<h4>有効桁数で精度を指定</h4>
+
+有効桁数で精度を指定するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+printf "(1)有効桁数で精度を指定する。\n";
+
+# 有効桁3桁の精度でフォーマットする。
+my $formated = sprintf("%.3g", 45.674);
+print $formated . "\n";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

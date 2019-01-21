@@ -1,0 +1,53 @@
+<h2 class="title">Storable - データをシリアライズ化する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>Storable</strong>モジュールを使用すると、データをシリアライズ化することができます。シリアライズ化というのはPerlのデータ構造を外部に保存できる形式に変換することをいいます。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use Storable qw/freeze thaw/;
+</pre>
+
+データをシリアライズ化するには<strong>freeze</strong>関数を使用します。
+
+<pre>
+# データをシリアライズ化する
+my $data = [
+  {name => 'Ken',  age => 19},
+  {name => 'Taro', age => 20}
+];
+my $serialized_data = freeze $data;
+</pre>
+
+シリアライズ化されたデータを元に戻すには<strong>thaw</strong>関数を使用します。
+
+<pre>
+# シリアライズ化されたデータを復元する
+my $data = thaw $serialized_data;
+</pre>
+
+<h3>Storableモジュールに関するFAQ</h3>
+
+Q. nfreeze関数というものを見かけたのですが、freeze関数と何が異なりますか。
+A. nfreeze関数を使用すると、OSに依存しない形でデータをシリアライズ化することができます。たとえばあるOSでfreeze関数でシリアライズ化したデータをデータベースサーバに保存したとします。他のOSがデータベースサーバからシリアライズ化されたデータを取り出した場合、thawで復元することはできません。このような場合はnfreezeでシリアライズ化する必要があります。
+
+Q. Perlのデータ構造をJSONで保存する場合と比較して利点と欠点を教えてください。
+A. 利点になるのはパフォーマンスです。StorableはJSONやData::Dumperに比べて高速です。欠点はそのデータはPerlのthawでしか復元できないということです。またPerlのバージョンが仮に上がってバイナリ互換性が失われた場合は、バージョンがアップしたPerlのthawでは復元できない可能性もあります。ですのでStorableでシリアライズ化するデータは一時的なデータに限るのがよいでしょう。
+

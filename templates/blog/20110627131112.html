@@ -1,0 +1,54 @@
+<h2 class="title">Text::CSV::Encoded - 日本語を含んだCSVファイルを扱う</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">Text::CSV::Encoded</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+日本語を含んだCSVファイルを扱うには<strong>Text::CSV::Encoded</strong>モジュールを使用します。以下にCSVを処理するサンプルを示します。スクリプトはUTF-8で保存します。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+use Text::CSV::Encoded;
+
+my $file = shift;
+
+my $encoding = 'UTF-8';
+my $csv = Text::CSV::Encoded->new({
+  encoding_in => $encoding,
+  encoding_out => $encoding
+});
+
+open my $fh, "<", $file
+  or die "Can't open $file: $!";
+
+while (my $fields = $csv->getline($fh)) {
+
+  # データの編集(ここでは最初のフィールドに編集という文字をくっつける)
+  $fields->[0] .= '編集';
+  
+  # フィールドのデータを出力
+  $csv->print(*STDOUT, $fields);
+  
+  # 改行を出力
+  print "\n";
+}
+</pre>
+

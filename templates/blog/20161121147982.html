@@ -1,0 +1,108 @@
+<h2 class="title">ワンライナー</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+
+        <span itemprop="name">ワンライナー</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Perlでは、コマンドラインからPerlのスクリプトを実行することができるワンライナーという機能があります。WindowsではLinuxのような便利なコマンドがないので、Perlのワンライナーを使えば、似たようなことも可能です。Perlでよく利用するワンライナーを紹介します。
+
+<h3>ワンライナーとは</h3>
+
+コマンドラインから直接実行できる1行Perlスクリプトのこと
+
+<h4>-e</h4>
+
+-eを指定すると、その後に続くPerlスクリプトが直接実行される。
+
+<h4>-n</h4>
+
+-nを指定すると、その後に続くPerlスクリプトが、while(<>){ }で囲まれたものになる。
+
+<h4>ワンライナー解説</h4>
+
+<pre>
+perl -ne "print if( /search/ )" inputfile.txt > outputfile.txt
+</pre>
+
+この文は以下の、1,2 と同じ。
+
+<h4>1: grep.pl</h4>
+
+<pre>
+# 引数で与えられたファイルの各行が、<>に渡される。
+# <>で受け取った各行は、ループのなかで、$_に渡される。
+# 正規表現//には、$_が暗黙的に利用される
+# printの引数には、暗黙的に$_が利用される。 
+while (<>) {         
+  print if /search/;                   
+}
+</pre>
+
+<h4>2: 実行</h4>
+
+<pre>
+perl grep.pl inputfile.txt > outputfile.txt
+</pre>
+
+<h3>Perlでgrepする 指定した文字列を含む行を抽出</h3>
+
+ ワンライナーという機能を使ってPerlで指定した文字列を含む行を抽出してみます。
+
+<h4>grepを実現するワンライナー(コマンドプロンプトから使う)</h4>
+
+<pre>
+perl -ne "print if ( /search/ )" inputfile.txt > outputfile.txt
+</pre>
+
+<h4>inputfile.txt</h4>
+
+<pre>
+search1
+kjhkh
+search2
+lkjlkjl
+oiuyyiu
+search3
+</pre>
+
+<h3>Windowsのコマンドプロンプトでcatする</h3>
+
+今回はWindowsでLinuxのcatと同じことをするためのワンライナーを紹介します。catコマンドはファイルの内容を結合することができるコマンドです。コマンドプロンプトでcatをするには以下のようにします。
+
+<pre>
+perl -ne "print" file1 file2 file3 > output.txt
+</pre>
+
+ファイルの内容を結合することができました。
+

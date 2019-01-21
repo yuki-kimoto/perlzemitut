@@ -1,0 +1,51 @@
+<h2 class="title">Mojolicious::Liteでルートの一覧を確認する</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+<strong>ルート</strong>の定義が増えてくるとどのようなルートが存在するのかが一望できなくなってきます。そのようなときにどのようなルートが存在するかを確認するのに「routes」コマンドを利用することができます。
+
+<pre>
+perl myapp.pl routes
+</pre>
+
+すると次のようにルートの一覧を見ることができます。
+<pre>
+/              (?-xism:^(?:/)?)
+/hello/:date   (?-xism:^/hello/([^\/\.]+))
+</pre>
+

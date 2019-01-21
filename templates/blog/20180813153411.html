@@ -1,0 +1,69 @@
+<h2 class="title">Unix/LinuxへのPerlのインストール</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Unix/Linux環境には、すでにPerlがインストールされてることが多いです。
+
+以下のコマンドでPerlがインストールされているか確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+存在する場合はすぐにPerlを使い始めることができます。
+
+ない場合は、Unix/Linuxディストリビューションの標準のPerlをインストールすることができます。
+
+あるいは、ユーザー環境にPerlをインストールすることもできます。
+
+<h4>Unix/Linuxディストリビューションの標準のPerlをインストールする</h4>
+
+rootユーザー権限で以下のコマンドを実行しましょう。ディストリビューションごとに、コマンドが異なるので、自分の環境にあったコマンドを実行してみてください。
+
+<pre>
+# RedHatでのPerlのインストール
+yum install perl
+
+# Cent OSでのPerlのインストール
+yum install perl
+
+# DebianでのPerlのインストール
+apt-get install perl
+
+# UbuntuでのPerlのインストール
+apt-get install perl
+
+# FreeBSDでのPerlのインストール
+pkg_add -r perl
+</pre>
+
+<h4>ユーザー環境へのPerlのインストール</h4>
+
+自分のユーザー環境にPerlをインストールしたい場合はperlbrewあるいはplenvというツールを使うことができます。
+
+ルート権限が必要ないので、インストールは簡単で、OSの環境を汚しません。最新のPerlをインストールして使うことができます。
+
+本番環境のWebサービスでPerlを実行する場合は、この方法が2018年現在は主流となっています。
+
+perlbrewとplenvはどちらも、似ているツールで、ユーザー環境にPerlをインストールするためのツールです。お好みで選択してください。
+
+<ul>
+  <li>
+    <a href="/blog/20110220130464.html">perlbrew - ユーザー環境にPerlをインストールする</a>
+  </li>
+  <li>
+    plenv - ユーザー環境にPerlをインストールする(準備中)
+  </li>
+</ul>
+

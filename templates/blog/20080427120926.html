@@ -1,0 +1,90 @@
+<h2 class="title">__FILE__ - スクリプトのファイル名を取得する</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+スクリプトのファイル名を取得するには<strong>__FILE__</strong>を使用します。
+
+<pre>
+__FILE__
+</pre>
+
+ファイルをスクリプトとして読み込むと、プログラムはプロセス空間のメモリ上に展開されるのですが、展開する前のファイル名を、Perlは覚えておいてくれます。
+
+<h3>サンプル</h3>
+
+スクリプトのファイル名を取得するサンプルです。
+
+<pre>
+# ファイル名の取得 __FILE__
+print "1: ファイル名を取得する。(__FILE__)\n";
+print "このファイル名は\n" .
+  __FILE__ . "\n" .
+  "です。\n\n";
+
+print "2: 読み込んだファイルの名前を取得する。\n";
+# doで,別ファイルを、このプログラムのプロセス空間のメモリ上に読み込む。
+do "SomeModule.pm"; 
+
+print "読み込んだファイル名は\n",
+  SomeModule::this_file_name(), "\n",
+  "です。\n\n";
+
+print '3: 実行されているスクリプト名($0)とは違います。' . "\n";
+print "実行されているスクリプト名は、\n",
+  SomeModule::this_script_name(), "\n",
+  "です。\n";
+</pre>
+
+<h4>SomeModule.pm ( 上のサンプルスクリプトと同一ディレクトリに置きます。）</h4>
+
+<pre>
+package SomeModule;
+
+use strict;
+use warnings;
+
+sub this_file_name{
+  return __FILE__;
+}
+
+sub this_script_name{
+  return $0;
+}
+
+1;
+
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

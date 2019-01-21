@@ -1,0 +1,86 @@
+<h2 class="title">File::Spec - OSに依存しないファイル名を作成</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>File::Spec</strong>モジュールを使用すると、ファイル名に対して移植性のある処理を行うことができます。たとえばOS固有のファイル名の区切り文字を使ってファイル名を作成したりすることができます。
+
+<pre>
+# モジュールの読み込み
+use File::Spec;
+</pre>
+
+File::Specのメソッドはクラスメソッドとして実装されており次の形式で呼び出します。
+
+<pre>
+# クラスメソッド呼び出し
+File::Spec->$method;
+</pre>
+
+<h3>メソッド</h3>
+
+<h4>catfile</h4>
+
+個々のパーツからファイル名を作成するにはcatfileを使用します。$fileはWindowsの場合は「xxx\yyy\zzz」、Unixの場合は「xxx/yyy/zzz」になります。OS固有の区切り文字がファイル名の作成に使用されます。
+
+<pre>
+# ファイル名の作成
+my $file = File::Spec->catfile('xxx', 'yyy', 'zzz');
+</pre>
+
+またディレクトリ名とファイル名を連結するのに利用できます。ディレクトリ名の末尾に「/」や「\」などの区切り文字が存在しているかどうかを意識する必要がありません。
+
+<pre>
+# ディレクトリ名とファイル名を連結
+my $dir = 'xxx/yyy/';
+my $file = 'zzz';
+
+my $file_abs = File::Spec->catfile($dir, $file);
+</pre>
+
+<h4>splitdir</h4>
+
+ファイル名を個々のパーツに分解するにはsplitdirを使用します。@partsは('xxx', 'yyy', 'zzz')になります。
+
+<pre>
+# ファイル名を分解
+my @parts = File::Spec->splitdir('xxx/yyy/zzz');
+</pre>
+
+<h4>File::Specのテクニック</h4>
+
+Windows上でも区切り文字「/」でファイル名を作成したい場合があります。これを実現するにはFile::Spec::UnixをFile::Specの代わりに使用します。
+
+<pre>
+# ファイル名を「/」で連結
+use File::Spec::Unix;
+my $file = File::Spec::Unix->catfile('xxx', 'yyy', 'zzz');
+</pre>
+
+<h3>補足</h3>
+
+標準関数のopen関数等はUnixの区切り文字「/」でも、Windowsの区切り文字「\」でも正しく動作します。ですので単にファイルオープンをすることが目的であればUnixの区切り文字をWindowsの区切り文字に変換する必要はありません。
+
+<h3>関連記事</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20080516121095.html">OSに依存しないファイル名を作成する</a>
+  </li>
+</ul>
+

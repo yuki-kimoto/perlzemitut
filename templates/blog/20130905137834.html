@@ -1,0 +1,208 @@
+<h2 class="title">TaskDealをリリースしました。 - 複数代マシンへの設定の反映。Perl製のRuby Chefの代替ツール。</h2>
+
+開発していたTaskDealの0.01をリリースしました。メジャーリリースです。Perl製のツールなので簡単にインストールでき、Webブラウザの画面から、複数マシンに環境設定を反映することができます。複数のマシンに、ひとつのコマンドを一度に送信することが可能です。
+
+<img src="http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2013081220130812143922_original.png?1376285992" width="700">
+
+<h3>サンプル</h3>
+
+以下からTaskDealを試してみることができます。安全のために、echoコマンドだけを実行できるようにしてあります。ehocコマンドは単なるシェルです。
+
+<q>
+<a href="http://perlcodesample.com:10040/">TaskDealのサンプル</a>
+(ID admin, パスワードtest)
+</q>
+
+<h3>リポジトリ</h3>
+
+<q>
+<a href="https://github.com/yuki-kimoto/taskdeal">リポジトリ</a>
+</q>
+
+<h3>特徴</h3>
+
+TaskDealには以下のような特徴があります。
+
+<ul>
+  <li>
+    複数のマシンに対して、Webブラウザの画面からコマンドを実行できます。
+  </li>
+  <li>
+    WebSocketを使ってクライアント(対象マシン側)とサーバー(Webブラウザ側)が通信を行います。サーバーからクライアントに対してコマンドのpush配信を行います。
+  </li>
+  <li>
+    ポータブルです。Unix/LinuxサーバーとWindows上のCygwin(gcc4が必要)にインストールできます。
+  </li>
+  <li>
+    Perl 5.8.7以上だけが必要な要件です。インストールは、とても簡単です。
+  </li>
+  <li>
+    SSLもサポートしています。
+  </li>
+  <li>
+    ChefのようにRubyのDSLを使った専用の記述やクックブックを覚える必要はありません。慣れ親しんだシェルでマシンの設定を記述することができます。
+  </li>
+  <li>
+    サーバー側からpush配信型の通信を行っているので、クライアントの設定を行う必要はありません。クライアントはサーバー側に接続するだけでOKです。
+  </li>
+  <li>
+    クライアント側のコマンドのログを、サーバー側で取得するので、何が行われたがサーバー側で把握できます。
+  </li>
+</ul>
+
+<h3>Unix/Linuxマシンへのインストール</h3>
+
+TaskDealはとても簡単にインストールができます。
+
+<h3>ダウンロード</h3>
+
+tar.gzで固められたファイルをダウンロードして、展開して、ディレクトリを変更します。
+
+<pre>
+curl -kL https://github.com/yuki-kimoto/taskdeal/archive/latest.tar.gz > taskdeal-latest.tar.gz
+tar xf taskdeal-latest.tar.gz
+mv taskdeal-latest taskdeal
+cd taskdeal
+</pre>
+
+<h3>セットアップ</h3>
+
+次のコマンドを実行します。必要なモジュールがインストールされます。
+
+<pre>
+./setup.sh
+</pre>
+
+<h3>試験</h3>
+
+セットアップが成功しているかどうかを次のコマンドで確認します。
+
+<pre>
+prove t
+</pre>
+
+"All tests successful"と表示されれば、セットアップは成功しています。
+
+<h3>操作</h3>
+
+<h4> サーバーの起動と再起動</h4>
+
+以下のコマンドでTaskDealサーバーを起動します。サーバーはバックグラウンドで起動します。ポート番号のデフォルトは10040です。
+
+<pre>
+./taskdeal-server
+</pre>
+
+以下のURLにアクセスしてください。
+
+<pre>
+http://localhost:10040
+</pre>
+    
+もしポートを変更したい場合はtaskdeal-server.confを編集してください。もしこのポートでアクセスできない場合は、ファイアーウォールの設定も見直してください。
+
+Webブラウザの画面から、クライアントにタスクを実行することができます。
+
+クライアントのための接続ポートはデフォルトで10041です。
+
+<h4> サーバーの停止</h4>
+
+--stop オプションでサーバーを停止できます。
+
+<pre>
+./taskdeal-server --stop
+</pre>
+
+<h4>クライアントの起動</h4>
+
+以下のコマンドでクライアントを起動することができます。
+
+<pre>
+./taskdeal-client
+</pre>
+
+クライアントはサーバーからタスクを受け取ってそれを実行します。
+
+クライアントはデフォルトで http://localhost:10041 に接続します。この値を変更したい場合は、 taskdeal-client.confのserverセクションのhostとportを変更してください。
+
+<h3>クライアントの停止</h3>
+
+<ul>
+  <li>
+    -stop オプションでサーバーを停止することができます。
+  </li>
+</ul>
+
+<pre>
+./taskdeal-client --stop
+</pre>
+
+<h4>サーバーの設定</h4>
+
+taskdeal-server.conf を見てください。
+
+<h4> Client configuration</h4>
+
+taskdeal-client.conf を見てください。
+
+<h4> ロールとタスクの設定</h4>
+
+<b>server/roles</b>の中にロールを作成することができます。ロールとはタスクを格納する単なるディレクトリです。
+
+まず最初に、<b>server/roles</b>ディレクトリの中にsmallとmidiumという名前でロールを作成してみましょう。好きな名前をロールにつけることができます。
+
+<pre>
+server/roles/small
+            /midium
+</pre>
+
+タスクは単なる実行ファイルです。 ファイルには実行権限を与えてください。ロールディレクトリの中に作成することができます。
+
+<pre>
+server/roles/small/echo
+</pre>
+
+echoタスクは「foo」と出力する単なる実行可能なスクリプトです。
+
+<pre>
+#!/bin/sh
+echo "foo"
+</pre>
+
+タスクはディレクトリを使って階層構造にすることもできます。
+
+<pre>
+server/roles/small/echo
+                  /dir/echo2
+</pre>
+
+<h4>開発者</h4>
+
+もし開発者であれば、サーバーとクライアントを以下のコマンドで起動できます。
+
+<pre>
+# サーバーの起動
+./devels
+    
+# クライアントの起動
+./develc
+</pre>
+
+次のURLでアクセスできます。
+
+<pre>
+http://localhost:3000
+</pre>
+
+gitを持っているのであれば、gitを使って簡単にインストールできます。
+
+<pre>
+git clone git://github.com/yuki-kimoto/taskdeal.git
+</pre>
+
+設定はtaskdeal-client.my.confとtaskdeal-server.my.confに書くのが便利でしょう。
+
+<h3> Web Site</h3>
+
+<a href="http://perlcodesample.sakura.ne.jp/taskdeal-site/">TaskDeal Web Site</a>
+

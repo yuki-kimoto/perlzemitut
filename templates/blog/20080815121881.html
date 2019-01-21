@@ -1,0 +1,150 @@
+<h2 class="title">ロック用のファイルを使ってファイルロックする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+
+ロック用のファイルを作ってそれにロックを掛けることもできます。ファイルロック用のファイルを作って排他制御を行う利点は、更新対象のファイルを削除したり、リネームしたりできることです。
+
+以下のサンプルは前回のサンプルをロック用のファイルを使うように修正したものです。ループ用のスクリプトは前回とまったく同じです。ロックするためのスクリプトはsample_20080815.pl、ループ用のスクリプトは、data_20080815.txtで保存してください。
+
+実行方法は、前回のサンプルを参照してください。
+
+<pre>
+use strict;
+use warnings;
+use Fcntl qw/:DEFAULT :flock :seek/;
+
+# ロック用のファイル(なければ作成)
+my $lock_file = "lock";  
+sysopen(my $lock_fh, $lock_file, O_RDONLY | O_CREAT)
+  or die "Cannot open $lock_file: $!";
+
+# ロック用のファイルを排他ロック(読み込んで書き込むので排他ロック)
+flock($lock_fh, LOCK_EX)
+  or die "Cannot lock $lock_file: $!";
+
+#上書きするので注意
+my $file = "data_20080815.txt";
+
+# 読み書きモードでオープン(あまり安全でない)
+# O_CREATでファイルがなければ作成する。
+sysopen(my $fh, $file, O_RDWR | O_CREAT)
+  or die "Cannot open $file: $!";
+
+my $cnt;
+$cnt = <$fh>;
+if (!defined $cnt && $!){ die "Cannot read $file: $!"; }
+
+$cnt++;
+
+# ファイルポインタを先頭に移動
+seek($fh, 0, SEEK_SET)
+  or die "Cannot seek $file: $!";
+
+# 書き込み。
+print { $fh } $cnt
+  or die "Cannot Write $file: $!";
+
+# 書き込みサイズにファイルを切り詰める
+truncate($fh, length $cnt);
+
+close $fh
+  or die "Cannot close $file: $!";
+
+# closeの際にファイルロックは解除される。
+close $lock_fh
+  or die "Cannot close $lock_file: $!";
+
+print "現在のカウント: $cnt\n";
+</pre>
+
+(参考)<a href="/blog/20080804121794.html">sysopen関数</a>、<a href="/blog/20080814121872.html">flock関数</a>、<a href="/blog/20180310152509.html">Fcntl</a>
+
+ループスクリプト
+
+<pre>
+use strict;
+use warnings;
+use FindBin;
+
+my $script = "$FindBin::Bin/sample_20080815.pl";
+
+while (1) {
+  system("perl $script");
+  
+  # 1より小さいランダムな数
+  my $random = rand 1; 
+  sleep $random;
+}
+</pre>
+
+(参考)<a href="/blog/20100524127696.html">FindBin</a>、<a href="/blog/20080906122079.html">rand関数</a>
+
+<h3>コード解説</h3>
+
+<h4>(1)ロック用のファイルを作成する</h4>
+
+<pre>
+# ロック用のファイル(上書きするので注意)
+my $lock_file = "lock";  
+sysopen(my $lock_fh, $lock_file, O_RDONLY | O_CREAT)
+  or die "Cannot open $lock_file: $!";
+</pre>
+
+ロック用のファイルを作成します。
+
+<h4>(2)flock関数を使ってロック用ファイルをロックする</h4>
+
+<a href="/blog/20080814121872.html">flock関数</a>を使ってロック用ファイルをロックしています。
+
+<pre>
+# ロック用のファイルを排他ロック(読み込んで書き込むので排他ロック)
+flock($lock_fh, LOCK_EX)
+  or die "Cannot lock $lock_file: $!";
+</pre>
+
+このファイルをロックできたプロセスだけが、更新対象のファイルにアクセスを行うようにします。このロックに続いて、更新対象のファイルをオープンしてファイルを更新します。
+
+<h4>(3)ロックの解除</h4>
+
+<pre>
+# closeの際にファイルロックは解除される。
+close $lock_fh
+  or die "Cannot close $lock_file: $!";
+</pre>
+
+ロック用ファイルをクローズすることで、ロックが解除されます。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+

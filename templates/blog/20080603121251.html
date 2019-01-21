@@ -1,0 +1,138 @@
+<h2 class="title">Perlを実行するためのコマンドプロンプト入門</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Perlのプログラミングは、コマンドと呼ばれるテキストを入力して実行します。まず最初にWindowsにおけるコマンド実行ツールであるコマンドプロンプトについて解説したいと思います。
+
+<h4>コマンドプロンプトとは</h4>
+
+コマンドプロンプトとは、Windows環境におけるCUIを用いたプログラムの実行環境です。CUIとは、Character-based User Interfaceの略で、テキストを入力して、プログラムを実行するインターフェースのことです。Windows上で、Perlプログラミングをするときは、コマンドプロンプトを用いて、Perlを実行することになります。
+
+<h4>コマンドプロンプトを実行するには</h4>
+
+「スタート」 - 「すべてのプログラム」 - 「アクセサリ」 - 「コマンドプロンプト」で実行できます。コマンドプロンプトのアイコンを右クリックでドラッグして、デスクトップに、ショートカットを作っておくと便利です。
+
+<h4>最初に覚えておきたいコマンド</h4>
+
+>|
+dir
+cd ディレクトリ名
+<table>
+|<
+</table>
+
+dir で、カレントディレクトリの内容を表示できます。cd ディレクトリ名 で カレントディレクトリを変更することができます。ひとつ上のディレクトリに移動するには、 cd .. とします。
+
+<h4>Perlを実行する</h4>
+
+<pre>
+perl sample.pl arg1 arg2
+</pre>
+
+perlのスクリプトの名前は、.pl という拡張子をつけて保存します。引数を渡したいときは、空白で区切って、引数を続けます。
+
+<h4>空白のある引数を渡す</h4>
+
+<pre>
+perl sample.pl "a i u"
+</pre>
+
+引数に空白が含まれている場合は、ダブルクオーテーションで囲みます。
+
+<h4>ドライブを変更する</h4>
+
+<pre>
+c:
+d:
+</pre>
+
+c: で、C ドライブに、d: で、D ドライブにドライブを変更することができます。
+
+<h4>コマンド履歴を参照する</h4>
+
+<pre>
+↑
+↓
+</pre>
+
+上下キーでコマンド履歴をたどることができます。
+
+<h4>ファイル名を補完する</h4>
+
+<pre>
+Ctrl + f
+</pre>
+
+ファイル名を途中まで入力して、Ctrl + f で、ファイル名を補完することができます。以下で記述するコマンドプロンプトの設定の変更が必要になります。
+
+<h4>環境変数を表示する</h4>
+
+<pre>
+echo %PATH% ( 環境変数PATHの内容をみる場合 )
+</pre>
+
+環境変数を見るには、echo %環境変数名%とします。
+
+<h4>環境変数を設定する</h4>
+
+<pre>
+SET DATE=20080604 ( 環境変数DATEに、20080604を設定する場合 )
+perl sample.pl %DATE% ( 環境変数を引数として使用する例 )
+</pre>
+
+環境変数を、SET 環境変数名=値 で環境変数を設定できます。= の左右には、空白を入れてはいけません。環境変数を使用するには、 %環境変数名%  とします。
+
+環境変数を設定しても、OSの環境変数の値は変わりません。起動しているコマンドプロンプト内でだけ有効です。
+
+<h4>コマンドプロンプトの便利な設定</h4>
+
+<b>コマンドプロンプトの設定の変更方法</b>
+
+ショートカットをデスクトップに作ったら、右クリック「プロパティ」で、設定を変更できます。
+
+<b>作業フォルダの設定とファイル名補完の設定</b>
+
+「ショートカット」タブから作業フォルダの設定とファイル名補完の設定ができます。作業フォルダとは、ショートカットを起動したときの、カレントディレクトリのことです。
+
+ファイル名補完の設定をするには、「リンク先」とかかれた、コマンドプロンプトのパスの最後に、 :/f on と追加します。: の前には、空白が必要です。これで、 「 8. ファイル名を補完 」のコマンドが有効になります。
+
+例 %SystemRoot%\system32\cmd.exe :/f on
+
+<b>簡易編集モードの設定</b>
+
+「オプション」タブから、簡易編集モードの設定ができます。チェックを入れると、右クリックで、コピー＆ペーストができるようになります。
+
+<b>フォントサイズの設定</b>
+
+「フォント」タブから、フォントサイズを設定できます。少し小さめにしたほうが見やすいと思います。
+
+<b>画面バッファサイズの設定</b>
+
+「レイアウト」タブから、画面バッファサイズの設定ができます。「高さ」の項目を最大値にしておきます。
+
+画面バッファサイズ「高さ」を大きくしておくと、画面がスクロールしても、設定した行数分だけ、出力を保存しておくことができます。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+

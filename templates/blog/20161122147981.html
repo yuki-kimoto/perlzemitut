@@ -1,0 +1,185 @@
+<h2 class="title">MySQLとの連携</h2>
+
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+Perlで「MySQL」を利用する方法を解説します。
+
+<h3>DBIとDBIの解説</h3>
+
+まずMySQLを扱う基本的な知識として、DBIとDBIというものについて解説します。プログラムからデータベースに接続する場合は、DBIというものを使用するのが一般的です。また実際のRDBMSとのやりとりは、DBDを通して行われます。
+
+<h4>さまざまなRDBMSを利用できる共通のAPI DBI</h4>
+
+DBIとは、RDBMS(リレーショナルデータベース管理システム)に依存しないAPIのことです。( DBIは、Database Interface の略 )
+
+RDBMSには、MySQL、Oracle,DB2,Postgre SQLなどがありますが、別々の人が作ったものですので、利用方法は少しづつ異なります。DBIを使用すれば、異なるベータベースに共通の記述で、接続したり、SQLをリクエストしたりできます。
+
+<h4>データベースに接続するための関数群 DBI</h4>
+
+Perlに同名のモジュールがあるのでインストールします。
+
+<pre>
+cpan DBI
+</pre>
+
+<h4>RDBMSと実際にやり取りを行うドライバ DBD</h4>
+
+DBIは関数を提供しますが、実際は内部でDBDがデータベースとやり取りを行っています。DBDには、MySQL用、PostgreSQL用、Oracle用,SQLite用などさまざまな種類があります。
+
+MySQL用のDBDをインストールします。MySQLがインストールされていることが必要です。
+
+<pre>
+cpan DBD::mysql
+</pre>
+
+<h4>DBIとDBDとデータベースサーバのやり取りのイメージ</h4>
+
+DBIというのは、どのデータベースに接続するときも変わりません。DBIはデータベースに依存しないように作られた接続のための関数の集まりだからです。DBDというのが、データベースと実際にデータをやり取りをします。
+
+<pre>
+|-----|       |-------------|         |-------------|
+|     |       |             |         |             |
+|     |-------| DBD::mysql  |---------| MySQL       |
+|     |       |             |         |             |
+|     |       |-------------|         |-------------|
+| DBI |              
+|     |       |-------------|         |-------------|
+|     |       |             |         |             |
+|     |-------| DBD::Oracle |---------| Oracle      |
+|     |       |             |         |             |
+|-----|       |-------------|         |-------------|
+</pre>
+
+<h3>MySQLサーバーへ接続する</h3>
+
+MySQLサーバに接続するには<strong>connect</strong>メソッドを使用します。
+
+<pre>
+use DBI;
+my $dbh = DBI->connect("DBI:mysql:$database", $user, $password);
+</pre>
+
+リモートのMySQLサーバに接続するには、ホスト名を指定して
+
+<pre>
+use DBI;
+my $dbh = DBI->connect(
+  "DBI:mysql:$database:$hostname",
+  $user,
+  $password
+);
+</pre>
+のようにします。
+
+ポート番号も指定することができます。
+
+<pre>
+use DBI;
+my $dbh = DBI->connect(
+  "DBI:mysql:$database:$hostname:$port",
+  $user,
+  $password
+);
+</pre>
+
+<h4>データベースハンドル</h4>
+connectメソッドは、データベースの操作に利用するデータベースハンドルというものを戻り値に返却します。
+データベースハンドルを使用して、MySQLサーバとやり取りします。
+
+<h4>エラー処理</h4>
+データベース名が間違っていたり、パスワードが間違っていたり、何らかの理由でデータベースに接続できない場合は、戻り値にundefが返却されます。そのときのエラーの内容は、
+
+<pre>
+$DBI::errstr;
+</pre>
+
+で取得できます。errは数字、errstrには、エラーの内容が入っています。
+
+データベースはプログラムの外部にあるシステムですので、エラー処理は必須です。最初のサンプルでは、エラー処理を行っていませんが必ず、エラー処理を行います。
+
+<pre>
+use DBI;
+my $dbh = DBI->connect(
+  "DBI:mysql:$database:$hostname",
+  $user,
+  $password
+) or die "cannot connect to MySWL: $DBI::errstr";
+</pre>
+
+<h3>現在時刻をMySQLの日付時刻型に変換する</h3>
+
+現在時刻をMySQLの日付時刻型に変換するにはlocaltime関数とstrftime関数を使用します。
+
+<pre>
+use POSIX 'strftime';
+
+# MySQLの日付時刻型(datetime型)
+my $current_datetime = strftime("%Y-%m-%d %H:%M:%S", localtime);
+
+# MySQLの日付型(date型)
+my $current_date = strftime("%Y-%m-%d", localtime);
+</pre>
+
+<h3>「MySQL::Diff」モジュールで「データベースの定義の差分」を抽出する</h3>
+
+MySQLのデータベースの差分から、差分をなくすようなコマンドを自動生成するツールを探していたら<a href="/blog/20111101132239.html">MySQL::Diff</a>モジュールを発見した。このモジュールにはmysqldiffというコマンドラインツールがついているので、通常はこちらを使うのが良いみたい。
+
+開発環境と本番環境の差分を埋めるのにとても役立つ。すべての差分を表示してくれるわけではなく、テーブル定義に関する部分だけのようなので、トリガやインデックスについては、自分で設定する必要があるようです。
+
+ドキュメントにはオプションの説明がないようなので、--helpコマンドで確認できる。
+<pre>
+mysqldiff --help
+</pre>
+
+<h3>DBD::mysqlをインストールするためにはmysql-develが必要</h3>
+
+PerlでDBIからMySQLに接続しようと思う場合は<strong>DBD::mysql</strong>というモジュールが必要になります。このモジュールは、C言語のライブラリに依存しており、単独ではインストールが失敗します。。たとえばCent OSなどのRed Hat系のOSであれば<strong>mysql-devel</strong>というパッケージをインストールしておく必要があります。
+
+<pre>
+yum -y install mysql-devel
+</pre>
+
+「mysql-devel」がインストールされるとDBD::mysqlのインストールは成功するようになります。
+
+<pre>
+cpan DBD::mysql
+</pre>
+

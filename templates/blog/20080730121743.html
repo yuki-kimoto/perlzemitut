@@ -1,0 +1,104 @@
+<h2 class="title">標準入力 標準出力 標準エラー出力</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+
+標準入力、標準出力、標準エラー出力について書きます。
+
+<ol>
+  <li>
+    標準入力
+  </li>
+  <li>
+    標準出力
+  </li>
+  <li>
+    標準エラー出力
+  </li>
+</ol>
+
+<h3>1.標準入力</h3>
+
+標準入力の読込先はキーボードです。標準入力を利用すると、キーボードから入力を受け取っることができます。キーボードから受け取った文字をそのまま出力するプログラムを書くと次のようになります。 STDIN というファイルハンドルが標準入力を表します。
+
+<pre>
+use strict;
+use warnings;
+
+# STDIN という標準入力を表すファイルハンドルから一行読み込み。
+my $line = <STDIN>; 
+print $line;
+</pre>
+
+ STDINから読み込むと、キーボードから読みこまれることがわかると思います。
+
+<h3>2.標準出力</h3>
+
+標準出力の出力先は、ディスプレイです。標準出力に書き込むとディスプレイに表示することができます。STDOUTというファイルハンドルが標準出力を表します。
+
+<pre>
+use strict;
+use warnings;
+
+print STDOUT $line; 
+</pre>
+
+明示的にSTDOUTを指定しなくても、print関数はデフォルトで、STDOUTに出力を行います。
+
+<h3>3.標準エラー出力</h3>
+
+標準エラー出力の出力先は、標準出力と同じでディスプレイです。標準エラー出力とはエラーをユーザに伝えるための機能です。STDERRというファイルハンドルが標準エラー出力を表します。以下のように書くと、ディスプレイに、"aaa" "bbb" と表示されます。
+
+<pre>
+use strict;
+use warnings;
+
+print STDOUT "aaa\n";
+print STDERR "bbb\n";
+</pre>
+
+両方がディスプレに出力するなら標準エラー出力の役割は何でしょうか?それは、標準出力と標準エラー出力を分離することです。
+
+OSには、リダイレクトという機能があり、標準出力の出力先をディスプレイからファイルに切り替えることができます。
+
+このとき標準エラー出力は切り替わらず出力先はディスプレイのままです。エラーがファイルに書き出されてしまって、エラーがわからないという状況を防ぐために標準エラー出力があります。
+
+以下のように標準出力をファイルにリダイレクトすると、標準エラー出力だけが、ディスプレイに表示されます。
+
+<pre>
+perl スクリプト名 > ファイル
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+

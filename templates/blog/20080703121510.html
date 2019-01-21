@@ -1,0 +1,150 @@
+<h2 class="title">Hash::Util - ハッシュのキーの追加を禁止する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+Hash::Utilモジュールを使って<a href="/blog/20161013147635.html">ハッシュ</a>のキーの追加を禁止することができます。
+
+<pre>
+use Hash::Util;
+# 制限
+Hash::Util::lock_keys(%hash); 
+
+# 解除
+Hash::Util::unlock_keys(%hash);
+</pre>
+
+Hash::Util::lock_keysを使えば、ハッシュのキーを制限することができます。引数にハッシュのみを指定した場合は、現在のキー以外のキーの追加が禁止されます。
+
+<pre>
+%hash = ();
+# key1 と key2に制限。
+@restrict_keys = qw/key1 key2/;
+Hash::Util::lock_keys(%hash, @restrict_keys);
+# 制限を解除。
+Hash::Util::unlock_keys(%hash);
+</pre>
+
+第2引数にキーを指定すると、そのキー以外のキーの追加を禁止することができます。
+
+Hash::Util::lock_keys 関数は、deleteによるキーの削除を禁止しません。あくまで、キーの追加だけを禁止します。
+
+<h3>ハッシュの値の変更とキーの追加、削除を禁止する</h3>
+
+<pre>
+Hash::Util::lock_hash(%hash);
+
+# ハッシュの変更の禁止を解除
+Hash::Util::lock_hash(%hash);
+</pre>
+
+Hash::Util::lock_hash 関数を使えば、キーの追加、削除と値の変更を禁止することができます。キーとそれに対応する値を読み込み専用のものとして扱うことができます。
+
+ハッシュを完全な読み込み専用にするには、Hash::Util::lock_hash_recurse を使います。ハッシュの値にリファレンスが含まれていた場合に、リファレンスが指す値の変更まで禁止することができます。
+
+<h3>サンプル</h3>
+
+Hash::Utilを使って、ハッシュのキーと値の変更を制限するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ハッシュのキーと値の変更を制限する。
+use Hash::Util;
+
+my %hash;
+my @restrict_keys;
+
+# key1 と key2 に制限される。
+print "1-1: ハッシュのキーの追加を禁止する。\n";
+%hash = (key1 => 1, key2 => 2);
+Hash::Util::lock_keys(%hash); 
+
+# key3 を追加。
+# die してしまうので、サンプル用にevalで捕獲。
+eval{ $hash{key3} = 3 };
+print "$@\n";
+
+# キーの追加、削除の禁止を解除。
+Hash::Util::unlock_keys(%hash);
+
+# key1 と key2に制限。
+print "1-2: 指定したキー以外のキーの追加を禁止する。\n";
+%hash = ();
+@restrict_keys = qw/key1 key2/; 
+
+# key3 を追加しようとするとdieする。
+Hash::Util::lock_keys(%hash, @restrict_keys);
+eval{ $hash{key3} = 3 }; 
+print "$@\n";
+
+# キーの制限を解除。
+Hash::Util::unlock_keys(%hash); 
+
+print "2: ハッシュの値の変更とキーの追加、削除を禁止する。\n";
+%hash = (key1 => 1, key2 => 2);
+
+# 値を変更しようとするとdieする。
+Hash::Util::lock_hash(%hash);
+eval{ $hash{key1} = 3 };
+print "$@\n";
+
+# キーの追加しようとするとdieする。
+eval{ $hash{key3} = 1 };
+print "$@\n";
+
+# ハッシュの変更の禁止を解除
+Hash::Util::lock_hash(%hash); 
+</pre>
+
+(参考)<a href="/blog/20100312126967.html">eval</a>
+
+実行結果
+
+<pre>
+1-1: ハッシュのキーの追加を禁止する。
+Attempt to access disallowed key 'key3' in a restricted hash at - line 17.
+
+1-2: 指定したキー以外のキーの追加を禁止する。
+Attempt to access disallowed key 'key3' in a restricted hash at - line 28.
+
+2: ハッシュの値の変更とキーの追加、削除を禁止する。
+Modification of a read-only value attempted at - line 37.
+
+Attempt to access disallowed key 'key3' in a restricted hash at - line 40.
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+

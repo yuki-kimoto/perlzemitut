@@ -1,0 +1,177 @@
+<h2 class="title">変数に適切な名前をつけるようにしよう</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20130220136137.html">
+        <span itemprop="name">読み物</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+変数をよい名前にするとプログラムが読みやすくなります。
+個人的な意見になりますが、変数名のつけ方について自分の考えていることを書いておきます。
+
+<ol>
+  <li>
+    変数名は意味のあるものにする。
+  </li>
+  <li>
+    変数名はすべて小文字で、単語のつなぎ目は _ (アンダーバー)を使用する。
+  </li>
+  <li>
+    変数名をどの程度詳細にするか
+  </li>
+  <li>
+    省略してもよい変数名
+  </li>
+  <li>
+    真偽値を表す変数の命名方法
+  </li>
+  <li>
+    配列の命名方法
+  </li>
+</ol>
+
+<h3>(1)変数名は意味のあるものにする。</h3>
+
+プログラミングで一番読み取りにくいのはコードを書いた人の意図です。
+適切な変数名をつけることによって意図が伝わりやすくなります。
+
+<h4>(a)変数に意味を持たせた場合</h4>
+
+<pre>
+# この変数は何かの合計を格納するものだ
+my $total;
+
+# この変数は何らかのオフセットを表すものだ。
+my $offset;
+
+# この変数はクライアント数の最大値を表すものだ
+my $max_client 
+</pre>
+
+<h4>(b)変数に意味を持たせない場合</h4>
+
+<pre>
+# 何かわからない
+my $p;
+my $q;
+my $k;
+</pre>
+
+コンピュータにとっての関心ごとは変数名が区別できるかということだけですが、人間にとっては変数名が何を意図しているかということが重要です。
+
+<h3>(2)変数名はすべて小文字で、単語のつなぎ目は _ ( アンダーバーにする。 )</h3>
+
+変数名には大文字は使用せずに、小文字だけにします。単語のつなぎ目にはアンダーバーを使用します。
+
+<pre>
+my $user_name;
+my $search_word;
+my $max_database_connection;
+</pre>
+
+これはPerlの慣習であって、強制ではないですが、Perlでコードを書くなら守っておいたほうがよいと思われます。使う人にとって混乱が少ないと思うからです。
+
+逆にjavaでプログラミングするときは、perlの慣習を持ち込まないで、userNameのように書きましょう。
+
+<h3>(3)変数名をどの程度詳細にするか</h3>
+
+変数名をどの程度詳細にするかは、そのスコープの中で意味の区別がつくかを基準にするとよいと思います。
+
+<h4>(a) 意図がはっきりとわかるなら短い変数名でOK</h4>
+
+<pre>
+sub sum {
+  # 合計値を表す
+  my $total;
+}
+</pre>
+
+<h4>(b)区別する必要がある場合は状況に応じて意味を区別できる変数名にする</h4>
+
+たとえば、奇数の合計と偶数の合計を足し合わせる関数があったとするならば、それぞれの合計に適切な名前をつけます。
+
+<pre>
+sub sum {
+  # 奇数の合計
+  my $odd_total;
+  
+  # 偶数の合計
+  my $even_total 
+}
+</pre>
+
+<h4>(c) for文で意図がはっきりわかる場合は $i のように短い変数名でOK</h4>
+
+<pre>
+for my $i (0 .. @nums - 1) {
+  ...
+}
+</pre>
+
+<h4>(d) for文で意図がわかりにくくなる可能性がある場合は意味を区別できる変数名にする</h4>
+
+<pre>
+my $data_table = [[ 1, 2, 3 ], [ 2, 4, 6 ]];
+for my $row_num (0 .. @$data_table - 1){
+  for my $colum_num (0 .. @{$data_table[$row_num]} - 1) {
+    ...
+  }
+}
+</pre>
+
+<h3>(4)省略してもよい変数名</h3>
+
+慣習的に意味が通じるものは省略してもよいかもしれません。また変数スコープの範囲が狭い場合は、省略することも可能でしょう。省略するときは、先頭の何文字かを残すのがわかりやすいと思います。
+
+<h4>省略しても理解できると考えられる変数名</h4>
+
+<pre>
+my $num; # number
+my $len; # length;
+my $char; # charactor;
+</pre>
+
+<h3>(5)真偽値を表す変数の命名方法</h3>
+
+真偽値を表す変数名の例をいくつか書いておきます。
+
+<pre>
+# 安全である (is ＋ 形容詞)
+my $is_safe;
+
+# スイッチが入っている (名詞 + 前置詞)
+my $switch_on;
+
+# リクエストをロード中 (名詞 + 現在分詞)
+my $request_loading;
+
+# 書き込みが終了している(名詞 + 過去分詞) 
+my $write_done;
+
+# チェックが成功している(名詞 + 名詞)
+my $check_success;
+
+# 状態はokである。(名詞 + 名詞)
+my $status_ok;   
+</pre>
+
+<h3>(6)配列の命名方法</h3>
+
+配列に名前をつける場合は、末尾にs をつけます。
+<pre>
+# sを末尾につける方法
+my @members; 
+
+for my $member (@members) {
+  # ...
+}
+</pre>
+

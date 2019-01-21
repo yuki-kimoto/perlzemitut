@@ -1,0 +1,131 @@
+<h2 class="title">Text::Diff - テキストの差分を確認する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">Text::Diff</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+テキストの差分を確認するには<strong>Text::Diff</strong>モジュールを使用します。UnixのdiffプログラムをPerlで実装したものです。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use Text::Diff 'diff';
+</pre>
+
+テキストの差分を確認するには<strong>diff</strong>関数を使用します。引数にはファイル名や文字列を指定することができます。
+
+<pre>
+# ファイルの差分を確認
+$diff = diff($filename1, $filename2);
+$diff = diff(\$string1, $string2);
+</pre>
+
+ファイル間のテキストの差分を出力するサンプルです。
+
+<pre>
+# ファイル間の差分を確認
+use Text::Diff 'diff';
+
+my @files = @ARGV;
+
+my $diff = diff($files[0], $files[1]);
+
+print $diff;
+</pre>
+
+<h3>差分結果のスタイル</h3>
+
+オプションで差分結果のスタイルを指定することができます。スタイルには次のものがあります。
+
+<h4>Unified</h4>
+
+<strong>Unified</strong>スタイルは以下のような差分表示方法です。
+
+<pre>
+--- A   Mon Nov 12 23:49:30 2001
++++ B   Mon Nov 12 23:49:30 2001
+@@ -2,13 +2,13 @@
+ 2
+ 3
+ 4
+-5d
++5a
+ 6
+ 7
+ 8
+ 9
++9a
+ 10
+ 11
+-11d
+ 12
+ 13
+</pre>
+
+<h4>Context</h4>
+
+<strong>Context</strong>は以下のような差分表示方法です。
+
+<pre>
+*** A   Mon Nov 12 23:49:30 2001
+--- B   Mon Nov 12 23:49:30 2001
+***************
+*** 2,14 ****
+  2
+  3
+  4
+! 5d
+  6
+  7
+  8
+  9
+  10
+  11
+- 11d
+  12
+  13
+--- 2,14 ----
+  2
+  3
+  4
+! 5a
+  6
+  7
+  8
+  9
++ 9a
+  10
+  11
+  12
+  13
+</pre>
+
+<h4>OldStyle</h4>
+
+<strong>OldStyle</strong>は以下のような差分表示方法です。
+
+<pre>
+5c5
+< 5d
+---
+> 5a
+9a10
+> 9a
+12d12
+< 11d
+</pre>
+

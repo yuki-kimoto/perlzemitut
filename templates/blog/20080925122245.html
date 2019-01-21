@@ -1,0 +1,63 @@
+<h2 class="title">Math::BigInt、Math::BigFloat - 大きな桁数を持つ数の計算</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+Perlの<a href="/blog/20161026147748.html">数値</a>の有効桁数は15～16桁くらいで、普通の演算ではこれ以上大きな数の演算を行うことができません。大きな桁の数値を扱いたい場合は<strong>Math::BigInt</strong>や<strong>Math::BigFloat</strong>を使用します。
+
+<h4>大きな整数の演算</h4>
+
+大きな整数の演算を行うにはMath::BigIntモジュールで生成したオブジェクトを用いて計算を行います。
+
+<pre>
+use Math::BigInt;
+my $big_int = Math::BigInt->new("11111111111111111111111111111111111111111111");
+$big_int = $big_int * 2;
+</pre>
+
+<h4>小数点以下の桁数が大きい数の演算</h4>
+
+Math::BigFloatモジュールで生成したオブジェクトを用いて計算を行います。
+
+<pre>
+use Math::BigFloat;
+my $big_float = Math::BigFloat->new( "0.1111111111111111111111111111111111111");
+$big_float = $big_float * 2;
+</pre>
+
+<h3>サンプル</h3>
+
+Math::BigInt、Math::BigFloatを使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use Math::BigInt;
+use Math::BigFloat;
+
+print "(1)大きな整数の演算\n";
+my $big_int = Math::BigInt->new("11111111111111111111111111111111111111111111");
+$big_int = $big_int * 2;
+print $big_int . "\n\n";
+
+print "(2)小数点以下の桁数が大きい数の演算\n";
+my $big_float = Math::BigFloat->new( "0.1111111111111111111111111111111111111");
+$big_float = $big_float * 2;
+print $big_float . "\n";
+</pre>
+

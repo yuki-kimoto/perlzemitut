@@ -1,0 +1,141 @@
+<h2 class="title">Perl 5.20がリリース - ipv6のサポート、サブルーチンの新しい文法、新しいスライス記法、Unicode 6.3への対応など</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+Perl 5.20がリリースされました。今回は結構盛りだくさん。ピックアップして紹介します。
+
+<q>
+<a href="http://argrath.ub32.org/perldocjp/5.20.0/perl5200delta.html">Perl 5.20で追加・変更された機能</a>
+</q>
+
+<h3>IO::Socket::IPがコアモジュールに</h3>
+
+Perl 5.20ではIO::Socket::IPがコアモジュールになりました。Perlではソケットを使う場合にIO::Socket::INETを使っていましたが、ipv6のサポートを含めて、同一のインターフェースで利用できるモジュールのようです。
+
+<h3>CGI,Module::Buildが廃止予定になります</h3>
+
+長年コアモジュールだったCGIモジュールが、次期リリースでコアからはずれます。。また、ピュアPerlでmake相当のことができるModule::Buildが次期リリースでコアからはずれます。
+
+次期リリースのPerl 5.22からは、CGIモジュールは必要であればcpanからインストールする必要があります。Module::Buildについては、必要であれば、自動的にインストールされるので、特に問題がないようです。
+
+<h3>サブルーチンシグネチャ</h3>
+
+サブルーチンシグネチャが実験的に追加されました。Perlで普通の引数がかける機能です。まだ実験段階なので、使用すると警告がでます。
+
+<pre>
+use feature 'signatures';
+
+sub foo ($x, $y) {
+  ...
+}
+</pre>
+
+詳しくは<a href="/blog/20140213139225.html">Perl 5.20でサブルーチンシグネチャが実験的に導入される</a>をご覧ください。
+
+これに伴って従来のプロトタイプを書く場合は、prototypeアトリビュートが使えるようになりました。
+
+<pre>
+sub foo : prototype($$) {
+  ...
+}
+</pre>
+
+この機能は、とてもよいので、早い段階で、警告が消えたらいいなと思います。
+
+<h3>配列スライス、ハッシュスライスの新しい記法</h3>
+
+配列スライス、ハッシュスライスが、新しい記法で書けるようになりました。
+
+<pre>
+use feature 'postderef';
+
+# 配列スライス
+my ($title, $author) = $array_ref->@[0, 1];
+
+# ハッシュスライス
+my ($title, $author) = $hash_ref->@{'title', 'author'};
+</pre>
+
+「$aref->@*」という記法も追加されましたけれど、個人的には「$aref->@*」記法はいらないんじゃないかなと思った。全体をとりたいのであれば「@$aref」ができれば十分じゃないかなぁ。
+
+スライス記法は、わかりやすくて便利だけどね。
+
+<h3>新しいスライス「インデックス/値 スライス」と「キー/値 スライス」と</h3>
+
+配列でインデックスを指定すると、「インデックスと値」の組が取得できる「インデックス/値 スライス」が追加されました。
+
+<pre>
+my @array = (1, 3, 5);
+
+# (0 => 1, 1 => 3)
+my %index_values = %array[0, 1];
+</pre>
+
+ハッシュでキーを指定すると、「キーと値」の組が取得できる「キー/値 スライス」が追加されました。
+
+<pre>
+my %hash = (a => 1, b => 2, c => 3);
+
+# (a => 1, b => 2);
+my %key_values = %hash{'a', 'b'};
+</pre>
+
+便利だけれど、慣れないとちょっと読みづらいか。
+
+<h3>文字列コピーの性能の改善</h3>
+
+文字列をコピーするときに、コピーオンライトが効くようになりました。参照するだけの場合は、大きな文字列であっても、コピーが非常に速くなり、スカラのリファレンスを利用する必要がなくなります。
+
+<h3>ithreadが非推奨になりました</h3>
+
+ithreadが公式に非推奨になりました。ithreadは、イメージからすると、マルチタスクのための高速で軽量なスレッドと感じられますが、実際はそんなことはなく、非常に使いにくく、重いものです。
+
+歴史的にはおそらく、Windowsでforkをエミュレートするために実装されたように思いますが、ユーザーが利用するには、非常に誤解や困難が伴っていましたので、非推奨とマークされるのは、よいことだと思います。
+
+<h3>その他の細かな変更</h3>
+
+<ul>
+  <li>
+    Unicode 6.3 に対応
+  </li>
+  <li>
+    find2perl, s2p, a2pが廃止予定になりました。次期リリースのPerl 5.22からは利用する場合はcpanからインストールする必要があります。
+  </li>
+</ul>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20160225145640.html">
+      <span itemprop="name">バージョン情報</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

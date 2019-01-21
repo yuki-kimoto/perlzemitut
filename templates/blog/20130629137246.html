@@ -1,0 +1,79 @@
+<h2 class="title">テンプレートディレクトリの中のファイルを自動でディスパッチする方法 / Mojoliciousリファレンス</h2>
+<strong>テンプレートディレクトリの中のファイルを自動でディスパッチ</strong>する処理は以下のようにして書くことができます。
+
+<pre>
+use Mojolicious::Lite;
+
+# 手動でルートを作成
+get '/foo' => 'foo';
+
+# 自動のルートを作成
+any '/(*Path)' => sub {
+  my $self = shift;
+  
+  my $path = $self->param('Path');
+  
+  $self->render(template => $path);
+};
+
+app->start;
+
+__DATA__
+
+@@ foo.html.ep
+foo
+
+@@ bar/baz.html.ep
+bar/baz
+</pre>
+
+ワイルドカードプレースホルダー(*)を使ってアクセスするパス構造をそのままテンプレートのディレクトリ構造としてわたしています。Pathという大文字を使っているのはpathが予約語だからです。
+
+これでPHPのようなテンプレートディレクトリにファイルを配置する簡便さと、ルートを手動で定義してユーザーに見やすいURLを提供するというふたつの作業のどちらも簡単に行うことができます。
+
+でもこの方法はよいように見えてひとつ問題があって、自動でテンプレートを描画した場合には、テンプレート描画以外の処理ができないということです。テンプレートの中で先頭でロジックを記述して場合に応じてNot Foundや例外ページやJSONを描画することができません。
+
+抜け道はあります。けれども、公式な方法ではないので、サポートされるかどうかは未知な部分がありますし、仕様変更に弱くなります。
+
+<h3>抜け道の方法(Mojolicious 4.0以降)</h3>
+
+render_maybeでテンプレートを描画して、mojo.finisedを確認します。
+
+<pre>
+use Mojolicious::Lite;
+
+# 手動でルートを作成
+get '/foo' => sub {
+  my $self = shift;
+  $self->render_maybe('foo');
+  $self->stash('mojo.finished') ? undef : $self->reply->not_found;
+};
+
+# 自動のルートを作成
+any '/(*Path)' => sub {
+  my $self = shift;
+  
+  my $path = $self->param('Path');
+  $self->render_maybe($path);
+  $self->stash('mojo.finished') ? undef : $self->reply->not_found;
+};
+
+app->start;
+
+__DATA__
+
+@@ foo.html.ep
+<%
+  $self->render(json => {path => 'foo'});
+  return;
+%>
+
+@@ bar/baz.html.ep
+<%
+  $self->render(json => {path => '/bar/baz'});
+  return;
+%>
+</pre>
+
+このように記述するとテンプレートの中で、JSONやrender_exceptionを呼び出して例外を描画することができます。
+

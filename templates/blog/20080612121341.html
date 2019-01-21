@@ -1,0 +1,77 @@
+<h2 class="title">サブルーチンの定義はスコープの影響を受けない</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20101130129876.html">
+        <span itemprop="name">サブルーチン</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+サブルーチンの定義は、<a href="/blog/20110128130016.html">スコープ</a>の影響を受けません。
+
+<pre>
+{ 
+  sub func {
+    return 2;
+  }
+}
+my $ret = func();
+</pre>
+
+サブルーチンは、スコープの影響を受けません。一見すると、funcは、スコープの外では、見えないものと思ってしまいがちですが、そうなりません。
+
+サブルーチンの定義は、コンパイル時に、<a href="/blog/20080613121341.html">シンボルテーブル</a>というものに登録されます。シンボルテーブルは、プログラムのどこからでも参照することができるため、サブルーチンも、プログラムのどこからでも参照できます。
+
+<h3>サンプル</h3>
+
+サブルーチンの定義はスコープの影響を受けないことを理解するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# サブルーチンの定義とスコープ
+# サブルーチンは、スコープの影響を受けない。
+
+{ 
+  sub func {
+    return 2;
+  }
+}
+
+print "1: サブルーチンの定義は、スコープの影響を受けない。\n";
+my $ret = func();
+print "\$ret は、$ret です。\n";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20101130129876.html">
+        <span itemprop="name">サブルーチン</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+

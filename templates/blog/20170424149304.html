@@ -1,0 +1,185 @@
+<h2 class="title">MIME::Lite - メールを簡単に送信</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<b>MIME::Lite</b>モジュールを使えばメールを簡単に送信することができます。
+
+MIME::Liteはデフォルトでsenmailコマンドを利用するので<b>sendmail</b>あるいは<b>postfix</b>をインストールしておきましょう。
+
+メールの送信方法にはいくつかの手法がありますが、sendmailコマンドでメールを送信するのが、メールのいろいろな問題に対処するのに簡単だと思います。
+
+<h3>メールを送信する</h3>
+
+メールを送信するには以下のようにします。マルチパートメッセージという形式で作成して、テキストや画像をアタッチして送信するのが簡単です。
+
+<pre>
+use MIME::Lite;
+
+# マルチパートメッセージの作成
+my $msg = MIME::Lite->new(
+  From    => 'me@myhost.com',
+  To      => 'you@yourhost.com',
+  Cc      => 'some@other.com, some@more.com',
+  Subject => 'A message with 2 parts...',
+  Type    => 'multipart/mixed'
+);
+
+# テキストを追加
+$msg->attach(
+  Type     => 'TEXT',
+  Data     => "Here's the GIF file you wanted"
+);
+
+# 画像を追加
+$msg->attach(
+  Type     => 'image/gif',
+  Path     => 'aaa000123.gif',
+  Filename => 'logo.gif',
+  Disposition => 'attachment'
+);
+
+# メールを送信
+$msg->send;
+</pre>
+
+<ol>
+  <li>
+    <b>new</b>メソッドで送信内容を作成します。
+  </li>
+  <li>
+    <b>atach</b>メソッドでテキストや画像などのデータを追加します。
+  </li>
+  <li>
+    <b>send</b>メソッドでメールを送信します。
+  </li>
+</ol>
+
+<h3>MIME::Liteで日本語のメールを送る</h3>
+
+MIME::Liteで日本語のメールを送る場合は、エンコーディングについて考える必要があります。
+
+次の二つのことを覚えましょう。
+
+<ol>
+  <li>
+    ヘッダ部分のタイトル(Subject)は<b>MIME-Header-ISO_2022_JP</b>でエンコードします。
+  </li>
+  <li>
+    本文のテキストデータについては<b>ISO-2022-JP</b>でエンコードします。
+  </li>
+</ol>
+
+UTF-8でのエンコーディングでもたいていの場合はよいかとは思うのですが、上記のエンコーディングを使っておくと安全です。
+
+ソースコードはUTF-8で保存して、先頭では<b>utf8プラグマ</b>を有効にしましょう。
+
+上記のサンプルを日本語送信用に書き直すと次のようになります。
+
+<pre>
+use utf8;
+use MIME::Lite;
+use Encode 'encode';
+
+# マルチパートメッセージの作成
+my $msg = MIME::Lite->new(
+  From    => 'me@myhost.com',
+  To      => 'you@yourhost.com',
+  Cc      => 'some@other.com, some@more.com',
+  Subject => encode('MIME-Header-ISO_2022_JP', 'メールタイトル'),
+  Type    => 'multipart/mixed'
+);
+
+# テキストを追加
+$msg->attach(
+  Type     => 'TEXT',
+  Data     => encode('ISO-2022-JP', 'メール本文のテキスト'),
+);
+
+# 画像を追加
+$msg->attach(
+  Type     => 'image/gif',
+  Path     => 'aaa000123.gif',
+  Filename => 'logo.gif',
+  Disposition => 'attachment'
+);
+
+# メールを送信「
+$msg->send;
+</pre>
+
+<h4>UTF-8で送信する場合</h4>
+
+2017年現在は、どうなっているのかはよくわかりませんが、UTF-8で送っちゃう場合も多いような気もしますので、そちらのサンプルも掲載しておきます。
+
+<pre>
+use utf8;
+use MIME::Lite;
+use Encode 'encode';
+
+# マルチパートメッセージの作成
+my $msg = MIME::Lite->new(
+  From    => 'me@myhost.com',
+  To      => 'you@yourhost.com',
+  Cc      => 'some@other.com, some@more.com',
+  Subject => encode('MIME-Header', 'メールタイトル'),
+  Type    => 'multipart/mixed'
+);
+
+# テキストを追加
+$msg->attach(
+  Type     => 'TEXT',
+  Data     => encode('UTF-8', 'メール本文のテキスト'),
+);
+
+# 画像を追加
+$msg->attach(
+  Type     => 'image/gif',
+  Path     => 'aaa000123.gif',
+  Filename => 'logo.gif',
+  Disposition => 'attachment'
+);
+
+# メールを送信「
+$msg->send;
+</pre>
+
+Perlの文字コードについてわからない場合はEncodeモジュールの解説記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20091118124667.html">Encodeモジュール - 日本語などのマルチバイト文字列を適切に処理する</a>
+  </li>
+</ul>
+
+<h3>FAQ</h3>
+
+MIME::Liteに関するFAQに答えます。
+
+<h4>MIME::Liteは非推奨になっているようですが</h4>
+
+MIME::Liteは簡単に使えますが、現在は非推奨になっています。
+
+MIME::Liteは個人的にはもっとも使いやすいメール送信モジュールですが、コミュニティの意向に従う場合は<a href="http://search.cpan.org/~rjbs/Email-Sender-1.300031/lib/Email/Sender.pm">Email::Sender</a>を使いましょう。
+
+<h4>文字化けが発生します</h4>
+
+UTF-8で表現できても「ISO-2022-JP」では表現できない文字があることが原因です。
+
+このような場合はUTF-8でエンコーディングしてメールを送信するか、UTF-8で表現される文字を「ISO-2022-JP」に変換可能な文字に置換しましょう。
+

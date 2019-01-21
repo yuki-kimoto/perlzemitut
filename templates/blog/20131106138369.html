@@ -1,0 +1,454 @@
+<h2 class="title">PDLによるグラフの作成</h2>
+
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">PDL</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+PDLを使ってグラフを作成する方法を解説します。
+
+<h3>PDL::Graphics::PLplotのインストール</h3>
+
+グラフを描画するためには<strong>PDL::Graphics::PLplot</strong>というモジュールをインストールします。(先に<a href="/blog/20131101138330.html">PDLをインストール</a>しておく必要があります。)
+
+<h4>Windows</h4>
+
+ppmでインストールする場合は以下のコマンドを実行します。
+
+<pre>
+ppm install http://www.sisyphusion.tk/ppm/PDL-Graphics-PLplot.ppd --force
+</pre>
+
+Enterを押してインストールを完了します。環境変数の設定する必要があるので、表示された環境変数PLPLOT_LIBを設定してください。たとえば、以下のように表示されます。
+
+<pre>
+  In order to utilise the built in plplot capability set your
+  PLPLOT_LIB environment variable to C:\Perl\site\lib\PDL\plplot_supp
+</pre>
+
+pngがサポートされているバージョン
+
+pngの出力がサポートされていたほうが便利なので、pngをサポートしているバージョンをインストールしたい場合は、次のコマンドを実行してください。
+
+<pre>
+ppm install http://www.sisyphusion.tk/ppm_alt/PDL-Graphics-PLplot_alt.ppd --force
+</pre>
+
+Enterを押してインストールを完了します。環境変数の設定する必要があるので、表示された環境変数PLPLOT_LIBとPLPLOT_DRV_DIRを設定してください。たとえば、以下のように表示されます。
+
+<pre>
+Running PDL-Graphics-PLplot-0.62 install script...
+  In order to utilise the built in plplot capability set your
+
+  PLPLOT_LIB environment variable to:
+   C:\Perl64\site\lib\PDL\plplot_supp
+
+  And set your PLPLOT_DRV_DIR environment variable to:
+   C:\Perl64\site\bin
+</pre>
+
+<h3>簡単なグラフの作成</h3>
+
+PDLでグラフを描画してみましょう。グラフを描画するために、<strong>PDL::Graphics::PLplot</strong>というモジュールを使います。
+
+<h4>一次関数のグラフ</h4>
+
+ではまず最初に一番簡単な「y = 2x」という一次関数のグラフを描いてみましょう。xyのグラフを作成するには<strong>xyplot</strong>メソッドを使用します。
+
+<pre>
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成(PNG形式でgraph.pngという名前で出力)
+my $pl = PDL::Graphics::PLplot->new(DEV => 'png', FILE => 'graph.png');
+
+# xの値として0～99までを表すPDL変数を作成
+my $x  = pdl->sequence(100);
+
+# y = 2x
+my $y = 2 * $x;
+
+# グラフを作成
+$pl->xyplot($x, $y);
+
+# クローズ
+$pl->close;
+</pre>
+
+次のように1次関数のグラフを作成することができます。
+
+<q>
+[f:id:perlcodesample:20131106082618p:image:w500]
+</q>
+
+<h4>newのオプション</h4>
+
+グラフのオプションをいくつか紹介しておきます。newメソッドの引数として渡すことができます。
+
+<pre>
+my $pl = PDL::Graphics::PLplot->new(
+  DEV => 'png',
+  FILE => 'graph.png',
+  PAGESIZE => [500, 400]
+);
+</pre>
+
+<b>グラフのサイズ</b>
+
+<strong>PAGESIZE</strong>で出力するグラフのサイズを指定できます。
+
+<pre>
+PAGESIZE => [500, 400]
+</pre>
+
+<h4>グラフを描画するときのオプション</h4>
+
+グラフを描画するときに指定するオプションです。
+
+<pre>
+$pl->xyplot($x, $y, XLAB => 'x', YLAB => 'y');
+</pre>
+
+<b>x軸のラベル</b>
+
+<strong>XLAB</strong>でx軸のラベルを指定できます。
+
+<pre>
+XLAB => 'x'
+</pre>
+
+<b>y軸のラベル</b>
+
+<strong>YLAB</strong>でy軸のラベルを指定できます。
+
+<pre>
+YLAB => 'y'
+</pre>
+
+<b>描画領域</b>
+
+<strong>BOX</strong>オプションで描画領域を指定できます。
+
+<pre>
+BOX => [xの開始, xの終了, yの開始, yの終了]
+</pre>
+
+以下のように指定します。
+
+<pre>
+BOX => [0, 150, 0, 300]
+</pre>
+
+<b>x軸の目盛りラベルの幅</b>
+
+<strong>XTICK</strong>でx軸の目盛りラベルの幅を指定できます。
+
+<pre>
+XTICK => 10
+</pre>
+
+<b>y軸の目盛りラベルの幅</b>
+
+<strong>YTICK</strong>でy軸の目盛りラベルの幅を指定できます。
+
+<pre>
+YTICK => 10
+</pre>
+
+<b>タイトル</b>
+
+<strong>TITLE</strong>でグラフのタイトルを指定することができます。
+
+<pre>
+TITLE => 'y = 2x'
+</pre>
+
+<b>ビューポート</b>
+
+<strong>VIEWPORT</strong>でグラフを実際にどの部分に描画するかを指定できます。0～1の割合で指定します。
+
+<pre>
+VIEWPORT => [xの最小値の位置, xの最大値の位置, yの最小値の位置, yの最大値の位置]
+</pre>
+
+以下のように指定します。
+
+<pre>
+VIEWPORT => [0.1, 0.5, 0.1, 0.5]
+</pre>
+
+<b>x軸を描画する</b>
+
+x軸を描画するには<strong>XBOX</strong>に<strong>bcnsta</strong>を指定します。この値のデフォルトは<strong>bcnst</strong>で<strong>a</strong>を加えると、x軸を描画できます。
+
+<pre>
+XBOX => 'bcnsta',
+</pre>
+
+<b>x軸を描画する</b>
+
+y軸を描画するには<strong>YBOX</strong>に<strong>bcnsta</strong>を指定します。この値のデフォルトは<strong>bcnst</strong>で<strong>a</strong>を加えると、y軸を描画できます。
+
+<pre>
+YBOX => 'bcnsta',
+</pre>
+
+<b>グラフの色</b>
+
+<strong>COLOR</strong>でグラフの色を指定できます。
+
+<pre>
+COLOR => 'RED'
+</pre>
+
+以下が色の種類です。
+
+<pre>
+  BLACK        GREEN        WHEAT        BLUE
+  RED          AQUAMARINE   GREY         BLUEVIOLET
+  YELLOW       PINK         BROWN        CYAN
+  TURQUOISE    MAGENTA      SALMON       WHITE
+  ROYALBLUE    DEEPSKYBLUE  VIOLET       STEELBLUE1
+  DEEPPINK     MAGENTA      DARKORCHID1  PALEVIOLETRED2
+  TURQUOISE1   LIGHTSEAGREEN SKYBLUE     FORESTGREEN
+  CHARTREUSE3  GOLD2        SIENNA1      CORAL
+  HOTPINK      LIGHTCORAL   LIGHTPINK1   LIGHTGOLDENROD
+</pre>
+
+<h4>サンプル</h4>
+
+「y = 1/2 x + 10」という一次関数のグラフを書いてみました。
+
+<q>
+[f:id:perlcodesample:20131106082619p:image:w500]
+</q>
+
+<pre>
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成(PNG形式でgraph.pngという名前で出力)
+my $pl = PDL::Graphics::PLplot->new(
+  DEV => 'png',
+  FILE => 'graph.png',
+  PAGESIZE => [600, 300],
+);
+
+# xの値として0～99までを表すPDL変数を作成
+my $x  = pdl->sequence(100) - 50;
+
+# y = 2x
+my $y = (1/2) * $x + 10;
+
+# グラフを作成
+$pl->xyplot(
+  $x,
+  $y,
+  XLAB => 'x',
+  YLAB => 'y',
+  TITLE => 'y = 1/2 x + 10',
+  XBOX => 'bcnsta',
+  YBOX => 'bcnsta',
+  COLOR => 'RED',
+  JUST => 1
+);
+
+# クローズ
+$pl->close;
+</pre>
+
+<h3>n次関数のグラフ</h3>
+
+では3次関数を描画してみましょう。どんな形をしているのかをすぐに知れるのは面白いですね。
+
+[f:id:perlcodesample:20131106102521p:image:w500]
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot->new(DEV => 'png', FILE => 'graph.png');
+
+# xの値(0～4まで0.1きざみ)
+my $x  = pdl->sequence(40) * 0.1;
+
+# y = x^3 - 6x^2 + 11x -6
+my $y = ($x ** 3) - 6 * ($x ** 2) + (11 * $x) - 6;
+
+# グラフを作成
+$pl->xyplot($x, $y);
+
+# クローズ
+$pl->close;
+</pre>
+
+<h3>三角関数</h3>
+
+次は三角関数(sin)のグラフです。三角関数の計算を行うには<strong>sin</strong>メソッドを使用します。これはPDL::Mathで定義されています。
+
+[f:id:perlcodesample:20131106102522p:image:w500]
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot->new(DEV => 'png', FILE => 'graph.png');
+
+# xの値
+my $x  = pdl->sequence(200) * 0.1;
+
+# y = sin(x)
+my $y = $x->sin;
+
+# グラフを作成
+$pl->xyplot($x, $y);
+
+# クローズ
+$pl->close;
+</pre>
+
+<h3>指数関数</h3>
+
+次は指数関数のグラフです。演算する値eをPDL変数として作成しているところに注意してください。
+
+[f:id:perlcodesample:20131106102523p:image:w500]
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot->new(DEV => 'png', FILE => 'graph.png');
+
+# e
+my $e = pdl [exp(1)];
+
+# xの値
+my $x  = pdl->sequence(60) * 0.1 - 3;
+
+# y = e^x
+my $y = $e ** $x;
+
+# グラフを作成
+$pl->xyplot($x, $y);
+
+# クローズ
+$pl->close;
+
+</pre>
+
+<h3>対数関数(自然対数)</h3>
+
+最後は対数関数(自然対数)のグラフです。対数関数(自然対数)の計算を行うには<strong>log</strong>メソッドを使用します。これはPDL::Mathで定義されています。log0の値は無限小になるので、グラフは0.1からスタートしていることに注意してください。
+
+[f:id:perlcodesample:20131106102524p:image:w500]
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot->new(DEV => 'png', FILE => 'graph.png');
+
+# xの値
+my $x  = pdl->sequence(100) * 0.1 + 0.1;
+
+# y = log(x)
+my $y = $x->log;
+
+# グラフを作成
+$pl->xyplot($x, $y);
+
+# クローズ
+$pl->close;
+</pre>
+
+
+<h3>ストリッププロット - 1つのx軸と複数のy軸のグラフ</h3>
+
+一つのx軸と複数のy軸のグラフはストリッププロットと呼ばれ<strong>stripplots</strong>メソッドを使って描画することができます。
+
+[f:id:perlcodesample:20131107113838p:image:w500]
+
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot->new(DEV => 'png', FILE => 'graph.png');
+
+# データ
+my $x  = pdl->sequence(20);
+my $pi = 4 * atan2(1,1);
+my $y1 = $x ** 2;
+my $y2 = sqrt $x;
+my $y3 = $x ** 3;
+my $y4 = sin(($x/20) * 2 * $pi);
+my $ys = $y1->cat($y2, $y3, $y4);
+
+# ストリッププロット
+$pl->stripplots(
+  $x,
+  $ys,
+  PLOTTYPE => 'LINE',
+  TITLE => 'functions',
+  YLAB => ['x**2', 'sqrt(x)', 'x**3', 'sin(x/20*2pi)'],
+  COLOR => ['GREEN', 'DEEPSKYBLUE', 'DARKORCHID1', 'DEEPPINK'],
+  XLAB => 'X label'
+);
+$pl->close;
+</pre>
+

@@ -1,0 +1,80 @@
+<h2 class="title">「_」 - ファイルテストの結果の再利用</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+「<strong>_</strong>」を使用すると<a href="/blog/20100820127859.html">ファイルテスト演算子</a>、あるいは<a href="/blog/20080512121060.html">stat関数</a>の結果を再利用することができます。
+
+<pre>
+if( -s $file > $size && -A _ > $from_last_access ){ 
+  ...
+}
+</pre>
+
+-s $file で、サイズを取得しますが、実は背後では、stat を呼んでいます。そのときに、サイズ以外の情報も内部的に保存されます。_ を利用すれば、一回目のファイルテストで取得した、ファイルの情報を再利用できます。
+
+_ を使う意義はパフォーマンスだけです。ファイルの情報を得るには、OSに対してシステムコールを行わなければなりません。システムコールは、一般的にコストがかかります。_ を使えば、すでに取得しているファイル情報を利用するので、2回目のシステムコールが省かれます。
+
+注意点は、近接している場所以外では使わないことです。どこかで、statが呼ばれると、情報が更新されてしまいます。
+
+<h3>サンプル</h3>
+
+ファイルテストの結果を再利用するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイル演算子(あるいは stat )の結果を再利用する。
+
+# 準備
+my $file = 'a.txt';
+unless (-f $file){
+  die "$file は存在しません。\n"; # ファイルの存在をチェック
+}
+
+print " 1: 古くて、ファイルサイズの大きいファイルかをチェックする\n";
+my $size = 1_000_000;
+my $from_last_access = 90;
+
+if (-s $file > $size && -A _ > $from_last_access) { 
+  # 2回目のファイルテストには、_ が利用できる。
+  print "$file は、$sizeバイトより大きくて、" .
+    "最終アクセスから $from_last_access日以上たっています。\n\n"; 
+}
+else { print "$fileは、条件に当てはまりませんでした。\n" }
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+

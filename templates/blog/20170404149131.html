@@ -1,0 +1,163 @@
+<h2 class="title">print関数 - 文字列を出力する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+文字列を出力するには<b>print関数</b>を使用します。
+
+<pre>
+print "Hello World!";
+</pre>
+
+文字列を変数に代入してからprint関数に渡すこともできます。実際にプログラムを書く場合は、この方法をお勧めします。ひとつの文字列を作成してからprint関数に渡す方法です。
+
+<pre>
+my $message = "Hello World!";
+print $message;
+</pre>
+
+print関数には<a href="/blog/20100308126967.html">リスト</a>や配列を渡すこともできます。文字列は連結されて出力されます。実際にプログラムを書く場合は、この方法よりも、上記の方法がお勧めです。
+
+<pre>
+# リスト
+print "Hello", "World", "!";
+
+# 配列
+my @strings = ("Hello", "World", "!");
+print @strings;
+</pre>
+
+<h3>配列を一つの文字列に連結してから出力する方法</h3>
+
+よく使うテクニックに、配列の文字列をカンマで連結して、最後に改行をつけて出力するというのがあります。
+
+これはprint関数と<a href="/blog/20081007122338.html">join関数</a>、<a href="/blog/20080221120361.html">文字列連結演算子</a>を使ってきれいに書くことができます。
+
+<pre>
+my @animals = ('Dog', 'Cat', 'Mouse');
+print join(',', @animals) . "\n";
+</pre>
+
+<h3>print関数のデフォルトの出力先は標準出力</h3>
+
+print関数のデフォルトの出力先は、画面、すなわち<b>標準出力</b>です。標準出力については詳しい解説は以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080730121743.html">標準入力 標準出力 標準エラー出力</a>
+  </li>
+</ul>
+
+print関数のデフォルトの出力先は、標準出力であり次の二つの書き方の意味は同じです。
+
+<pre>
+print "Hello";
+print STDOUT "Hello";
+</pre>
+
+STDOUTの後ろにカンマがないことに注意してください。これは「間接オブジェクト構文」と呼ばれ次の記法と同じ意味を持ちます。
+
+<pre>
+STDOUT->print("Hello");
+</pre>
+
+print関数で出力先を指定する場合は、間接オブジェクト構文を使うことがPerlの慣習となっています。
+
+<h3>標準エラー出力を指定する</h3>
+
+出力先として<b>標準エラー出力</b>を指定することができます。出力先に<b>STDERR</b>を指定してください。
+
+<pre>
+print STDERR "Hello";
+</pre>
+
+標準エラー出力はエラー用の出力です。標準エラー出力の詳しい解説は、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080730121743.html">標準入力 標準出力 標準エラー出力</a>
+  </li>
+</ul>
+
+<h3>ファイルハンドルを指定する</h3>
+
+print関数の出力先をファイルに変えることもできます。その場合は<a href="/blog/20080718121643.html">open関数</a>でファイルを開いて、ファイルハンドルを作成し、そのファイルハンドルをprint関数で指定します。
+
+<pre>
+my $file = "output.txt";
+open my $fh, '>', $file
+  or die "Can't open \"$file\": $!";
+print $fh "Hello";
+</pre>
+
+「output.txt」というファイルに「Hello」が出力されます。
+
+<h3>シェルでいうecho関数と同じ</h3>
+
+bashを使っていれば出力のためにechoを使うと思いますが、これはPerlのprint関数の機能に該当します。
+
+<h3>書式を設定したい場合はprintf関数かsprintf関数</h3>
+
+C言語のprintf関数のような書式指定を行いたい場合は<a href="/blog/20170326149148.html">printf関数</a>を使うか、<a href="/blog/20081001122296.html">sprintf関数</a>で書式設定した文字列を作成して、print関数に渡しましょう。
+
+<pre>
+# printf関数
+printf "Number %d", 3;
+
+# sprintf関数
+my $string = sprintf("Number %d", 3);
+print $string;
+</pre>
+
+<h3>リダイレクトでファイルへ出力するテクニック</h3>
+
+よく使うテクニックとして、標準出力をリダイレクトしてファイルに出力するというものがあります。このテクニックを使うとopen関数を使うことなしに、ファイルに出力することができます。
+
+まずは普通にprint関数を書く。
+
+<pre>
+# hello.pl
+print "Hello";
+</pre>
+
+次にリダイレクトを使って、ファイルに出力。以下のようにコマンドを実行します。
+
+<pre>
+perl hello.pl > output.txt
+</pre>
+
+「output.txt」というファイルに「Hello」が出力されます。
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

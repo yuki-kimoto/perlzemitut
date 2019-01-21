@@ -1,0 +1,139 @@
+<h2 class="title">last文 - 繰り返しから抜ける</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+
+<strong>last文</strong>を使うと次の繰り返しから抜けることができます。これは、C言語やJavaのbreak文に該当します。
+
+<pre>
+last
+</pre>
+
+last文はwhile文やfor文などの繰り返し文の中で使うことができます。
+
+<pre>
+while (1) {
+  if (条件) {
+    last;
+  }
+}
+
+for (my $i = 0; $i < 10; $i++) {
+  if (条件) {
+    last;
+  }
+}
+
+foreach my $animal (@animals) {
+  if (条件) {  
+    last;
+  }
+}
+</pre>
+
+特定の条件の時だけ、ループを脱出したい場合にlast文を利用することができます。
+
+<h3>サンプルプログラム</h3>
+
+last文を使ったサンプルプログラムです。
+
+<h4>特定の文字にマッチしたときループを抜ける</h4>
+
+ループ処理の途中で、ある条件の場合に、ループを抜けたい場合にlast文を利用できます。文字の<a href="/blog/20161012147627.html">配列</a>を準備して、特定の文字の場合にループを抜けるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my @chars = qw(z z a b c d e f);
+
+for my $char (@chars){
+  last if $char eq 'c';
+  print "$char\n";
+}
+</pre>
+
+実行結果です。「c」のときにループを抜けるので、出力結果は「c」の前にある文字だけになります。
+
+<pre>
+z
+z
+a
+b
+</pre>
+
+「qw(z z a b c d e f)」は<a href="/blog/20080222120369.html">文字列リスト演算子</a>です。
+
+if文、for文、while文については、以下で詳しく解説していますので、参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20161023147731.html">if文を使った条件分岐の構文を覚えよう</a>
+  </li>
+  <li>
+    <a href="/blog/20170521149524.html">for文、while文を使った繰り返しの処理を覚えよう</a>
+  </li>
+</ul>
+
+<h4>多重ループから抜ける方法</h4>
+
+lastを使うとループから脱出できますが、脱出できるのは直近のループブロックだけです。多重ループから抜け出すには少し工夫が必要です。フラグと条件分岐をうまく使うことで多重ループを脱出できます。
+
+無限ループを、フラグとふたつのlastを使って脱出するプログラムです。
+
+<pre>
+my $num = 0;
+
+# 多重ループから脱出する
+while (1) {
+  # フラグをひとつ作成する
+  my $finish;
+  while (1) {
+    if ($num == 10) {
+      $finish = 1;
+      last;
+    }
+    $num++;
+  }
+  if ($finish) {
+    last;
+  }
+}
+
+</pre>
+
+ラベルを外側のループの上に書いて、「last ラベル」として多重ループを抜ける方法もありますが、個人的には、お勧めしません。上記のようにうまくフラグを作って、多重ループを脱出したほうが、ソースコードの見通しがよくなります。
+
+<h3>関連情報</h3>
+
+<h4>next文を使うとループの先頭にジャンプできる</h4>
+
+last文と似たものにnext文があります。next文を使うと、次のループの先頭に移動することができます。
+
+<pre>
+next
+</pre>
+
+next文については、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080329120687.html">next文 - 次の繰り返しの先頭にジャンプする</a>
+  </li>
+</ul>
+

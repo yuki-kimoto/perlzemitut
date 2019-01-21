@@ -1,0 +1,423 @@
+<h2 class="title">XSにおけるPerlの型とC言語の型の相互変換</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100809127859.html">
+        <span itemprop="name">XS</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+PerlからCの関数を呼び出すということは、Perlの型をCの型へ変換を行い、C言語の関数を呼び出し、結果を、C言語の型に戻してPerlに返すということです。つまり、覚えることの大部分は型変換を覚えることにつきます。
+ここではどのような型変換にでも対応できるような情報を提供したいと思います。
+
+<h3>基本的な型の変換</h3>
+
+まずは基本的な型の変換について解説します。
+
+<h4>SV*型からIV型へ</h4>
+
+Perlでは関数に渡される値は、ほぼスカラ型です。スカラ型はXSの世界では「SV*型」になります。C言語の関数がもしIV型を要求しているなら、SV*型をIV型に変換する必要があります。
+
+SV*型の値は、IVという領域に整数型の値を所有しています。つまり、IV型に変換するためには、SV*型に含まれるIVの値を取り出してあげればよいわけです。
+
+SV*型の値に所有されているIVの値を取り出すには<b>「SvIV(sv)」</b>を使用します。
+
+XSの世界では整数型はIVという型にマッピングされているので、IV型に代入します。IV型は、整数とポインタを保存できる十分なサイズと定義されています。64bit整数がサポートされているPerlにおいては、64bit整数が保存できる十分なサイズがあります。
+
+<pre>
+# SV*型からIV型へ
+void
+foo(...)
+  PPCODE:
+{
+  SV* num_sv = ST(0);
+  IV num = SvIV(num_sv);
+  
+  XSRETURN(0);
+}
+</pre>
+
+<h4>IV型からSV*型へ</h4>
+
+次にPerlの世界へ返却するにはIV型をSV*型に変換する必要があります。IV型から新しくSV*型を作成するには、<b>newSViv(iv)</b>を使用します。
+
+ひとつ注意してほしいのは、SV*型を新しく作成した場合は、必ず<b>sv_2mortal(sv)</b>を使って、値をモータルと呼ばれる状態にしてください。値をモータルにすることによって、SV*が使用されなくなったときに、自動的にメモリが解放されます。これを忘れると、メモリリークが発生します。
+
+<pre>
+# IV型からSV*型へ
+void
+foo(...)
+  PPCODE:
+{
+  IV num = 3;
+  SV* num_sv = sv_2mortal(newSViv(num));
+  XPUSHs(num_sv);
+  XSRETURN(1);
+}
+</pre>
+
+<h4>SV*型からUV型へ</h4>
+
+SV*型の値はUVと呼ばれる符号なし整数の値を所有しています。つまり、UV型に変換するためには、SV*型の値に所有されているUVの値を取り出してあげればよいわけです。
+SV*型の値に所有されているUVの値を取り出すには<b>「SvUV(sv)」</b>を使用します。
+
+XSの世界では符号なし整数はUVという型にマッピングされているので、UV型に代入します。UVとunsigned intは互換があります。
+
+<pre>
+# SV*型からUV型へ
+void
+foo(...)
+  PPCODE:
+{
+  SV* num_sv = ST(0);
+  UV num = SvUV(num_sv);
+
+  XSRETURN(0);
+}
+</pre>
+
+<h4>UV型からSV*型へ</h4>
+
+Perlの世界へ返却するにはUV型をSV*型に変換する必要があります。UV型から新しくSV*型を作成するには、<b>newSVuv(uv)</b>を使用します。値をモータルにするのを忘れないようにしてください。
+
+<pre>
+# UV型からSV*型へ
+void
+foo(...)
+  PPCODE:
+{
+  UV num = 5;
+  SV* num_sv = sv_2mortal(newSVuv(num));
+  XPUSHs(num_sv);
+  XSRETURN(1);
+}
+</pre>
+
+<h4>SV*型からdouble型へ</h4>
+
+double型の値は、SV*型のNVという値に含まれています。double型に変換するためには、SV*型に所有されているNVの値を取り出してあげればよいわけです。
+
+SV*型の値に所有されているNVの値を取り出すには<b>「SvNV(sv)」</b>を使用します。
+
+<pre>
+# SV*型からdouble型へ
+void
+foo(...)
+  PPCODE:
+{
+  SV* num_sv = ST(0);
+  double num = SvNV(num_sv);
+
+  XSRETURN(0);
+}
+</pre>
+
+<h4>double型からSV*型へ</h4>
+
+Perlの世界へ返却するにはdouble型をSV*型に変換する必要があります。double型から新しくSV*型を作成するには、<b>newSVnv(nv)</b>を使用します。値をモータルにするのを忘れないようにしてください。
+
+<pre>
+# double型からSV*型へ
+void
+foo(...)
+  PPCODE:
+{
+  double num = 3.35;
+  SV* num_sv = sv_2mortal(newSVnv(num));
+  XPUSHs(num_sv);
+  XSRETURN(1);
+}
+</pre>
+
+<h4>SV*型からchar*型へ</h4>
+
+char*型の値は、SV*型の値の中のPVという値に含まれています。char*型に変換するためには、SV*型の値に所有されているPVの値を取り出してあげればよいわけです。
+
+SV*型の値に所有されているPVの値を取り出すには<b>「SvPV_nolen(sv)」</b>を使用します。
+
+<pre>
+# SV*型からchar*型へ
+void
+foo(...)
+  PPCODE:
+{
+  SV* str_sv = ST(0);
+  char* str = SvPV_nolen(str_sv);
+
+  XSRETURN(0);
+}
+</pre>
+
+<h4>char*型からSV*型へ</h4>
+
+Perlの世界へ返却するにはchar*型をSV*型に変換する必要があります。char*型から新しくSV*型を作成するには、<b>newSVpvn(pv, length)</b>を使用します。
+
+第二引数に文字列の長さを指定する必要があります。文字列の長さを知るために、strlen関数を使っています。
+
+値をモータルにするのを忘れないようにしてください。
+
+ちなみに、newSVpvというAPIもあるのですが、これは文字列の長さに 0 をあたえるとstrlenがよばれるという機能がついていて、バグの元になりやすいので、newSVpvnをつかうようにするのがお勧めだそうです。(<a href="http://xsubtut.github.io/">参考</a>)。
+
+<pre>
+# char*型からSV*型へ
+void
+foo(...)
+  PPCODE:
+{
+  char* str = "Hello";
+  SV* str_sv2 = sv_2mortal(newSVpvn(str, strlen(str)));
+  XPUSHs(str_sv2);
+  XSRETURN(1);
+}
+</pre>
+
+<h4>SV*型からstd::string型へ</h4>
+
+<pre>
+# SV*型からstd::string型へ
+void
+foo(...)
+  PPCODE:
+{
+  SV* str_sv = ST(0);
+  char* str_ch = SvPV_nolen(str_sv);
+  std::string str(str_ch);
+
+  XSRETURN(0);
+}
+</pre>
+
+<h4>std::string型からSV*型へ</h4>
+
+<pre>
+# std::string型からSV*型へ
+void
+foo(...)
+  PPCODE:
+{
+  char* str = "Hello";
+  const char* str_ch = str.c_str();
+  SV* str_sv = sv_mortal(newSVpvn(str_ch, strlen(str_ch)));
+  XPUSHs(str_sv);
+  XSRETURN(1);
+}
+</pre>
+
+<h3>複雑な型の変換</h3>
+
+さて、今回はもう少し複雑な型の変換を取り上げたいと思います。たとえば、<a href="/blog/20161012147627.html">Perlの配列</a>を受け取る関数があったとしたらどうでしょうか。Perlの配列のリファレンスを、C言語の配列に変換する必要がありますね。このような複雑な型の変換について今回は考えてみましょう。
+
+<h4>配列のリファレンスをC言語の配列に変換</h4>
+
+まず配列のリファレンスを、配列(AV*型)に変換した後に、配列の要素をひとつづつ取得して、C言語の配列に変換します。リファレンスはSV*型です。「SvRV(rv)」でデリファレンスできます。リファレンスではないものをデリファレンスするとセグメンテーションフォールトを起こすので、必ず「SvROK(rv)」で、SV*型の値が、リファレンスであることをチェックします。
+
+<pre>
+void
+foo(...)
+  PPCODE:
+{
+  SV* nums_avrv = ST(0);
+  AV* nums_av;
+  if(SvROK(nums_avrv)) {
+    // デリファレンスしてAV*型に変換
+    nums_av = (AV*)SvRV(nums_avrv);
+  }
+  else {
+    croak("first argument must be array reference");
+  }
+  
+  //配列の長さ(av_lenは(長さ - 1)が返ってくる)
+  size_t nums_len = av_len(nums_av) + 1;
+  
+  // メモリ割り当て
+  IV* nums = (IV*)malloc(sizeof(IV) * nums_len);
+  
+  // 配列の作成
+  for (int i = 0; i < nums_len; i++) {
+    // av_fetchで配列の要素を取り出す(SV*型へのポインタが返される)
+    SV** num_sv_ptr = av_fetch(nums_av, i, FALSE);
+    
+    // 要素が見つかればその値を、見つからなければundefを設定
+    SV* num_sv = num_sv_ptr ? *num_sv_ptr : &PL_sv_undef;
+    
+    // IV型に変換
+    IV num = SvIV(num_sv);
+    
+    // 配列に代入
+    nums[i] = num;
+    printf("%d\n", num);
+  }
+  
+  // いらなくなったら解放
+  free(nums);
+  
+  XSRETURN(0);
+}
+</pre>
+
+<h4>C言語の配列を配列のリファレンスに変換</h4>
+
+C言語の配列を、Perlの配列のリファレンスに変換します。配列(AV*型)は「newAV()」で作成できます。配列を作成した場合は、モータルにする必要があります。sv_2mortalはSV*型しか受け取れないので、(SV*)とキャストしていることに注意してください。またsv_2mortalはSV*型を返却するので、(AV*)とキャストしていることにも注意してください。
+
+配列に要素を追加するにはav_pushを使用します。IV型の値から新しくSV型の値を作成して、それを配列に追加しています。SV*型の値を配列の要素として追加するときは、手動でリファレンスカウントを増やす必要があります。このためにSvREFCNT_incを使用しています。
+
+newRV_incでリファレンスを生成することができます。newRVはSV*型の引数を受け取るので(SV*)とキャストしています。リファレンスを作成した場合も、sv_2mortalでモータルにする必要があります。
+
+<pre>
+void
+foo(...)
+  PPCODE:
+{
+  // C言語の配列
+  IV nums[] = {1, 2, 3};
+  
+  // 配列の長さ
+  size_t nums_len = sizeof nums / sizeof nums[0];
+  
+  // Perlの配列
+  AV* nums_av = (AV*)sv_2mortal((SV*)newAV());
+  
+  // 配列に追加
+  for (int i = 0; i < nums_len; i++) {
+    av_push(nums_av, SvREFCNT_inc(sv_2mortal(newSViv(nums[i]))));
+  }
+  
+  // 配列のリファレンスを作成
+  SV* nums_avrv = sv_2mortal(newRV_inc((SV*)nums_av));
+  
+  XPUSHs(nums_avrv);
+  XSRETURN(1);
+}
+</pre>
+
+<h4>ハッシュのリファレンスを構造体に変換</h4>
+
+<a href="/blog/20161013147635.html">Perlのハッシュ</a>をC言語の構造体に変換する方法を解説します。
+
+C言語セクションで構造体を宣言します。
+
+<pre>
+typedef struct {
+  double x;
+  double y;
+} Point;
+</pre>
+
+以下はXSセクションに書きます。
+
+<pre>
+void
+foo(...)
+  PPCODE:
+{
+  SV* point_hvrv = ST(0);
+  HV* point_hv;
+  if(SvROK(point_hvrv)) {
+    // デリファレンスしてHV*型に変換
+    point_hv = (HV*)SvRV(point_hvrv);
+  }
+  else {
+    croak("first argument must be hash reference");
+  }
+  
+  // hv_hetchでxに対応するハッシュの要素を取り出す(SV*型へのポインタが返される)
+  SV** x_sv_ptr = hv_fetch(point_hv, "x", strlen("x"), 0);
+  
+  // 要素が見つかればその値を、見つからなければundefを設定
+  SV* x_sv = x_sv_ptr ? *x_sv_ptr : &PL_sv_undef;
+  
+  // double型に変換
+  double x = SvNV(x_sv);
+  
+  // hv_hetchでyに対応するハッシュの要素を取り出す(SV*型へのポインタが返される)
+  SV** y_sv_ptr = hv_fetch(point_hv, "y", strlen("y"), 0);
+  
+  // 要素が見つかればその値を、見つからなければundefを設定
+  SV* y_sv = y_sv_ptr ? *y_sv_ptr : &PL_sv_undef;
+  
+  // double型に変換
+  double y = SvNV(y_sv);  
+  
+  // 構造体のポインタの作成
+  Point* point = (Point*)malloc(sizeof(Point));
+  point->x = x;
+  point->y = y;
+  
+  printf("%f\n", point->x);
+  printf("%f\n", point->y);
+  
+  // いらなくなったら解放
+  free(point);
+  
+  XSRETURN(0);
+}
+</pre>
+
+<h4>構造体をハッシュのリファレンスに変換</h4>
+
+構造体をハッシュのリファレンスに変換します。
+
+C言語セクションで構造体を宣言します。
+
+<pre>
+typedef struct {
+  double x;
+  double y;
+} Point;
+</pre>
+
+以下はXSセクションに書きます。ハッシュの作成は「newHV()」で行います。モータルにすることを忘れないでください。ハッシュの要素に追加するときは、SvREFCNT_incでリファレンスカウントをひとつ増やします。
+
+<pre>
+void
+foo(...)
+  PPCODE:
+{
+  // 構造体
+  Point *point = (Point*)malloc(sizeof(Point));
+  point->x = 1;
+  point->y = 2;
+  
+  // 値をSV*型に変換
+  SV* x_sv = sv_2mortal(newSVnv(point->x));
+  SV* y_sv = sv_2mortal(newSVnv(point->y));
+  
+  // ハッシュの作成
+  HV* point_hv = (HV*)sv_2mortal((SV*)newHV());
+  
+  // ハッシュに値を追加
+  hv_store(point_hv, "x", strlen("x"), SvREFCNT_inc(x_sv), 0);
+  hv_store(point_hv, "y", strlen("y"), SvREFCNT_inc(y_sv), 0);
+  
+  // ハッシュのリファレンスを作成
+  SV* point_hvrv = sv_2mortal(newRV_inc((SV*)point_hv));
+  
+  // 構造体の解放
+  free(point);
+  
+  XPUSHs(point_hvrv);
+  XSRETURN(1);
+}
+</pre>
+
+<h3>XSの関数を調べるにはperlapi</h3>
+
+ここで紹介したSV型のデータを作成する関数はperlapiというドキュメントで調べることができます。perlapiの簡単な解説を用意していますので、ご利用ください。
+
+<ul>
+  <li>
+    <a href="/blog/20100818127859.html">perlapi - XSにおけるデータ操作のためのAPI</a>
+  </li>
+</ul>
+

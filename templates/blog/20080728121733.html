@@ -1,0 +1,285 @@
+<h2 class="title">csvファイルを読み込んで配列の配列に変換に変換する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+
+実際にcsvファイルを読み込んで、Perlのデータ型(配列の配列)に変換して、標準出力に書き出すサンプルです。csvから配列の配列への変換はサブルーチンを使って行っています。何らかのファイルを読み込んで編集するといった場合の基本的な雛形にもなると思います。
+
+<pre>
+use strict;
+use warnings;
+
+# 引数の処理
+my $file = shift;
+
+unless ($file) {
+  # 引数がないときは、使用方法を示して終了。
+  die "Usage: $0 file"; 
+}
+
+# ファイルを解析してcsv形式のデータを配列の配列に変換。
+my @recs = parse_file($file);
+
+# 出力( 2次元配列なので、forでたどる )
+for my $items (@recs) {
+  # カンマで連結して出力。
+  print join(',', @$items) . "\n";
+}
+
+# ファイル解析用の関数( 今回は単に書き戻すだけだけれど・・ )
+sub parse_file {
+  my $file = shift;
+    
+  open(my $fh, "<", $file)
+    or die "Cannot open $file for read: $!";
+  
+  # 複数のレコードを格納する配列へのリファレンスを準備
+  my $recs = []; 
+  while (my $line = <$fh>) {
+    chomp $line; # 改行を取り除く
+    
+    # データを格納する配列へのリファレンスを準備
+    # カンマで行を分けて配列に格納
+    # splitは配列を返すので、
+    # @$itemsでデリファレンス
+
+    my $items = []; 
+    @$items = split(/,/, $line); 
+
+    # push関数の第1引数は配列なので、@$recs
+    # とデリファレンス。
+    push @$recs, $items;
+  }
+  close $fh;    
+  return $recs; 
+}
+</pre>
+
+以下は、csvデータのサンプルです。csvファイルを作って、スクリプトの第1引数に与えて実行してください。
+
+<pre>
+masao,10,Japan
+taro,20,USA
+rika,38,France
+</pre>
+
+<h3>コード解説</h3>
+
+<h4>(1)第1引数にファイル名が与えられなかった場合の処理</h4>
+
+<pre>
+unless ($file) {
+  # 引数がないときは、使用方法を示して終了。
+  die "Usage: $0 file";
+}
+</pre>
+
+引数のチェックはなるべく行うようにします。第1引数にファイル名がなかった場合は、使用方法を示して終了します。$0 は特殊変数で実行しているスクリプト名です。
+
+<h4>(2)ファイルを読み込んで、csv形式のテキストを配列の配列に変換する</h4>
+
+<pre>
+my @recs = parse_file($file);
+</pre>
+
+parse_file は自作のサブルーチンです。ファイルを読み込んで、csv形式のテキストを配列の配列に変換します。入力と出力のイメージは以下のようになります。
+
+<pre>
+masao,10,Japan
+taro,20,USA
+rika,38,France
+
+↓
+
+@recs = (
+    [ 'masao', 10, 'Japan' ],
+    [ 'taro', 20, 'USA' ],
+    [ 'rika', 38, 'France' ],
+)
+</pre>
+
+<h4>(3)csv形式で出力する</h4>
+
+<pre>
+for my $items (@recs) {
+  # カンマで連結して出力。
+  print join(',', @$items) . "\n";
+}
+</pre>
+
+出力するには、@recs に含まれるレコードの数だけforeach文で繰り返します。それぞれのレコードを、<a href="/blog/20081007122338.html">join関数</a>でカンマで連結して出力します。改行を最後につけます。
+
+<h4>(4)ファイルを読み込んで、csv形式のテキストを配列の配列に変換する関数の解説</h4>
+
+<pre>
+sub parse_file {
+  my $file = shift;
+  
+  open(my $fh, "<", $file)
+    or die "Cannot open $file for read: $!";
+  
+  # 複数のレコードを格納する配列へのリファレンスを準備
+  my $recs = [];
+  while (my $line = <$fh>) {
+    # 改行を取り除く
+    chomp $line;
+    
+    # データを格納する配列へのリファレンスを準備
+    # カンマで行を分けて配列に格納
+    # splitは配列を返すので、
+    # @$itemsでデリファレンス
+    my $items = []; 
+    @$items = split(/,/, $line); 
+
+    # push関数の第1引数は配列なので、@$recsとデリファレンス。
+    push @$recs, $items; 
+  }
+  close $fh;    
+  return $recs;
+}
+</pre>
+
+<h4>(4)-1 ファイル名を引数に受け取る </h4>
+
+<pre>
+my $file = shift;
+</pre>
+
+ファイル名を引数に与えて、サブルーチン内でファイルをオープン、クローズするようにします。
+
+<h4>(4)-2 戻り値として返却する配列の配列の作成</h4>
+
+<pre>
+my $recs = []; # 複数のレコードを格納する配列へのリファレンスを準備
+</pre>
+
+最終的には、以下のようになりますが、まずは一番外の枠だけを作成します。
+
+<pre>
+$recs = [
+  ['masao', 10, 'Japan'],
+  ['taro', 20, 'USA'],
+  ['rika', 38, 'France'],
+]
+</pre>
+
+<h4>(4)-3 whileループ内での処理</h4>
+
+<pre>
+while (my $line = <$fh>) {
+  # 改行を取り除く
+  chomp $line; 
+
+  # データを格納する配列へのリファレンスを準備
+  my $items = [];
+
+  # カンマで行を分けて配列に格納
+  # splitは配列を返すので、
+  # @$itemsでデリファレンス
+  @$items = split(/,/, $line); 
+
+  # push関数の第1引数は配列なので、@{$recs}とデリファレンス。
+  push @$recs, $items; 
+}
+</pre>
+
+<h4>(4)-3-a 空の配列へのリファレンスの作成</h4>
+
+<pre>
+my $items = [];
+</pre>
+
+一回目のwhileループの終わりの時点で、[masao,10,Japan] となりますが、最初に枠だけ作成します。
+
+<h4>(4)-3-b カンマ区切りの文字列の分割</h4>
+
+<pre>
+@$items = split(/,/, $line);
+</pre>
+
+split関数は、配列を返却するので、受け取るには、$items をデリファレンスして、@$itemsとします。
+
+<h4>(4)-3-c 作成したレコードを、配列へのリファレンスに追加</h4>
+
+<pre>
+push @$recs, $items;
+</pre>
+
+$recs に $itemsを追加します。whileの一回目が終わると以下のようになります。
+
+<pre>
+$recs = [
+  ['masao', 10, 'Japan'],
+]
+</pre>
+
+push の第1引数は、配列を受け取るのでデリファレンスします。
+
+<h3>kitsさんの指摘を受けてサブルーチンを書き直しました</h3>
+
+<pre>
+push @$recs とするよりも、my @recs にデータを入れて
+最後に @recs か \@recs を返せばいいような。
+(デリファレンスの手間が無駄な気がする)
+</pre>
+
+以下は書き直したサブルーチンです。kitsさんが言ったとおりこっちのほうがずいぶんとすっきりします。ありがとうございます。
+
+<pre>
+sub parse_file{
+  my $file = shift;
+    
+  open(my $fh, "<", $file)
+    or die "Cannot open $file for read: $!";
+    
+  # 配列に変更
+  my @recs;
+  while (my $line = <$fh>) {
+    # 改行を取り除く
+    chomp $line; 
+      
+    # 配列に変更
+    my @items; 
+    @items= split(/,/, $line);
+
+    # pushするときに、[ ]でリファレンスを作成。 
+    push @recs, [@items]; 
+  }
+  close $fh;    
+  return \@recs; 
+}
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+

@@ -1,0 +1,84 @@
+<h2 class="title">オブジェクト指向の利点 その1 名前の衝突を防ぐ</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">名前衝突防止</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+オブジェクト指向で書かれたモジュールは、<strong>使いやすい</strong>ことが多いです。オブジェクト指向で書くのは、便利だからであって「関数型の記述が古い」からではありません。
+
+今回からはしばらく、関数型のモジュールにはないオブジェクト指向型のモジュールの利点を挙げていきます。
+
+<h3>1. 名前の衝突を防いでくれる</h3>
+
+オブジェクト指向のひとつ目の利点は、<strong>名前の衝突を防いでくれる</strong>ことです。関数型のモジュールのEncodeと、オブジェクト指向型のモジュールのXML::Simpleを比較してみましょう。
+
+<h4>Encode</h4>
+
+Encodeをuseすると、decodeという関数が使用できるようになります。
+
+<pre>
+use Encode;
+
+my $string = 'あ';
+my $dec_string = decode('utf8', $string);
+</pre>
+
+<h4>XML::Simple</h4>
+
+XML::Simpleをuseしても、何の関数も使えるようになりません。XML::Simple->newして作成したオブジェクからはメソッドが使用できます。
+
+<pre>
+use XML::Simple;
+my $file = 'a.xml';
+my $parser = XML::Simple->new;
+$parser->XMLin($file);
+</pre>
+
+Encodeをuseすると、decodeという関数が使用できるようになるのですが、もしdecodeという関数がすでにどこかで定義されていたとしたらどうでしょうか?
+
+そうすると<strong>名前の衝突</strong>が起こります。一方、オブジェクト指向型のモジュールであるXML::Parserは何の関数もインポートしません。オブジェクト指向型のモジュールは<strong>利用者が名前の衝突を気にする必要がない</strong>のです。
+
+これが、一つ目の利点です。オブジェクト指向型のモジュールの<strong>欠点は記述が冗長</strong>になることです。Encodeのほうが、記述が短いですね。
+
+指針としては、プログラムの中で頻繁に利用することになり、複雑なオプションの指定がないようなものは関数型のモジュールとして作成すると記述がシンプルになります。
+
+一方特殊な用途で、オプション指定が複雑なものは、オブジェクト指向型のモジュールにすると、名前の衝突もなく利用しやすいです。
+
+たいていの場合はオブジェクト指向型のモジュールを作成したほうが良い場合が多いと思います。関数型のモジュールにする場合は良く考えてからにします。
+

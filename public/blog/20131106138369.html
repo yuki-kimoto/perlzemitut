@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="google-site-verification" content="4cR7WuQWEtkbu8ThfxGkT1vACiVi5Q_8ykfkRudOnTU" />
+
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+    
+    $(".to-top").click(function() {
+      // ページの一番上までスクロールさせます。
+      $('body, html').animate({scrollTop: 0}, 300, 'linear');;
+    });
+  });
+</script>
+
+    <title>PDLによるグラフの作成 - Perl入門ゼミ</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+  <a href="/">Perl入門ゼミ</a>
+</h1>
+<div style="overflow:hidden">
+  <a style="float:left;display:block;background:#fee;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:18px 16px;border:1px solid pink;margin-right:5px;color:#ff609d;text-decoration:underline" rel="nofollow" href="https://twitter.com/perlzemi">新着情報2019年 Twitter</a>
+  <a style="float:left;display:block;background:#e5ffe7;margin-top:5px;margin-left:5px;margin-bottom:3px;letter-spacing:2px;font-size:16px;padding:10px 23px 15px 23px;border:1px;color:green;border:1px solid #37993d;" rel="nofollow" href="http://www.perl-entrance.org"><img style="vertical-align:-10px;" width="35" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180629/20180629222333.png?1530278665">Perl入学式</a>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="entry">
+          <div class="entry-top">
+            <!-- entry-bottom -->
+
+          </div>
+          <div class="entry-body">
+            <h2 class="title">PDLによるグラフの作成</h2>
+<style>
+  .bread {
+    padding:0;
+    margin:0;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+</style>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">PDL</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<p>
+  PDLを使ってグラフを作成する方法を解説します。
+</p>
+<h3>PDL::Graphics::PLplotのインストール</h3>
+<p>
+  グラフを描画するためには<strong>PDL::Graphics::PLplot</strong>というモジュールをインストールします。(先に<a href="/blog/20131101138330.html">PDLをインストール</a>しておく必要があります。)
+</p>
+<h4>Windows</h4>
+<p>
+  ppmでインストールする場合は以下のコマンドを実行します。
+</p>
+<pre>
+ppm install http://www.sisyphusion.tk/ppm/PDL-Graphics-PLplot.ppd --force
+</pre>
+<p>
+  Enterを押してインストールを完了します。環境変数の設定する必要があるので、表示された環境変数PLPLOT_LIBを設定してください。たとえば、以下のように表示されます。
+</p>
+<pre>
+  In order to utilise the built in plplot capability set your
+  PLPLOT_LIB environment variable to C:\Perl\site\lib\PDL\plplot_supp
+</pre>
+<p>
+  pngがサポートされているバージョン
+</p>
+<p>
+  pngの出力がサポートされていたほうが便利なので、pngをサポートしているバージョンをインストールしたい場合は、次のコマンドを実行してください。
+</p>
+<pre>
+ppm install http://www.sisyphusion.tk/ppm_alt/PDL-Graphics-PLplot_alt.ppd --force
+</pre>
+<p>
+  Enterを押してインストールを完了します。環境変数の設定する必要があるので、表示された環境変数PLPLOT_LIBとPLPLOT_DRV_DIRを設定してください。たとえば、以下のように表示されます。
+</p>
+<pre>
+Running PDL-Graphics-PLplot-0.62 install script...
+  In order to utilise the built in plplot capability set your
+
+  PLPLOT_LIB environment variable to:
+   C:\Perl64\site\lib\PDL\plplot_supp
+
+  And set your PLPLOT_DRV_DIR environment variable to:
+   C:\Perl64\site\bin
+</pre>
+<h3>簡単なグラフの作成</h3>
+<p>
+  PDLでグラフを描画してみましょう。グラフを描画するために、<strong>PDL::Graphics::PLplot</strong>というモジュールを使います。
+</p>
+<h4>一次関数のグラフ</h4>
+<p>
+  ではまず最初に一番簡単な「y = 2x」という一次関数のグラフを描いてみましょう。xyのグラフを作成するには<strong>xyplot</strong>メソッドを使用します。
+</p>
+<pre>
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成(PNG形式でgraph.pngという名前で出力)
+my $pl = PDL::Graphics::PLplot-&gt;new(DEV =&gt; 'png', FILE =&gt; 'graph.png');
+
+# xの値として0～99までを表すPDL変数を作成
+my $x  = pdl-&gt;sequence(100);
+
+# y = 2x
+my $y = 2 * $x;
+
+# グラフを作成
+$pl-&gt;xyplot($x, $y);
+
+# クローズ
+$pl-&gt;close;
+</pre>
+<p>
+  次のように1次関数のグラフを作成することができます。
+</p>
+<q>
+<p>
+  [f:id:perlcodesample:20131106082618p:image:w500]
+</p>
+</q>
+<h4>newのオプション</h4>
+<p>
+  グラフのオプションをいくつか紹介しておきます。newメソッドの引数として渡すことができます。
+</p>
+<pre>
+my $pl = PDL::Graphics::PLplot-&gt;new(
+  DEV =&gt; 'png',
+  FILE =&gt; 'graph.png',
+  PAGESIZE =&gt; [500, 400]
+);
+</pre>
+<b>グラフのサイズ</b>
+<strong>PAGESIZE</strong>で出力するグラフのサイズを指定できます。
+<pre>
+PAGESIZE =&gt; [500, 400]
+</pre>
+<h4>グラフを描画するときのオプション</h4>
+<p>
+  グラフを描画するときに指定するオプションです。
+</p>
+<pre>
+$pl-&gt;xyplot($x, $y, XLAB =&gt; 'x', YLAB =&gt; 'y');
+</pre>
+<b>x軸のラベル</b>
+<strong>XLAB</strong>でx軸のラベルを指定できます。
+<pre>
+XLAB =&gt; 'x'
+</pre>
+<b>y軸のラベル</b>
+<strong>YLAB</strong>でy軸のラベルを指定できます。
+<pre>
+YLAB =&gt; 'y'
+</pre>
+<b>描画領域</b>
+<strong>BOX</strong>オプションで描画領域を指定できます。
+<pre>
+BOX =&gt; [xの開始, xの終了, yの開始, yの終了]
+</pre>
+<p>
+  以下のように指定します。
+</p>
+<pre>
+BOX =&gt; [0, 150, 0, 300]
+</pre>
+<b>x軸の目盛りラベルの幅</b>
+<strong>XTICK</strong>でx軸の目盛りラベルの幅を指定できます。
+<pre>
+XTICK =&gt; 10
+</pre>
+<b>y軸の目盛りラベルの幅</b>
+<strong>YTICK</strong>でy軸の目盛りラベルの幅を指定できます。
+<pre>
+YTICK =&gt; 10
+</pre>
+<b>タイトル</b>
+<strong>TITLE</strong>でグラフのタイトルを指定することができます。
+<pre>
+TITLE =&gt; 'y = 2x'
+</pre>
+<b>ビューポート</b>
+<strong>VIEWPORT</strong>でグラフを実際にどの部分に描画するかを指定できます。0～1の割合で指定します。
+<pre>
+VIEWPORT =&gt; [xの最小値の位置, xの最大値の位置, yの最小値の位置, yの最大値の位置]
+</pre>
+<p>
+  以下のように指定します。
+</p>
+<pre>
+VIEWPORT =&gt; [0.1, 0.5, 0.1, 0.5]
+</pre>
+<b>x軸を描画する</b>
+<p>
+  x軸を描画するには<strong>XBOX</strong>に<strong>bcnsta</strong>を指定します。この値のデフォルトは<strong>bcnst</strong>で<strong>a</strong>を加えると、x軸を描画できます。
+</p>
+<pre>
+XBOX =&gt; 'bcnsta',
+</pre>
+<b>x軸を描画する</b>
+<p>
+  y軸を描画するには<strong>YBOX</strong>に<strong>bcnsta</strong>を指定します。この値のデフォルトは<strong>bcnst</strong>で<strong>a</strong>を加えると、y軸を描画できます。
+</p>
+<pre>
+YBOX =&gt; 'bcnsta',
+</pre>
+<b>グラフの色</b>
+<strong>COLOR</strong>でグラフの色を指定できます。
+<pre>
+COLOR =&gt; 'RED'
+</pre>
+<p>
+  以下が色の種類です。
+</p>
+<pre>
+  BLACK        GREEN        WHEAT        BLUE
+  RED          AQUAMARINE   GREY         BLUEVIOLET
+  YELLOW       PINK         BROWN        CYAN
+  TURQUOISE    MAGENTA      SALMON       WHITE
+  ROYALBLUE    DEEPSKYBLUE  VIOLET       STEELBLUE1
+  DEEPPINK     MAGENTA      DARKORCHID1  PALEVIOLETRED2
+  TURQUOISE1   LIGHTSEAGREEN SKYBLUE     FORESTGREEN
+  CHARTREUSE3  GOLD2        SIENNA1      CORAL
+  HOTPINK      LIGHTCORAL   LIGHTPINK1   LIGHTGOLDENROD
+</pre>
+<h4>サンプル</h4>
+<p>
+  「y = 1/2 x + 10」という一次関数のグラフを書いてみました。
+</p>
+<q>
+<p>
+  [f:id:perlcodesample:20131106082619p:image:w500]
+</p>
+</q>
+<pre>
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成(PNG形式でgraph.pngという名前で出力)
+my $pl = PDL::Graphics::PLplot-&gt;new(
+  DEV =&gt; 'png',
+  FILE =&gt; 'graph.png',
+  PAGESIZE =&gt; [600, 300],
+);
+
+# xの値として0～99までを表すPDL変数を作成
+my $x  = pdl-&gt;sequence(100) - 50;
+
+# y = 2x
+my $y = (1/2) * $x + 10;
+
+# グラフを作成
+$pl-&gt;xyplot(
+  $x,
+  $y,
+  XLAB =&gt; 'x',
+  YLAB =&gt; 'y',
+  TITLE =&gt; 'y = 1/2 x + 10',
+  XBOX =&gt; 'bcnsta',
+  YBOX =&gt; 'bcnsta',
+  COLOR =&gt; 'RED',
+  JUST =&gt; 1
+);
+
+# クローズ
+$pl-&gt;close;
+</pre>
+<h3>n次関数のグラフ</h3>
+<p>
+  では3次関数を描画してみましょう。どんな形をしているのかをすぐに知れるのは面白いですね。
+</p>
+<p>
+  [f:id:perlcodesample:20131106102521p:image:w500]
+</p>
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot-&gt;new(DEV =&gt; 'png', FILE =&gt; 'graph.png');
+
+# xの値(0～4まで0.1きざみ)
+my $x  = pdl-&gt;sequence(40) * 0.1;
+
+# y = x^3 - 6x^2 + 11x -6
+my $y = ($x ** 3) - 6 * ($x ** 2) + (11 * $x) - 6;
+
+# グラフを作成
+$pl-&gt;xyplot($x, $y);
+
+# クローズ
+$pl-&gt;close;
+</pre>
+<h3>三角関数</h3>
+<p>
+  次は三角関数(sin)のグラフです。三角関数の計算を行うには<strong>sin</strong>メソッドを使用します。これはPDL::Mathで定義されています。
+</p>
+<p>
+  [f:id:perlcodesample:20131106102522p:image:w500]
+</p>
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot-&gt;new(DEV =&gt; 'png', FILE =&gt; 'graph.png');
+
+# xの値
+my $x  = pdl-&gt;sequence(200) * 0.1;
+
+# y = sin(x)
+my $y = $x-&gt;sin;
+
+# グラフを作成
+$pl-&gt;xyplot($x, $y);
+
+# クローズ
+$pl-&gt;close;
+</pre>
+<h3>指数関数</h3>
+<p>
+  次は指数関数のグラフです。演算する値eをPDL変数として作成しているところに注意してください。
+</p>
+<p>
+  [f:id:perlcodesample:20131106102523p:image:w500]
+</p>
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot-&gt;new(DEV =&gt; 'png', FILE =&gt; 'graph.png');
+
+# e
+my $e = pdl [exp(1)];
+
+# xの値
+my $x  = pdl-&gt;sequence(60) * 0.1 - 3;
+
+# y = e^x
+my $y = $e ** $x;
+
+# グラフを作成
+$pl-&gt;xyplot($x, $y);
+
+# クローズ
+$pl-&gt;close;
+
+</pre>
+<h3>対数関数(自然対数)</h3>
+<p>
+  最後は対数関数(自然対数)のグラフです。対数関数(自然対数)の計算を行うには<strong>log</strong>メソッドを使用します。これはPDL::Mathで定義されています。log0の値は無限小になるので、グラフは0.1からスタートしていることに注意してください。
+</p>
+<p>
+  [f:id:perlcodesample:20131106102524p:image:w500]
+</p>
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot-&gt;new(DEV =&gt; 'png', FILE =&gt; 'graph.png');
+
+# xの値
+my $x  = pdl-&gt;sequence(100) * 0.1 + 0.1;
+
+# y = log(x)
+my $y = $x-&gt;log;
+
+# グラフを作成
+$pl-&gt;xyplot($x, $y);
+
+# クローズ
+$pl-&gt;close;
+</pre>
+<h3>ストリッププロット - 1つのx軸と複数のy軸のグラフ</h3>
+<p>
+  一つのx軸と複数のy軸のグラフはストリッププロットと呼ばれ<strong>stripplots</strong>メソッドを使って描画することができます。
+</p>
+<p>
+  [f:id:perlcodesample:20131107113838p:image:w500]
+</p>
+<pre>
+use strict;
+use warnings;
+
+use PDL::Lite;
+use PDL::Graphics::PLplot;
+
+# PLPlotオブジェクトの作成
+my $pl = PDL::Graphics::PLplot-&gt;new(DEV =&gt; 'png', FILE =&gt; 'graph.png');
+
+# データ
+my $x  = pdl-&gt;sequence(20);
+my $pi = 4 * atan2(1,1);
+my $y1 = $x ** 2;
+my $y2 = sqrt $x;
+my $y3 = $x ** 3;
+my $y4 = sin(($x/20) * 2 * $pi);
+my $ys = $y1-&gt;cat($y2, $y3, $y4);
+
+# ストリッププロット
+$pl-&gt;stripplots(
+  $x,
+  $ys,
+  PLOTTYPE =&gt; 'LINE',
+  TITLE =&gt; 'functions',
+  YLAB =&gt; ['x**2', 'sqrt(x)', 'x**3', 'sin(x/20*2pi)'],
+  COLOR =&gt; ['GREEN', 'DEEPSKYBLUE', 'DARKORCHID1', 'DEEPPINK'],
+  XLAB =&gt; 'X label'
+);
+$pl-&gt;close;
+</pre>
+
+          </div>
+          <div class="entry-bottom">
+            <!-- entry-bottom -->
+
+          </div>
+        </div>
+        <div class="side">
+          <div class="hatena-module">
+  <div class="hatena-moduletitle">
+    Perlゼミ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <b>■Perl基礎</b>
+      </li>
+      <li>
+        <a href="/blog/20180820153471.html">Perlのインストール</a>
+      </li>
+      <li>
+        <a href="/blog/20091226126425.html">基礎文法最速マスター</a>
+      </li>
+      <li>
+        <a href="/blog/20100827127859.html">正規表現</a>
+      </li>
+      <li>
+        <a href="/blog/20161012147627.html">配列</a>
+      </li>
+      <li>
+        <a href="/blog/20161013147635.html">ハッシュ</a>
+      </li>
+      <li>
+        <a href="/blog/20101130129876.html">サブルーチン</a>
+      </li>
+      <li>
+        <a href="/blog/20110212130370.html">ファイル入出力</a>
+      </li>
+      <li>
+        <a href="/blog/20161003147558.html">文字列</a>
+      </li>
+      <li>
+        <a href="/blog/20161023147731.html">条件分岐</a>
+      </li>
+      <li>
+        <a href="/blog/20170521149524.html">繰り返し処理</a>
+      </li>
+      <li>
+        <a href="/blog/20161107147852.html">変数</a>
+      </li>
+      <li>
+        <b>■Perlリファレンス</b>
+      </li>
+      <li>
+        <a href="/blog/20161004147558.html">標準関数</a>
+      </li>
+      <li>
+        <a href="/blog/20161022147731.html">構文・文法</a>
+      </li>
+      <li>
+        <a href="/blog/20161005147566.html">演算子</a>
+      </li>
+      <li>
+        <a href="/blog/20091116124667.html">モジュール</a>
+      </li>
+      <li>
+        <a href="/blog/20161102147817.html">特殊変数</a>
+      </li>
+      <li>
+        <b>■Perl発展</b>
+      </li>
+      <li>
+        <a href="/blog/20100930127859.html">リファレンス</a>
+      </li>
+      <li>
+        <a href="/blog/20100411127089.html">例外処理</a>
+      </li>
+      <li>
+        <a href="/blog/20080108132865.html">コマンドライン引数</a>
+      </li>
+      <li>
+        <a href="/blog/20100302126967.html">デバッガ</a>
+      </li>
+      <li>
+        <a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>
+      </li>
+      <li>
+        <a href="/blog/20091120124667.html">現代的な記述方法</a>
+      </li>
+      <li>
+        <a href="/blog/20130305136248.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20110128130016.html">スコープ</a>
+      </li>
+      <li>
+        <a href="/blog/20091105124627.html">日付と時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161026147748.html">数値計算</a>
+      </li>
+      <li>
+        <b>■Webフレームワーク</b>
+      </li>
+      <li>
+        <div style="text-align:center">
+          <a href="/blog/20140319139520.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180626/20180626205700.png" style="width:90%" alt="20180626205700"></a>
+        </div>
+        <div style="padding:15px 0;text-align:center;">
+          <a href="/blog/20140319139520.html">Mojolicious入門</a>
+        </div>
+      </li>
+      <li>
+        <b>■Perlの書籍</b>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html"><img src="https://images-fe.ssl-images-amazon.com/images/I/51d4T7m8NzL._SL160_.jpg"></a><br>
+        <span style="color:green">ログ解析などテキスト処理の実践ならこれ!</span>
+      </li>
+      <li>
+        <a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a><br>
+        <span style="color:green">雅ちゃんが大学生クロウにPerlを学ぶ物語</span>
+      </li>
+      <li>
+        <b>■Perl上級</b>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">Perlリリース情報</a>
+      </li>
+      <li>
+        <a href="/blog/20130220136137.html">Perlの読み物</a>
+      </li>
+      <li>
+        <a href="/blog/20120326133275.html">業務に役立つPerl</a>
+      </li>
+      <li>
+        <a href="/blog/20150210142353.html">特徴を解説</a>
+      </li>
+      <li>
+        <a href="/blog/20160225145640.html">バージョン情報</a>
+      </li>
+      <li>
+        <a href="/blog/20170130148603.html">データベース</a>
+      </li>
+      <li>
+        <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+      </li>
+      <li>
+        <a href="/blog/20090406123890.html">ソケット</a>
+      </li>
+      <li>
+        <a href="/blog/20161103147817.html">プロセス間通信</a>
+      </li>
+      <li>
+        <a href="/blog/20161121147982.html">ワンライナー</a>
+      </li>
+      <li>
+        <a href="/blog/20121214135538.html">統計・解析</a>
+      </li>
+      <li>
+        <a href="/blog/20100809127859.html">XS入門</a>
+      </li>
+      <li>
+        <a href="/blog/20130416136637.html">言語実装の研究</a>
+      </li>
+      <li>
+        <a href="/blog/20100802127859.html">豆知識</a>
+      </li>
+      <li>
+        <a href="/blog/20161130148051.html">モジュール基礎</a>
+      </li>
+      <li>
+        <a href="/blog/20161030147778.html">オブジェクト指向</a>
+      </li>
+      <li>
+        <a href="/blog/20161123147990.html">日付・時刻</a>
+      </li>
+      <li>
+        <a href="/blog/20161006147575.html">文字コード</a>
+      </li>
+      <li>
+        <a href="/blog/20080806121804.html">ビット演算子</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    サイト情報
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="/blog/20171217151360.html">新着情報</a>
+      </li>
+      <li>
+        <a href="https://twitter.com/perlzemi">Twitter</a>
+      </li>
+      <li>
+        <a href="/blog/20160718146881.html">著書プロフィール</a>
+      </li>
+      <li>
+        <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+      </li>
+      <li>
+        <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170919151092.html">人気の記事</a>
+      </li>
+      <li>
+        <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+      </li>
+      <li>
+        <a href="/blog/20170921151092.html">リンク集</a>
+      </li>
+      <li>
+        
+      </li>
+      <li>
+        <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+      </li>
+      <li>
+        <a href="/blog/20130421136653.html">GitPrep</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="hatena-module">
+  <div class="hatena-moduletitle">
+    コミュニティ
+  </div>
+  <div class="hatena-modulebody">
+    <ul>
+      <li>
+        <a href="http://www.perl-entrance.org/">Perl入学式</a>
+      </li>
+      <li>
+        全6回のPerl入門講座。東京、大阪、沖縄、札幌で開催。(東京は4月と10月スタート、それ以外は5月スタート)
+      </li>
+      <li>
+        <a href="http://yapcjapan.org">YAPC::Japan</a>
+      </li>
+      <li>
+        Perlを軸としたITに関わる全ての人のためのカンファレンス。
+      </li>
+      <li>
+        <b>東京</b>
+      </li>
+      <li>
+        <a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>
+      </li>
+      <li>
+        <a href="https://gotanda-pm.connpass.com/">五反田.pm</a>
+      </li>
+      <li>
+        <b>大阪</b>
+      </li>
+      <li>
+        <a href="https://naniwaperl.connpass.com/">なにわPerl</a>
+      </li>
+      <li>
+        <b>沖縄</b>
+      </li>
+      <li>
+        <a href="https://okinawapm.connpass.com/">沖縄.pm</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<h2 class="title">これで解決!「bash on Ubuntu on Windows」のPerlの不具合を治す方法</h2>
+
+2016年8月に「<a href="http://qiita.com/Aruneko/items/c79810b0b015bebf30bb">bash on Ubuntu on Windows</a>」が登場した。みなさんもう試して、楽しんでいますか。
+
+<b>Windows上で本物のPerlを動かせるなんて夢みたい。</b>僕が作っている<a href="https://github.com/yuki-kimoto/gitprep">GitPrep</a>なんかは、Windowsでは、動かせないから、これは本当によいことだ。
+
+でも、少し不具合がある。bash on Ubuntu on Windowsは、ハードリンクを通常のLinuxと違って正しく認識しない。
+
+だから、ハードリンクを見ているFile::Findのようなモジュールが正しく動かない。だから、makeもできないし、cpanもできないので、何にもモジュールがインストールできない。これは困った。
+
+<h3>Config.pmを修正して不具合を治す</h3>
+
+Config.pmを修正して、不具合を治そう。Config.pmは、以下の場所にあるから「vi」を使って、このファイルを開こう。
+
+<q>
+vi /usr/lib/perl/5.18.2/Config.pm
+</q>
+
+ファイルを一番下のほうを見てみる。
+
+<b>そして「dont_use_nlink」の部分を「undef」から「1」に変更しよう。</b>これがハードリンクの情報を使わない設定になります。
+
+<pre>
+tie %Config, 'Config', {
+    archlibexp => '/usr/lib/perl/5.18',
+    archname => 'x86_64-linux-gnu-thread-multi',
+    cc => 'cc',
+    d_readlink => 'define',
+    d_symlink => 'define',
+    dlext => 'so',
+    dlsrc => 'dl_dlopen.xs',
+    dont_use_nlink => 1, ###### この部分を「undef」から「1」にしよう    ######
+    exe_ext => '',
+    inc_version_list => '5.18.1',
+    intsize => '4',
+    ldlibpthname => 'LD_LIBRARY_PATH',
+    libpth => '/usr/local/lib /lib/x86_64-linux-gnu /lib/../lib /usr/lib/x86_64-linux-gnu /usr/lib/../lib /lib /usr/lib',
+    osname => 'linux',
+    osvers => '3.13.0-79-generic',
+    path_sep => ':',
+    privlibexp => '/usr/share/perl/5.18',
+    scriptdir => '/usr/bin',
+    sitearchexp => '/usr/local/lib/perl/5.18.2',
+    sitelibexp => '/usr/local/share/perl/5.18.2',
+    so => 'so',
+    useithreads => 'define',
+    usevendorprefix => 'define',
+    version => '5.18.2',
+};
+</pre>
+
+これで、Perlが正しく動きます。やったね!
+

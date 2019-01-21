@@ -1,0 +1,245 @@
+<h2 class="title">Perlの論理演算子</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>Perlの論理演算子</strong>には次のものがあります。
+
+<table>
+  <tr>
+    <td>
+      *演算子
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &#x7c;&#x7c;
+    </td>
+    <td>
+      論理和
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &&
+    </td>
+    <td>
+      論理積
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      !
+    </td>
+    <td>
+      否定
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20180125151688.html">or</a>
+    </td>
+    <td>
+      論理和(&&より優先順位が低い)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      and
+    </td>
+    <td>
+      論理積&&より優先順位が低い)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      not
+    </td>
+    <td>
+      否定(!より優先優位が低い)
+    </td>
+  </tr>
+
+</table>
+
+<h4>&& 論理積(A かつ B)</h4>
+
+「AかつB」という論理積を表すには<b>&&</b>を使用します。
+
+<pre>
+# 1より大きい、かつ4より小さい
+if ($num > 1 && $num < 4) {
+  ...
+}
+</pre>
+
+<h4>|| 論理和(A または B)</h4>
+
+「AまたはB」という論理積を表すには<b>&#x7c;&#x7c;</b>を使用します。少なくともどちらかひとつの値が真の場合に、真になります。
+
+<pre>
+# 'dog'または'cat'
+if ($pet eq 'dog' || $pet eq 'cat') {
+  print "\$pet は、'dog' あるいは、'cat' のどちらかである。\n\n";
+}
+</pre>
+
+<h4>! 否定(Aでない)</h4>
+
+「Aではない」という否定を表すには<b>!</b>を使用します。
+
+<pre>
+# $numは真ではない
+if (!$num) {
+  ...
+}
+</pre>
+
+<h4>and 論理積(A かつ B) 優先順位低い</h4>
+
+「AかつB」という論理積を表すのに<b>and</b>を使用することもできます。優先順位は「&&」より小さくなっています。論理積には「&&」を使うのがお勧めです。「and」は以下で解説する条件分岐に利用することができます。
+
+<pre>
+# 1より大きい、かつ4より小さい
+if ($num > 1 and $num < 4) {
+  ...
+}
+</pre>
+
+<h4>or 論理和(A または B) 優先順位低い</h4>
+
+「AまたはB」という論理積を表すのに<b>or</b>を使用することもできます。優先順位は「||」より小さくなっています。論理和には「||」を使うのがお勧めです。「or」は以下で解説する条件分岐に利用することができます。
+
+<pre>
+# 'dog'または'cat'
+if ($pet eq 'dog' or $pet eq 'cat') {
+  print "\$pet は、'dog' あるいは、'cat' のどちらかである。\n\n";
+}
+</pre>
+
+<h4>not 否定(Aでない) 優先順位低い</h4>
+
+「Aではない」という否定を表すのに<b>not</b>を使用することもできます。優先順位は「!」よりも小さくなっています。否定には「not」ではなく「!」を使うのがお勧めです。
+
+<pre>
+# $numは真ではない
+if (not $num) {
+  ...
+}
+</pre>
+
+<h4>論理演算子の一般的な使われ方</h4>
+
+if文、unless文、while文、for文の中で使う場合は、「&&」「||」「!」を使うのがPerlの慣習になっています。and、notは使われることが少ないです。
+
+<pre>
+# 論理演算子
+if ($var1 && $var2 || $var3) {
+  ...
+}
+</pre>
+
+「&&」は「||」よりも優先順位が高いです。優先順位を変えたい場合は括弧「()」を使用します。
+
+<pre>
+if ($var1 && ($var2 || $var3)) {
+  ...
+}
+</pre>
+
+<h3>Perlの論理演算子の評価の特徴</h3>
+
+Perlの論理演算子は評価が決定した時点で評価をやめます。たとえば
+
+<pre>
+$var1 && $var2
+</pre>
+
+という条件があった場合、$var1が偽であれば「$var1 &amp;&amp; $var2」は偽になることが決定するのでそこで評価は終わります。
+
+<pre>
+$var1 || $var2
+</pre>
+
+という条件があった場合は、$var1が真であれば「$var1 || $var2」は真になることが決定するのでそこで評価は終わります。
+
+<h3>orを条件分岐として使う</h3>
+
+このような性質を利用してorは条件分岐に使われることが多いです。たとえば<a href="/blog/20080718121643.html">open関数</a>が失敗した場合は次のように記述します。
+
+<pre>
+open my $fh, '<', $file
+  or die qq/Can't open file "$file": $!/;
+</pre>
+
+open関数が成功した場合は真が返されるのでorの右辺は実行されません。open関数が失敗した場合はundefが返されるので右辺の<a href="/blog/20100212126425.html">die</a>が実行されプログラムは終了します。
+
+もうひとつの例として、system関数と一緒に使われることもあります。system関数は成功すると0を返すので、次のように記述します。
+
+<pre>
+system(@cmd) == 0
+  or die "Can't execute command @cmd";
+</pre>
+
+主要な処理を先に記述して、補足的なエラー処理を後で書きたい場合に、orによる条件分岐を使うことができます。
+
+「and」を条件分岐に使うこともできますが、読みにくいので「or」をお勧めします。
+
+<pre>
+# andで書き換えた例
+system(@cmd)
+  and die "Can't execute command @cmd";
+</pre>
+
+<h3>サンプルプログラム</h3>
+
+論理積、論理和、否定のサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 論理積、論理和、否定
+print "1. 論理積( A かつ B )\n";
+my $num = 3;
+if ($num > 1 && $num < 4) {
+  print "\$numは、1より大きく、4より小さい\n\n";
+}
+
+print "2. 論理和( A または B )\n";
+my $pet = 'dog';
+if ($pet eq 'dog' || $pet eq 'cat') {
+  print "\$pet は、'dog' あるいは、'cat' のどちらかである。\n\n";
+}
+
+print "3. 否定( Aでない )\n";
+my $num0 = 0;
+if (!$num0) {
+  print "!\$num は、真\n";
+}
+</pre>
+

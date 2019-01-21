@@ -1,0 +1,71 @@
+<h2 class="title">chmod関数 - ファイルパーミッションを変更する</h2>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+
+<strong>ファイルのパーミッションを変更</strong>するには<strong>chmod関数</strong>を使います。
+
+<pre>
+chmod 0666, $file;
+</pre>
+
+パーミッションを変更するには、chmod関数を使います。第1引数は、8進数でパーミッションを指定します。Perlで8進数を表現するには、数字の先頭に0をつけます。
+
+第2引数はファイルを指定します。また第2引数にはファイルのリストを指定することもできます。
+戻り値はパーミッションの変更に成功したファイルの個数になります。chmodが失敗した場合は$!にエラーの内容が格納されます。
+
+パーミッションについては以下で詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20080822121950.html">パーミッションについて理解しよう</a>
+  </li>
+</ul>
+
+<h3>サンプル</h3>
+
+パーミッションを変更するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+my $file = shift or die "Usage: $0 file\n";
+
+# パーミッションの変更。パーミッションは8進数で指定します。
+chmod 0666, $file
+  or die "Cannot change permishion $file";
+</pre>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+

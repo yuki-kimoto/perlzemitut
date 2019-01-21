@@ -1,0 +1,152 @@
+<h2 class="title">interpvar.h</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20130416136637.html">
+      <span itemprop="name">言語実装</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>interpvar.h</strong>には、インタープリタ変数の定義が記述されています。インタープリタ変数とは、Perlのインタープリタごとに、定義される変数のことです。
+
+<h3>インタープリタとは</h3>
+
+Perlは、複数のインタープリタを持つことができます。Perlは、インタープリタを生成して、ソースコードの解釈を始めます。通常は、インタープリタはひとつで十分ですが、C言語のプログラムの中で、複数保持したい場合は、複数生成することが可能です。
+
+<pre>
+# 複数のインタープリタ
+Perl - インタープリタ1
+     |
+     - インタープリタ2
+     |
+     - インタープリタ3
+</pre>
+
+ただし、Perlがインタープリタを複数持つことができるのは「MULTIPLICITY」というマクロが有効になっているときだけです。これは、コンパイルオプションとして設定できます。自分の環境の場合は、CentOSのデフォルトのPerlであれば、有効で、perlbrewでインストールしたものは、無効になっていました。パフォーマンスは「MULTIPLICITY」が有効になっていないもののほうが、速いようです。
+
+もし「MULTIPLICITY」が有効でなければ、Perlの構造は次のようになります。
+
+<pre>
+Perl - (インタープリタなし)
+</pre>
+
+=====
+
+<h3>インタープリタ変数</h3>
+
+インタープリタ変数は、インタープリタごとに持つ変数です。Perlのソースコードを読むときは、非常に頻繁に、interpvar.hを開くことになります。ここで、定義されている変数が、Perlのソースコードのあちらこちらで利用されているからです。
+
+たとえば、サブルーチンのコールスタック情報、現在実行されている構文木のノード、レキシカル変数の情報、ローカル変数の情報、制御情報、SVのメモリ確保にかかわる変数、プログラムの実行の開始位置などです。
+
+インタープリタ変数は、特殊なマクロを使って、定義されています。それは、PERLVARというマクロです。
+
+<pre>
+PERLVAR(I, stack_sp,	SV **)		/* top of the stack */
+PERLVAR(I, op,		OP *)		/* currently executing op */
+PERLVAR(I, curpad,	SV **)		/* active pad (lexicals+tmps) */
+</pre>
+
+PERLVARマクロを見てみましょう。「perl.h」に定義があります。
+
+<pre>
+/* perl.h */
+#  define PERLVAR(prefix,var,type) type prefix##var;
+</pre>
+
+C言語のdefine定義を使ったことがある人も「##」という記号を見た人は、少ないんじゃないでしょうか。「##」を使うと文字列が結合できます。
+
+つまり、PERLVARマクロによって、次のように展開されます。
+
+<pre>
+SV ** Istack_sp;
+OP * Iop;
+SV ** Icurpad;
+</pre>
+
+でも、この変数は、Perlのソースコード上ではほとんど使われていません。多くの場合は「PL_stacksp」という変数名でアクセスされます。これは「embedvar.h」で定義されています。
+
+<pre>
+#define PL_stack_sp		(vTHX->Istack_sp)
+</pre>
+
+ソースコードを実際に読み込んでいく上では、「PL_stack_sp」という変数名を見たなら、これは、インタープリタ変数だなとまず推測します。そして、「interpvar.h」を開いて「PERLVAR(I, stack_sp,	SV **)」のような定義があるかどうかを確認します。
+
+<h3>インタープリタ変数は「MULTIPLICITY」が有効でないときは、グローバル変数として定義される</h3>
+
+インタープリタ変数は「MULTIPLICITY」が有効でないときは、インタープリタ変数は、グローバル変数として定義されます。その記述は「perl.h」にあります。
+
+<pre>
+#if !defined(MULTIPLICITY)
+START_EXTERN_C
+#  include "intrpvar.h"
+END_EXTERN_C
+#endif
+</pre>
+
+<h3>vTHXは現在のインタープリタのこと</h3>
+
+vTHXは、ひとつのインタープリタです。「MULTIPLICITY」の下では、「vTHX」は「aTHX」と「PERL_GET_INTERP」に展開されますが、一般的なPerlでは、「PERL_IMPLICIT_CONTEXT」が定義されているとして読みましょう。つまり「aTHX」に展開されると考えましょう。
+
+<pre>
+#if defined(MULTIPLICITY)
+/* cases 2 and 3 above */
+
+#  if defined(PERL_IMPLICIT_CONTEXT)
+#    define vTHX	aTHX
+#  else
+#    define vTHX	PERL_GET_INTERP
+#  endif
+</pre>
+
+さらに「perl.h」の中で「aTXH」は「my_perl」に展開されます。
+
+<pre>
+/* perl.h */
+#  define aTHX	my_perl
+</pre>
+
+「my_perl」は、現在のインタープリタを表す変数で「perl_main.c」の中で定義されています。
+
+<pre>
+/* perl.h */
+static PerlInterpreter *my_perl;
+</pre>
+
+PerlInterpreterは「perl.h」の中で「interpreter構造体」の別名として定義されています。
+
+<pre>
+/* perl.h */
+typedef struct interpreter PerlInterpreter;
+</pre>
+
+そして最後に「interpreter構造体」は次のように定義されています。「interpvar.h」のインタープリタ変数の定義が、構造体のメンバとして記述されています。
+
+<pre>
+/* perl.h */
+struct interpreter {
+#  include "intrpvar.h"
+};
+</pre>
+
+「PL_stack_sp」は「my_perl->Istack_sp」に展開されるということがわかります。これは、現在のインタープリタの「Istack_sp」というメンバ変数にアクセスするということです。
+
+<h3>まとめ</h3>
+
+覚えておいてほしいことは、「PL_stack_sp」は「my_perl->Istack_sp」に展開されるということ。それに加えて、「MULTIPLICITY」が有効でない場合は、グローバル変数として「Istack_sp」が直接利用できるということです。「PL_stack_sp」を使うことで、複数のインタープリタを持つ場合と、持たない場合で、それを意識しないで、アクセスできます。
+
+Perlのマクロ定義は、階層が深すぎますが、とことん深くもぐっていくと、着地点があります。
+
+<hr>
+<a href="/blog/20130416136637.html">Perl言語研究</a>
+

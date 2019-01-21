@@ -1,0 +1,105 @@
+<h2 class="title">Getopt::Long - コマンドラインオプションを処理する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>Getopt::Long</strong>を使用すると<a href="/blog/20080108132865.html">コマンドライン引数</a>のオプションを処理することができます。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use Getopt::Long 'GetOptions';
+</pre>
+
+コマンドライン引数で次のようなオプションを指定する場合を考えてみましょう。
+
+<pre>
+# コマンドライン引数でオプションを指定。
+perl script.pl --enable_cache --max_clients=5 --type=single config.init
+</pre>
+
+<strong>GetOptions関数</strong>を使用すればこのようなコマンドラインオプションを簡単に処理することができます。
+
+<pre>
+# GetOptionsによるコマンドライン引数のオプションの処理
+
+# デフォルト値の設定
+my $enable_cache;
+my $max_clients = 5;
+my $type = 'prefork';
+
+# オプションの処理
+GetOptions(
+  'enable_cache'  => \$enable_cache,
+  'max_clients=i' => \$max_clients,
+  'type=s'        => \$type
+);
+
+# オプション以外の引数を受け取る 
+my $conf_file = shift;
+</pre>
+
+GetOptions関数の使い方です。
+
+<pre>
+# GetOptionsの引数
+GetOptions(
+  'オプション名=値の種類' => '保存するための変数',
+  'オプション名=値の種類' => '保存するための変数',
+  ...
+);
+</pre>
+
+「オプション名=種類」にはオプション名と値の種類を指定します。オプション名が真偽値である場合は値の種類は省略します。オプション名が整数のときは値の種類にiを指定します。オプション名が文字列の場合は値の種類にsを指定します。
+
+<pre>
+# 真偽値
+'enable_cache'  => \$enable_cache
+
+# 整数
+'max_clients=i' => \$max_clients
+
+# 文字列
+'type=s'        => \$type
+</pre>
+
+「保存するための変数」にはスカラ変数のリファレンスを指定します。デフォルト値の設定を最初に行っておき、GetOptionsの引数にリファレンスで渡します。
+
+<pre>
+# デフォルト値の設定
+my $max_clients = 5;
+
+# 引数にスカラ変数のリファレンスを指定
+GetOptions(
+  'max_clients=i' => \$max_clients,
+);
+</pre>
+
+コマンドラインオプションは短縮名で指定することも可能です。オプション名の頭文字が短縮名になります。
+
+<pre>
+# 短縮名でコマンドライン引数のオプションを指定
+perl script.pl -e -m=5 -t=single config.init
+</pre>
+
+=は省略することもできます。
+
+<pre>
+# イコールを省略
+perl script.pl --enable_cache --max_clients 5 --type single config.init
+</pre>
+

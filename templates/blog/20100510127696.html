@@ -1,0 +1,137 @@
+<h2 class="title">Archive::Tar - tarファイルの作成と展開</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<strong>Archive::Tar</strong>を使用すると、tarファイルを展開あるいは作成することができます。
+
+<pre>
+# モジュールの読み込みとオブジェクトの作成
+use Archive::Tar;
+my $tar = Archive::Tar->new;
+</pre>
+
+メモリ上にtarファイルの情報を読み込むには<strong>read</strong>メソッドを使用します。ファイルを展開するにはtarファイルを読み込んだ後に、<strong>extract</strong>メソッドを使用します。ファイルはカレントディレクトリに展開されます。
+
+<pre>
+# tarファイルの展開
+$tar->read('archive.tar');
+$tar->extract;
+</pre>
+
+tarファイルがgzip形式で圧縮されている場合も展開することができます。ファイルがgzip形式で圧縮されているかどうかは自動的に判定されます。
+
+<pre>
+# gzip形式で圧縮されているtarファイルの展開
+$tar->read('archive.tar.gz');
+$tar->extract;
+</pre>
+
+tarファイルを作成するには、<strong>add_files</strong>メソッドでファイルを追加してから、<strong>write</strong>メソッドでtarファイルに書き込みます。ファイル名はカレントディレクトリを変更してから、相対パスでadd_filesで追加します。
+
+<pre>
+# tarファイルの作成
+my $curdir = '/somedir';
+chdir $curdir
+  or die qq/Can't change directory "$curdir": $!/;
+
+$tar->add_files('xxx.txt', 'dir/yyy.txt');
+$tar->write('archive.tar');
+</pre>
+
+またgzip形式で圧縮されたtarファイルを作成することもできます。gzip形式に圧縮する場合は、第二引数に圧縮率を示す2～9の値を指定します。大きな数を指定するほど圧縮率が高くなります。
+
+<pre>
+# tar.gzファイルの作成
+$tar->write('archive.tar.gz', 9);
+</pre>
+
+<h3>Archive::Tarのその他のテクニック</h3>
+
+extractの引数にファイル名を指定すれば指定したファイルだけを展開することができます。
+
+<pre>
+# 指定したファイルのみを展開
+$tar->extract('xxx.txt', 'dir/yyy.txt');
+</pre>
+
+tarファイルに含まれているファイルを調べるには<strong>list_files</strong>メソッドを使用します。
+
+<pre>
+# tarファイルに含まれているファイル一覧を取得
+my @files = $tar->list_files;
+</pre>
+
+tarファイルから指定したファイルを取り除くには<strong>remove</strong>メソッドを使用します。
+
+<pre>
+# tarファイルから指定したファイルを取り除く
+$tar->remove('xxx.txt');
+</pre>
+
+tarファイルに含まれるファイル名を変更するには<strong>rename</strong>メソッドを使用します。
+
+<pre>
+# tarファイルに含まれるファイル名を変更する
+$tar->rename('from.txt', 'to.txt');
+</pre>
+
+<strong>clearメソッド</strong>を使用するとメモリ上のtarファイルの情報をクリアすることができます。
+
+<pre>
+# メモリ上のtarファイルの情報をクリア
+$tar->clear;
+</pre>
+
+<h3>Archive::Tarに関するFAQ</h3>
+
+Q. ディレクトリを指定して、そこに含まれるすべてのファイルをtarファイルにすることはできますか。
+A. そのようなメソッドは存在しないので、工夫する必要があります。再帰的にすべてのファイルを検索することができるFile::Findモジュールを利用します。topという名前のディレクトリ以下に含まれるすべてのファイル(topディレクトリ自体も含みます)からtarファイルを作成するサンプルです。
+
+<pre>
+# ディレクトリを指定してそれ以下のすべてのファイルからtarファイルを作成
+use File::Find 'find';
+use Archive::Tar;
+
+my $curdir = '/somedir';
+chdir $curdir
+  or die qq/Can't change directory "$curdir": $!/;
+
+my $tar = Archive::Tar->new;
+my $top = 'top';
+
+my @files;
+find(sub {
+  push @files, $File::Find::name;
+}, $top);
+
+$tar->add_files(@files);
+$tar->write("$top.tar");
+</pre>
+
+Q. シンボリックリンク先のファイルをtarファイルに含めることはできますか
+A. はい。パッケージ変数 $Archive::Tar::FOLLOW_SYMLINK に 1 を設定します。
+
+<pre>
+# シンボリックリンク先のファイルをtarファイルに含める
+local $Archive::Tar::FOLLOW_SYMLINK = 1;
+$tar->write('archive.tar');
+</pre>
+
+(参考)<a href="/blog/20080309120507.html">local</a>
+
