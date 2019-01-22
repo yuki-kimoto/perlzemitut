@@ -2,7 +2,7 @@
 
 少し情報提供が遅れましたが、先日Mojolicious 6がリリースされました。MojoliciousはPerlのWebフレームワークです。
 
-<q>
+<blockquote>
 <a href="http://blog.kraih.com/post/112170845701/mojolicious-6-0-released-perl-real-time-web">Mojolicious 6.0 released: Perl real-time web framework</a>
 </q>
 
@@ -55,7 +55,7 @@ Mojolicious 6.0(Clinking Beer Mugs)のリリースをアナウンスできて、
   </li>
 </ul>
 
-<q>
+<blockquote>
 <a href="http://cpansearch.perl.org/src/SRI/Mojolicious-6.0/Changes">Mojolicious 6.0 Changes</a>
 </q>
 
@@ -75,7 +75,7 @@ paramメソッドは、リストコンテキストで評価されなくなりま
 
 以下のようなコードが、以前のようには機能しなくなるので、注意してください。
 
-<q>
+<blockquote>
 my @params = $c->param('title');
 </q>
 
@@ -83,7 +83,7 @@ my @params = $c->param('title');
 
 paramメソッドは、配列のリファレンスを受け取らなくなりました。以下の記述が以前のようには、機能しなくなるので、注意してください。
 
-<q>
+<blockquote>
 my @params = $c->param(['title', 'author']);
 </q>
 

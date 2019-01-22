@@ -60,6 +60,11 @@
 	  
 	}
 
+	.entry-body ul li {
+	  margin-left:15px;
+	  text-decoration:none;
+	}
+
 	.block-link-list span {
 	  display:block;
 	  padding: 3px 0em;
