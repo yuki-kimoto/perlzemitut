@@ -323,13 +323,14 @@
 	}
 
   .hatena-module ul li, .hatena-module ol li {
-    padding: 4px 6px;
+    padding: 4px 8px;
     margin-bottom: 4px;
     border-bottom: 1px solid #edf0f4;
     line-height: 1.3;
   }
   .hatena-module a {
     text-decoration: none;
+    font-size:14px;
   }
 	.hatena-modulebody {
 	  background:#f8f8ff;
