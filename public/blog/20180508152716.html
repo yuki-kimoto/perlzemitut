@@ -66,7 +66,9 @@
     <meta itemprop="position" content="3" />
   </li>
 </ol>
-<b>モジュールの検索パスの一覧</b>は特殊変数「@INC」に代入されています。
+<p>
+  <b>モジュールの検索パスの一覧</b>は特殊変数「@INC」に代入されています。
+</p>
 <pre>
 @INC
 </pre>
@@ -74,15 +76,21 @@
   モジュールの検索パスとは、Perlが、モジュールを読み込むために、検索するディレクトリのことです。@INC に、含まれないディレクトリに置かれたモジュールは、読み込むことができません。
 </p>
 <h4>モジュールの検索パスを追加する</h4>
-<a href="/blog/20100525127859.html">lib</a>モジュールを使うことで、コンパイル時に、@INC に、検索パスを追加できます。
+<p>
+  <a href="/blog/20100525127859.html">lib</a>モジュールを使うことで、コンパイル時に、@INC に、検索パスを追加できます。
+</p>
 <pre>
 use lib './lib';
 </pre>
-<b>@INC の先頭に直接、モジュールの検索パスを追加する</b>
+<p>
+  <b>@INC の先頭に直接、モジュールの検索パスを追加する</b>
+</p>
 <pre>
 unshift @INC, './lib2';
 </pre>
-<a href="/blog/20100105126425.html">unshift関数</a>で、直接先頭に追加します。このやり方より、libモジュールを用いるほうがよいです。libモジュールを使う利点は、コンパイル時に、検索パスが追加されることと、可読性が高まること、アーキテクチャに応じたパスも追加されることです。
+<p>
+  <a href="/blog/20100105126425.html">unshift関数</a>で、直接先頭に追加します。このやり方より、libモジュールを用いるほうがよいです。libモジュールを使う利点は、コンパイル時に、検索パスが追加されることと、可読性が高まること、アーキテクチャに応じたパスも追加されることです。
+</p>
 <ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
   <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
     <a itemprop="item" href="/">

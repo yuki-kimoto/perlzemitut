@@ -65,7 +65,9 @@
     here
   </li>
 </ol>
-<strong>undef関数</strong>を使えば、<strong>未定義値</strong>を設定することができます。あるいは、引数に指定した変数の値を未定義にします。
+<p>
+  <strong>undef関数</strong>を使えば、<strong>未定義値</strong>を設定することができます。あるいは、引数に指定した変数の値を未定義にします。
+</p>
 <pre>
 undef
 undef(変数)
@@ -119,7 +121,9 @@ unless (defined $name) {
 undef == 0
 undef eq ""
 </pre>
-<a href="/blog/20130916137930.html">warningsモジュール</a>を使えば、このような場合に警告を発してくれて、未然にバグを防げるので、必ず宣言するようにしましょう。
+<p>
+  <a href="/blog/20130916137930.html">warningsモジュール</a>を使えば、このような場合に警告を発してくれて、未然にバグを防げるので、必ず宣言するようにしましょう。
+</p>
 <pre>
 use warnings;
 </pre>

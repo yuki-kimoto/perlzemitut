@@ -51,7 +51,9 @@
 <p>
   2016年8月に「<a href="http://qiita.com/Aruneko/items/c79810b0b015bebf30bb">bash on Ubuntu on Windows</a>」が登場した。みなさんもう試して、楽しんでいますか。
 </p>
-<b>Windows上で本物のPerlを動かせるなんて夢みたい。</b>僕が作っている<a href="https://github.com/yuki-kimoto/gitprep">GitPrep</a>なんかは、Windowsでは、動かせないから、これは本当によいことだ。
+<p>
+  <b>Windows上で本物のPerlを動かせるなんて夢みたい。</b>僕が作っている<a href="https://github.com/yuki-kimoto/gitprep">GitPrep</a>なんかは、Windowsでは、動かせないから、これは本当によいことだ。
+</p>
 <p>
   でも、少し不具合がある。bash on Ubuntu on Windowsは、ハードリンクを通常のLinuxと違って正しく認識しない。
 </p>
@@ -70,7 +72,9 @@
 <p>
   ファイルを一番下のほうを見てみる。
 </p>
-<b>そして「dont_use_nlink」の部分を「undef」から「1」に変更しよう。</b>これがハードリンクの情報を使わない設定になります。
+<p>
+  <b>そして「dont_use_nlink」の部分を「undef」から「1」に変更しよう。</b>これがハードリンクの情報を使わない設定になります。
+</p>
 <pre>
 tie %Config, 'Config', {
     archlibexp =&gt; '/usr/lib/perl/5.18',

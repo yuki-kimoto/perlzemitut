@@ -65,7 +65,9 @@
   Mojoliciousの「自動試験」を行うためのテクニックをまとめました。
 </p>
 <h3>Mojolicious::Liteでスクリプトをデバッグする方法</h3>
-<strong>Mojolicious::Lite</strong>ではスクリプトを簡単に<strong>デバッグ</strong>することができます。とても短い記述で試験をかけるというのがうれしい点です。Mojolcious::LiteでWebアプリを作成する場合の大きな利点です。
+<p>
+  <strong>Mojolicious::Lite</strong>ではスクリプトを簡単に<strong>デバッグ</strong>することができます。とても短い記述で試験をかけるというのがうれしい点です。Mojolcious::LiteでWebアプリを作成する場合の大きな利点です。
+</p>
 <p>
   まずはMojolicious::Liteで作成した簡単なWebアプリです。
 </p>
@@ -264,7 +266,9 @@ $app-&gt;hook(after_dispatch =&gt; sub {
 });
 </pre>
 <h3>testコマンドで試験の詳細を表示する</h3>
-<strong>verbose</strong>オプションを使うと、testコマンドで詳細を表示することができます。
+<p>
+  <strong>verbose</strong>オプションを使うと、testコマンドで詳細を表示することができます。
+</p>
 <pre>
 perl myapp.pl test --verbose
 </pre>
@@ -330,28 +334,38 @@ $app-&gt;helper(
 );
 </pre>
 <h3>CSS3セレクタを使ってHTMLの要素が存在するかを確認する</h3>
-<strong>Test::Mojo</strong>の<strong>element_exists</strong>メソッドを使用すれば、CSS3セレクタに一致するHTMLの要素が存在するかを試験することができます。
+<p>
+  <strong>Test::Mojo</strong>の<strong>element_exists</strong>メソッドを使用すれば、CSS3セレクタに一致するHTMLの要素が存在するかを試験することができます。
+</p>
 <pre>
 $t = $t-&gt;element_exists('div.foo[x=y]');
 $t = $t-&gt;element_exists('html head title', 'has a title');
 </pre>
-<strong>Test::Mojo</strong>の<strong>element_exists_not</strong>メソッドを使用すれば、CSS3セレクタに一致するHTMLの要素が存在しないこと試験することができます。
+<p>
+  <strong>Test::Mojo</strong>の<strong>element_exists_not</strong>メソッドを使用すれば、CSS3セレクタに一致するHTMLの要素が存在しないこと試験することができます。
+</p>
 <pre>
 $t = $t-&gt;element_exists_not('div.foo[x=y]');
 $t = $t-&gt;element_exists_not('html head title', 'has no title');
 </pre>
 <h3>CSS3セレクタを使ってHTMLの要素のテキスト内容を試験する</h3>
-<strong>Test::Mojo</strong>の<strong>text_is</strong>メソッドを使用すれば、CSS3セレクタに一致するHTMLの要素のテキスト内容を試験することができます。
+<p>
+  <strong>Test::Mojo</strong>の<strong>text_is</strong>メソッドを使用すれば、CSS3セレクタに一致するHTMLの要素のテキスト内容を試験することができます。
+</p>
 <pre>
 $t = $t-&gt;text_is('div.foo[x=y]' =&gt; 'Hello!');
 $t = $t-&gt;text_is('html head title' =&gt; 'Hello!', 'right title');
 </pre>
-<strong>Test::Mojo</strong>の<strong>text_isnt</strong>メソッドを使用すれば、CSS3セレクタに一致しないHTMLの要素のテキスト内容を試験することができます。
+<p>
+  <strong>Test::Mojo</strong>の<strong>text_isnt</strong>メソッドを使用すれば、CSS3セレクタに一致しないHTMLの要素のテキスト内容を試験することができます。
+</p>
 <pre>
 $t = $t-&gt;text_isnt('div.foo[x=y]' =&gt; 'Hello!');
 $t = $t-&gt;text_isnt('html head title' =&gt; 'Hello!', 'different title');
 </pre>
-<strong>Test::Mojo</strong>の<strong>text_like</strong>メソッドを使用すれば、CSS3セレクタにマッチするHTMLの要素のテキスト内容を試験することができます。
+<p>
+  <strong>Test::Mojo</strong>の<strong>text_like</strong>メソッドを使用すれば、CSS3セレクタにマッチするHTMLの要素のテキスト内容を試験することができます。
+</p>
 <pre>
 $t = $t-&gt;text_like('div.foo[x=y]' =&gt; qr/Hello/);
 $t = $t-&gt;text_like('html head title' =&gt; qr/Hello/, 'right title');

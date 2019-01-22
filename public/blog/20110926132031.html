@@ -381,7 +381,9 @@ $result-&gt;type_rule_off
   反対にフィルタを有効にするにはtype_rule1_on, type_rule2_on, type_rule_onメソッドを使用してください。
 </p>
 <h4>type_ruleの実装について</h4>
-<b>into1とinto2の実装</b>
+<p>
+  <b>into1とinto2の実装</b>
+</p>
 <p>
   type_ruleの実装は次のようになっています。into1とinto2によるフィルタは、データベースにデータを送信するときに指定できるフィルタです。
 </p>
@@ -434,7 +436,9 @@ $dbi-&gt;execute(
   {issue_datetime =&gt; '2010-11-10 11:34:56'}, table =&gt; 'book'
 );
 </pre>
-<b>from1とfrom2の実装</b>
+<p>
+  <b>from1とfrom2の実装</b>
+</p>
 <p>
   from1とfrom2は難しいことを考える必要はありません。フェッチしたときにデータタイプを簡単に知ることができるので、その情報を元にフィルタリングを行います。columnオプションで、columnを指定するときに難しいことを考える必要はありません。
 </p>

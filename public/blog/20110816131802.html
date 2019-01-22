@@ -164,7 +164,9 @@ lib / MyModel.pm
               / company.pm
 </pre>
 <h4>モデルのサンプル</h4>
-<b>MyModel</b>
+<p>
+  <b>MyModel</b>
+</p>
 <p>
   MyModelは一般的には次のようになります。DBIx::Custom::Modelを継承するようにします。
 </p>
@@ -174,8 +176,12 @@ use DBIx::Custom::Model -base;
 
 1;
 </pre>
-<b>-base</b>オプションは継承のためのオプションで、<b>Object::Simple</b>から引き継いでいます。
-<b>MyModel::book</b>
+<p>
+  <b>-base</b>オプションは継承のためのオプションで、<b>Object::Simple</b>から引き継いでいます。
+</p>
+<p>
+  <b>MyModel::book</b>
+</p>
 <p>
   MyModel::bookは次のようになります。MyModelを継承するようにします。
 </p>
@@ -193,7 +199,9 @@ has join =&gt; sub {
 
 1;
 </pre>
-<b>has</b>は属性を定義するためのメソッドで、<b>Object::Simple</b>の機能です。
+<p>
+  <b>has</b>は属性を定義するためのメソッドで、<b>Object::Simple</b>の機能です。
+</p>
 <h3>モデルをセットアップする - setup_model</h3>
 <p>
   モデルをセットアップするには<strong>setup_model</strong>を使用します。データベースのテーブル情報を調べて、モデル(DBIx::Custom::Model)のcolumnsに列名が自動的に設定されます。
@@ -232,7 +240,9 @@ book.title as "book.title",
 book.price as "book.price"
 </pre>
 <h3>モデルを取得する - model</h3>
-<strong>model</strong>メソッドを使って、create_modelメソッドやinclude_modelメソッドで作成したモデルを取得することができます。
+<p>
+  <strong>model</strong>メソッドを使って、create_modelメソッドやinclude_modelメソッドで作成したモデルを取得することができます。
+</p>
 <pre>
 my $model = $dbi-&gt;model('book');
 </pre>

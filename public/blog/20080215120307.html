@@ -65,14 +65,18 @@
       <span itemprop="name">here</span>
   </li>
 </ol>
-<strong>ハッシュスライス</strong>という機能を利用すると<a href="/blog/20161013147635.html">ハッシュ</a>から複数の値を取り出すことができます。
+<p>
+  <strong>ハッシュスライス</strong>という機能を利用すると<a href="/blog/20161013147635.html">ハッシュ</a>から複数の値を取り出すことができます。
+</p>
 <pre>
 my @math_score_slice = @math_scores{'Aiko', 'Kenta'};
 </pre>
 <p>
   ハッシュスライスを使うと、キーを複数指定して、値をリストとして取り出すことができる。接頭辞が$や%でなく、@であること、キー指定が、{ }であることに注意してください。
 </p>
-<a href="/blog/20180208151809.html">ハッシュのリファレンス</a>に対して、ハッシュスライスを行うときは次のようにできます。
+<p>
+  <a href="/blog/20180208151809.html">ハッシュのリファレンス</a>に対して、ハッシュスライスを行うときは次のようにできます。
+</p>
 <pre>
 my @math_score_slice = @$math_scores{'Aiko', 'Kenta'};
 </pre>

@@ -65,12 +65,16 @@
     here
   </li>
 </ol>
-<strong>Digest::SHA</strong>モジュールを使用すると、各種SHAの値を求めることができます。SHA-1値を求めるには以下の関数を使います。
+<p>
+  <strong>Digest::SHA</strong>モジュールを使用すると、各種SHAの値を求めることができます。SHA-1値を求めるには以下の関数を使います。
+</p>
 <pre>
 # モジュールの読み込みと関数のインポート
 use Digest::SHA 'sha1_hex';
 </pre>
-<strong>sha1_hex</strong>関数を使用するとSHA-1の値を40桁の16進数の文字列として取得できます。
+<p>
+  <strong>sha1_hex</strong>関数を使用するとSHA-1の値を40桁の16進数の文字列として取得できます。
+</p>
 <pre>
 # SHA-1値を求める
 my $sha1_sum = sha1_hex 'alkeiop2lkj39';

@@ -155,14 +155,20 @@
 <p>
   Object::Simpleは、<b>簡単すぎるクラスビルダー</b>です。覚えることは「has」関数だけ。すべての機能を<b>たった一時間</b>で覚えることができます。難しいものは何もありません。
 </p>
-<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojolicious.pm">Mojolicious</a>が好きですか。実際に、Object::Simpleは<b>Mojo::Baseの移植</b>です。<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Base.pm">Mojo::Base</a>は、Mojoliciousの基本的なクラスビルダーです。もしMojoliciousが好きなら、これは良い選択です。すでにMojo::Baseを知っているなら、覚えることは何もありません。
+<p>
+  <a href="http://search.cpan.org/dist/Mojolicious/lib/Mojolicious.pm">Mojolicious</a>が好きですか。実際に、Object::Simpleは<b>Mojo::Baseの移植</b>です。<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Base.pm">Mojo::Base</a>は、Mojoliciousの基本的なクラスビルダーです。もしMojoliciousが好きなら、これは良い選択です。すでにMojo::Baseを知っているなら、覚えることは何もありません。
+</p>
 <p>
   「new」メソッドとアクセッサは<b>速い</b>です。実装は、ピュアなPerlで、単純なハッシュベースのオブジェクトです。メモリは省メモリ。余分なオブジェクトは何も作られません。とても軽いオブジェクト指向モジュールです。
 </p>
 <h4>Class::Accessor::Fastとの比較</h4>
-<a href="http://search.cpan.org/dist/Class-Accessor/lib/Class/Accessor/Fast.pm">Class::Accessor::Fast</a>は簡単です。けれどもいくつかの機能が欠けています。「new」メソッドは、ハッシュの引数を受け取ることができません。デフォルト値の設定ができません。複数の値が、アクセッサに与えられたとき、警告なしに、配列のリファレンスへと変換されてしまいます。
+<p>
+  <a href="http://search.cpan.org/dist/Class-Accessor/lib/Class/Accessor/Fast.pm">Class::Accessor::Fast</a>は簡単です。けれどもいくつかの機能が欠けています。「new」メソッドは、ハッシュの引数を受け取ることができません。デフォルト値の設定ができません。複数の値が、アクセッサに与えられたとき、警告なしに、配列のリファレンスへと変換されてしまいます。
+</p>
 <h4>Mooseとの比較</h4>
-<a href="http://search.cpan.org/dist/Moose/lib/Moose.pm">Moose</a>はとても複雑な構文を持ち、とてもたくさんのモジュールに依存しています。あなたは、オブジェクト指向プログラミングをするために、とても多くのことを学ばなければなりません。ソースコードを理解することは、難しいです。コンパイル時間はとても遅く、メモリ使用率も高いです。実行速度も速くありません。単純なオブジェクト指向をするには、大きすぎます。<a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>は、この点で、改善がされています。
+<p>
+  <a href="http://search.cpan.org/dist/Moose/lib/Moose.pm">Moose</a>はとても複雑な構文を持ち、とてもたくさんのモジュールに依存しています。あなたは、オブジェクト指向プログラミングをするために、とても多くのことを学ばなければなりません。ソースコードを理解することは、難しいです。コンパイル時間はとても遅く、メモリ使用率も高いです。実行速度も速くありません。単純なオブジェクト指向をするには、大きすぎます。<a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>は、この点で、改善がされています。
+</p>
 <h3>チュートリアル</h3>
 <h4>クラスとアクセッサの作成</h4>
 <p>
@@ -236,7 +242,9 @@
 <p>
   メソッドは、オーバーライドすることができます。
 </p>
-<b>サンプル</b>
+<p>
+  <b>サンプル</b>
+</p>
 <p>
   オブジェクトの初期化。
 </p>
@@ -249,7 +257,9 @@
     return $self;
   }
 </pre>
-<b>サンプル</b>
+<p>
+  <b>サンプル</b>
+</p>
 <p>
   「new」の引数の変更。
 </p>
@@ -559,7 +569,9 @@
 <p>
   はい、できます。たとえば、Mojoliciousはとても大きなプロジェクトです。実際に、ソースコードはクリーンで、単一継承だけを使っています。一般的にいって、読みやすいソースコードは、複雑な機能ではなく、単純な概念の上に成り立っています。
 </p>
-<a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>の「BUILD」「BUILDARGS」「DEMOLISH」メソッドのようなものは、よいオブジェクト指向で必須ですか?もし、多重継承やロールを使いたいのであれば、これらのメソッドは必須です。
+<p>
+  <a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>の「BUILD」「BUILDARGS」「DEMOLISH」メソッドのようなものは、よいオブジェクト指向で必須ですか?もし、多重継承やロールを使いたいのであれば、これらのメソッドは必須です。
+</p>
 <p>
   でも、わたしは、オブジェクト指向プログラミングにおいて、単一継承だけを使うことを強く勧めます。単一継承は、クリーンで、読みやすいからです。
 </p>
@@ -672,7 +684,9 @@
 <p>
   CPANはさまざまなクラスビルダーを持っています。ぜひObject::Simpleと比べてみてください。
 </p>
-<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Base.pm">Mojo::Base</a>, <a href="http://search.cpan.org/dist/Class-Accessor/lib/Class/Accessor/Fast.pm">Class::Accessor::Fast</a>, <a href="http://search.cpan.org/dist/Moose/lib/Moose.pm">Moose</a>, <a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>, <a href="http://search.cpan.org/dist/Class-Tiny/lib/Class/Tiny.pm">Class::Tiny</a>.
+<p>
+  <a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Base.pm">Mojo::Base</a>, <a href="http://search.cpan.org/dist/Class-Accessor/lib/Class/Accessor/Fast.pm">Class::Accessor::Fast</a>, <a href="http://search.cpan.org/dist/Moose/lib/Moose.pm">Moose</a>, <a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>, <a href="http://search.cpan.org/dist/Class-Tiny/lib/Class/Tiny.pm">Class::Tiny</a>.
+</p>
 <h3>COPYRIGHT & LICENSE</h3>
 <p>
   Copyright 2008-2016 Yuki Kimoto, all rights reserved.

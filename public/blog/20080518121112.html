@@ -74,7 +74,9 @@ my ($base_name, $dir, $suffix) = fileparse($file_txt, '.txt');
 <p>
   File::Basename モジュールの fileparse 関数の第2引数に、拡張子名を指定することで、拡張子を取り出すことができます。
 </p>
-<a href="/blog/20100827127859.html">正規表現</a>を使って、拡張子のパターンを指定することもできます。
+<p>
+  <a href="/blog/20100827127859.html">正規表現</a>を使って、拡張子のパターンを指定することもできます。
+</p>
 <pre>
 use File::Basename;
 my $regex_suffix = qr/\.[^\.]+$/;

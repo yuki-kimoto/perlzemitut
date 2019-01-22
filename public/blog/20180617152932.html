@@ -65,7 +65,9 @@
     here
   </li>
 </ol>
-<b>sysread関数</b>を使用すると、ファイルからバイト数を指定して読み込むことができます。
+<p>
+  <b>sysread関数</b>を使用すると、ファイルからバイト数を指定して読み込むことができます。
+</p>
 <pre>
 sysread $fh, $buffer, $byte_size;
 </pre>
@@ -75,7 +77,9 @@ sysread $fh, $buffer, $byte_size;
 <p>
   sysread関数を実行すると、第二引数で指定したスカラ変数に、指定したバイトサイズのデータが読み込まれます。sysread関数は<a href="/blog/20180616152932.html">syswrite関数</a>と対になっています。
 </p>
-<a href="/blog/20180618152932.html">read関数</a>との違いは、sysread関数においてはバッファリングがされないという点です。
+<p>
+  <a href="/blog/20180618152932.html">read関数</a>との違いは、sysread関数においてはバッファリングがされないという点です。
+</p>
 <p>
   sysread関数に関する詳しい解説は公式ドキュメントをご覧ください。
 </p>

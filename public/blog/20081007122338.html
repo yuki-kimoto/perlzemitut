@@ -65,7 +65,9 @@
     here
   </li>
 </ol>
-<strong>join関数</strong>を使用すると、区切り文字を指定して<a href="/blog/20161012147627.html">配列</a>を結合することができます。
+<p>
+  <strong>join関数</strong>を使用すると、区切り文字を指定して<a href="/blog/20161012147627.html">配列</a>を結合することができます。
+</p>
 <pre>
 my $joined = join(',', @array);
 </pre>
@@ -98,7 +100,9 @@ my $names_csv = join("\t", @names);
 my $line = join("\t", @names) . "\n";
 </pre>
 <h4>区切り文字を指定して配列に分解</h4>
-<a href="/blog/20080301120434.html">split関数</a>を使えば、join関数と反対の操作、すなわち、区切り文字を指定して、配列に分解することができます。
+<p>
+  <a href="/blog/20080301120434.html">split関数</a>を使えば、join関数と反対の操作、すなわち、区切り文字を指定して、配列に分解することができます。
+</p>
 <pre>
 my @names = split(/,/, "Yuki,Taro,Kato");
 </pre>

@@ -189,7 +189,9 @@ my $result = $dbi-&gt;execute("select * from book where :book.title{=}",
 $dbi-&gt;execute($sql, $param, オプション名 =&gt; オプションの値, ...)
 </pre>
 <h3>executeメソッドのオプション</h3>
-<a href="/blog/20110708131364.html">executeメソッド</a>のオプションの一覧です。
+<p>
+  <a href="/blog/20110708131364.html">executeメソッド</a>のオプションの一覧です。
+</p>
 <h4>SQLの加工 after_build_sql</h4>
 <p>
   after_build_sqlを使うと、SQLが構築された後に、SQLを加工することができます。値としては、変換のためのコードリファレンスを指定します。

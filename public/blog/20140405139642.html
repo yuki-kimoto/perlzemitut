@@ -85,7 +85,9 @@
     <meta itemprop="position" content="2" />
   </li>
 </ol>
-<strong>テンプレート</strong>について解説したいと思います。今までは、簡単なテキストを出力してきただけでしたが、Webアプリケーションなので、HTMLを出力したいですね。Mojoliciousのテンプレートという機能を使うと、HTMLを出力することができます。
+<p>
+  <strong>テンプレート</strong>について解説したいと思います。今までは、簡単なテキストを出力してきただけでしたが、Webアプリケーションなので、HTMLを出力したいですね。Mojoliciousのテンプレートという機能を使うと、HTMLを出力することができます。
+</p>
 <pre>
 use Mojolicious::Lite;
 
@@ -480,7 +482,9 @@ layouts/common.html.ep
 % layout 'common', title =&gt; 'Index';
   &lt;h1&gt;Index&lt;/h1&gt;
 </pre>
-<b>layoutヘルパー</b>を使えば、レイアウトを呼び出すことができます。第一引数にはレイアウト名を指定します。第二引数以降の値は、stashの値として設定されます。
+<p>
+  <b>layoutヘルパー</b>を使えば、レイアウトを呼び出すことができます。第一引数にはレイアウト名を指定します。第二引数以降の値は、stashの値として設定されます。
+</p>
 <p>
   実際にこれは以下のようなHTMLに展開されます。
 </p>

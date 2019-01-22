@@ -154,7 +154,9 @@ my $result = $dbi-&gt;select(
 );
 </pre>
 <h3>テーブル名の修飾のない列名を生成する - mycolumn</h3>
-<strong>mycolumn</strong>メソッドを利用すると、テーブル名の修飾のない列名を簡単に生成することができます。
+<p>
+  <strong>mycolumn</strong>メソッドを利用すると、テーブル名の修飾のない列名を簡単に生成することができます。
+</p>
 <pre>
 my $mycolumn = $dbi-&gt;mycolumn(book =&gt; ['author', 'title']);
 </pre>

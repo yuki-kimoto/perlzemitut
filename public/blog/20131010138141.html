@@ -64,7 +64,9 @@
 <p>
   オブジェクト(変数や値)が必要ではなくなったときに、自動的にメモリ上から解放する仕組みを<strong>ガーベッジコレクション</strong>といいます。ガーベッジというのは、ごみという意味。コレクションというのは集めるという意味です。
 </p>
-<img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018090720180907084205.png">
+<p>
+  <img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018090720180907084205.png">
+</p>
 <h3>Perlのガーベッジコレクションは参照カウント方式</h3>
 <p>
   Perlのガーベッジコレクションは<strong>参照カウント方式</strong>と呼ばれるものです。オブジェクトへの参照が作成されるたびに、参照カウントをひとつ増やします。反対に、オブジェクトの参照が取り除かれたときに、参照カウントをひとつ減らします。参照カウントが0になったタイミングで、そのオブジェクトは解放されます。

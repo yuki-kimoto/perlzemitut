@@ -177,8 +177,12 @@ my $pl = PDL::Graphics::PLplot-&gt;new(
   PAGESIZE =&gt; [500, 400]
 );
 </pre>
-<b>グラフのサイズ</b>
-<strong>PAGESIZE</strong>で出力するグラフのサイズを指定できます。
+<p>
+  <b>グラフのサイズ</b>
+</p>
+<p>
+  <strong>PAGESIZE</strong>で出力するグラフのサイズを指定できます。
+</p>
 <pre>
 PAGESIZE =&gt; [500, 400]
 </pre>
@@ -189,18 +193,30 @@ PAGESIZE =&gt; [500, 400]
 <pre>
 $pl-&gt;xyplot($x, $y, XLAB =&gt; 'x', YLAB =&gt; 'y');
 </pre>
-<b>x軸のラベル</b>
-<strong>XLAB</strong>でx軸のラベルを指定できます。
+<p>
+  <b>x軸のラベル</b>
+</p>
+<p>
+  <strong>XLAB</strong>でx軸のラベルを指定できます。
+</p>
 <pre>
 XLAB =&gt; 'x'
 </pre>
-<b>y軸のラベル</b>
-<strong>YLAB</strong>でy軸のラベルを指定できます。
+<p>
+  <b>y軸のラベル</b>
+</p>
+<p>
+  <strong>YLAB</strong>でy軸のラベルを指定できます。
+</p>
 <pre>
 YLAB =&gt; 'y'
 </pre>
-<b>描画領域</b>
-<strong>BOX</strong>オプションで描画領域を指定できます。
+<p>
+  <b>描画領域</b>
+</p>
+<p>
+  <strong>BOX</strong>オプションで描画領域を指定できます。
+</p>
 <pre>
 BOX =&gt; [xの開始, xの終了, yの開始, yの終了]
 </pre>
@@ -210,23 +226,39 @@ BOX =&gt; [xの開始, xの終了, yの開始, yの終了]
 <pre>
 BOX =&gt; [0, 150, 0, 300]
 </pre>
-<b>x軸の目盛りラベルの幅</b>
-<strong>XTICK</strong>でx軸の目盛りラベルの幅を指定できます。
+<p>
+  <b>x軸の目盛りラベルの幅</b>
+</p>
+<p>
+  <strong>XTICK</strong>でx軸の目盛りラベルの幅を指定できます。
+</p>
 <pre>
 XTICK =&gt; 10
 </pre>
-<b>y軸の目盛りラベルの幅</b>
-<strong>YTICK</strong>でy軸の目盛りラベルの幅を指定できます。
+<p>
+  <b>y軸の目盛りラベルの幅</b>
+</p>
+<p>
+  <strong>YTICK</strong>でy軸の目盛りラベルの幅を指定できます。
+</p>
 <pre>
 YTICK =&gt; 10
 </pre>
-<b>タイトル</b>
-<strong>TITLE</strong>でグラフのタイトルを指定することができます。
+<p>
+  <b>タイトル</b>
+</p>
+<p>
+  <strong>TITLE</strong>でグラフのタイトルを指定することができます。
+</p>
 <pre>
 TITLE =&gt; 'y = 2x'
 </pre>
-<b>ビューポート</b>
-<strong>VIEWPORT</strong>でグラフを実際にどの部分に描画するかを指定できます。0～1の割合で指定します。
+<p>
+  <b>ビューポート</b>
+</p>
+<p>
+  <strong>VIEWPORT</strong>でグラフを実際にどの部分に描画するかを指定できます。0～1の割合で指定します。
+</p>
 <pre>
 VIEWPORT =&gt; [xの最小値の位置, xの最大値の位置, yの最小値の位置, yの最大値の位置]
 </pre>
@@ -236,22 +268,30 @@ VIEWPORT =&gt; [xの最小値の位置, xの最大値の位置, yの最小値の
 <pre>
 VIEWPORT =&gt; [0.1, 0.5, 0.1, 0.5]
 </pre>
-<b>x軸を描画する</b>
+<p>
+  <b>x軸を描画する</b>
+</p>
 <p>
   x軸を描画するには<strong>XBOX</strong>に<strong>bcnsta</strong>を指定します。この値のデフォルトは<strong>bcnst</strong>で<strong>a</strong>を加えると、x軸を描画できます。
 </p>
 <pre>
 XBOX =&gt; 'bcnsta',
 </pre>
-<b>x軸を描画する</b>
+<p>
+  <b>x軸を描画する</b>
+</p>
 <p>
   y軸を描画するには<strong>YBOX</strong>に<strong>bcnsta</strong>を指定します。この値のデフォルトは<strong>bcnst</strong>で<strong>a</strong>を加えると、y軸を描画できます。
 </p>
 <pre>
 YBOX =&gt; 'bcnsta',
 </pre>
-<b>グラフの色</b>
-<strong>COLOR</strong>でグラフの色を指定できます。
+<p>
+  <b>グラフの色</b>
+</p>
+<p>
+  <strong>COLOR</strong>でグラフの色を指定できます。
+</p>
 <pre>
 COLOR =&gt; 'RED'
 </pre>

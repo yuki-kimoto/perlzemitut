@@ -130,7 +130,9 @@ rika,12,USA
 kenta,25,Chinese
 EOS
 </pre>
-<a href="/blog/20080619121405.html">ヒアドキュメント</a>を参照。
+<p>
+  <a href="/blog/20080619121405.html">ヒアドキュメント</a>を参照。
+</p>
 <h4>(2)サブルーチンの呼び出し</h4>
 <pre>
 my $persons = parse($text);
@@ -142,7 +144,9 @@ my $persons = parse($text);
 <pre>
 push @$items_list, [@items];
 </pre>
-<a href="/blog/20100107126425.html">push関数</a>は、第一引数に、配列を要求します。@$items_list と、デリファレンスして、配列を渡します。
+<p>
+  <a href="/blog/20100107126425.html">push関数</a>は、第一引数に、配列を要求します。@$items_list と、デリファレンスして、配列を渡します。
+</p>
 <p>
   push関数は、第二引数以降は、リストを要求しますが、@items として、配列を渡してはいけません。そうすると最終的に、
 </p>
@@ -156,7 +160,9 @@ push @$items_list, [@items];
 <pre>
 wantarray ? return @$items_list : $items_list; 
 </pre>
-<a href="/blog/20080610121319.html">wantarray関数</a>を使って戻り値をコンテキストに応じて返却することができます。(現在の僕はwantarrayは非推奨)
+<p>
+  <a href="/blog/20080610121319.html">wantarray関数</a>を使って戻り値をコンテキストに応じて返却することができます。(現在の僕はwantarrayは非推奨)
+</p>
 <h3>csv形式の文字列をハッシュの配列に変換する</h3>
 <p>
   csv形式の文字列を<a href="/blog/20161013147635.html">ハッシュ</a>の配列に変換するサンプルです。
@@ -248,7 +254,9 @@ for my $line (@lines){
   push @$items_hash_list, {%items_hash}; 
 }
 </pre>
-<a href="/blog/20080215120307.html">ハッシュスライス</a>を用いて、ヘッダに対応するハッシュを作成します。
+<p>
+  <a href="/blog/20080215120307.html">ハッシュスライス</a>を用いて、ヘッダに対応するハッシュを作成します。
+</p>
 <pre>
 @items_hash{@$headers} = @items;
 
@@ -432,7 +440,9 @@ sub bubble_sort_descend{
 <p>
   # 1週目
 </p>
-<b>5</b>,<b>4</b>,3,2,1 ( 5 と 4 が交換される。 )
+<p>
+  <b>5</b>,<b>4</b>,3,2,1 ( 5 と 4 が交換される。 )
+</p>
 <p>
   4,<b>5</b>,<b>3</b>,2,1 ( 5 と 3 が交換される )
 </p>
@@ -448,7 +458,9 @@ sub bubble_sort_descend{
 <p>
   # 2週目
 </p>
-<b>4</b>,<b>3</b>,2,1,<b><span style="color:#000099;">5</span></b>
+<p>
+  <b>4</b>,<b>3</b>,2,1,<b><span style="color:#000099;">5</span></b>
+</p>
 <p>
   3,<b>4</b>,<b>2</b>,1,<b><span style="color:#000099;">5</span></b>
 </p>

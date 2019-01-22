@@ -108,24 +108,32 @@ my $max = $nums-&gt;max;
   PDL::Ufuncモジュールは、PDL変数から統計値を計算するための関数を提供しています。
 </p>
 <h3>最小</h3>
-<strong>最小値</strong>を求めるには<strong>minメソッド</strong>を使用します。
+<p>
+  <strong>最小値</strong>を求めるには<strong>minメソッド</strong>を使用します。
+</p>
 <pre>
 # 最小値
 my $min = $nums-&gt;min;
 </pre>
 <h3>合計</h3>
-<strong>合計</strong>を求めるには<strong>sumメソッド</strong>を使用します。
+<p>
+  <strong>合計</strong>を求めるには<strong>sumメソッド</strong>を使用します。
+</p>
 <pre>
 # 合計
 my $total = $nums-&gt;sum;
 </pre>
 <h3>平均</h3>
-<strong>平均</strong>を求めるには<strong>avgメソッド</strong>を使用します。
+<p>
+  <strong>平均</strong>を求めるには<strong>avgメソッド</strong>を使用します。
+</p>
 <pre>
 my $average = $nums-&gt;avg;
 </pre>
 <h3>中央値</h3>
-<strong>中央値</strong>を求めるには<strong>medianメソッド</strong>を使用します。
+<p>
+  <strong>中央値</strong>を求めるには<strong>medianメソッド</strong>を使用します。
+</p>
 <pre>
 my $median = $nums-&gt;median;
 </pre>
@@ -133,7 +141,9 @@ my $median = $nums-&gt;median;
   中央値とは、すべての値を並べたときに真ん中にくる値のことです。
 </p>
 <h3>最頻値</h3>
-<strong>最頻値</strong>を求めるには<strong>modeメソッド</strong>を使用します。
+<p>
+  <strong>最頻値</strong>を求めるには<strong>modeメソッド</strong>を使用します。
+</p>
 <pre>
 my $mode = $nums-&gt;mode;
 </pre>
@@ -218,7 +228,9 @@ cpan PDL::Stats;
 use PDL::Stats::Basic;
 </pre>
 <h3>分散</h3>
-<strong>分散</strong>を求めるには、<strong>var</strong>メソッドを使用します。
+<p>
+  <strong>分散</strong>を求めるには、<strong>var</strong>メソッドを使用します。
+</p>
 <pre>
 use PDL::Lite;
 use PDL::Stats::Basic;
@@ -230,7 +242,9 @@ my $nums = pdl [4, 2, 7];
 my $variance = $nums-&gt;var;
 </pre>
 <h3>不偏分散</h3>
-<strong>不偏分散</strong>を求めるには、<strong>var_unbiased</strong>メソッドを使用します。
+<p>
+  <strong>不偏分散</strong>を求めるには、<strong>var_unbiased</strong>メソッドを使用します。
+</p>
 <pre>
 # 不偏分散
 my $variance = $nums-&gt;var_unbiased;
@@ -239,7 +253,9 @@ my $variance = $nums-&gt;var_unbiased;
   不偏分散は分母が(n - 1)です。
 </p>
 <h3>標準偏差</h3>
-<strong>標準偏差</strong>を求めるには、<strong>stdv</strong>メソッドを使用します。
+<p>
+  <strong>標準偏差</strong>を求めるには、<strong>stdv</strong>メソッドを使用します。
+</p>
 <pre>
 # 標準偏差
 my $stdv = $nums-&gt;stdv;
@@ -248,7 +264,9 @@ my $stdv = $nums-&gt;stdv;
   標準偏差の意味は、データの散らばり具合を示すものです。標準偏差の数式は「分散の正の平方根」です。分散もデータの散らばり具合を示すものですが、単位が元のデータと異なるので、元のデータとの比較が難しくなります。正の平方根をとって標準偏差にすれば、単位が元のデータの単位と同じになります。
 </p>
 <h3>不偏標準偏差</h3>
-<strong>不偏標準偏差</strong>を求めるには、<strong>stdv_unbiased</strong>メソッドを使用します。
+<p>
+  <strong>不偏標準偏差</strong>を求めるには、<strong>stdv_unbiased</strong>メソッドを使用します。
+</p>
 <pre>
 # 不偏標準偏差
 my $stdv = $nums-&gt;stdv_unbiased;
@@ -257,37 +275,49 @@ my $stdv = $nums-&gt;stdv_unbiased;
   不偏標準偏差の数式は「不偏分散の正の平方根」です。
 </p>
 <h3>標準誤差</h3>
-<strong>標準誤差</strong>を求めるには、<strong>se</strong>メソッドを使用します。
+<p>
+  <strong>標準誤差</strong>を求めるには、<strong>se</strong>メソッドを使用します。
+</p>
 <pre>
 # 標準誤差
 my $se = $nums-&gt;se;
 </pre>
 <h3>偏差平方和</h3>
-<strong>偏差平方和</strong>を求めるには、<strong>ss</strong>メソッドを使用します。
+<p>
+  <strong>偏差平方和</strong>を求めるには、<strong>ss</strong>メソッドを使用します。
+</p>
 <pre>
 # 偏差平方和
 my $ss = $nums-&gt;ss;
 </pre>
 <h3>歪度</h3>
-<strong>歪度</strong>を求めるには、<strong>skew</strong>メソッドを使用します。
+<p>
+  <strong>歪度</strong>を求めるには、<strong>skew</strong>メソッドを使用します。
+</p>
 <pre>
 # 歪度
 my $skew = $nums-&gt;skew;
 </pre>
 <h3>不偏歪度</h3>
-<strong>不偏歪度</strong>を求めるには、<strong>skew_unbiased</strong>メソッドを使用します。
+<p>
+  <strong>不偏歪度</strong>を求めるには、<strong>skew_unbiased</strong>メソッドを使用します。
+</p>
 <pre>
 # 不偏歪度
 my $skew_unbiased = $nums-&gt;skew_unbiased;
 </pre>
 <h3>尖度</h3>
-<strong>尖度</strong>を求めるには、<strong>kurt</strong>メソッドを使用します。
+<p>
+  <strong>尖度</strong>を求めるには、<strong>kurt</strong>メソッドを使用します。
+</p>
 <pre>
 # 尖度
 my $kurt = $nums-&gt;kurt;
 </pre>
 <h3>不偏尖度</h3>
-<strong>不偏尖度</strong>を求めるには、<strong>kurt_unbiased</strong>メソッドを使用します。
+<p>
+  <strong>不偏尖度</strong>を求めるには、<strong>kurt_unbiased</strong>メソッドを使用します。
+</p>
 <pre>
 # 不偏尖度
 my $kurt_unbiased = $nums-&gt;kurt_unbiased;

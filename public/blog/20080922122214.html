@@ -87,13 +87,17 @@ sprintf("%.1g", $num1);
 my $num2 = 0.725;
 my $num2_round = sprintf("%.2f", $num2);
 </pre>
-<a href="/blog/20080826121977.html">数値リテラル</a>で表現した0.725は、内部的には0.725ではありません。2進数で表現でいない数値は、内部的に必ず誤差が発生し(わたしの環境では)近似値 0.72499999999999998 として扱われています。
+<p>
+  <a href="/blog/20080826121977.html">数値リテラル</a>で表現した0.725は、内部的には0.725ではありません。2進数で表現でいない数値は、内部的に必ず誤差が発生し(わたしの環境では)近似値 0.72499999999999998 として扱われています。
+</p>
 <p>
   これを小数点第3位で四捨五入すると0.724になります。これは期待した結果になりません。
 </p>
 <h4>sprintfによる四捨五入は正しくない</h4>
 <blockquote>
-<a href="http://d.hatena.ne.jp/end0tknr/200809281222581535">perlで四捨五入</a>(<a href="http://d.hatena.ne.jp/end0tknr/">end0tknrのkipple</a>)
+<p>
+  <a href="http://d.hatena.ne.jp/end0tknr/200809281222581535">perlで四捨五入</a>(<a href="http://d.hatena.ne.jp/end0tknr/">end0tknrのkipple</a>)
+</p>
 </q>
 <p>
   sprintfによる四捨五入は行うべきではないという指摘がありました。

@@ -137,7 +137,9 @@ my $age = $c-&gt;param('age');
 <pre>
 my $contries = $c-&gt;every_param('country');
 </pre>
-<b>注意</b>:リストコンテキストでのparam($name)は、セキュリティ上の問題のために、Mojolicious 6で機能が削除されました。every_paramを使うようにしてください。
+<p>
+  <b>注意</b>:リストコンテキストでのparam($name)は、セキュリティ上の問題のために、Mojolicious 6で機能が削除されました。every_paramを使うようにしてください。
+</p>
 <h3>すべてのパラメーターの名前と値を取得</h3>
 <p>
   パラメーター名をすべて取得するには「$c->req->params->to_hash」を使います。
@@ -145,7 +147,9 @@ my $contries = $c-&gt;every_param('country');
 <pre>
 my $params = $c-&gt;req-&gt;params-&gt;to_hash
 </pre>
-<b>注意</b>:リストコンテキストにおける$c->paramは、セキュリティ上の理由で、Mojolicious 6から廃止されています。すべての名前を取得するには、上記で名前と値を取得した後に「keys @$params」にキーを取得してください。
+<p>
+  <b>注意</b>:リストコンテキストにおける$c->paramは、セキュリティ上の理由で、Mojolicious 6から廃止されています。すべての名前を取得するには、上記で名前と値を取得した後に「keys @$params」にキーを取得してください。
+</p>
 <p>
   以下はMojolicious::Liteにおけるサンプルです。
 </p>

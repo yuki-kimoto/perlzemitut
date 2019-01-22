@@ -134,7 +134,9 @@ File::Copy::move($tmpfile, $infile)
   or die "Cannot move $tmpfile to $infile";
 </pre>
 <h3>安全にファイルを読み書きを行う手法</h3>
-<a href="/blog/20080718121643.html">open関数</a>のドキュメントを読めば、ファイルを読み書きするには、open関数に、"+<" というオープンモードを指定すればよいと思うかもしれません。確かにこの方法でも読み書きできますが、非常に危険です。
+<p>
+  <a href="/blog/20080718121643.html">open関数</a>のドキュメントを読めば、ファイルを読み書きするには、open関数に、"+<" というオープンモードを指定すればよいと思うかもしれません。確かにこの方法でも読み書きできますが、非常に危険です。
+</p>
 <p>
   書き込みしている最中にシステムがクラッシュするとファイルが破損して復元できなくなります。
 </p>
@@ -225,7 +227,9 @@ File::Copy::move($tmpfile, $infile)
 <p>
   (参考)<a href="/blog/20100212126425.html">die関数</a>
 </p>
-<a href="/blog/20100408127089.html">File::Copy</a>モジュールを使って、書き込み用一時ファイル名を元のファイル名に変更します。これで、完了です。
+<p>
+  <a href="/blog/20100408127089.html">File::Copy</a>モジュールを使って、書き込み用一時ファイル名を元のファイル名に変更します。これで、完了です。
+</p>
 <ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
   <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
     <a itemprop="item" href="/">

@@ -283,7 +283,9 @@ $ret = sprintf($format, @strs);
 <p>
   第1引数は書式を表現した文字列です。第2引数以降は書式指定子の部分に埋め込まれる文字列です。
 </p>
-<span style="font-weight:bold;">[A]書式指定のサンプル</span>
+<p>
+  <span style="font-weight:bold;">[A]書式指定のサンプル</span>
+</p>
 <p>
   $numを整数として解釈して8桁でフォーマットします。8桁に満たない部分は0で埋められます。
 </p>
@@ -296,7 +298,9 @@ $ret = sprintf("%08d", $num);
 <pre>
 $ret = sprintf("%.2f", $num);
 </pre>
-<span style="font-weight:bold;">[B]書式指定子一覧</span>
+<p>
+  <span style="font-weight:bold;">[B]書式指定子一覧</span>
+</p>
 <pre>
 %c 数値をASCIIコードに対応する文字に変換
 %s 引数を文字列として解釈
@@ -431,7 +435,9 @@ push(@array, @items);
 <p>
   配列に対する複数の要素の操作を行うには<a href="/blog/20080127120141.html">splice関数</a>を使用します。
 </p>
-<span style="font-weight:bold;">[A]複数の要素を取り出す</span>
+<p>
+  <span style="font-weight:bold;">[A]複数の要素を取り出す</span>
+</p>
 <p>
   複数の要素を取り出すことができます。
 </p>
@@ -441,7 +447,9 @@ push(@array, @items);
 <p>
   第1引数に対象の配列、第2引数に開始位置、第3引数に抜き出したいサイズを指定します。
 </p>
-<span style="font-weight:bold;">[B]複数の要素を置換する</span>
+<p>
+  <span style="font-weight:bold;">[B]複数の要素を置換する</span>
+</p>
 <p>
   複数の要素を置換することができます。
 </p>
@@ -524,7 +532,9 @@ $ret = sum @array;
 <pre>
 @ret = sort { 並び替える条件 } @array;
 </pre>
-<span style="font-weight:bold;">[A]数値で比較して昇順で並び替える</span>
+<p>
+  <span style="font-weight:bold;">[A]数値で比較して昇順で並び替える</span>
+</p>
 <p>
   数値で比較して昇順で並び替えるサンプルです。
 </p>
@@ -534,7 +544,9 @@ $ret = sum @array;
 <p>
   数値で比較するには<=>を使用します。昇順で並べかえる場合は$a <=> $b とします。
 </p>
-<span style="font-weight:bold;">[B]数値で比較して降順で並び替える</span>
+<p>
+  <span style="font-weight:bold;">[B]数値で比較して降順で並び替える</span>
+</p>
 <p>
   数値で比較して降順で並び替えるサンプルです。
 </p>
@@ -544,7 +556,9 @@ $ret = sum @array;
 <p>
   数値で比較するには<=>を使用します。降順で並べかえる場合は$b <=> $a とします。
 </p>
-<span style="font-weight:bold;">[C]辞書順で比較して昇順で並び替える</span>
+<p>
+  <span style="font-weight:bold;">[C]辞書順で比較して昇順で並び替える</span>
+</p>
 <p>
   辞書順で比較して昇順で並び替えるサンプルです。
 </p>
@@ -554,7 +568,9 @@ $ret = sum @array;
 <p>
   辞書順で比較するにはcmpを使用します。昇順で並べかえる場合は$a cmp $b とします。
 </p>
-<span style="font-weight:bold;">[D]辞書順で比較して降順で並び替える</span>
+<p>
+  <span style="font-weight:bold;">[D]辞書順で比較して降順で並び替える</span>
+</p>
 <p>
   辞書順で比較して降順で並び替えるサンプルです。
 </p>
@@ -580,7 +596,9 @@ use List::Util 'shuffle';
 @ret = reverse @array;
 </pre>
 <h4>文字列リスト演算子</h4>
-<a href="/blog/20100303126967.html">文字列リスト演算子</a>を使えばカンマやクォートなしで文字列のリストを表現できます。
+<p>
+  <a href="/blog/20100303126967.html">文字列リスト演算子</a>を使えばカンマやクォートなしで文字列のリストを表現できます。
+</p>
 <pre>
 @array = qw(cat dob mouse);
 </pre>
@@ -652,7 +670,9 @@ open(my $fh, "&lt;", $file)
 <p>
   ファイルオープンが失敗した場合のエラー処理は必ず行う必要があります。
 </p>
-<span style="font-weight:bold;">[A]オープンモード</span>
+<p>
+  <span style="font-weight:bold;">[A]オープンモード</span>
+</p>
 <p>
   よく使用されるオープンモードの一覧です。
 </p>
@@ -683,7 +703,9 @@ while (my $line = &lt;$fh&gt;) {
   ...
 }
 </pre>
-<span style="font-weight:bold;">[A]すべての行を配列に読み込む</span>
+<p>
+  <span style="font-weight:bold;">[A]すべての行を配列に読み込む</span>
+</p>
 <p>
   すべての行を配列に読み込むにはリストコンテキストでダイヤモンド演算子を使用します。
 </p>
@@ -854,7 +876,9 @@ $ret = dirname $file;
   /a/b/c.txt というファイル名の場合は/a/bがディレクトリ名に当たります。
 </p>
 <h4>ファイルテスト演算子</h4>
-<a href="/blog/20100820127859.html">ファイルテスト演算子</a>を使用するとファイルやディレクトリの存在確認を行うことができます。
+<p>
+  <a href="/blog/20100820127859.html">ファイルテスト演算子</a>を使用するとファイルやディレクトリの存在確認を行うことができます。
+</p>
 <pre>
 # 通常ファイルの存在確認
 $ret = -f $file;
@@ -870,7 +894,9 @@ if (-f $file) {
   ...
 }
 </pre>
-<span style="font-weight:bold;">[A]よく使用されるファイル演算子一覧</span>
+<p>
+  <span style="font-weight:bold;">[A]よく使用されるファイル演算子一覧</span>
+</p>
 <pre>
 -e  ファイルが存在するかの確認(ディレクトリも含む)
 -f  ファイルが通常ファイルかどうかを確認
@@ -1075,7 +1101,9 @@ $@    evalのエラー
 <div id="standard-module"></div>
 <h3>11 よく使用するモジュール</h3>
 <h4>File::Spec</h4>
-<a href="/blog/20100412127089.html">File::Specモジュール</a>を使用すればOSに応じたファイル名を作成することができます。
+<p>
+  <a href="/blog/20100412127089.html">File::Specモジュール</a>を使用すればOSに応じたファイル名を作成することができます。
+</p>
 <pre>
 use File::Spec;
 my $file_name = File::Spec-&gt;catfile( 'dir', 'file.txt' );
@@ -1084,7 +1112,9 @@ my $file_name = File::Spec-&gt;catfile( 'dir', 'file.txt' );
   Windows系のOSでは、$file_nameは dir\file.txt になり、Unix系のOSではファイル名は dir/file.txtになります。
 </p>
 <h4>FindBin</h4>
-<a href="/blog/20100524127696.html">FindBin</a>モジュールを使用すれば、実行しているスクリプトが存在するディレクトリ名を取得することができます。
+<p>
+  <a href="/blog/20100524127696.html">FindBin</a>モジュールを使用すれば、実行しているスクリプトが存在するディレクトリ名を取得することができます。
+</p>
 <pre>
 use FindBin;
 my $script_dir = $FindBin::Bin;
@@ -1093,7 +1123,9 @@ my $script_dir = $FindBin::Bin;
   $FindBin::Bin に実行しているスクリプトが存在するディレクトリ名が格納されます。
 </p>
 <h4>lib</h4>
-<a href="/blog/20100525127859.html">libモジュール</a>を使用すればモジュールの検索パスを追加することができます。
+<p>
+  <a href="/blog/20100525127859.html">libモジュール</a>を使用すればモジュールの検索パスを追加することができます。
+</p>
 <pre>
 use lib qw/. lib/;
 </pre>
@@ -1114,7 +1146,9 @@ croak($message);
 carp($message);
 </pre>
 <h4>Get::Options</h4>
-<a href="/blog/20080108132865.html">コマンドライン引数</a>でオプションを受け取りたい場合は<a href="/blog/20100514127696.html">Get::Optionsモジュール</a>を使用します。たとえば次のようなオプションを受け取りたいとします。
+<p>
+  <a href="/blog/20080108132865.html">コマンドライン引数</a>でオプションを受け取りたい場合は<a href="/blog/20100514127696.html">Get::Optionsモジュール</a>を使用します。たとえば次のようなオプションを受け取りたいとします。
+</p>
 <pre>
 perl script_name --length=100 --file=test.txt --verbose
 </pre>

@@ -266,7 +266,9 @@ mydb =
 <p>
   この場合はmydbというのがネットサービス名になります。SIDの部分にデータベース名を指定します。この例ではXEがデータベース名です。
 </p>
-<a href="http://www.shift-the-oracle.com/oracle-net/tnsnames.html">tnsnames.oraについてはこちらの解説</a>が詳しいです。
+<p>
+  <a href="http://www.shift-the-oracle.com/oracle-net/tnsnames.html">tnsnames.oraについてはこちらの解説</a>が詳しいです。
+</p>
 <h4>直接データベース名を指定する場合</h4>
 <p>
   直接データベース名を指定する場合は次のようにします。
@@ -328,7 +330,9 @@ my $dbi = DBIx::Custom-&gt;connect(dsn =&gt; $dsn, user =&gt; 'kimoto', password
 <p>
   またSQL Server認証で接続したい場合は、SQL Server認証が有効になっていないと接続できませんので、どのような設定になっているかを確認する必要があります。
 </p>
-<a href="http://msdn.microsoft.com/ja-jp/library/ms188670.aspx">Windows認証とSQL Server認証の切り替え</a>
+<p>
+  <a href="http://msdn.microsoft.com/ja-jp/library/ms188670.aspx">Windows認証とSQL Server認証の切り替え</a>
+</p>
 <p>
   設定を変更した後はSQL Serverを再起動することを忘れないでください。
 </p>
@@ -367,7 +371,9 @@ my $dbi = DBIx::Custom-&gt;connect(
 $dbi-&gt;separator('-');
 </pre>
 <h4>Microsoft Access 2010のaccdbファイル</h4>
-<a href="http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c06b8369-60dd-4b64-a44b-84b371ede16d">こちらから2010用のODBCドライバーをインストール</a>する必要があります。
+<p>
+  <a href="http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c06b8369-60dd-4b64-a44b-84b371ede16d">こちらから2010用のODBCドライバーをインストール</a>する必要があります。
+</p>
 <p>
   接続方法は2007のものと同じになります。
 </p>

@@ -65,7 +65,9 @@
     here
   </li>
 </ol>
-<strong>Pod::Usage</strong>はPODドキュメントの出力するためのモジュールです。ドキュメントを表示してプログラムを終了させる<strong>pod2usage</strong>という関数を使用することができます。
+<p>
+  <strong>Pod::Usage</strong>はPODドキュメントの出力するためのモジュールです。ドキュメントを表示してプログラムを終了させる<strong>pod2usage</strong>という関数を使用することができます。
+</p>
 <p>
   関数を使用する場合は明示的にインポートするのがよいでしょう。
 </p>
@@ -93,7 +95,9 @@ my $file = shift;
 # 引数がない場合はSYNOPSISを表示してプログラムを終了
 pod2usage() unless $file;
 </pre>
-<a href="/blog/20080108132865.html">コマンドライン引数</a>がなかった場合は次のように表示されプログラムは終了します。
+<p>
+  <a href="/blog/20080108132865.html">コマンドライン引数</a>がなかった場合は次のように表示されプログラムは終了します。
+</p>
 <pre>
 Usage:
     script.pl FILE

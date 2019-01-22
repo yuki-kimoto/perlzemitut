@@ -48,8 +48,12 @@
           </div>
           <div class="entry-body">
             <h2 class="title">Validator::Custom 1.0 以前におけるドキュメント</h2>
-<a href="/blog/20151212144988.html">このページはValidator::Custom 1.0 以前のドキュメントになります。最新版のドキュメントは、こちらです。</a>
-<strong>Validator::Custom</strong>は<strong>HTMLフォーム</strong>のデータの<strong>バリデーション</strong>(<strong>値の検証</strong>)を行うための便利なモジュールです。バリデーションのルールを少ない記述で書けること、制約ごとにエラーメッセージを設定できること、良く使う機能は最初から提供していて、ユーザー定義の制約を簡単に追加できる柔軟性の高い設計などが特徴です。
+<p>
+  <a href="/blog/20151212144988.html">このページはValidator::Custom 1.0 以前のドキュメントになります。最新版のドキュメントは、こちらです。</a>
+</p>
+<p>
+  <strong>Validator::Custom</strong>は<strong>HTMLフォーム</strong>のデータの<strong>バリデーション</strong>(<strong>値の検証</strong>)を行うための便利なモジュールです。バリデーションのルールを少ない記述で書けること、制約ごとにエラーメッセージを設定できること、良く使う機能は最初から提供していて、ユーザー定義の制約を簡単に追加できる柔軟性の高い設計などが特徴です。
+</p>
 <pre>
 use Validator::Custom;
 my $vc = Validator::Custom-&gt;new;
@@ -119,7 +123,9 @@ my $rule = [
   こちらのドキュメントは、新しい文法に書き直しますので、古い文法については、公式のドキュメントを参考にしてください。
 </p>
 <h3>Validator::Customのインストール</h3>
-<strong>Validator::Custom</strong>を<strong>インストール</strong>するにはcpanコマンドを使用します。
+<p>
+  <strong>Validator::Custom</strong>を<strong>インストール</strong>するにはcpanコマンドを使用します。
+</p>
 <pre>
 cpan Validator::Custom
 </pre>
@@ -341,7 +347,9 @@ $vc-&gt;register_constraint(
 );
 </pre>
 <h3>項目が存在しなくてもよい require => 0 / Validator::Customリファレンス</h3>
-<strong>項目が存在しても存在しなくてもよい</strong>場合は<strong>require</strong>メソッドの代わりに<b>optional</b>メソッドを使用します。
+<p>
+  <strong>項目が存在しても存在しなくてもよい</strong>場合は<strong>require</strong>メソッドの代わりに<b>optional</b>メソッドを使用します。
+</p>
 <pre>
 my $rule = $vc-&gt;create_rule;
 $rule-&gt;optional('name')-&gt;check('int');
@@ -367,7 +375,9 @@ $rule = [
 my $result = $vc-&gt;validate($data, $rule);
 </pre>
 <h3>and条件を使ったルール</h3>
-<a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+<p>
+  <a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+</p>
 <p>
   バリデーションを行うときに、複数の条件を満たしているかどうかを記述したいことがあります。たとえば、1000より大きくて2000より小さいという条件を書きたいときなどです。
 </p>
@@ -418,7 +428,9 @@ $rule-&gt;require('price')
 <pre>
 {制約名 =&gt; 引数}
 </pre>
-<b>equal_to</b>と<b>between</b>のサンプルは次のようになります。
+<p>
+  <b>equal_to</b>と<b>between</b>のサンプルは次のようになります。
+</p>
 <pre>
 my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('price')-&gt;check({'equal_to' =&gt; 1000});
@@ -482,7 +494,9 @@ $rule-&gt;require('food')
 
 my $is_valid = $vc-&gt;validate($data, $rule);
 </pre>
-<b>each</b>メソッドを利用することで、要素のそれぞれの値に対して、検証を行うことができます。
+<p>
+  <b>each</b>メソッドを利用することで、要素のそれぞれの値に対して、検証を行うことができます。
+</p>
 <p>
   少しややこしいですが、覚えてしまうと便利です。
 </p>
@@ -606,7 +620,9 @@ $rule-&gt;require('value4')-&gt;check({'length' =&gt; {max =&gt; 5}});
   長さのチェックができます。文字列が内部文字列の場合は文字列の長さをチェックできます。文字列がバイト文字列の場合は、バイト数をチェックします。
 </p>
 <h3>defined(制約関数) - 定義されている</h3>
-<strong>定義されている</strong>ことを指定するには<strong>defined</strong>制約関数を使用します。
+<p>
+  <strong>定義されている</strong>ことを指定するには<strong>defined</strong>制約関数を使用します。
+</p>
 <pre>
 my $data =&gt; {name =&gt; 'Ken'};
 my $rule = $vc-&gt;create_rule;
@@ -616,8 +632,12 @@ $rule-&gt;require('name')-&gt;check('defined');
   HTMLフォームの場合は、空文字列かどうかを確認できればよいのでdefineの代わりにnot_blankを使えばよいでしょう。
 </p>
 <h3>decimal(制約関数) - 正の数値(桁数指定)</h3>
-<a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
-<strong>数値</strong>であることを指定するには<strong>decimal</strong>制約関数を使用します。数値というのは正の整数と少数を含みます。負の数は含まないので注意してくだだい。引数で小数点の前にくる最大の桁数と小数点の後にくる最大の桁数を指定できます。
+<p>
+  <a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+</p>
+<p>
+  <strong>数値</strong>であることを指定するには<strong>decimal</strong>制約関数を使用します。数値というのは正の整数と少数を含みます。負の数は含まないので注意してくだだい。引数で小数点の前にくる最大の桁数と小数点の後にくる最大の桁数を指定できます。
+</p>
 <pre>
 my $data = {num1 =&gt; '123', num2 =&gt; '1.45'};
 my $rule = $vc-&gt;create_rule;
@@ -625,7 +645,9 @@ $rule-&gt;require('num1')-&gt;check({'decimal' =&gt; 3});
 $rule-&gt;require('num2')-&gt;check({'decimal' =&gt; [1, 2]});
 </pre>
 <h3>blank(制約関数) - 空文字列</h3>
-<strong>空文字列</strong>であることを指定するには<strong>blank</strong>制約関数を使用します。
+<p>
+  <strong>空文字列</strong>であることを指定するには<strong>blank</strong>制約関数を使用します。
+</p>
 <pre>
 my $data = {name =&gt; ''};
 my $rule = $vc-&gt;create_rule;
@@ -635,7 +657,9 @@ $rule-&gt;require('name')-&gt;check('blank');
   HTMLフォームのバリデーションにおいては、特に使う機会はないと思います。
 </p>
 <h3>between(制約関数) - AからBの間の数値</h3>
-<strong>AからBの間の数値</strong>であることを指定するには<strong>between</strong>制約関数を使用します。両端のAとBを含むということに注意してください。
+<p>
+  <strong>AからBの間の数値</strong>であることを指定するには<strong>between</strong>制約関数を使用します。両端のAとBを含むということに注意してください。
+</p>
 <pre>
 my $data = {age =&gt; 19};
 my $rule = $vc-&gt;create_rule;
@@ -657,7 +681,9 @@ $rule-&gt;require('password')-&gt;check('ascii');
   ASCIIコードの全体ではなくって、図形文字の範囲なので、タブや空白などが含まれていた場合はバリデーションが失敗します。
 </p>
 <h3>duplication(制約関数) - 二つの値が同一であることのチェック</h3>
-<strong>ふたつの値が一致</strong>していることをチェックしたい場合はC<duplication>制約関数を使用します。どちらか一方の値が未定義だった場合は常にバリデーションは失敗します。
+<p>
+  <strong>ふたつの値が一致</strong>していることをチェックしたい場合はC<duplication>制約関数を使用します。どちらか一方の値が未定義だった場合は常にバリデーションは失敗します。
+</p>
 <p>
   複数の値
 </p>
@@ -685,7 +711,9 @@ $rule-&gt;require(['password1', 'password2'])-&gt;name('password_check')
   -&gt;check('duplication')-&gt;message('Two password is not matched')
 </pre>
 <h3>regex(制約関数) - 正規表現にマッチする</h3>
-<strong>HTMLフォーム</strong>で、<strong>ある正規表現にマッチする</strong>ことをチェックしたい場合は<strong>regex</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>ある正規表現にマッチする</strong>ことをチェックしたい場合は<strong>regex</strong>制約関数を使用します。
+</p>
 <pre>
 #データ
 my $data = {num =&gt; '123'};
@@ -695,7 +723,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('num')-&gt;check({'regex' =&gt; qr/\d{0,3}/});
 </pre>
 <h3>not_space(制約関数) - 空白文字ではない</h3>
-<strong>HTMLフォーム</strong>で、<strong>空白文字ではない</strong>ことをチェックしたい場合は<strong>not_space</strong>制約関数を使用します。空白文字とは空白文字、タブ文字、改行文字だけで構成されている文字列のことです。文字列が存在しない場合も含まれます。ユニコードにおける空白文字は含まれません。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>空白文字ではない</strong>ことをチェックしたい場合は<strong>not_space</strong>制約関数を使用します。空白文字とは空白文字、タブ文字、改行文字だけで構成されている文字列のことです。文字列が存在しない場合も含まれます。ユニコードにおける空白文字は含まれません。
+</p>
 <pre>
 #データ
 my $data = {name =&gt; 'Ken'};
@@ -705,7 +735,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('name')-&gt;check('not_space');
 </pre>
 <h3>not_defined(制約関数) - 値が定義されていない</h3>
-<strong>HTMLフォーム</strong>で、<strong>値が定義されていない</strong>ことをチェックしたい場合は<strong>not_defined</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>値が定義されていない</strong>ことをチェックしたい場合は<strong>not_defined</strong>制約関数を使用します。
+</p>
 <pre>
 #データ
 my $data = {name =&gt; 'Ken'};
@@ -715,7 +747,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('name')-&gt;check('not_defined');
 </pre>
 <h3>less_than(制約関数) - 数値がある数より小さい</h3>
-<strong>HTMLフォーム</strong>で、<strong>数値がある数より小さい</strong>ことをチェックしたい場合は<strong>less_than</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>数値がある数より小さい</strong>ことをチェックしたい場合は<strong>less_than</strong>制約関数を使用します。
+</p>
 <pre>
 #データ
 my $data = {num =&gt; 20};
@@ -725,7 +759,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('num')-&gt;check({'less_than' =&gt; 25});
 </pre>
 <h3>int(制約関数) - 整数</h3>
-<strong>HTMLフォーム</strong>で、<strong>整数</strong>であることをチェックしたい場合は<strong>int</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>整数</strong>であることをチェックしたい場合は<strong>int</strong>制約関数を使用します。
+</p>
 <pre>
 #データ
 my $data = {age =&gt; 19};
@@ -735,7 +771,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('age')-&gt;check('int');
 </pre>
 <h3>http_url(制約関数) - HTTPあるいはHTTPSのURL</h3>
-<strong>HTMLフォーム</strong>で、<strong>HTTPあるいはHTTPSのURL</strong>であることをチェックしたい場合は<strong>http_url</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>HTTPあるいはHTTPSのURL</strong>であることをチェックしたい場合は<strong>http_url</strong>制約関数を使用します。
+</p>
 <pre>
 # データ
 my $data = {url =&gt; 'http://somehost.com'};
@@ -745,7 +783,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('url')-&gt;check('http_url');
 </pre>
 <h3>greater_than(制約関数) - ある数より大きい</h3>
-<strong>HTMLフォーム</strong>で、<strong>ある数より大きい</strong>ことをチェックしたい場合は<strong>greater_than</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>ある数より大きい</strong>ことをチェックしたい場合は<strong>greater_than</strong>制約関数を使用します。
+</p>
 <pre>
 #データ
 my $data = {price =&gt; 1000};
@@ -755,7 +795,9 @@ my $rule = $vc-&gt;create_rule;
 $rule-&gt;require('price')-&gt;check({'greater_than' =&gt; 900});
 </pre>
 <h3>equal_to(制約関数) - 数値が等しい</h3>
-<strong>HTMLフォーム</strong>で、<strong>数値が等しい</strong>ことをチェックしたい場合は<strong>equal_to</strong>制約関数を使用します。
+<p>
+  <strong>HTMLフォーム</strong>で、<strong>数値が等しい</strong>ことをチェックしたい場合は<strong>equal_to</strong>制約関数を使用します。
+</p>
 <pre>
 # データ
 my $data = {price =&gt; 1000};

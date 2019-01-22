@@ -217,7 +217,9 @@ patch '/' =&gt; sub { ... };
 any '/' =&gt; sub { ... };
 </pre>
 <h4>HTTPメソッド名を取得する</h4>
-<b>any</b>関数で受け取った場合は、ユーザーがどのHTTPメソッドでアクセスしてきたのかを知りたい場合があると思います。そのような場合は<b>req</b>メソッドでHTTPリクエストを表現するMojo::Message::Requestオブジェクトを取得して、<b>method</b>メソッドでHTTPメソッドを取得できます。
+<p>
+  <b>any</b>関数で受け取った場合は、ユーザーがどのHTTPメソッドでアクセスしてきたのかを知りたい場合があると思います。そのような場合は<b>req</b>メソッドでHTTPリクエストを表現するMojo::Message::Requestオブジェクトを取得して、<b>method</b>メソッドでHTTPメソッドを取得できます。
+</p>
 <pre>
 my $http_method = $c-&gt;req-&gt;method;
 </pre>
@@ -239,7 +241,9 @@ get '/date/:date' =&gt; sub {
   $self-&gt;render('date', date =&gt; $date);
 };
 </pre>
-<strong>reply->exception</strong>を代わりに使えば、エラーを示す「500 エラーメッセージ」を表示することもできます。
+<p>
+  <strong>reply->exception</strong>を代わりに使えば、エラーを示す「500 エラーメッセージ」を表示することもできます。
+</p>
 <pre>
 $c-&gt;reply-&gt;exception('Error');
 </pre>

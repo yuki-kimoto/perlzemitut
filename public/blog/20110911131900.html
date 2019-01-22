@@ -155,7 +155,9 @@ my $table_infos = $dbi-&gt;get_table_info(exclude =&gt; qr/^system_/);
 <p>
   データベースのテーブルの情報を取得するには通常はeach_tableメソッドを利用しますが、システムテーブルを大量に保持しているデータベースの場合は、アクセスするたびにテーブルの情報の取得を行うと非常に低速になります。
 </p>
-<strong>user_table_info</strong>メソッド使用すると、テーブル情報を設定しておいて、each_tableがそのテーブル情報を利用できるようになります。
+<p>
+  <strong>user_table_info</strong>メソッド使用すると、テーブル情報を設定しておいて、each_tableがそのテーブル情報を利用できるようになります。
+</p>
 <pre>
 $dbi-&gt;user_table_info($user_table_info)
 </pre>
@@ -241,7 +243,9 @@ $dbi-&gt;each_column(sub { ... });
 <p>
   データベースの列の情報を取得するには通常はeach_columnメソッドを利用しますが、システムテーブルを大量に保持しているデータベースの場合は、アクセスするたびに列の情報を取得すると非常に低速になります。
 </p>
-<strong>user_column_info</strong>メソッドを使用すると、列情報を設定でき、each_columnがこの列情報を利用できるようになります。
+<p>
+  <strong>user_column_info</strong>メソッドを使用すると、列情報を設定でき、each_columnがこの列情報を利用できるようになります。
+</p>
 <pre>
 $dbi-&gt;user_column_info($user_column_info)
 </pre>

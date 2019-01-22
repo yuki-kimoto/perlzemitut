@@ -469,7 +469,9 @@ Files=2, Tests=2,  0 wallclock secs ( 0.00 cusr +  0.00 csys =  0.00 CPU)
   </tr>
 </table>
 <h4>is関数とisnt関数</h4>
-<strong>is関数</strong>は文字列が等しいことを試験します。<strong>isnt関数</strong>は文字列が等しくないことを試験します。
+<p>
+  <strong>is関数</strong>は文字列が等しいことを試験します。<strong>isnt関数</strong>は文字列が等しくないことを試験します。
+</p>
 <pre>
 is($str, 3);
 isnt($str, 5);
@@ -484,7 +486,9 @@ isnt($str, 5);
   それ以外の場合は、 cmp_ok という関数を使用します。
 </p>
 <h4>like関数とunlike関数</h4>
-<strong>like関数</strong>は文字列が正規表現にマッチすることを試験します。<strong>unlike関数</strong>は正規表現にマッチしない</strong>ことを試験します。
+<p>
+  <strong>like関数</strong>は文字列が正規表現にマッチすることを試験します。<strong>unlike関数</strong>は正規表現にマッチしない</strong>ことを試験します。
+</p>
 <pre>
 like( $str, qr/\w+/);
 unlike( $str, qr/\w+/);
@@ -496,7 +500,9 @@ unlike( $str, qr/\w+/);
   第2引数は、qr/\w+/ という正規表現のリファレンスになっていることに注意してください。これを '\w+' や、 /\w+/ のようにすると、試験がうまくいきません。
 </p>
 <h4>cmp_ok関数</h4>
-<strong>cmp_ok関数</strong>を使うと任意の比較演算子を使って試験ができます。
+<p>
+  <strong>cmp_ok関数</strong>を使うと任意の比較演算子を使って試験ができます。
+</p>
 <pre>
 cmp_ok( $num, '&lt;', 3); 
 </pre>
@@ -504,7 +510,9 @@ cmp_ok( $num, '&lt;', 3);
   第1引数、第3引数は比較したい値です。第2引数は比較演算子です。「=」「<」「<=」「>=」「>」「eq」「ne」「gt」「lt」「ge」「le」など、すべての比較演算子が使用できます。
 </p>
 <h4>is_deeply関数</h4>
-<strong>is_deeply関数</strong>を使うと、配列のリファレンスやハッシュのリファレンスなどの複雑なデータ構造の試験を行うことができます。これはとても便利です。
+<p>
+  <strong>is_deeply関数</strong>を使うと、配列のリファレンスやハッシュのリファレンスなどの複雑なデータ構造の試験を行うことができます。これはとても便利です。
+</p>
 <pre>
 is_deeply($hash_ref, {a =&gt; 1, b =&gt; 2});
 </pre>
@@ -549,7 +557,9 @@ is_deeply($hash_ref, {a =&gt; 1, b =&gt; 2});
   </tr>
 </table>
 <h4>can_ok関数</h4>
-<strong>can_ok関数</strong>は、あるクラスがあるメソッドを持っていることを確かめるための試験に使用します。
+<p>
+  <strong>can_ok関数</strong>は、あるクラスがあるメソッドを持っていることを確かめるための試験に使用します。
+</p>
 <pre>
 can_ok('Book', 'title', 'author', 'price', 'to_string', 'clone');
 </pre>
@@ -557,7 +567,9 @@ can_ok('Book', 'title', 'author', 'price', 'to_string', 'clone');
   これは、Bookクラスが、title, author, price, to_string, clone というメソッド持っていることを確認するための試験です。
 </p>
 <h4>isa_ok関数</h4>
-<strong>isa_ok</strong>はあるオブジェクトがあるクラスを継承していることを確かめるための試験に使用します。
+<p>
+  <strong>isa_ok</strong>はあるオブジェクトがあるクラスを継承していることを確かめるための試験に使用します。
+</p>
 <pre>
 my $comic = Comic-&gt;new;
 isa_ok($comic, 'Book');
@@ -579,7 +591,9 @@ my $ary_ref = [];
 isa_ok($array_ref, 'ARRAY');
 </pre>
 <h4>require_ok関数</h4>
-<strong>require_ok関数</strong>はモジュールがrequireできることを確認するための試験に使用します。
+<p>
+  <strong>require_ok関数</strong>はモジュールがrequireできることを確認するための試験に使用します。
+</p>
 <pre>
 require_ok('Book');
 </pre>
@@ -587,13 +601,17 @@ require_ok('Book');
   これは、Bookモジュールがrequireできることを確認する試験です。require_okの使い道ですが、自分が配布したいモジュールが、別のモジュールに依存している場合、そのモジュールが存在することを確認する場合などに利用できます。
 </p>
 <h4>use_ok関数</h4>
-<strong>use_ok関数</strong>はモジュールがuseできることを確認するための試験に使用します。
+<p>
+  <strong>use_ok関数</strong>はモジュールがuseできることを確認するための試験に使用します。
+</p>
 <pre>
 BEGIN{ use_ok('Some::Module') }
 </pre>
 <h3>FAQ</h3>
 <h4>試験結果にわかりやすいコメントを表示することはできますか</h4>
-<strong>note関数</strong>を使用すると、試験結果にコメントを表示することができます。
+<p>
+  <strong>note関数</strong>を使用すると、試験結果にコメントを表示することができます。
+</p>
 <pre>
 note 'some test';
 </pre>

@@ -69,7 +69,9 @@
   デリファレンスとは<a href="/blog/20100930127859.html">リファレンス</a>を作成するのと反対の操作で、リファレンスから実体を取り出すことができます。
 </p>
 <h4>配列のリファレンスをデリファレンス</h4>
-<a href="/blog/20180214151861.html">配列のリファレンス</a>をデリファレンスするには「@{}」を使用します。
+<p>
+  <a href="/blog/20180214151861.html">配列のリファレンス</a>をデリファレンスするには「@{}」を使用します。
+</p>
 <pre>
 my @array = @{$array_ref};
 </pre>
@@ -118,7 +120,9 @@ my $num = shift @$nums;
   </li>
 </ul>
 <h4>ハッシュのリファレンスをデリファレンス</h4>
-<a href="/blog/20180208151809.html">ハッシュのリファレンス</a>のデリファレンスを行うには「%{}」を使用します。
+<p>
+  <a href="/blog/20180208151809.html">ハッシュのリファレンス</a>のデリファレンスを行うには「%{}」を使用します。
+</p>
 <pre>
 my %hash = %{$hash_ref};
 </pre>
@@ -167,7 +171,9 @@ my @keys = keys %$score;
   </li>
 </ul>
 <h4>スカラ変数のリファレンスをデリファレンス</h4>
-<a href="/blog/20161107147852.html">スカラ変数</a>のリファレンスのデリファレンスを行うには「${}」を使用します。
+<p>
+  <a href="/blog/20161107147852.html">スカラ変数</a>のリファレンスのデリファレンスを行うには「${}」を使用します。
+</p>
 <pre>
 my $scalar = ${$scalar_ref};
 </pre>
@@ -191,7 +197,9 @@ my $string_ref = \$string;
 my $string2 = $$string_ref;
 </pre>
 <h4>他のリファレンスのデリファレンスはできるの?</h4>
-<a href="/blog/20080704121518.html">サブルーチンのリファレンス</a>と<a href="/blog/20080419120860.html">正規表現のリファレンス</a>は、デリファレンスすることができません。
+<p>
+  <a href="/blog/20080704121518.html">サブルーチンのリファレンス</a>と<a href="/blog/20080419120860.html">正規表現のリファレンス</a>は、デリファレンスすることができません。
+</p>
 <ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
   <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
     <a itemprop="item" href="/">

@@ -219,13 +219,17 @@ $nums(1:2) .= 8;
 print $nums . "\n";
 </pre>
 <h3>定数の四則演算</h3>
-<strong>PDL変数のすべての値に同じ値を加算する</strong>には<strong>+</strong>演算子を使用します。
+<p>
+  <strong>PDL変数のすべての値に同じ値を加算する</strong>には<strong>+</strong>演算子を使用します。
+</p>
 <pre>
 use PDL::Lite;
 my $pdl = pdl [1, 1, 2, 2, 2, 3];
 my $pdl_add = $pdl + 3;
 </pre>
-<strong>引き算</strong>、<strong>掛け算</strong>、<strong>割り算</strong>、<strong>商</strong>、<strong>べき乗</strong>も同じように計算することができます。
+<p>
+  <strong>引き算</strong>、<strong>掛け算</strong>、<strong>割り算</strong>、<strong>商</strong>、<strong>べき乗</strong>も同じように計算することができます。
+</p>
 <pre>
 # 引き算
 my $pdl_sub = $pdl - 3;
@@ -246,19 +250,25 @@ my $pdl_pow = $pdl + 3;
   掛け算と割り算にによるものは、ベクトルの定数倍に該当します。PDL変数どうしの演算ではなくて、PDL変数と普通の値との演算を行っていることを意識に止めておきましょう。
 </p>
 <h3>ユニークな値を取り出す</h3>
-<strong>ユニークな値</strong>を取り出すには<strong>uniqメソッド</strong>を使用します。
+<p>
+  <strong>ユニークな値</strong>を取り出すには<strong>uniqメソッド</strong>を使用します。
+</p>
 <pre>
 my $pdl_uniq = $pdl-&gt;uniq;
 </pre>
 <h3>PDL変数どうしの四則演算</h3>
-<strong>PDL変数どうしを加算する</strong>には、PDL変数どうしに対して<strong>+</strong>演算子を使用します。各要素が加算されます。
+<p>
+  <strong>PDL変数どうしを加算する</strong>には、PDL変数どうしに対して<strong>+</strong>演算子を使用します。各要素が加算されます。
+</p>
 <pre>
 # PDL変数どうしの加算
 my $pdl1 = pdl [1, 2, 3];
 my $pdl2 = pdl [4, 5, 6];
 my $pdl_add = $pdl1 + $pdl2;
 </pre>
-<strong>引き算</strong>、<strong>掛け算</strong>、<strong>割り算</strong>、<strong>商</strong>、<strong>べき乗</strong>も同じように計算することができます。各要素が計算されます。
+<p>
+  <strong>引き算</strong>、<strong>掛け算</strong>、<strong>割り算</strong>、<strong>商</strong>、<strong>べき乗</strong>も同じように計算することができます。各要素が計算されます。
+</p>
 <pre>
 # 引き算
 my $pdl_sub = $pdl1 - $pdl2;

@@ -65,12 +65,16 @@
     here
   </li>
 </ol>
-<strong>Benchmark</strong>モジュールを使用すると、ベンチマーク(性能比較)を行うことができます。
+<p>
+  <strong>Benchmark</strong>モジュールを使用すると、ベンチマーク(性能比較)を行うことができます。
+</p>
 <pre>
 # モジュールの読み込みと関数のインポート
 use Benchmark qw/timethese cmpthese/;
 </pre>
-<strong>timethese</strong>関数を実行すると各関数の性能情報を取得できます。これを<strong>compthese</strong>関数の引数に指定すると、標準出力に比較結果が表示されます。
+<p>
+  <strong>timethese</strong>関数を実行すると各関数の性能情報を取得できます。これを<strong>compthese</strong>関数の引数に指定すると、標準出力に比較結果が表示されます。
+</p>
 <pre>
 # 性能の比較
 my $result = timethese($count, {

@@ -62,7 +62,9 @@
 <p>
   Perl5.8以降における標準的なPerlの書き方を解説します。
 </p>
-<img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018090520180905152847.png">
+<p>
+  <img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/2018090520180905152847.png">
+</p>
 <p>
   インターネットで検索するとPerl4のころの古い記述がたくさんあります。また書籍などの多くもPerl4の記法で書かれています。Perl4の記法は複雑になりやすく間違いを生みやすいのでこれからPerlを書く人はPerl5の現代的な記法で記述することを強くお勧めします。 
 </p>
@@ -170,7 +172,9 @@ sub create_table {
 <p>
   変数の命名方法には別に記事を書いていますのでこちらも参考にしてください。
 </p>
-<a href="/blog/20081103122562.html">＜変数に適切な名前をつける＞</a>
+<p>
+  <a href="/blog/20081103122562.html">＜変数に適切な名前をつける＞</a>
+</p>
 <p>
   サブルーチンの命名方法は原則として「動詞 + 名詞」です。意味がはっきりとわかるものについてはユーザの利便性を考えて「動詞」だけにしても良いかもしれません。ただし後で困ることがあるので「動詞 + 名詞」にしておくのが無難だと思います。
 </p>
@@ -193,7 +197,9 @@ our $CLASS_INFO;
 <p>
   サンプルとしてMojo::URLのソースコードのリンクを張っておきます。これをまねして書けば覚えられます。
 </p>
-<a href="http://github.com/kraih/mojo/blob/master/lib/Mojo/URL.pm">＜Mojo::URLのソースコード＞</a>
+<p>
+  <a href="http://github.com/kraih/mojo/blob/master/lib/Mojo/URL.pm">＜Mojo::URLのソースコード＞</a>
+</p>
 <p>
   まねするポイントを少しだけ書いておきます。
 </p>
@@ -216,7 +222,9 @@ if ($flg) {
 <p>
   日本語などのマルチバイト文字を適切に扱うにはEncodeモジュールを使用します。こちらは記事にしましたのでリンクを張っておきます。
 </p>
-<a href="/blog/20091118124667.html">＜Encode 日本語などのマルチバイト文字列を適切に処理する＞</a>
+<p>
+  <a href="/blog/20091118124667.html">＜Encode 日本語などのマルチバイト文字列を適切に処理する＞</a>
+</p>
 <p>
   古い解説にあるようなJcode.pmやJcode.plを使うような手法は現在では推奨できません。Perl5.8以降はEncodeモジュールを使用するのが標準的で問題が少ない方法です。
 </p>
@@ -270,7 +278,9 @@ for (@students) {
 }
 </pre>
 <h3>コマンドライン引数の受け取りかた (参考)</h3>
-<a href="/blog/20080108132865.html">コマンドライン引数</a>はこんな感じで受け取るのがよいです。
+<p>
+  <a href="/blog/20080108132865.html">コマンドライン引数</a>はこんな感じで受け取るのがよいです。
+</p>
 <pre>
 # コマンドライン引数がひとつの場合
 my $file = shift;
@@ -299,15 +309,21 @@ sub func {
 <p>
   もしPerl5.10以降を使用しているならTime::Pieceというモジュールが標準で添付されており日付処理に使えます。
 </p>
-<a href="/blog/20091105124627.html">＜Time::Piece - 日付・時刻を扱うための標準モジュール＞</a>
+<p>
+  <a href="/blog/20091105124627.html">＜Time::Piece - 日付・時刻を扱うための標準モジュール＞</a>
+</p>
 <p>
   またCPANからインストールできる環境であればDataTimeモジュールをインストールするのも良いかもしれません。こちらは高機能ですが少し重いです。
 </p>
-<a href="/blog/20090815124848.html">＜日付を汎用的に扱うモジュール DateTime＞</a>
+<p>
+  <a href="/blog/20090815124848.html">＜日付を汎用的に扱うモジュール DateTime＞</a>
+</p>
 <p>
   それもできないならlocaltimeやTime::Localでがんばります。
 </p>
-<a href="/blog/20090809124848.html">＜Perlでの日付・時刻の扱い＞</a>
+<p>
+  <a href="/blog/20090809124848.html">＜Perlでの日付・時刻の扱い＞</a>
+</p>
 <h3>不必要なモジュールの読み込みは行わないこと (必須)</h3>
 <p>
   他のプログラムのソースコードをコピーしてきた場合にそのプログラムでは使用しないのに余計なモジュールが読み込まれている場合があります。これは後で読んだ人に対していらぬ誤解を招くので必ず削除するように心がけましょう。
@@ -399,7 +415,9 @@ sub func{
     
 }
 </pre>
-<a href="http://github.com/kraih/mojo/blob/master/lib/Mojo/URL.pm">＜Mojo::URLのソースコード＞</a>
+<p>
+  <a href="http://github.com/kraih/mojo/blob/master/lib/Mojo/URL.pm">＜Mojo::URLのソースコード＞</a>
+</p>
 <p>
   も参考にしてください。
 </p>

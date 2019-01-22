@@ -65,7 +65,9 @@
     here
   </li>
 </ol>
-<strong>乱数</strong>を生成するには<strong>rand関数</strong>を使用します。引数で指定した数より小さい0以上の数値がランダムで生成されます。
+<p>
+  <strong>乱数</strong>を生成するには<strong>rand関数</strong>を使用します。引数で指定した数より小さい0以上の数値がランダムで生成されます。
+</p>
 <pre>
 $ret = rand 10;
 </pre>
@@ -111,13 +113,17 @@ rand(10);
 <pre>
 int(rand 10);
 </pre>
-<a href="/blog/20080923122214.html">int関数</a>を使うと整数部のみが取得できます。int(rand 10) とすると 0 から 9 までの整数が取得できます。
+<p>
+  <a href="/blog/20080923122214.html">int関数</a>を使うと整数部のみが取得できます。int(rand 10) とすると 0 から 9 までの整数が取得できます。
+</p>
 <h4>ランダムに配列の要素を選択する</h4>
 <pre>
 my @members = qw/aya toru kato kenji mina haruna kita michel kotaro/;
 $members[int(rand scalar @members)];
 </pre>
-<a href="/blog/20161012147627.html">配列</a>の要素をランダムに選択するには、rand関数に配列の要素数を与えて、int関数で整数部を取り出して、添え字にすればよいです。
+<p>
+  <a href="/blog/20161012147627.html">配列</a>の要素をランダムに選択するには、rand関数に配列の要素数を与えて、int関数で整数部を取り出して、添え字にすればよいです。
+</p>
 <p>
   配列の要素が10であれば、0～9までの乱数が生成され、対応する要素が返却されます。
 </p>

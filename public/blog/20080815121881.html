@@ -158,7 +158,9 @@ sysopen(my $lock_fh, $lock_file, O_RDONLY | O_CREAT)
   ロック用のファイルを作成します。
 </p>
 <h4>(2)flock関数を使ってロック用ファイルをロックする</h4>
-<a href="/blog/20080814121872.html">flock関数</a>を使ってロック用ファイルをロックしています。
+<p>
+  <a href="/blog/20080814121872.html">flock関数</a>を使ってロック用ファイルをロックしています。
+</p>
 <pre>
 # ロック用のファイルを排他ロック(読み込んで書き込むので排他ロック)
 flock($lock_fh, LOCK_EX)

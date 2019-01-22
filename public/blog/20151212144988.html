@@ -172,7 +172,9 @@
 </ul>
 <h3>ガイド</h3>
 <h4> 1. 基礎</h4>
-<b>1. 新しいValidator::Customオブジェクトを作成</b>
+<p>
+  <b>1. 新しいValidator::Customオブジェクトを作成</b>
+</p>
 <p>
   まず最初に<b>new</b>メソッドを使って、Validator::Customオブジェクトを作成します。
 </p>
@@ -180,7 +182,9 @@
   use Validator::Custom;
   my $vc = Validator::Custom-&gt;new;
 </pre>
-<b>2.バリデーションのための入力データの準備</b>
+<p>
+  <b>2.バリデーションのための入力データの準備</b>
+</p>
 <p>
   次に、入力データを準備します。
 </p>
@@ -190,7 +194,9 @@
   my $price = ' 19.23 ';
   my $favorite = ['001', '002'];
 </pre>
-<b>3. バリデーションオブジェクトの作成</b>
+<p>
+  <b>3. バリデーションオブジェクトの作成</b>
+</p>
 <p>
   次に、<b>validation</b>メソッドを使って、新しいバリデーションオブジェクトを作成します。
 </p>
@@ -203,7 +209,9 @@
 <p>
   失敗したパラメーター名とメッセージを保存するための、<a href="/blog/20151210144988.html">Validator::Custom::Validation</a>オブジェクトです。
 </p>
-<b>4. 入力データの検証</b>
+<p>
+  <b>4. 入力データの検証</b>
+</p>
 <pre>
   # 「ID」が整数であることをチェック
   if (!$vc-&gt;check($id, 'int')) {
@@ -269,29 +277,41 @@
     # ...
   }
 </pre>
-<b>failed</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターの名前を取得できます。
+<p>
+  <b>failed</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターの名前を取得できます。
+</p>
 <pre>
   # バリデーションに失敗したすべてのパラメーターの名前を取得
   my $failed = $validation-&gt;failed;
 </pre>
-<b>message</b>メソッドを使って、バリデーションに失敗したパラメーターのメッセージを取得できます。
+<p>
+  <b>message</b>メソッドを使って、バリデーションに失敗したパラメーターのメッセージを取得できます。
+</p>
 <pre>
   # バリデーションに失敗したパラメーターのメッセージを取得
   my $name_message = $validation-&gt;message('name');
 </pre>
-<b>messages</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターのメッセージを取得できます。
+<p>
+  <b>messages</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターのメッセージを取得できます。
+</p>
 <pre>
   # バリデーションに失敗したすべてのパラメーターのメッセージを取得
   my $messages = $validation-&gt;messages;
 </pre>
-<b>messages_to_hash</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターの名前とメッセージを、ハッシュリファレンス形式で取得できます。
+<p>
+  <b>messages_to_hash</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターの名前とメッセージを、ハッシュリファレンス形式で取得できます。
+</p>
 <pre>
   # 失敗したすべてのパラメーターの名前とメッセージをハッシュのリファレンスとして取得
   my $messages_h = $validation-&gt;messages_to_hash;
 </pre>
-<a href="/blog/20151210144988.html">Validator::Custom::Validation</a>も参考にしてください。
+<p>
+  <a href="/blog/20151210144988.html">Validator::Custom::Validation</a>も参考にしてください。
+</p>
 <h4>3 発展的な技術</h4>
-<b> 1. チェック関数の追加</b>
+<p>
+  <b> 1. チェック関数の追加</b>
+</p>
 <p>
   必要であれば、<b>add_check</b>メソッドを使って、自分自身でチェック関数を追加できます。
 </p>
@@ -314,7 +334,9 @@
 <p>
   チェック関数は、戻り値として真か偽の値を返す必要があります。
 </p>
-<b> 2. フィルター関数の追加</b>
+<p>
+  <b> 2. フィルター関数の追加</b>
+</p>
 <p>
   必要であれば、<b>add_filter</b>メソッドを使って、自分自身でフィルター関数を追加できます。
 </p>
@@ -393,7 +415,9 @@
   '1.a';
   'a.1';
 </pre>
-<b>decimal_part_max</b>オプションを使って、小数部の最大桁数を指定することもできます。
+<p>
+  <b>decimal_part_max</b>オプションを使って、小数部の最大桁数を指定することもできます。
+</p>
 <pre>
   my $is_valid = $vc-&gt;check($value, 'number', {decimal_part_max =&gt; 3});
 </pre>
@@ -690,7 +714,9 @@
 </p>
 <h3> FAQ</h3>
 <h4> まだValidator::Customの0.xxのバージョンを使用しています。ドキュメントを見たいのですが。</h4>
-<a href="http://search.cpan.org/~kimoto/Validator-Custom/lib/Validator/Custom/Document/Version0.pod">Validator::Custom::Document::Version0</a>を見てください。これは「Validator::Custom 0.xx」の完全なドキュメントです。
+<p>
+  <a href="http://search.cpan.org/~kimoto/Validator-Custom/lib/Validator/Custom/Document/Version0.pod">Validator::Custom::Document::Version0</a>を見てください。これは「Validator::Custom 0.xx」の完全なドキュメントです。
+</p>
 <h4> バージョン1.xxで気をつけなければならない点は何ですか。</h4>
 <ul>
   <li>
@@ -914,7 +940,9 @@
   Validator::Customにおけるバリデーシのためのチェック関数のサンプルをいくつか紹介します。
 </p>
 <h4>ひらがなとカタカナ</h4>
-<strong>ひらがな</strong>と</strong>カタカナ</strong>であることを判定するには以下のような制約関数を登録します。
+<p>
+  <strong>ひらがな</strong>と</strong>カタカナ</strong>であることを判定するには以下のような制約関数を登録します。
+</p>
 <pre>
 # ひらがな
 $vc-&gt;add_check(

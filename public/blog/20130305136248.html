@@ -119,7 +119,9 @@ use Object::Simple -base;
 <pre>
 my $obj = MyClass-&gt;new;
 </pre>
-<b>new</b>メソッドは、ハッシュあるいはハッシュのリファレンスを受け取ることができます。
+<p>
+  <b>new</b>メソッドは、ハッシュあるいはハッシュのリファレンスを受け取ることができます。
+</p>
     
 <pre>
 my $obj = MyClass-&gt;new(foo =&gt; 1, bar =&gt; 2);
@@ -192,7 +194,9 @@ package SubClass;
 use MyClass -base;
 </pre>
 <h3>スーパークラスのメソッドの呼び出し</h3>
-<b>SUPER</b>を使って、スーパークラスのメソッドを呼び出すことができます。
+<p>
+  <b>SUPER</b>を使って、スーパークラスのメソッドを呼び出すことができます。
+</p>
 <pre>
 package SubClass;
 use MyClass -base;
@@ -283,7 +287,9 @@ $point-&gt;clear;
   </li>
 </q>
 </ul>
-<b>Point3D</b>は<b>Point</b>を継承して作成します。<b>clear</b>メソッドは<b>x</b>と<b>y</b>と<b>z</b>の値をクリアするためにオーバーライドされています。
+<p>
+  <b>Point3D</b>は<b>Point</b>を継承して作成します。<b>clear</b>メソッドは<b>x</b>と<b>y</b>と<b>z</b>の値をクリアするためにオーバーライドされています。
+</p>
     
 <pre>
 package Point3D;

@@ -205,7 +205,9 @@ sub startup {
 <p>
   SampleappはMojoliciousを継承していて、MojoliciousはMojoを継承していますので、それらのメソッドを使用することができます。この中でよく使用するメソッドをいくつか紹介しておきます。
 </p>
-<b>log - ロガーの取得</b>
+<p>
+  <b>log - ロガーの取得</b>
+</p>
 <p>
   Mojoliciousにはログを設定レベルに応じて出力する機能があります。その機能は「<a href="http://search.cpan.org/dist/Mojo/lib/Mojo/Log.pm">Mojo::Log</a>」というクラスで実装されています。
 </p>
@@ -223,7 +225,9 @@ sub startup {
   $log-&gt;debug('message');
 }
 </pre>
-<b>home - ホームオブジェクトの取得</b>
+<p>
+  <b>home - ホームオブジェクトの取得</b>
+</p>
 <p>
   Mojoliciouにはアプリケーションのホームディレクトリを表現する「Mojo::Home」というクラスがあります。このオブジェクトを取得するには「home」メソッドを使用します。
 </p>
@@ -440,7 +444,9 @@ tail -f log/development.log
 <p>
   Webアプリケーションを作成しているとデータをダンプしてみたいことが良くあります。Mojoliciousでは単純にdieを行えば例外クラスのテンプレートが呼ばれてデータをダンプすることができます。
 </p>
-<strong>dumper</strong>を使って以下のようになります。
+<p>
+  <strong>dumper</strong>を使って以下のようになります。
+</p>
 <pre>
 die dumper $data;
 </pre>

@@ -137,7 +137,9 @@ cpanm -L extlib DBIx::Custom
   カレントディレクトリの<b>extlib</b>というディレクトリにDBIx::Customがインストールされます。
 </p>
 <h3>cpanmとcpanfileでバージョンを指定してモジュールをインストールする</h3>
-<strong>cpanm</strong>と<strong>cpanfile</strong>を使うと、バージョンを指定してモジュールをインストールすることができます。
+<p>
+  <strong>cpanm</strong>と<strong>cpanfile</strong>を使うと、バージョンを指定してモジュールをインストールすることができます。
+</p>
 <h4>cpanfileの記述</h4>
 <p>
   cpanfileを記述します。cpanfileはモジュールのバージョンを指定するためのファイルです。cpanfileという名前のファイルを作成してください。以下のような記述を行います。
@@ -231,7 +233,9 @@ requires モジュール名 バージョン
 <pre>
 perl cpanm --installdeps .
 </pre>
-<strong>-L</strong>オプションを使えば、指定したディレクトリにモジュールをインストールすることもできます。
+<p>
+  <strong>-L</strong>オプションを使えば、指定したディレクトリにモジュールをインストールすることもできます。
+</p>
 <pre>
 perl cpanm -L extlib --installdeps .
 </pre>

@@ -65,7 +65,9 @@
     here
   </li>
 </ol>
-<strong>sysopen</strong>関数を使用すればオープンモードを詳細に指定することができます。<a href="/blog/20080718121643.html">open関数</a>のオープンモード以上のことを行いたい場合に利用できます。
+<p>
+  <strong>sysopen</strong>関数を使用すればオープンモードを詳細に指定することができます。<a href="/blog/20080718121643.html">open関数</a>のオープンモード以上のことを行いたい場合に利用できます。
+</p>
 <pre>
 sysopen(my $fh, $file, O_WRONLY | O_EXCL | O_CREAT) 
 </pre>
@@ -90,7 +92,9 @@ sysopen(my $fh, $file, O_WRONLY | O_EXCL | O_CREAT)
 <pre>
 use Fcntl;
 </pre>
-<a href="/blog/20180310152509.html">Fcntl</a>モジュールを使用すると、O_WRONLY などのシンボルが使用できます。sysopen関数を使うときは、セットで使用すると覚えておきましょう。
+<p>
+  <a href="/blog/20180310152509.html">Fcntl</a>モジュールを使用すると、O_WRONLY などのシンボルが使用できます。sysopen関数を使うときは、セットで使用すると覚えておきましょう。
+</p>
 <h4>オープンモードの種類</h4>
 <table>
   <tr>

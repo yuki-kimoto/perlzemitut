@@ -185,7 +185,9 @@
 % warn dumper $date;
 </pre>
 <h3>他のテンプレートの取り込み</h3>
-<strong>include</strong>ヘルパーを使うと他のテンプレートを取り込むことができます。
+<p>
+  <strong>include</strong>ヘルパーを使うと他のテンプレートを取り込むことができます。
+</p>
 <pre>
 %= include '/include/header.html.ep
 </pre>
@@ -236,7 +238,9 @@
   と書くだけで、URLが文字列として展開されます。
 </p>
 <h4>現在のURLを取得</h4>
-<strong>url_for</strong>ヘルパーで引数を指定しなければ、現在のURLを取得することができます。
+<p>
+  <strong>url_for</strong>ヘルパーで引数を指定しなければ、現在のURLを取得することができます。
+</p>
 <pre>
 % my $current_url = url_for
 </pre>
@@ -398,13 +402,17 @@ alert('Hello');
 <p>
   ヘッダとフッタを作ってみましょう。「templates」ディレクトリの中に、「templates/include/header.html.ep」と「templates/include/footer.html.ep」という名前で保存してください。
 </p>
-<b>templates/include/header.html.ep</b>
+<p>
+  <b>templates/include/header.html.ep</b>
+</p>
 <pre>
 &lt;div id="header"&gt;
 &lt;h1&gt;Template Helper&lt;/h1&gt;
 &lt;/div&gt;
 </pre>
-<b>templates/include/footer.html.ep</b>
+<p>
+  <b>templates/include/footer.html.ep</b>
+</p>
 <pre>
 &lt;div id="footer"&gt;
 Author kimoto
