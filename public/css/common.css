@@ -52,17 +52,19 @@
 	  width:23.5%;
 	  margin-right:0.5%;
 	}
+	.entry-body ol {
+	  margin-left:35px;
+	}
 	.entry-body ol li {
-	  list-style-type: decimal;
+	  list-style:decimal;
 	}
 	
 	.entry-body ul {
-	  
+	  margin-left:35px;
 	}
 
 	.entry-body ul li {
-	  margin-left:15px;
-	  text-decoration:none;
+	  list-style:dotted;
 	}
 
 	.block-link-list span {
@@ -93,9 +95,9 @@
 	  white-space: pre;
 	}
 
-  .bread {
+  ol.bread {
     padding:0;
-    margin:0;
+    margin-left:20px;
   }
   .bread li {
     display:inline-block;
@@ -249,14 +251,14 @@
 	  border:1px solid #d5edd5;
 	  color:#333;
 	  font-family: "times new roman", "geogia", serif;
+	  font-size:19px;
 	}
 	h1 a, h1 a:visited {
-	  font-size:15px;
 	  color:white;
 	  color:#0e7a55;
 	  text-decoration:underline;
 	  font-weight:bold;
-	  font-size:18px;
+	  letter-spacing:1px;
 	}
 
 	h2 {
