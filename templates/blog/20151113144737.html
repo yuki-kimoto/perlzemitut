@@ -8,7 +8,7 @@ OpenBSDでは、srandを使ってrandの再現性が確保できないようだ�
 今後しばらくOpenBSDでsrandによる再現可能性を必要とする場合にはsrand_deterministicを呼ぶ必要がある (srandのユースケースをすべて調査したあとで元に戻す可能性はあるが）。このような乱暴な手法でセキュリティを実現しようとする独善的態度には批判もありそうだ。
 
 <a href="http://developers.srad.jp/story/14/12/11/0337245/">OpenBSD、予測不可能なrand関数を実装（ただしPOSIX違反）</a>
-</q>
+</blockquote>
 
 OpenBSD上におけるPerlのsrand関数もこの影響を受けて、srandとrandを使って、再現性のある試験を書くことができないようだ。
 

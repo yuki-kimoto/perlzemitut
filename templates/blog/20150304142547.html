@@ -4,7 +4,7 @@
 
 <blockquote>
 <a href="http://blog.kraih.com/post/112170845701/mojolicious-6-0-released-perl-real-time-web">Mojolicious 6.0 released: Perl real-time web framework</a>
-</q>
+</blockquote>
 
 Mojoliciousの作者のセバスチャン・リーデルさんのアナウンスを日本語訳しておきます。
 
@@ -57,7 +57,7 @@ Mojolicious 6.0(Clinking Beer Mugs)のリリースをアナウンスできて、
 
 <blockquote>
 <a href="http://cpansearch.perl.org/src/SRI/Mojolicious-6.0/Changes">Mojolicious 6.0 Changes</a>
-</q>
+</blockquote>
 
 楽しんでね!
 
@@ -77,7 +77,7 @@ paramメソッドは、リストコンテキストで評価されなくなりま
 
 <blockquote>
 my @params = $c->param('title');
-</q>
+</blockquote>
 
 <h4>paramメソッドは、配列のリファレンスを受け取らなくなりました。</h4>
 
@@ -85,7 +85,7 @@ paramメソッドは、配列のリファレンスを受け取らなくなりま
 
 <blockquote>
 my @params = $c->param(['title', 'author']);
-</q>
+</blockquote>
 
 paramメソッドの一部仕様変更は、広い範囲に影響があると思われますが、Webアプリは、セキュリティリスクを下げる必要が高い分野ですので、これは、いたしかたがないと感じます。上記のふたつのコードが利用されている可能性があれば、チェックしてみてください。
 

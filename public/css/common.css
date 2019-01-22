@@ -46,6 +46,11 @@
 	  width:76%;
 	  border:1px solid #D2D6DE;
 	  background:white;
+	  padding-bottom:30px;
+	}
+	.entry-body img {
+	  display:block;
+	  margin:10px; 25px;
 	}
 	.side {
 	  float:left;
@@ -75,6 +80,7 @@
 	}
 	.block-link-list ul {
 	  padding:0 16px;
+	  margin-left:0;
 	}
 	.block-link-list li {
 	  border: 1px solid #ddd;
@@ -162,8 +168,8 @@
 
 	blockquote {
 	  border-radius:3px;
-	  border-color:#ffd1fd;
-	  background:#fff7fe;
+	  border:1px solid #ddd;
+	  background:#fff;
 	  margin:0 10px;
 	  margin-bottom:10px;
 	  padding:10px;
