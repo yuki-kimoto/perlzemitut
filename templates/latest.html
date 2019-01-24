@@ -1,0 +1,625 @@
+<div class="title" style="font-weight:bold;font-size:26px;letter-spacing:2px">最新記事</div>
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019年01月03日</div>
+<h2 >「サンプルコードPerl入門」は「Perl入門ゼミ」に名称を変更しました</h2>
+
+<b>「サンプルコードPerl入門」は「Perl入門ゼミ」に名称を変更します。</b>
+
+去年お伝えしておいた通り2019年1月より名称変更になりました。
+
+もともとは、Perlのサンプルがたくさんあれば、コピペして、そのまま使えるから便利だなという目的で始めたサイトでした。
+
+問題の一つは、名前が言いづらかったことと長かったことです。
+
+最初の記事は、2008年1月に投稿していますが、心機一転、11年目にして、名称変更になります。
+
+公式サイトは、3か月以内くらいに仮公開しようかなと思っています。
+
+公式サイト名は「Perlゼミ」になります。Twitterの名称も「Perlゼミ」。
+
+このサイト名は「Perl入門ゼミ」で、Perlの無料テキストを公開するサイトになります。
+
+<ul>
+  <li>
+    Perlゼミ 公式
+  </li>
+  <li>
+    Perlゼミ Twitter
+  </li>
+  <li>
+    Perl入門ゼミ 無料テキスト
+  </li>
+</ul>
+
+の三本立てて運営していくので、今年からもよろしくお願いします。
+
+
+
+
+
+
+
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018年12月22日</div>
+<h2 >Mojoliciousのホームディレクトリを変更する</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Mojoliciousのホームディレクトリを変更するには「MOJO_HOME」環境変数を使用します。
+
+<pre>
+BEGIN {
+  $ENV{MOJO_HOME} = '/foo/bar';
+}
+use Mojolicious::Lite;
+</pre>
+
+Mojolicious::Liteを読み込む前に設定しましょう。
+
+あるいは、あらかじめ環境変数をシェルから設定してください。
+
+<pre>
+export MOJO_HOME=/foo/bar
+</pre>
+
+
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018年08月20日</div>
+<h2 >Perlのインストール方法 - Windws、macOS、Linux対応</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Perlのインストール方法を解説します。Windws、macOS、LinuxでそれぞれPerlのインストール方法を紹介します。
+
+<ol>
+  <li>
+    <a href="#windows">WindowsにおけるPerlのインストール</a>
+  </li>
+  <li>
+    <a href="#mac">macOSにおけるPerlのインストール</a>
+  </li>
+  <li>
+    <a href="#windows">Unix/LinuxにおけるPerlのインストール</a>
+  </li>
+</ol>
+
+<div id="windows"></div>
+
+<h3>WindowsにおけるPerlのインストール</h3>
+
+PerlはUnix/Linux生まれの言語ですが、Windowsを使っている人も簡単にPerlをインストールすることができます。3種類の方法を紹介します。
+
+<h4>Strawberry Perlのインストール</h4>
+
+Strawberry Perl(ストロベリーパール)は、WindowsでPerlを使えるように設定されたPerlのひとつです。Linux環境に近い形でPerlが利用できるので、まずはこれがお勧めです。
+
+<a href="/blog/20180808153368.html"><img style="border:1px solid #ddd" width="340" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180808/20180808073552.png?1533681423"></a>
+
+<a href="/blog/20180808153368.html">Strawberry Perl(ストロベリーパール)をWindowsにインストールする</a>
+
+<h4>ActivePerlのインストール</h4>
+
+ActivePerlも、WindowsでPerlを使えるように設定されたPerlのひとつです。ExcelなどのWindowsアプリと連携したり、GUIの画面を作ったりしたい場合は、これがおすすめです。
+
+<a href="/blog/20080602121231.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180809/20180809180334.png?1533805550"></a>
+<a href="/blog/20080602121231.html">ActivePerlをWindowsにインストールする</a>
+
+<h4>msys2をWindowsにインストールしてPerlを使う</h4>
+
+msys2はWindows上に完全なLinux環境を再現できるツールです。
+
+たとえば、Windowsでは、<a href="/blog/20161103147817.html">プロセス間通信</a>に関する機能が通常ではうまく動きませんが、msys2上であればうまく動きます。
+
+これによって、<a href="/blog/20140319139520.html">Mojolicious</a>の開発Webサーバーなど、プロセス間通信に依存するモジュールが問題なく動きます。
+
+Web開発をWindowsで体験してみたい場合は、お勧めの方法です。
+
+<a href="/blog/20180806153350.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180806/20180806080447.png"></a>
+
+<a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>
+
+<div id="mac"></div>
+
+<h3>macOSにおけるPerlのインストール</h3>
+
+ITエンジニアといえばmacOSというくらいに、開発者はmacOS所有率が高しです。
+
+macOSにはPerlが標準でインストールされていますが、ユーザー環境に最新のPerlをインストールすることもできたりします。
+
+ユーザー環境にPerlがインストールできるとシステム環境を汚さなくっても済むのでお勧めの方法でもあります。
+
+次の記事では、macOSへのPerlのインストール方法を解説しています。
+
+<a href="/blog/20180814153419.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180821/20180821072522.png"></a>
+
+<a href="/blog/20180814153419.html">macOSへのPerlのインストール</a>
+
+<div id="linux"></div>
+
+<h3>Unix/LinuxにおけるPerlのインストール</h3>
+
+Perlで作ったWebサイトを公開する場合は、最終的にはUnix/Linuxのサーバーに配置することになります。
+
+Perlに慣れてくると開発環境をUnix/Linuxそのものにしたほうが開発効率が良くなることでしょう。
+
+本番環境と同じ環境で開発をしたほうが、本番環境と開発環境のずれがなくって、やりやすいということもあります。
+
+次の記事では、Unix/LinuxにおけるPerlのインストール方法を解説していますので参考にしてください。
+
+<a alt="Unix/LinuxへのPerlのインストール" href="/blog/20180813153411.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180820/20180820075726.png"></a>
+
+<a href="/blog/20180813153411.html">Unix/LinuxへのPerlのインストール</a>
+
+
+
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018年08月16日</div>
+<h2 >plenv - ユーザー環境にPerlをインストールする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+plenvというツールを利用すると、ユーザー環境にPerlをインストールすることができます。システム標準のPerlを利用したくない場合や新しいバージョンのPerlを利用したい場合は便利です。またplenvを使うと複数のバージョンのPerlの切り替えを行うことができます。
+
+<h3>plenvのインストール</h3>
+
+plenvをインストールしてみましょう。前提として、plenvをインストールするにはgitがインストールされている必要があるので注意してください。
+
+以下のコマンドを実行します。
+
+<pre>
+git clone git://github.com/tokuhirom/plenv.git ~/.plenv
+git clone git://github.com/tokuhirom/Perl-Build.git ~/.plenv/plugins/perl-build/
+</pre>
+
+次にplenvのパスを通しましょう。plenvで用意されているbash用の設定ファイルを「.bash_profile」に追加します(bashの場合)。
+
+以下のコマンドを実行してください。
+
+<pre>
+echo 'export PATH="$HOME/.plenv/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(plenv init -)"' >> ~/.bash_profile
+exec $SHELL -l
+</pre>
+
+<h3>ユーザー環境へのPerlのインストール</h3>
+
+利用できるPerlの一覧を見てみましょう。
+
+<pre>
+plenv install -l
+</pre>
+
+うまくplenvがインストールされていると、インストール可能なPerlの一覧が表示されます。
+
+<pre>
+Available versions:
+ 5.29.1
+ 5.29.0
+ 5.28.0
+ 5.28.0-RC4
+ 5.28.0-RC3
+ 5.28.0-RC2
+ 5.28.0-RC1
+ ...
+</pre>
+
+ここで、599 Internal Exceptionなどエラーがでた場合は、以下の記事を元に、フィックスをこころみましょう。
+
+<ul>
+  <li>
+    <a href="https://qiita.com/DQNEO/items/890b99134be0ad81d174">[対処法</a> 599 Internal Exception, https://fastapi.metacpan.org/v1/release/_search]
+  </li>
+  <li>
+    <a href="https://github.com/miyagawa/HTTP-Tinyish/issues/14">want to check Mozilla :: CA</a>
+  </li>
+</ul>
+
+どうしてもうまくいかない場合は<a href="/blog/20110220130464.html">perlbrew</a>で。
+
+ユーザー環境にPerlをインストールします。5.20.3のPerlをインストールしてみましょう。時間がかかるので待ちます(約40分程度)。
+
+<pre>
+plenv install 5.20.3
+</pre>
+
+利用可能なPerlの一覧を表示してみましょう。
+
+<pre>
+plenv versions
+</pre>
+
+Perlが利用できると
+
+以下のように利用できるPerlが表示されます。アスタリスクのあるものが現在利用しているPerlです。
+
+<pre>
+* system (set by /home/kimoto2/.plenv/version)
+  5.20.3
+</pre>
+
+Perlを切り替えるにはplenvのglobalコマンドを使用します。
+
+<pre>
+plenv global 5.20.3
+</pre>
+
+plenvの利点として<a href="https://papix.hatenablog.com/entry/2018/03/10/160838">localコマンド</a>を使うと、ディレクトリ毎にPerlを切り替えることもできるようです。
+
+Perlのバージョンを実際に確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+以下のように5.20.3のバージョンになっています。
+
+<pre>
+This is perl 5, version 20, subversion 3 (v5.20.3) built for x86_64-linux
+(with 1 registered patch, see perl -V for more detail)
+</pre>
+
+<h3>cpanmのインストール</h3>
+
+モジュールをインストールするのに便利なcpanmもインストールしておきましょう。
+
+<pre>
+plenv install-cpanm
+</pre>
+
+これで以下のコマンドでモジュールがインストールできるようになります。
+
+<pre>
+cpanm JSON
+</pre>
+
+<h3>元のPerlに戻す</h3>
+
+元のPerlに戻すには以下のようにします。
+
+<pre>
+plenv global system
+</pre>
+
+<h3>plenvでインストールしたPerlをcrontabで使う方法</h3>
+
+plenvのはまりどころのひとつは、plenvでインストールしたPerlがcronからは利用されないということでしょう。これはcronから実行するときは、シェルが起動されないので.bash_profileが読み込まれないことが原因です。plenvによる設定は、.bash_profileの中に記述したからですね。
+
+一番簡単な解決策は、crontabの中でPATHを、そのユーザーが持っている環境変数PATHの値に書き換えてあげることです。
+
+まずplenvをインストールしたユーザーで、PATH環境変数の値を表示します。
+
+<pre>
+env | grep PATH
+</pre>
+
+PATHを含んだ環境変数がいくつか表示されるので、PATHというものを探します。(ユーザー名がadminsの場合の例です。)
+
+<pre>
+PATH=/home/kimoto2/.plenv/shims:/home/kimoto2/.plenv/bin:/home/kimoto2/.plenv/shims:/home/kimoto2/.plenv/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/kimoto2/.local/bin:/home/kimoto2/bin:/home/kimoto2/.local/bin:/home/kimoto2/bin:/home/kimoto2/.local/bin:/home/kimoto2/bin
+</pre>
+
+以下のコマンドでcrontabを編集します。
+
+<pre>
+crontab -e
+</pre>
+
+そして上記のPATHの値をcrontabの一番上に書き込みます。
+
+<pre>
+PATH=/home/kimoto2/.plenv/shims:/home/kimoto2/.plenv/bin:/home/kimoto2/.plenv/shims:/home/kimoto2/.plenv/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/kimoto2/.local/bin:/home/kimoto2/bin:/home/kimoto2/.local/bin:/home/kimoto2/bin:/home/kimoto2/.local/bin:/home/kimoto2/bin
+
+# cronの設定が続く...
+</pre>
+
+これでcronが指定したバージョンのPerlを利用してくれるようになります。
+
+<h4>Perlスクリプトの一行目の記述</h4>
+
+Perlスクリプトの一行目の記述は以下のようenvコマンドを使った記述をしましょう。
+
+<pre>
+#!/usr/bin/env perl
+</pre>
+
+こうすると設定したPATHの値から自動的にperlを検出してくれます。
+
+この方法は、見てのとおり、crontabの移植性がまったくないです。ユーザー名のkimoto2が直接埋め込まれています。
+
+でもこの方法が一番よいと思います。その理由はcrontab内では、環境変数の変数展開ができないという制限があるので、うまく移植性を持たせることが難しいということが理由です。移植性を持たせると、記述量が多くなったり、追加のスクリプトが必要になったり、管理が煩雑になってしまいます。
+
+それとどんなにがんばっても、crontabって環境ごとに、何らかの差分があることがほとんどなので、移植性を保たせてもあんまりメリットがないということもあります。
+
+
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018年08月14日</div>
+<h2 >macOSへのPerlのインストール</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+macOSの環境には、すでにPerlがインストールされています。
+
+以下のコマンドでPerlがインストールされているか確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+バージョン情報が表示されれば、OKです。
+
+さっそく、Perlを使い始めてみましょう。
+
+<h4>ユーザー環境へのPerlのインストール</h4>
+
+最新のPerlなどを使いたい場合は、ユーザー環境にPerlをインストールすることもできます。
+
+自分のユーザー環境にPerlをインストールしたい場合はperlbrewあるいはplenvというツールを使うことができます。
+
+ルート権限が必要ないので、インストールが簡単で、OSの環境を汚しません。最新のPerlをインストールして使うことができます。
+
+本番環境のWebサービスでPerlを実行する場合は、この方法が2018年現在は主流となっています。
+
+perlbrewとplenvはどちらも、似ているツールで、ユーザー環境にPerlをインストールするためのツールです。お好みで選択してください。
+
+<a href="https://syncer.jp/mac-terminal">macOSでターミナルを立ち上げ</a>てから、以下の手順を実行してください。
+
+<ul>
+  <li>
+    <a href="/blog/20110220130464.html">perlbrew - ユーザー環境にPerlをインストールする</a>
+  </li>
+  <li>
+    plenv - ユーザー環境にPerlをインストールする(準備中)
+  </li>
+</ul>
+
+
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018年08月13日</div>
+<h2 >Unix/LinuxへのPerlのインストール</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Unix/Linux環境には、すでにPerlがインストールされてることが多いです。
+
+以下のコマンドでPerlがインストールされているか確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+存在する場合はすぐにPerlを使い始めることができます。
+
+ない場合は、Unix/Linuxディストリビューションの標準のPerlをインストールすることができます。
+
+あるいは、ユーザー環境にPerlをインストールすることもできます。
+
+<h4>Unix/Linuxディストリビューションの標準のPerlをインストールする</h4>
+
+rootユーザー権限で以下のコマンドを実行しましょう。ディストリビューションごとに、コマンドが異なるので、自分の環境にあったコマンドを実行してみてください。
+
+<pre>
+# RedHatでのPerlのインストール
+yum install perl
+
+# Cent OSでのPerlのインストール
+yum install perl
+
+# DebianでのPerlのインストール
+apt-get install perl
+
+# UbuntuでのPerlのインストール
+apt-get install perl
+
+# FreeBSDでのPerlのインストール
+pkg_add -r perl
+</pre>
+
+<h4>ユーザー環境へのPerlのインストール</h4>
+
+自分のユーザー環境にPerlをインストールしたい場合はperlbrewあるいはplenvというツールを使うことができます。
+
+ルート権限が必要ないので、インストールは簡単で、OSの環境を汚しません。最新のPerlをインストールして使うことができます。
+
+本番環境のWebサービスでPerlを実行する場合は、この方法が2018年現在は主流となっています。
+
+perlbrewとplenvはどちらも、似ているツールで、ユーザー環境にPerlをインストールするためのツールです。お好みで選択してください。
+
+<ul>
+  <li>
+    <a href="/blog/20110220130464.html">perlbrew - ユーザー環境にPerlをインストールする</a>
+  </li>
+  <li>
+    plenv - ユーザー環境にPerlをインストールする(準備中)
+  </li>
+</ul>
+
+
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018年08月08日</div>
+<h2 >Strawberry PerlをWindowsにインストールする</h2>
+
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+Strawberry Perl(ストロベリーパール)はWindowsでPerlを利用するために作成されたPerlのディストリビューションのひとつです。
+
+<a href="http://strawberryperl.com"><img style="border:#ddd 1px solid" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180808/20180808073552.png?1533681423"></a>
+
+<a href="http://strawberryperl.com">Strawberry Perl for Windows</a>
+
+Strawberry Perlの良いところは、
+
+<ul>
+  <li>
+    Unix/Linux環境のPerlと近い感覚で使うことができる
+  </li>
+  <li>
+    gccなどの開発環境が準備されていて、CPANモジュールがインストール可能
+  </li>
+  <li>
+    古いバージョンのPerlも公開されている
+  </li>
+</ul>
+
+です。
+
+PerlのUnix生まれの言語なので、Windowsでもなるべく<b>Unix環境に近い感覚</b>で利用できると使いやすく感じます。
+
+Strawberry Perlを使うと、<b>ほとんどのCPANモジュールがインストールが可能</b>です。
+
+<b>古いバージョンのPerlもそのまま残してくれている</b>ので、開発をしていて、古いPerlがダウンロードできなくなったという心配もありません。
+
+WindowsでPerlを利用する場合は、一番最初に試してみてほしいPerlです。
+
+以下では、Windows 10を想定して、インストール方法を解説します。Windowsの古いバージョンでも、手順はほとんど同じです。
+
+<h4>Strawberry Perlのダウンロード</h4>
+
+Strawberry Perlをダウンロードして、インストールしてみましょう。2018年の最新のPerlは、Perl 5.28です。
+
+以下のリンクから<b>Strawberry Perl 5.28 64bit MSI installer</b>をクリックして、Strawberry Perlをデスクトップにダウンロードしましょう。
+
+<ul>
+  <li>
+    <a href="http://strawberryperl.com/releases.html">Strawberry Perl Releases</a>
+  </li>
+</ul>
+
+<a href="http://strawberryperl.com/releases.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180808/20180808073518.png?1533681603"></a>
+
+MSI installerというのはWindowsのデフォルトのインストーラーという意味です。
+
+末尾のバージョン番号が少し違うこともあるかもしれませんが、気にしないで大丈夫です。
+
+ほとんどの場合は64bit版のWindowsで大丈夫だと思いますが、32bit版が必要な方は、32bitの方のStrawberry Perlをダウンロードしてください。
+
+<h4>Strawberry Perlのインストール</h4>
+
+ダウンロードしたStrawberry Perlをダブルクリックします。
+
+インストーラーが起動します。空き容量の計算に少し時間がかかる場合がありますが、そのまま待ちましょう。
+
+インストーラーが起動しますので「Next」を押して進みます。
+
+途中で「I accept the terms in the License Agreement」というチェックボックスがでてくるので、チェックをいれて「Next」を押します。
+
+さらに「Next」を押して進んでいって、最後に「Install」をクリックするとStrawberry Perlのインストールが始まります。
+
+ここで「この不明な発行元からのアプリがデバイスに変更を加えることを許可しますか?」というダイアログが表示されると思いますが、「はい」をクリックしましょう。
+
+5分くらい時間がかかるので待ちましょう。
+
+プログレスバーが満タンになると、Strawberry Perlのインストールが完了します。
+
+「Finish」を押してダイアログを閉じましょう。Readmeが表示されますが、これも閉じて大丈夫です。
+
+<h4>Perlがインストールされていることの確認</h4>
+
+インストールが完了したら実際にStrawberry Perlがインストールできているか確認してみましょう。
+
+コマンドプロンプトというツールをを実行してPerlのバージョンを表示してみます。
+
+コマンドプロンプトは、「スタートメニュー」→「アプリの一覧」→「Windowsシステムツール」→「コマンドプロンプト」から実行できます。
+
+黒い画面がでてくるので、以下の文字をキーボードからうち「Enter」を押してみてください。
+
+<pre>
+perl -v
+</pre>
+
+次のようにバージョン情報が表示されればインストールは成功しています。
+
+<pre>
+This is perl 5, version 28, subversion 0 (v5.28.0) built for MSWin32-x64-multi-thread
+</pre>
+
+これでStrawberry Perlのインストールは完了です。
+
+WindowsでPerlを実行するためにはコマンドプロンプトと呼ばれるものを利用します。perlコマンドを使ってPerlスクリプトを実行できるようになります。
+
+コマンドプロンプトの使い方を知りたい方は「<a href="/blog/20080603121251.html">Perlを実行するためのコマンドプロンプト入門</a>」という記事で解説しています。
+
+<h3>FAQ</h3>
+
+<h4>Strawberry Perlを正しく実行できません</h4>
+
+Active PerlやStrawbery Perl 32bitなど別のPerlがインストールされていると、うまく動かない場合があります。別のPerlを<a href="https://win10labo.info/apli-uninstall/">アプリのアンインストール画面</a>からアンインストールして、もう一度Strawberry Perlをインストールしなおしてみてください。
+
+<h3>その他のインストール方法</h3>
+
+WindowsでPerlを利用するその他の方法については、以下を参考にしてください。それぞれに長所があります。
+
+<ul>
+  <li>
+    <a href="/blog/20080602121231.html">ActivePerlをWindowsにインストールする</a>
+  </li>
+  <li>
+    <a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>
+  </li>
+</ul>
+
+
