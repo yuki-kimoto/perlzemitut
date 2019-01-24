@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use File::Basename 'dirname';
+my $giblog_dir;
+BEGIN {
+  $giblog_dir = dirname __FILE__;
+}
+use lib "$giblog_dir/lib";
+use Giblog;
+use Giblog::Plugin::build;
+
+my $giblog = Giblog->new('giblog-dir' => $giblog_dir);
+my $build_plugin = Giblog::Plugin::build->new(giblog => $giblog);
+$build_plugin->plugin;
+
+use Mojolicious::Lite;
+
+get '/' => sub {
+  my $c = shift;
+  
+  $c->reply->static('index.html');
+};
+
+app->start;
