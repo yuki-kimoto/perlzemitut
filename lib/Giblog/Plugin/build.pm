@@ -30,9 +30,9 @@ sub create_latest {
   
   @template_files = reverse sort @template_files;
   
-  my $html;
+  my $latest_content;
   
-  $html .= <<"EOS";
+  $latest_content .= <<"EOS";
 <div class="title" style="font-weight:bold;font-size:26px;letter-spacing:2px">最新記事</div>
 EOS
 
@@ -46,13 +46,19 @@ EOS
     my $content = $giblog->slurp_file($template_file);
     $content =~ s/class="title"//g;
 
-    $html .= <<"EOS";
+    $latest_content .= <<"EOS";
 <div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">${year}年${month}月${mday}日</div>
 $content
 EOS
   }
+
+  my $data = {content => $latest_content, url => '/latest.html'};
+  $data = $self->parse_template($data);
+  $data = $self->build_html($data);
   
-  my $latest_file = $giblog->rel_file('templates/latest.html');
+  my $html = $data->{content};
+
+  my $latest_file = $giblog->rel_file('public/latest.html');
   $giblog->write_to_file($latest_file, $html);
 }
 
@@ -66,19 +72,19 @@ sub create_list {
   
   @template_files = reverse sort @template_files;
   
-  my $html;
+  my $list_content;
   
-  $html = <<"EOS";
+  $list_content = <<"EOS";
 <h2 class="title">記事一覧</h2>
 EOS
 
-  $html .= "<ul>\n";
+  $list_content .= "<ul>\n";
   my $before_year = 0;
   for my $template_file (@template_files) {
     my $base_name = basename $template_file;
     my ($year) = $base_name =~ /^(\d{4})/;
     if ($year != $before_year) {
-      $html .= <<"EOS";
+      $list_content .= <<"EOS";
   <li style="list-style:none;margin-left:-20px;">
     <b>${year}年</b>
   </li>
@@ -95,7 +101,7 @@ EOS
     }
     
     if ($title) {
-      $html .= <<"EOS";
+      $list_content .= <<"EOS";
   <li>
     <a href="$url">$title</a>
   </li>
@@ -106,9 +112,15 @@ EOS
     }
   }
 
-  $html .= "</ul>\n";
+  $list_content .= "</ul>\n";
   
-  my $list_file = $giblog->rel_file('templates/list.html');
+  my $data = {content => $list_content, url => '/list.html'};
+  $data = $self->parse_template($data);
+  $data = $self->build_html($data);
+  
+  my $html = $data->{content};
+  
+  my $list_file = $giblog->rel_file('public/list.html');
   $giblog->write_to_file($list_file, $html);
 }
 

@@ -12,14 +12,23 @@ use lib "$giblog_dir/lib";
 use Giblog;
 use Giblog::Plugin::build;
 
-my $giblog = Giblog->new('giblog-dir' => $giblog_dir);
-my $build_plugin = Giblog::Plugin::build->new(giblog => $giblog);
-$build_plugin->plugin;
-
 use Mojolicious::Lite;
 
+my $rebuild;
 get '/' => sub {
   my $c = shift;
+  
+  unless ($rebuild) {
+    # Rebuild
+    my $start_time = time;
+
+    my $giblog = Giblog->new('giblog-dir' => $giblog_dir);
+    my $build_plugin = Giblog::Plugin::build->new(giblog => $giblog);
+    $build_plugin->plugin;
+
+    my $build_time = time - $start_time;
+    $rebuild = 1;
+  }
   
   $c->reply->static('index.html');
 };
