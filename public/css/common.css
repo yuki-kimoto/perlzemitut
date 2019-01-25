@@ -27,24 +27,24 @@
 	}
 	.header {
 	  width:100%;
-	  max-width:960px;
+	  max-width:840px;
 	  margin:0 auto;
 	  background:white;
 	}
 	.main {
 	  width:100%;
-	  max-width:960px;
+	  max-width:840px;
 	  margin:0 auto;
 	  overflow:hidden;
 	}
 	.footer {
 	  width:100%;
-	  max-width:960px;
+	  max-width:840px;
 	  margin:0 auto;
 	}
 	.entry {
 	  float:right;
-	  width:76%;
+	  width:77%;
 	  border:1px solid #D2D6DE;
 	  background:white;
 	  padding-bottom:30px;
@@ -55,7 +55,7 @@
 	}
 	.side {
 	  float:left;
-	  width:23.5%;
+	  width:22.5%;
 	  margin-right:0.5%;
 	}
 	.entry-body ol {
@@ -72,7 +72,26 @@
 	.entry-body ul li {
 	  list-style:dotted;
 	}
-
+	
+	.menu {
+	  overflow:hidden;
+	}
+	.menu li {
+	  display:block;
+	  float:left;
+	  width:24.7%;
+	  border:1px solid green;
+	  background:#d2ffc4;
+	  text-align:center;
+	  margin-right:0.3%;
+	}
+	.menu li a {
+	  padding:7px 0 7px 0;
+	  display:block;
+	  text-decoration:none;
+	  color:#1a4c0c;
+    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif;	
+  }
 	.block-link-list span {
 	  display:block;
 	  padding: 3px 0em;
@@ -258,7 +277,7 @@
 	  border-bottom:2px solid #69c677;
 	  color:#333;
 	  font-family: "times new roman", "geogia", serif;
-	  margin-bottom:5px;
+	  margin-bottom:2px;
 	}
 	h1 a, h1 a:visited {
 	  color:white;
