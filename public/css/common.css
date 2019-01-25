@@ -255,17 +255,25 @@
 	h1 {
     font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif;	
 	  padding: 5px 15px;
-	  border:1px solid #d5edd5;
+	  border-bottom:2px solid #69c677;
 	  color:#333;
 	  font-family: "times new roman", "geogia", serif;
-	  font-size:19px;
+	  margin-bottom:5px;
 	}
 	h1 a, h1 a:visited {
 	  color:white;
 	  color:#0e7a55;
 	  text-decoration:underline;
 	  font-weight:bold;
-	  letter-spacing:1px;
+	  letter-spacing:2px;
+	  font-size:20px;
+	  text-decoration:none;
+	}
+	
+	h1 img {
+    width:40px;
+    vertical-align:-10px;
+    margin-right:10px;
 	}
 
 	h2 {
