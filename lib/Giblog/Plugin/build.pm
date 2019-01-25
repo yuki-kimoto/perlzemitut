@@ -32,10 +32,6 @@ sub create_latest {
   
   my $latest_content;
   
-  $latest_content .= <<"EOS";
-<div class="title" style="font-weight:bold;font-size:26px;letter-spacing:2px"><a style="color:#333;text-decoration:none;" href="/latest.html">最新記事</a></div>
-EOS
-
   my $before_year = 0;
   for (my $i = 0; $i < 7; $i++) {
     my $template_file = $template_files[$i];
@@ -50,7 +46,7 @@ EOS
     $content = $data->{content};
 
     $latest_content .= <<"EOS";
-<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">${year}年${month}月${mday}日</div>
+<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">${year}/${month}/${mday}</div>
 $content
 EOS
   }
@@ -76,10 +72,6 @@ sub create_list {
   
   my $list_content;
   
-  $list_content = <<"EOS";
-<h2 class="title">記事一覧</h2>
-EOS
-
   $list_content .= "<ul>\n";
   my $before_year = 0;
   for my $template_file (@template_files) {
@@ -88,7 +80,7 @@ EOS
     if ($year != $before_year) {
       $list_content .= <<"EOS";
   <li style="list-style:none;margin-left:-20px;">
-    <b>${year}年</b>
+    <b>${year}</b>
   </li>
 EOS
     }
