@@ -33,7 +33,7 @@ sub create_latest {
   my $latest_content;
   
   $latest_content .= <<"EOS";
-<div class="title" style="font-weight:bold;font-size:26px;letter-spacing:2px">最新記事</div>
+<div class="title" style="font-weight:bold;font-size:26px;letter-spacing:2px"><a style="color:#333;text-decoration:none;" href="/latest.html">最新記事</a></div>
 EOS
 
   my $before_year = 0;
@@ -44,7 +44,10 @@ EOS
     my ($year, $month, $mday) = $base_name =~ /^(\d{4})(\d{2})(\d{2})/;
     
     my $content = $giblog->slurp_file($template_file);
-    $content =~ s/class="title"//g;
+    my $data = {content => $content, url => "/blog/$base_name"};
+    $data = $self->parse_template($data);
+    
+    $content = $data->{content};
 
     $latest_content .= <<"EOS";
 <div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">${year}年${month}月${mday}日</div>
@@ -53,7 +56,6 @@ EOS
   }
 
   my $data = {content => $latest_content, url => '/latest.html'};
-  $data = $self->parse_template($data);
   $data = $self->build_html($data);
   
   my $html = $data->{content};
