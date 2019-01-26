@@ -39,8 +39,13 @@
 	}
 	.footer {
 	  width:100%;
-	  max-width:840px;
 	  margin:0 auto;
+	  background:white;
+	  text-align:center;
+	  color:#666;
+	  padding:10px 0;
+	  margin-top:5px;
+	  font-size:13px;
 	}
 	.entry {
 	  float:right;
@@ -55,8 +60,8 @@
 	}
 	.side {
 	  float:left;
-	  width:22.5%;
-	  margin-right:0.5%;
+	  width:22.4%;
+	  margin-right:0.6%;
 	}
 	.entry-body ol {
 	  margin-left:35px;
@@ -72,26 +77,7 @@
 	.entry-body ul li {
 	  list-style:dotted;
 	}
-	
-	.menu {
-	  overflow:hidden;
-	}
-	.menu li {
-	  display:block;
-	  float:left;
-	  width:24.7%;
-	  border:1px solid green;
-	  background:#d2ffc4;
-	  text-align:center;
-	  margin-right:0.3%;
-	}
-	.menu li a {
-	  padding:7px 0 7px 0;
-	  display:block;
-	  text-decoration:none;
-	  color:#1a4c0c;
-    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif;	
-  }
+
 	.block-link-list span {
 	  display:block;
 	  padding: 3px 0em;
@@ -273,11 +259,11 @@
 	}
 	h1 {
     font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif;	
-	  padding: 5px 15px;
+	  padding: 5px 15px 9px 15px;
 	  border-bottom:2px solid #69c677;
 	  color:#333;
 	  font-family: "times new roman", "geogia", serif;
-	  margin-bottom:2px;
+	  margin-bottom:5px;
 	}
 	h1 a, h1 a:visited {
 	  color:white;
@@ -358,8 +344,7 @@
 	}
 
   .hatena-module ul li, .hatena-module ol li {
-    padding: 4px 8px;
-    margin-bottom: 4px;
+    padding: 8px 8px;
     border-bottom: 1px solid #edf0f4;
     line-height: 1.3;
   }
@@ -373,6 +358,10 @@
 	  border-right:1px solid #d2d6de;
 	  border-left:1px solid #d2d6de;
 	}
+
+   .hatena-modulebody ul {
+     margin-bottom:0;
+   }
 
 	.hatena-moduletitle {
 	  font-family: "times new roman", "geogia", serif;
