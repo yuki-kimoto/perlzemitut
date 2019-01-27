@@ -31,6 +31,17 @@
 	  margin:0 auto;
 	  background:white;
 	}
+	.menu {
+	  overflow:hidden;
+	  padding-left:10px;
+	}
+	.menu li {
+	  float:left;
+	  list-style:none;
+	}
+	.menu li {
+	  padding:5px 10px 8px 10px;
+	}
 	.main {
 	  width:100%;
 	  max-width:840px;
@@ -484,8 +495,7 @@
 	  width:100%;
 	}
 	.side {
-	  float:left;
-	  width:100%;
+	  display:none;
 	}
   .site-title {
     text-align:center;
@@ -516,8 +526,8 @@
     border-right:0;
   }
 
-  .sidebar {
-    width:100%;
+  h3 {
+    margin-left:0;
     margin-right:0;
   }
 }
