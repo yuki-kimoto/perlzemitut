@@ -76,7 +76,9 @@ sub create_list {
   my $before_year = 0;
   for my $template_file (@template_files) {
     my $base_name = basename $template_file;
-    my ($year) = $base_name =~ /^(\d{4})/;
+    my ($year, $month, $mday) = $base_name =~ /^(\d{4})(\d{2})(\d{2})/;
+    $month =~ s/^0//;
+    $mday =~ s/^0//;
     if ($year != $before_year) {
       $list_content .= <<"EOS";
   <li style="list-style:none;margin-left:-20px;">
@@ -96,8 +98,8 @@ EOS
     
     if ($title) {
       $list_content .= <<"EOS";
-  <li>
-    <a href="$url">$title</a>
+  <li style="list-style:none">
+    $month/$mday <a href="$url">$title</a>
   </li>
 EOS
     }
