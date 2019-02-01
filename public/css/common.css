@@ -65,7 +65,7 @@
 	  background:white;
 	  padding-bottom:30px;
 	}
-	.entry-body img {
+	.content img {
 	  display:block;
 	  margin:10px; 25px;
 	}
@@ -74,18 +74,18 @@
 	  width:22.4%;
 	  margin-right:0.6%;
 	}
-	.entry-body ol {
+	.content ol {
 	  margin-left:35px;
 	}
-	.entry-body ol li {
+	.content ol li {
 	  list-style:decimal;
 	}
 	
-	.entry-body ul {
+	.content ul {
 	  margin-left:35px;
 	}
 
-	.entry-body ul li {
+	.content ul li {
 	  list-style:dotted;
 	}
 
@@ -480,7 +480,7 @@
 	  color:#0000CC;
 	}
 
-	.entry-body table {
+	.content table {
 		border-collapse: collapse;
 		margin-left:15px;
 	}

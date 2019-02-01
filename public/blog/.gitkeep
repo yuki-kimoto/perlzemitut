@@ -38,7 +38,8 @@
   });
 </script>
 
-    <title>Perl入門ゼミ</title>
+<title>Perl入門ゼミ</title>
+
   </head>
   <body>
     <div class="container">
@@ -61,14 +62,14 @@
       </div>
       <div class="main">
         <div class="entry">
-          <div class="entry-top">
-            <!-- entry-bottom -->
+          <div class="top">
+            <!-- entry-top -->
 
           </div>
-          <div class="entry-body">
+          <div class="content">
             
           </div>
-          <div class="entry-bottom">
+          <div class="bottom">
             <!-- entry-bottom -->
 
           </div>

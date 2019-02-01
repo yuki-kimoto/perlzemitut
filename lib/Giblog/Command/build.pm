@@ -41,7 +41,7 @@ sub create_latest {
     
     my $content = $giblog->slurp_file($template_file);
     my $data = {content => $content, url => "/blog/$base_name"};
-    $data = $self->parse_template($data);
+    $data = $self->parse_content($data);
     
     $content = $data->{content};
 
@@ -111,7 +111,7 @@ EOS
   $list_content .= "</ul>\n";
   
   my $data = {content => $list_content, url => '/list.html'};
-  $data = $self->parse_template($data);
+  $data = $self->parse_content($data);
   $data = $self->build_html($data);
   
   my $html = $data->{content};
