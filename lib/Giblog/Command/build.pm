@@ -140,32 +140,42 @@ sub parse_common {
   my $giblog = $self->giblog;
   my $config = $giblog->config;
   
-  # Twitter card{
-  my $meta = $data->{meta};
-  
-  my $site_url = $config->{site_url};
-  my $path = $data->{path};
-  
-  unless (defined $path) {
-    warn "BBBBBBBBB $data->{content}";
-  }
-  
-  my $page_url = "$site_url/$path";
-  
-  my $title = $data->{title};
-  
-  my $description = $data->{description};
-
-=pod
-  my $twitter_card = <<"EOS";
+  # Twitter card
+  {
+    my $meta = $data->{meta};
+    
+    my $site_url = $config->{site_url};
+    my $path = $data->{path};
+    
+    my $page_url = "$site_url/$path";
+    
+    my $title = $data->{title} || '';
+    
+    my $description = $data->{description} || '';
+    
+    my $image = $data->{image};
+    if (defined $image) {
+      unless ($image =~ /^http/) {
+        $image = "$site_url/$image";
+      }
+    }
+    else {
+      $image = '';
+    }
+    
+    my $twitter_card = <<"EOS";
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:site" content="@perlzemi" />
+<meta name="twitter:site" content="\@perlzemi" />
 <meta property="og:url" content="$page_url" />
-<meta property="og:title" content="$title" /> /*‡C*/
+<meta property="og:title" content="$title" />
 <meta property="og:description" content="$description" />
-<meta property="og:image" content="‰æ‘œ‚ÌURL" /> /*‡E*/
+<meta property="og:image" content="$image" />
 EOS
-=cut
+    
+    $meta .= "\n$twitter_card\n";
+    
+    $data->{meta} = $meta;
+  }
   
   # Write post parse_common
 }
