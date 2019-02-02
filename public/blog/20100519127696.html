@@ -40,6 +40,8 @@
 
 <title>Net::Ping - リモートホストの生存確認 - Perl入門ゼミ</title>
 
+<meta name="description" content="少し注意して欲しいことがあるのですが、Net::Pingのpingメソッドはpingコマンドの代替ではありません。pingコマンドICMPというプロトコルを使用しますが、Net::PingはデフォルトではTCPプロトコルを使用して、エコーポート(ポート番号は7)に対して生存確認を行います。たとえばHTTP(ポートは80)でリモートホストに接続できたとしても、セキュリティ上の理由でエコーポートを閉じていれば、生存していないという判定が返ってきます。">
+
   </head>
   <body>
     <div class="container">

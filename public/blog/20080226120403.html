@@ -40,6 +40,8 @@
 
 <title>chomp関数 - 改行を削除する - Perl入門ゼミ</title>
 
+<meta name="description" content="chompに関して一つ注意点があります。chompは環境に依存するということです。たとえばWindowsで実行した場合は末尾の「\x0D\x0A」あるいは「\x0A」を取り除きますが、Unix系OSで実行した場合は「\x0A」を取り除きます。\x0Dはキャリッジリターンを、\x0Aはラインフィードを表す特殊文字です。Windowsでは改行文字は「\x0D\x0A」で表されれ、Unixでは「\x0A」で表されます。">
+
   </head>
   <body>
     <div class="container">

@@ -11,11 +11,11 @@ use File::Basename 'basename';
 sub run {
   my ($self, @args) = @_;
   
+  $self->SUPER::run(@args);
+
   # Write pre process
   $self->create_list;
   $self->create_latest;
-  
-  $self->SUPER::run(@args);
   
   # Write post porsess
 }
@@ -40,8 +40,8 @@ sub create_latest {
     my ($year, $month, $mday) = $base_name =~ /^(\d{4})(\d{2})(\d{2})/;
     
     my $content = $giblog->slurp_file($template_file);
-    my $data = {content => $content, url => "/blog/$base_name"};
-    $data = $self->parse_content($data);
+    my $data = {content => $content, path => "/blog/$base_name"};
+    $self->parse_content($data);
     
     $content = $data->{content};
 
@@ -51,8 +51,8 @@ $content
 EOS
   }
 
-  my $data = {content => $latest_content, url => '/latest.html'};
-  $data = $self->build_html($data);
+  my $data = {content => $latest_content, path => '/latest.html'};
+  $self->build_html($data);
   
   my $html = $data->{content};
 
@@ -88,7 +88,7 @@ EOS
     }
     $before_year = $year;
     
-    my $url = "/blog/$base_name";
+    my $path = "/blog/$base_name";
     
     my $content = $giblog->slurp_file($template_file);
     my $title;
@@ -99,7 +99,7 @@ EOS
     if ($title) {
       $list_content .= <<"EOS";
   <li style="list-style:none">
-    $month/$mday <a href="$url">$title</a>
+    $month/$mday <a href="$path">$title</a>
   </li>
 EOS
     }
@@ -110,14 +110,74 @@ EOS
 
   $list_content .= "</ul>\n";
   
-  my $data = {content => $list_content, url => '/list.html'};
-  $data = $self->parse_content($data);
-  $data = $self->build_html($data);
+  my $data = {content => $list_content, path => '/list.html'};
+  $self->parse_content($data);
+  $self->build_html($data);
   
   my $html = $data->{content};
   
   my $list_file = $giblog->rel_file('public/list.html');
   $giblog->write_to_file($list_file, $html);
+}
+
+sub parse_content {
+  my ($self, $data) = @_;
+  
+  # Write pre parse_content
+  
+  $self->SUPER::parse_content($data);
+  
+  # Write post parse_content
+}
+
+sub parse_common {
+  my ($self, $data) = @_;
+  
+  # Write pre parse_common
+  
+  $self->SUPER::parse_common($data);
+
+  my $giblog = $self->giblog;
+  my $config = $giblog->config;
+  
+  # Twitter card{
+  my $meta = $data->{meta};
+  
+  my $site_url = $config->{site_url};
+  my $path = $data->{path};
+  
+  unless (defined $path) {
+    warn "BBBBBBBBB $data->{content}";
+  }
+  
+  my $page_url = "$site_url/$path";
+  
+  my $title = $data->{title};
+  
+  my $description = $data->{description};
+
+=pod
+  my $twitter_card = <<"EOS";
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@perlzemi" />
+<meta property="og:url" content="$page_url" />
+<meta property="og:title" content="$title" /> /*‡C*/
+<meta property="og:description" content="$description" />
+<meta property="og:image" content="‰æ‘œ‚ÌURL" /> /*‡E*/
+EOS
+=cut
+  
+  # Write post parse_common
+}
+
+sub build_html {
+  my ($self, $data) = @_;
+  
+  # Write pre build_html
+  
+  $self->SUPER::build_html($data);
+  
+  # Write post build_html
 }
 
 1;
