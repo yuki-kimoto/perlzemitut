@@ -48,7 +48,7 @@ R言語で統計解析を行っている人が、PerlでのPDLを使った統計
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 
 # データの作成
 my $nums = pdl [2, 4, 7];
@@ -65,13 +65,13 @@ print $nums;
 
 <h3>PDL変数の作成</h3>
 
-まずpdl関数を使用するとPDL変数を作成することができます。まずPDLの最低限の機能を利用するためのPDL::Liteを読み込みます。
+まずpdl関数を使用するとPDL変数を作成することができます。まずPDLの最低限の機能を利用するためのPDLを読み込みます。
 
 <pre>
-use PDL::Lite;
+use PDL;
 </pre>
 
-PDL::Liteを読み込むとpdl関数を使用できるようになります。PDL変数を作成するにはpdl関数を使用します。
+PDLを読み込むとpdl関数を使用できるようになります。PDL変数を作成するにはpdl関数を使用します。
 
 <pre>
 my $nums = pdl [2, 4, 7];
@@ -144,7 +144,7 @@ my $length = $nums->dims;
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 use PDL::NiceSlice;
 
 # データの作成
@@ -175,7 +175,7 @@ print $nums . "\n";
 <strong>PDL変数のすべての値に同じ値を加算する</strong>には<strong>+</strong>演算子を使用します。
 
 <pre>
-use PDL::Lite;
+use PDL;
 my $pdl = pdl [1, 1, 2, 2, 2, 3];
 my $pdl_add = $pdl + 3;
 </pre>
@@ -260,7 +260,7 @@ my $inner_product = ($pdl1 * $pdl2)->sum;
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 
 # 足し算
 my $pdl = pdl [1, 1, 2, 2, 2, 3];
@@ -294,7 +294,7 @@ print "$pdl_uniq\n";
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 
 # PDL変数どうしの加算
 my $pdl1 = pdl [1, 2, 3];

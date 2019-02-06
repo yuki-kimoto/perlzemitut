@@ -48,7 +48,7 @@ PDLにおける「行列」の扱いを解説します。
 行列を作成するには<b>pdl</b>関数を使用します。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat = mpdl [
   [1, 2],
@@ -70,7 +70,7 @@ my $mat = mpdl [
 行列の足し算を行うには<b>+</b>演算子を使用します。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat1 = pdl [
   [1, 2],
@@ -98,7 +98,7 @@ my $mat_sum = $mat1 + $mat2;
 行列の足し算を行うには<strong>-</strong>演算子を使用します。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat1 = pdl [
   [1, 2],
@@ -127,7 +127,7 @@ my $mat_sub = $mat2 - $mat1;
 行列の積を求めるには<strong>x</strong>演算子を使用します。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat1 = pdl [
   [1, 2],
@@ -161,7 +161,7 @@ $matrix->at(列, 行)
 以下は2×2行列の、2行1列目の値(3)を取得するサンプルです。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat = pdl [
   [1, 2],
@@ -175,7 +175,7 @@ my $val = $mat->at(0, 1);
 行列の要素を設定するには<strong>ナイススライス</strong>という記法を利用します。ナイススライス記法を使うためには<b>PDL::NiceSlice</b>モジュールを読み込む必要があります。
 
 <pre>
-use PDL::Lite;
+use PDL;
 use PDL::NiceSlice;
 
 $matrix(列, 行) .= 値
@@ -186,7 +186,7 @@ $matrix(列, 行) .= 値
 以下は2×2行列の、2行1列目の値を5に設定するサンプルです。添え字は0から始まることに注意してください。
 
 <pre>
-use PDL::Lite;
+use PDL;
 use PDL::NiceSlice;
 
 my $mat = pdl [
@@ -210,7 +210,7 @@ $mat(0, 1) .= 5;
 単位行列を作成してみましょう。3×3の単位行列にしてみます。手順は<strong>PDL::Core</strong>の<b>zeroes</b>関数ですべての要素が0の3×3の正方行列を作成します。それから、<b>diagonal</b>メソッドで対角をスライスして1を代入します。引数の(0, 1)は、1次元と2次元という意味です。1次元と2次元の対角を取得という意味になります。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat = PDL::Core::zeroes(3, 3);
 $mat->diagonal(0, 1) .= 1;
@@ -231,7 +231,7 @@ $mat->diagonal(0, 1) .= 1;
 行列式を求めるには<b>det</b>メソッドを使用します。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat = pdl [
   [1, 2],
@@ -273,7 +273,7 @@ my $mat_inv = inv $mat;
 ベクトル(列ベクトル)を作成するには次のようにします。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $vec = pdl [
   [1],
@@ -296,7 +296,7 @@ my $vec = pdl [
 一次変換を計算してみましょう。正方行列 × 列ベクトルの演算です。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $mat = pdl [
   [1, 2],

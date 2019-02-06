@@ -47,7 +47,7 @@
 多次元データを表現するには、pdl関数を使って次のようにします。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $data = pdl [
   [1, 2, 3],
@@ -81,7 +81,7 @@ my $data = pdl [
 多次元データの要素の取得方法と設定方法を覚えましょう。要素の取得と設定にはナイススライス記法を使います。1次元目のランク,2次元目のランクの順で指定して、添え字は0から始まります。
 
 <pre>
-use PDL::Lite;
+use PDL;
 use PDL::NiceSlice;
 
 # データ
@@ -156,7 +156,7 @@ $data(1:2, 0:1) .= pdl [
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 use PDL::NiceSlice;
 
 # データ
@@ -227,7 +227,7 @@ PDLはさまざまなデータの初期化の機能を持っています。デ�
 複数次元のランク数を指定して0で初期化するにはzerosメソッドを使用します。zerosはPDL::Coreで定義されています。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 # 0で初期化(1次元は2ランク, 2次元は3ランク)
 my $data_zeros = pdl->sequence(2, 3);
@@ -273,7 +273,7 @@ my $data_seq2 = pdl->sequence(3, 5);
 実行できるサンプルです。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 # 0で初期化(1次元は2ランク, 2次元は3ランク)
 my $data_zeros = pdl->zeros(2, 3);
@@ -302,7 +302,7 @@ print "$data_seq2\n";
 PDLでは複数の要素をまとめて演算することができます。以下のデータを見てください。
 
 <pre>
-use PDL::Lite;
+use PDL;
 
 my $data = pdl [
   [1, 2, 3],
@@ -468,7 +468,7 @@ sumover以外にもPDL::Ufuncでは、同じタイプの演算を行うメソッ
 <pre>
 use strict;
 use warnings;
-use PDL::Lite;
+use PDL;
 
 my $data = pdl [
   [1, 2, 3],
