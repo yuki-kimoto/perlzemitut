@@ -40,13 +40,13 @@
 
 <title>「_」 - ファイルテストの結果の再利用 - Perl入門ゼミ</title>
 
-<meta name="description" content="-s $file で、サイズを取得しますが、実は背後では、stat を呼んでいます。そのときに、サイズ以外の情報も内部的に保存されます。_ を利用すれば、一回目のファイルテストで取得した、ファイルの情報を再利用できます。">
+<meta name="description" content="注意点は、近接している場所以外では使わないことです。どこかで、statが呼ばれると、情報が更新されてしまいます。">
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@perlzemi" />
 <meta property="og:url" content="https://tutorial.perlzemi.com//blog/20080513121068.html" />
 <meta property="og:title" content="「_」 - ファイルテストの結果の再利用 - Perl入門ゼミ" />
-<meta property="og:description" content="-s $file で、サイズを取得しますが、実は背後では、stat を呼んでいます。そのときに、サイズ以外の情報も内部的に保存されます。_ を利用すれば、一回目のファイルテストで取得した、ファイルの情報を再利用できます。" />
+<meta property="og:description" content="注意点は、近接している場所以外では使わないことです。どこかで、statが呼ばれると、情報が更新されてしまいます。" />
 <meta property="og:image" content="" />
 
 
