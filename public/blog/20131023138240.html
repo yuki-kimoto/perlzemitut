@@ -126,7 +126,7 @@
   一次元のPDL変数から、<strong>最大値</strong>を求めるには、<strong>maxメソッド</strong>を使用します。
 </p>
 <pre>
-use PDL::Lite;
+use PDL;
 
 # データ
 my $nums = pdl [4, 2, 7];
@@ -204,7 +204,7 @@ my $nums_sort_desc = $nums_sort_asc(-1:0);
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 use PDL::NiceSlice;
 
 # データの作成
@@ -262,7 +262,7 @@ use PDL::Stats::Basic;
   <strong>分散</strong>を求めるには、<strong>var</strong>メソッドを使用します。
 </p>
 <pre>
-use PDL::Lite;
+use PDL;
 use PDL::Stats::Basic;
 
 # データ
@@ -360,7 +360,7 @@ my $kurt_unbiased = $nums-&gt;kurt_unbiased;
 use strict;
 use warnings;
 
-use PDL::Lite;
+use PDL;
 use PDL::Stats::Basic;
 
 # データ
