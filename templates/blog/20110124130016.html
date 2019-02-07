@@ -1,5 +1,3 @@
-<h2 class="title">Test::Mojoで実行できない試験を行う / Mojolicious</h2>
-
 <ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
   <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
     <a itemprop="item" href="/">
@@ -15,6 +13,9 @@
     <meta itemprop="position" content="2" />
   </li>
 </ol>
+<h2 class="title">Test::Mojoで実行できない試験を行う / Mojolicious</h2>
+
+
 
 Test::Mojoは便利ですが、Test::Mojoのメソッドでは実行できない試験もあります。たとえばある文字列が含まれていないという試験を書きたいとしましょう。この場合はTest::Mojoのメソッドでは試験ができません。
 このような場合は、直接コンテンツを取得して、Test::Moreのメソッドを使って試験を行います。コンテンツは「$t->tx->res->body」のようにして取得することができます。

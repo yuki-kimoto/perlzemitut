@@ -119,8 +119,10 @@
 	}
 
   ol.bread {
-    padding:0;
-    margin-left:20px;
+	  border:none;
+	  background:none;
+	  padding:0;
+	  margin:10px 10px;
   }
   .bread li {
     display:inline-block;
@@ -173,14 +175,6 @@
 	  background-position:0 5px;
 	  list-style:none;
 	  padding-left:0px;
-	}
-
-	.bread {
-	  border:none;
-	  background:none;
-	  padding:0;
-	  margin:0;
-	  margin-left:18px;
 	}
 
 	blockquote {

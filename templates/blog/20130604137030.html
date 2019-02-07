@@ -1,5 +1,3 @@
-<h2 class="title">ノンブロッキングIOはどの部分がノンブロッキングなのかを理解する / Mojolicious</h2>
-
 <ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
   <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
     <a itemprop="item" href="/">
@@ -15,6 +13,9 @@
     <meta itemprop="position" content="2" />
   </li>
 </ol>
+<h2 class="title">ノンブロッキングIOはどの部分がノンブロッキングなのかを理解する / Mojolicious</h2>
+
+
 Mojoliciousが持っているWebサーバーはノンブロッキングIOに対応しています。でもノンブロッキングといったときには、人それぞれにいろんなイメージを抱いていると思いますし、誤解がたくさんある気がするので簡単に解説します。
 
 <h3>ノンブロッキングなのは、HTTPリクエストを読み取る部分と書き込む部分</h3>

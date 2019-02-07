@@ -1,6 +1,3 @@
-<h2 class="title">Mojoliciousですべての処理の前に実行する処理をアンダーで記述する</h2>
-
-
 <ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
   <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
     <a itemprop="item" href="/">
@@ -16,6 +13,10 @@
     <meta itemprop="position" content="2" />
   </li>
 </ol>
+<h2 class="title">Mojoliciousですべての処理の前に実行する処理をアンダーで記述する</h2>
+
+
+
 
 たとえば認証などを行う場合は、すべての処理の直前で、ログインしているかどうかを確認したいと思います。このような場合はアンダーという機能を利用します。ルートからunder()でアンダーを作成して、実行したいコールバックを指定します。コールバックの戻り値が、真の場合は続きの処理を行い、偽の場合は続きの処理を行いません。
 
