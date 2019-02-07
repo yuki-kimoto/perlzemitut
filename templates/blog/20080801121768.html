@@ -68,22 +68,3 @@ OSが暗黙的に一時ファイルを利用しているので、プログラム
 では、プログラムBは、いつ一時ファイルををクローズするのでしょうか。答えは、プログラムAが一時ファイルをクローズして、かつ一時ファイルのデータを最後まで読み取った場合です。通常のファイルのようにEOFに到達しただけでは、クローズしません。なぜなら、プログラムAがまだ書き込みを続ける可能性が残っているからです。だから、プログラムBが、一時ファイルを閉じるためには、プログラムAが一時ファイルをクローズしている必要があるのです。
 
 ※1 パイプの実装はOSによって異なります。Unix系OSでは、メモリ上でパイプが作成されます。Windowsでは、ディスク上に一時ファイルとしてパイプが作られます。
-
-<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/">
-      <span itemprop="name">Perl</span></a>
-    <meta itemprop="position" content="1" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/blog/20110212130370.html">
-      <span itemprop="name">ファイル入出力</span></a>
-    <meta itemprop="position" content="2" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <span itemprop="name">here</span>
-  </li>
-</ol>
-

@@ -85,22 +85,3 @@ Q. Data::Dumperで日本語を出力すると日本語ではなく16進数の記
 A. それは内部文字列(※1)を出力しようとしているために起こっています。出力する文字列は内部文字列ではなくバイト文字列である必要あります。とはいえ、ハッシュや配列の中に含まれるすべての文字列をバイト文字列に変換することは大変だと思います。これを助けてくれる<a href="http://search.cpan.org/dist/Data-Recursive-Encode/lib/Data/Recursive/Encode.pm">Data::Recursive::Encode.pm</a>モジュールというものがCPANにありますので、Data::Dumperと組み合わせて利用してみるのもよいと思います。
 
 ※1 内部文字列とバイト文字列については<a href="/blog/20091118124667.html">Encodeモジュールの解説</a>をご覧ください。
-
-<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/">
-        <span itemprop="name">Perl</span></a>
-    <meta itemprop="position" content="1" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/blog/20091116124667.html">
-      <span itemprop="name">モジュール</span></a>
-    <meta itemprop="position" content="2" />
-  </li>
-  &#8250;
-  <li>
-    here
-  </li>
-</ol>
-

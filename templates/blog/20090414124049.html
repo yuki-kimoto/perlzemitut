@@ -82,22 +82,3 @@ $?
 実際は<b>waitは子プロセスの終了を待っているのではありません</b>。子プロセスが<b>CHLDシグナルを発生させる</b>のを待っています。CHLDシグナルは子プロセスの終了時だけではなく、子プロセスが停止した場合や、再開した場合にも発生します。
 
 これはwaitを使用しても<b>確実には死んだ子プロセスを回収できない</b>ということを意味します。確実に死んだ子プロセスを回収するには、CHLDシグナルのシグナルハンドラにIGNOREを設定するか、waitpid関数を適切に使用します。
-
-<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/">
-        <span itemprop="name">Perl</span></a>
-    <meta itemprop="position" content="1" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/blog/20161004147558.html">
-      <span itemprop="name">関数</span></a>
-    <meta itemprop="position" content="2" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    here
-  </li>
-</ol>
-
