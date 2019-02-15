@@ -40,13 +40,13 @@
 
 <title>なぜPerlで例外処理のfinallyが特に必要と感じないかを考えてみた - Perl入門ゼミ</title>
 
-<meta name="description" content="Perlには知ってのとおりfinally文がありません。でも特に困るというような話を聞きません。なぜでしょうか。finally文で実行される処理は、ほとんどの場合、外部リソースの解放です。ファイルを閉じたり、一時ファイルを削除したり、DBへの接続を解放したりする処理です。このような処理をfinally文で実行したいという要望があります。">
+<meta name="description" content="Perlでは例外を発生させるにはdieを使います。これはJava言語でいうthrowにあたります。例外をキャッチするにはevalを使用します。これはJava言語でいうcatchにあたります。例外が発生したかどうかは$@にメッセージが設定されたかで判定できます。">
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@perlzemi" />
 <meta property="og:url" content="https://tutorial.perlzemi.com//blog/20100531127859.html" />
 <meta property="og:title" content="なぜPerlで例外処理のfinallyが特に必要と感じないかを考えてみた - Perl入門ゼミ" />
-<meta property="og:description" content="Perlには知ってのとおりfinally文がありません。でも特に困るというような話を聞きません。なぜでしょうか。finally文で実行される処理は、ほとんどの場合、外部リソースの解放です。ファイルを閉じたり、一時ファイルを削除したり、DBへの接続を解放したりする処理です。このような処理をfinally文で実行したいという要望があります。" />
+<meta property="og:description" content="Perlでは例外を発生させるにはdieを使います。これはJava言語でいうthrowにあたります。例外をキャッチするにはevalを使用します。これはJava言語でいうcatchにあたります。例外が発生したかどうかは$@にメッセージが設定されたかで判定できます。" />
 <meta property="og:image" content="" />
 
 
