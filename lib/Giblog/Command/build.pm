@@ -12,17 +12,15 @@ use File::Basename 'basename';
 sub run {
   my ($self, @args) = @_;
   
-  my $giblog = $self->api->giblog;
+  my $api = $self->api;
   
-  $giblog->read_config;
+  $api->read_config;
   
-  my $api = Giblog::API->new(giblog => $giblog);
-    
   $api->build_all(sub {
     my ($api, $data) = @_;
     
     # Config
-    my $config = $giblog->config;
+    my $config = $api->config;
 
     # Parse Giblog syntax
     $api->parse_giblog_syntax($data);
@@ -104,11 +102,9 @@ EOS
 sub create_latest {
   my $self = shift;
   
-  my $giblog = $self->api->giblog;
+  my $api = $self->api;
 
-  my $api = Giblog::API->new(giblog => $giblog);
-  
-  my @template_files = glob $giblog->rel_file('templates/blog/*');
+  my @template_files = glob $api->rel_file('templates/blog/*');
   
   @template_files = reverse sort @template_files;
   
@@ -121,7 +117,7 @@ sub create_latest {
     my $base_name = basename $template_file;
     my ($year, $month, $mday) = $base_name =~ /^(\d{4})(\d{2})(\d{2})/;
     
-    my $content = $giblog->slurp_file($template_file);
+    my $content = $api->slurp_file($template_file);
     my $data = {content => $content, path => "/blog/$base_name"};
     
     # Parse Giblog syntax
@@ -150,19 +146,17 @@ EOS
   
   my $html = $data->{content};
 
-  my $latest_file = $giblog->rel_file('public/latest.html');
-  $giblog->write_to_file($latest_file, $html);
+  my $latest_file = $api->rel_file('public/latest.html');
+  $api->write_to_file($latest_file, $html);
 }
 
 # Create all entry list page
 sub create_list {
   my $self = shift;
   
-  my $giblog = $self->api->giblog;
+  my $api = $self->api;
 
-  my $api = Giblog::API->new(giblog => $giblog);
-  
-  my @template_files = glob $giblog->rel_file('templates/blog/*');
+  my @template_files = glob $api->rel_file('templates/blog/*');
   
   @template_files = reverse sort @template_files;
   
@@ -186,7 +180,7 @@ EOS
     
     my $path = "/blog/$base_name";
     
-    my $content = $giblog->slurp_file($template_file);
+    my $content = $api->slurp_file($template_file);
     my $title;
     if ($content =~ /class="title">([^<]+)</) {
       $title = $1;
@@ -215,8 +209,8 @@ EOS
   
   my $html = $data->{content};
   
-  my $list_file = $giblog->rel_file('public/list.html');
-  $giblog->write_to_file($list_file, $html);
+  my $list_file = $api->rel_file('public/list.html');
+  $api->write_to_file($list_file, $html);
 }
 
 1;
