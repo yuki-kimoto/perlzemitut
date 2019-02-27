@@ -1,6 +1,6 @@
 package Giblog::Command::build;
 
-use base 'Giblog::Command::base_build';
+use base 'Giblog::Command';
 
 use strict;
 use warnings;
@@ -16,7 +16,7 @@ sub run {
   
   $giblog->read_config;
     
-  $self->build(sub {
+  Giblog::Util::build_all($giblog, sub {
     my ($giblog, $data) = @_;
     
     # Config
