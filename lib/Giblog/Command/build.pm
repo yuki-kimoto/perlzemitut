@@ -12,13 +12,90 @@ use File::Basename 'basename';
 sub run {
   my ($self, @args) = @_;
   
-  $self->SUPER::run(@args);
+  my $giblog = $self->giblog;
+  
+  $giblog->read_config;
+    
+  $self->build(sub {
+    my ($giblog, $data) = @_;
+    
+    # Config
+    my $config = $giblog->config;
+
+    # Parse Giblog syntax
+    Giblog::Util::parse_giblog_syntax($giblog, $data);
+
+    # Parse title
+    Giblog::Util::parse_title($giblog, $data);
+
+    # Add page link
+    Giblog::Util::add_page_link($giblog, $data);
+
+    # Parse description
+    Giblog::Util::parse_description($giblog, $data);
+
+    # Create description from first p tag
+    Giblog::Util::parse_description_from_first_p_tag($giblog, $data);
+
+    # Parse keywords
+    Giblog::Util::parse_keywords($giblog, $data);
+
+    # Parse first image src
+    Giblog::Util::parse_first_img_src($giblog, $data);
+
+    # Prepare wrap content
+    Giblog::Util::prepare_wrap_content($giblog, $data);
+    
+    # Add meta title
+    Giblog::Util::add_meta_title($giblog, $data);
+
+    # Add meta description
+    Giblog::Util::add_meta_description($giblog, $data);
+
+    # Twitter card
+    {
+      my $meta = $data->{meta};
+      
+      my $site_url = $config->{site_url};
+      my $path = $data->{path};
+      
+      my $page_url = "$site_url/$path";
+      
+      my $title = $data->{title} || '';
+      
+      my $description = $data->{description} || '';
+      
+      my $image = $data->{image};
+      if (defined $image) {
+        unless ($image =~ /^http/) {
+          $image = "$site_url/$image";
+        }
+      }
+      else {
+        $image = '';
+      }
+      
+      my $twitter_card = <<"EOS";
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="\@perlzemi" />
+<meta property="og:url" content="$page_url" />
+<meta property="og:title" content="$title" />
+<meta property="og:description" content="$description" />
+<meta property="og:image" content="$image" />
+EOS
+      
+      $meta .= "\n$twitter_card\n";
+      
+      $data->{meta} = $meta;
+    }
+    
+    # Wrap content by header, footer, etc
+    Giblog::Util::wrap_content($giblog, $data);
+  });
 
   # Write pre process
   $self->create_list;
   $self->create_latest;
-  
-  # Write post porsess
 }
 
 # Create latest entries page
@@ -61,8 +138,11 @@ EOS
   
   $data->{title} = '最新記事';
   $data->{description} = 'Perlゼミの最新記事です。';
-  
-  $self->build_html($data);
+
+  # Prepare wrap content
+  Giblog::Util::prepare_wrap_content($giblog, $data);
+
+  Giblog::Util::wrap_content($giblog, $data);
   
   my $html = $data->{content};
 
@@ -122,72 +202,15 @@ EOS
   
   my $data = {content => $list_content, path => '/list.html'};
 
-  $self->build_html($data);
+  # Prepare wrap content
+  Giblog::Util::prepare_wrap_content($giblog, $data);
+
+  Giblog::Util::wrap_content($giblog, $data);
   
   my $html = $data->{content};
   
   my $list_file = $giblog->rel_file('public/list.html');
   $giblog->write_to_file($list_file, $html);
-}
-
-sub parse_common {
-  my ($self, $data) = @_;
-  
-  # Write pre parse_common
-  
-  $self->SUPER::parse_common($data);
-
-  my $giblog = $self->giblog;
-  my $config = $giblog->config;
-  
-  # Twitter card
-  {
-    my $meta = $data->{meta};
-    
-    my $site_url = $config->{site_url};
-    my $path = $data->{path};
-    
-    my $page_url = "$site_url/$path";
-    
-    my $title = $data->{title} || '';
-    
-    my $description = $data->{description} || '';
-    
-    my $image = $data->{image};
-    if (defined $image) {
-      unless ($image =~ /^http/) {
-        $image = "$site_url/$image";
-      }
-    }
-    else {
-      $image = '';
-    }
-    
-    my $twitter_card = <<"EOS";
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:site" content="\@perlzemi" />
-<meta property="og:url" content="$page_url" />
-<meta property="og:title" content="$title" />
-<meta property="og:description" content="$description" />
-<meta property="og:image" content="$image" />
-EOS
-    
-    $meta .= "\n$twitter_card\n";
-    
-    $data->{meta} = $meta;
-  }
-  
-  # Write post parse_common
-}
-
-sub build_html {
-  my ($self, $data) = @_;
-  
-  # Write pre build_html
-  
-  $self->SUPER::build_html($data);
-  
-  # Write post build_html
 }
 
 1;
