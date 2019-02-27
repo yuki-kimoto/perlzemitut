@@ -12,7 +12,7 @@ use File::Basename 'basename';
 sub run {
   my ($self, @args) = @_;
   
-  my $giblog = $self->giblog;
+  my $giblog = $self->api->giblog;
   
   $giblog->read_config;
   
@@ -104,7 +104,7 @@ EOS
 sub create_latest {
   my $self = shift;
   
-  my $giblog = $self->giblog;
+  my $giblog = $self->api->giblog;
 
   my $api = Giblog::API->new(giblog => $giblog);
   
@@ -158,7 +158,7 @@ EOS
 sub create_list {
   my $self = shift;
   
-  my $giblog = $self->giblog;
+  my $giblog = $self->api->giblog;
 
   my $api = Giblog::API->new(giblog => $giblog);
   
