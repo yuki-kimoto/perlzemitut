@@ -5,7 +5,7 @@ use base 'Giblog::Command';
 use strict;
 use warnings;
 use utf8;
-use Giblog::Util;
+use Giblog::API;
 
 use File::Basename 'basename';
 
@@ -15,42 +15,44 @@ sub run {
   my $giblog = $self->giblog;
   
   $giblog->read_config;
+  
+  my $api = Giblog::API->new(giblog => $giblog);
     
-  Giblog::Util::build_all($giblog, sub {
-    my ($giblog, $data) = @_;
+  $api->build_all(sub {
+    my ($api, $data) = @_;
     
     # Config
     my $config = $giblog->config;
 
     # Parse Giblog syntax
-    Giblog::Util::parse_giblog_syntax($giblog, $data);
+    $api->parse_giblog_syntax($data);
 
     # Parse title
-    Giblog::Util::parse_title($giblog, $data);
+    $api->parse_title($data);
 
     # Add page link
-    Giblog::Util::add_page_link($giblog, $data);
+    $api->add_page_link($data);
 
     # Parse description
-    Giblog::Util::parse_description($giblog, $data);
+    $api->parse_description($data);
 
     # Create description from first p tag
-    Giblog::Util::parse_description_from_first_p_tag($giblog, $data);
+    $api->parse_description_from_first_p_tag($data);
 
     # Parse keywords
-    Giblog::Util::parse_keywords($giblog, $data);
+    $api->parse_keywords($data);
 
     # Parse first image src
-    Giblog::Util::parse_first_img_src($giblog, $data);
+    $api->parse_first_img_src($data);
 
     # Prepare wrap content
-    Giblog::Util::prepare_wrap_content($giblog, $data);
+    $api->prepare_wrap_content($data);
     
     # Add meta title
-    Giblog::Util::add_meta_title($giblog, $data);
+    $api->add_meta_title($data);
 
     # Add meta description
-    Giblog::Util::add_meta_description($giblog, $data);
+    $api->add_meta_description($data);
 
     # Twitter card
     {
@@ -90,7 +92,7 @@ EOS
     }
     
     # Wrap content by header, footer, etc
-    Giblog::Util::wrap_content($giblog, $data);
+    $api->wrap_content($data);
   });
 
   # Write pre process
@@ -103,6 +105,8 @@ sub create_latest {
   my $self = shift;
   
   my $giblog = $self->giblog;
+
+  my $api = Giblog::API->new(giblog => $giblog);
   
   my @template_files = glob $giblog->rel_file('templates/blog/*');
   
@@ -121,10 +125,10 @@ sub create_latest {
     my $data = {content => $content, path => "/blog/$base_name"};
     
     # Parse Giblog syntax
-    Giblog::Util::parse_giblog_syntax($giblog, $data);
+    $api->parse_giblog_syntax($data);
 
     # Add page link
-    Giblog::Util::add_page_link($giblog, $data);
+    $api->add_page_link($data);
     
     $content = $data->{content};
 
@@ -140,9 +144,9 @@ EOS
   $data->{description} = 'Perlゼミの最新記事です。';
 
   # Prepare wrap content
-  Giblog::Util::prepare_wrap_content($giblog, $data);
+  $api->prepare_wrap_content($data);
 
-  Giblog::Util::wrap_content($giblog, $data);
+  $api->wrap_content($data);
   
   my $html = $data->{content};
 
@@ -155,6 +159,8 @@ sub create_list {
   my $self = shift;
   
   my $giblog = $self->giblog;
+
+  my $api = Giblog::API->new(giblog => $giblog);
   
   my @template_files = glob $giblog->rel_file('templates/blog/*');
   
@@ -203,9 +209,9 @@ EOS
   my $data = {content => $list_content, path => '/list.html'};
 
   # Prepare wrap content
-  Giblog::Util::prepare_wrap_content($giblog, $data);
+  $api->prepare_wrap_content($data);
 
-  Giblog::Util::wrap_content($giblog, $data);
+  $api->wrap_content($data);
   
   my $html = $data->{content};
   
