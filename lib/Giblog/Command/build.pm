@@ -5,6 +5,7 @@ use base 'Giblog::Command::base_build';
 use strict;
 use warnings;
 use utf8;
+use Giblog::Util;
 
 use File::Basename 'basename';
 
@@ -41,17 +42,26 @@ sub create_latest {
     
     my $content = $giblog->slurp_file($template_file);
     my $data = {content => $content, path => "/blog/$base_name"};
-    $self->parse_content($data);
+    
+    # Parse Giblog syntax
+    Giblog::Util::parse_giblog_syntax($giblog, $data);
+
+    # Add page link
+    Giblog::Util::add_page_link($giblog, $data);
     
     $content = $data->{content};
 
     $latest_content .= <<"EOS";
-<div style="font-weight:bold;font-size:23px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">${year}/${month}/${mday}</div>
+<div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">${year}/${month}/${mday}</div>
 $content
 EOS
   }
 
   my $data = {content => $latest_content, path => '/latest.html'};
+  
+  $data->{title} = '最新記事';
+  $data->{description} = 'Perlゼミの最新記事です。';
+  
   $self->build_html($data);
   
   my $html = $data->{content};
@@ -111,23 +121,13 @@ EOS
   $list_content .= "</ul>\n";
   
   my $data = {content => $list_content, path => '/list.html'};
-  $self->parse_content($data);
+
   $self->build_html($data);
   
   my $html = $data->{content};
   
   my $list_file = $giblog->rel_file('public/list.html');
   $giblog->write_to_file($list_file, $html);
-}
-
-sub parse_content {
-  my ($self, $data) = @_;
-  
-  # Write pre parse_content
-  
-  $self->SUPER::parse_content($data);
-  
-  # Write post parse_content
 }
 
 sub parse_common {
