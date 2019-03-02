@@ -68,10 +68,9 @@ sub run {
       my $twitter_card = <<"EOS";
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="\@perlzemi" />
-<meta property="og:url" content="$page_url" />
-<meta property="og:title" content="$title" />
-<meta property="og:description" content="$description" />
-<meta property="og:image" content="/images/logo.png" />
+<meta name="twitter:title" content="$title" />
+<meta name="twitter:description" content="$description" />
+<meta name="twitter:image" content="/images/logo.png" />
 EOS
       
       $meta .= "\n$twitter_card\n";
