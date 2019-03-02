@@ -58,11 +58,7 @@ sub run {
       
       my $site_url = $config->{site_url};
       my $path = $data->{path};
-      
-      my $page_url = "$site_url/$path";
-      
       my $title = $data->{title} || '';
-      
       my $description = $data->{description} || '';
       
       my $twitter_card = <<"EOS";
@@ -70,7 +66,7 @@ sub run {
 <meta name="twitter:site" content="\@perlzemi" />
 <meta name="twitter:title" content="$title" />
 <meta name="twitter:description" content="$description" />
-<meta name="twitter:image" content="/images/logo.png" />
+<meta name="twitter:image" content="$site_url/images/logo.png" />
 EOS
       
       $meta .= "\n$twitter_card\n";
