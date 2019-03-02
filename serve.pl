@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+warn "Server start\n";
+
 my $cmd = 'giblog build';
 system($cmd) == 0
   or die "Can't execute $cmd: $!";

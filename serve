@@ -1,7 +1,0 @@
-#!/bin/sh
-
-giblog build
-
-echo "Server start"
-
-morbo giblog_perlzemitut
