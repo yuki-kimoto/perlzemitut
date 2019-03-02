@@ -62,7 +62,43 @@
 
           </div>
           <div class="content">
-            <div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019/01/25</div>
+            <div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019/03/02</div>
+<!-- /blog/20190302093530 -->
+<h2 class="title"><a href="/blog/20190302093530.html">PerlBanjo.com - Perlを書いて、実行、保存、共有ができるWebサービス</a></h2>
+<p>
+  <a href="https://perlbanjo.com/">PerlBanjo.com</a>は、Perlを書いて、実行、保存、共有ができるWebサービスです。
+</p>
+<BLOCKQUOTE>
+<p>
+  <a href="https://perlbanjo.com/">PerlBanjo.com</a>
+</p>
+</BLOCKQUOTE>
+<p>
+  PerlBanjo.comでは、完全なPerlを動かすことができます。2019年現在のPerlのバージョンは、5.18.2です。
+</p>
+<p>
+  Perlのソースコードをテキストエリアに書いて、「Save for 30 days &amp; run」を押すと、Perlのソースコードを、保存して、実行することができます。
+</p>
+<p>
+  実行結果が、表示されます。
+</p>
+<p>
+  コマンドライン引数を与えることができます。
+</p>
+<p>
+  インターフェースは、シンプルで、実行も速く、約5秒程度で結果が返ってきました。
+</p>
+<p>
+  他の人が書いたソースコードを、少しだけ修正して、実行して、保存、共有という使い方もできそうです。
+</p>
+<p>
+  WebからすぐにPerlを実行できるので、「Perlってこういう風に書くのよ」という紹介にもつかえそう。
+</p>
+<p>
+  Perlゼミでも、<a href="https://twitter.com/perlzemi">Twitter</a>でPerlのソースコードを簡単に紹介するために使っていこうと思っています。
+</p>
+
+<div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019/01/25</div>
 <!-- /blog/20190125135843 -->
 <h2 class="title"><a href="/blog/20190125135843.html">YAPC東京2019 前夜祭</a></h2>
 <p>
@@ -506,80 +542,6 @@ perl -v
 </p>
 <p>
   <a href="https://syncer.jp/mac-terminal">macOSでターミナルを立ち上げ</a>てから、以下の手順を実行してください。
-</p>
-<ul>
-  <li>
-    <a href="/blog/20110220130464.html">perlbrew - ユーザー環境にPerlをインストールする</a>
-  </li>
-  <li>
-    plenv - ユーザー環境にPerlをインストールする(準備中)
-  </li>
-</ul>
-
-<div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018/08/13</div>
-<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/">
-        <span itemprop="name">Perl</span></a>
-    <meta itemprop="position" content="1" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
-    <meta itemprop="position" content="2" />
-  </li>
-</ol>
-<h2 class="title"><a href="/blog/20180813153411.html">Unix/LinuxへのPerlのインストール</a></h2>
-<p>
-  Unix/Linux環境には、すでにPerlがインストールされてることが多いです。
-</p>
-<p>
-  以下のコマンドでPerlがインストールされているか確認してみましょう。
-</p>
-<pre>
-perl -v
-</pre>
-<p>
-  存在する場合はすぐにPerlを使い始めることができます。
-</p>
-<p>
-  ない場合は、Unix/Linuxディストリビューションの標準のPerlをインストールすることができます。
-</p>
-<p>
-  あるいは、ユーザー環境にPerlをインストールすることもできます。
-</p>
-<h4>Unix/Linuxディストリビューションの標準のPerlをインストールする</h4>
-<p>
-  rootユーザー権限で以下のコマンドを実行しましょう。ディストリビューションごとに、コマンドが異なるので、自分の環境にあったコマンドを実行してみてください。
-</p>
-<pre>
-# RedHatでのPerlのインストール
-yum install perl
-
-# Cent OSでのPerlのインストール
-yum install perl
-
-# DebianでのPerlのインストール
-apt-get install perl
-
-# UbuntuでのPerlのインストール
-apt-get install perl
-
-# FreeBSDでのPerlのインストール
-pkg_add -r perl
-</pre>
-<h4>ユーザー環境へのPerlのインストール</h4>
-<p>
-  自分のユーザー環境にPerlをインストールしたい場合はperlbrewあるいはplenvというツールを使うことができます。
-</p>
-<p>
-  ルート権限が必要ないので、インストールは簡単で、OSの環境を汚しません。最新のPerlをインストールして使うことができます。
-</p>
-<p>
-  本番環境のWebサービスでPerlを実行する場合は、この方法が2018年現在は主流となっています。
-</p>
-<p>
-  perlbrewとplenvはどちらも、似ているツールで、ユーザー環境にPerlをインストールするためのツールです。お好みで選択してください。
 </p>
 <ul>
   <li>
