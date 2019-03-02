@@ -66,7 +66,7 @@ sub run {
 <meta name="twitter:site" content="\@perlzemi" />
 <meta name="twitter:title" content="$title" />
 <meta name="twitter:description" content="$description" />
-<meta name="twitter:image" content="$site_url/images/logo.png" />
+<meta name="twitter:image" content="$site_url/images/perlzemi-twitter-card.png" />
 EOS
       
       $meta .= "\n$twitter_card\n";
