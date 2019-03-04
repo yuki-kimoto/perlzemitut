@@ -14,13 +14,19 @@ sub run {
   
   my $api = $self->api;
   
-  $api->read_config;
+  # Read config
+  my $config = $api->read_config;
   
-  $api->build_all(sub {
-    my ($api, $data) = @_;
+  # Get files in templates directory
+  my $files = $api->get_templates_files;
+  
+  for my $file (@$files) {
     
-    # Config
-    my $config = $api->config;
+    # Data
+    my $data = {file => $file};
+    
+    # Get content from file in templates directory
+    $api->get_content($data);
 
     # Parse Giblog syntax
     $api->parse_giblog_syntax($data);
@@ -44,20 +50,19 @@ sub run {
     $api->parse_first_img_src($data);
 
     # Prepare wrap content
-    $api->prepare_wrap_content($data);
+    $api->prepare_wrap($data);
     
     # Add meta title
     $api->add_meta_title($data);
-
+    
     # Add meta description
     $api->add_meta_description($data);
-
+    
     # Twitter card
     {
       my $meta = $data->{meta};
       
       my $site_url = $config->{site_url};
-      my $path = $data->{path};
       my $title = $data->{title} || '';
       my $description = $data->{description} || '';
       
@@ -75,8 +80,11 @@ EOS
     }
     
     # Wrap content by header, footer, etc
-    $api->wrap_content($data);
-  });
+    $api->wrap($data);
+    
+    # Write to public file
+    $api->write_to_public_file($data);
+  };
 
   # Write pre process
   $self->create_list;
@@ -103,7 +111,7 @@ sub create_latest {
     my ($year, $month, $mday) = $base_name =~ /^(\d{4})(\d{2})(\d{2})/;
     
     my $content = $api->slurp_file($template_file);
-    my $data = {content => $content, path => "/blog/$base_name"};
+    my $data = {content => $content, file => "blog/$base_name"};
     
     # Parse Giblog syntax
     $api->parse_giblog_syntax($data);
@@ -119,15 +127,15 @@ $content
 EOS
   }
 
-  my $data = {content => $latest_content, path => '/latest.html'};
+  my $data = {content => $latest_content, file => 'latest.html'};
   
   $data->{title} = '最新記事';
   $data->{description} = 'Perlゼミの最新記事です。';
 
   # Prepare wrap content
-  $api->prepare_wrap_content($data);
+  $api->prepare_wrap($data);
 
-  $api->wrap_content($data);
+  $api->wrap($data);
   
   my $html = $data->{content};
 
@@ -163,12 +171,20 @@ EOS
     }
     $before_year = $year;
     
-    my $path = "/blog/$base_name";
+    my $file = "blog/$base_name";
     
     my $content = $api->slurp_file($template_file);
     my $title;
     if ($content =~ /class="title">([^<]+)</) {
       $title = $1;
+    }
+    
+    my $path;
+    if ($file eq 'index.html') {
+      $path = '/';
+    }
+    else {
+      $path = "/$file";
     }
     
     if ($title) {
@@ -185,12 +201,12 @@ EOS
 
   $list_content .= "</ul>\n";
   
-  my $data = {content => $list_content, path => '/list.html'};
+  my $data = {content => $list_content, file => 'list.html'};
 
   # Prepare wrap content
-  $api->prepare_wrap_content($data);
+  $api->prepare_wrap($data);
 
-  $api->wrap_content($data);
+  $api->wrap($data);
   
   my $html = $data->{content};
   
