@@ -43,12 +43,6 @@ sub run {
     # Create description from first p tag
     $api->parse_description_from_first_p_tag($data);
 
-    # Parse keywords
-    $api->parse_keywords($data);
-
-    # Parse first image src
-    $api->parse_first_img_src($data);
-
     # Prepare wrap content
     $api->prepare_wrap($data);
     
