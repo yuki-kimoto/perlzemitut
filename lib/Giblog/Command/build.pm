@@ -173,11 +173,13 @@ EOS
     
     my $file = "blog/$base_name";
     
-    my $content = $api->slurp_file($template_file);
-    my $title;
-    if ($content =~ /class="title">([^<]+)</) {
-      $title = $1;
-    }
+    my $data = {file => $file};
+    
+    $api->get_content($data);
+    
+    $api->parse_title_from_first_h_tag($data);
+    
+    my $title = $data->{title};
     
     my $path;
     if ($file eq 'index.html') {
