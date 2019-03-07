@@ -62,7 +62,58 @@
 
           </div>
           <div class="content">
-            <div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019/03/02</div>
+            <div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019/03/08</div>
+<h2><a href="/blog/20190308074548.html">__DATA__ - データセクション</a></h2>
+<p>
+  <b>__DATA__</b>より下に書かれたものは、データセクションと呼ばれます。データセクションを利用すると入力ファイルの内容を、プログラムの中に記述することができます。
+</p>
+<pre>
+
+# プログラム
+
+__DATA__
+kimoto,39
+tanaka,29
+</pre>
+<h3>DATAファイルハンドル</h3>
+<p>
+  データセクションに記述された内容は、<b>DATA</b>という特殊なファイルハンドルを使って読み込むことができます。
+</p>
+<pre>
+
+while (my $line = &lt;DATA&gt;) {
+  print "$line";
+}
+
+__DATA__
+kimoto,39
+tanaka,29
+</pre>
+<p>
+  編集したいテキストデータを、データセクションにコピーアンドペーストして、DATAファイルハンドルで読み込んで編集すれば、作業が楽です。
+</p>
+<h3>__DATA__とDATAファイルハンドルのサンプル</h3>
+<p>
+  __DATA__とDATAファイルハンドルのサンプルのサンプルです。
+</p>
+<pre>
+use strict;
+use warnings;
+
+# カンマをタブに変更
+while (my $line = &lt;DATA&gt;) {
+  chomp $line;
+  my @items = split(/,/, $line);
+  
+  print join("\t", @items) . "\n";
+}
+
+__DATA__
+kimoto,39
+tanaka,29
+</pre>
+
+<div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2019/03/02</div>
 <!-- /blog/20190302093530 -->
 <h2><a href="/blog/20190302093530.html">PerlBanjo.com - Perlを書いて、実行、保存、共有ができるWebサービス</a></h2>
 <p>
@@ -494,63 +545,6 @@ PATH=/home/kimoto2/.plenv/shims:/home/kimoto2/.plenv/bin:/home/kimoto2/.plenv/sh
 <p>
   それとどんなにがんばっても、crontabって環境ごとに、何らかの差分があることがほとんどなので、移植性を保たせてもあんまりメリットがないということもあります。
 </p>
-
-<div style="font-weight:bold;font-size:18px;letter-spacing:2px;margin:35px 0 0px 0;padding-left:5px;padding-top:5px;border-top:2px solid #ddd">2018/08/14</div>
-<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-    <a itemprop="item" href="/">
-        <span itemprop="name">Perl</span></a>
-    <meta itemprop="position" content="1" />
-  </li>
-  &#8250;
-  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
-    <meta itemprop="position" content="2" />
-  </li>
-</ol>
-<h2><a href="/blog/20180814153419.html">macOSへのPerlのインストール</a></h2>
-<p>
-  macOSの環境には、すでにPerlがインストールされています。
-</p>
-<p>
-  以下のコマンドでPerlがインストールされているか確認してみましょう。
-</p>
-<pre>
-perl -v
-</pre>
-<p>
-  バージョン情報が表示されれば、OKです。
-</p>
-<p>
-  さっそく、Perlを使い始めてみましょう。
-</p>
-<h4>ユーザー環境へのPerlのインストール</h4>
-<p>
-  最新のPerlなどを使いたい場合は、ユーザー環境にPerlをインストールすることもできます。
-</p>
-<p>
-  自分のユーザー環境にPerlをインストールしたい場合はperlbrewあるいはplenvというツールを使うことができます。
-</p>
-<p>
-  ルート権限が必要ないので、インストールが簡単で、OSの環境を汚しません。最新のPerlをインストールして使うことができます。
-</p>
-<p>
-  本番環境のWebサービスでPerlを実行する場合は、この方法が2018年現在は主流となっています。
-</p>
-<p>
-  perlbrewとplenvはどちらも、似ているツールで、ユーザー環境にPerlをインストールするためのツールです。お好みで選択してください。
-</p>
-<p>
-  <a href="https://syncer.jp/mac-terminal">macOSでターミナルを立ち上げ</a>てから、以下の手順を実行してください。
-</p>
-<ul>
-  <li>
-    <a href="/blog/20110220130464.html">perlbrew - ユーザー環境にPerlをインストールする</a>
-  </li>
-  <li>
-    plenv - ユーザー環境にPerlをインストールする(準備中)
-  </li>
-</ul>
 
 
           </div>

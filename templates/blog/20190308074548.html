@@ -1,0 +1,50 @@
+<h2>__DATA__ - データセクション</h2>
+
+<b>__DATA__</b>より下に書かれたものは、データセクションと呼ばれます。データセクションを利用すると入力ファイルの内容を、プログラムの中に記述することができます。
+
+<pre>
+
+# プログラム
+
+__DATA__
+kimoto,39
+tanaka,29
+</pre>
+
+<h3>DATAファイルハンドル</h3>
+
+データセクションに記述された内容は、<b>DATA</b>という特殊なファイルハンドルを使って読み込むことができます。
+
+<pre>
+
+while (my $line = <DATA>) {
+  print "$line";
+}
+
+__DATA__
+kimoto,39
+tanaka,29
+</pre>
+
+編集したいテキストデータを、データセクションにコピーアンドペーストして、DATAファイルハンドルで読み込んで編集すれば、作業が楽です。
+
+<h3>__DATA__とDATAファイルハンドルのサンプル</h3>
+
+__DATA__とDATAファイルハンドルのサンプルのサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# カンマをタブに変更
+while (my $line = <DATA>) {
+  chomp $line;
+  my @items = split(/,/, $line);
+  
+  print join("\t", @items) . "\n";
+}
+
+__DATA__
+kimoto,39
+tanaka,29
+</pre>
