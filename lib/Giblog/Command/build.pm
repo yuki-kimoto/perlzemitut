@@ -41,7 +41,7 @@ sub run {
     }
     
     # Add page link
-    $api->add_page_link_to_first_h_tag($data);
+    $api->add_page_link_to_first_h_tag($data, {root => 'index.html'});
 
     # Parse description
     $api->parse_description($data);
@@ -117,7 +117,7 @@ sub create_latest {
     $api->parse_giblog_syntax($data);
 
     # Add page link
-    $api->add_page_link_to_first_h_tag($data);
+    $api->add_page_link_to_first_h_tag($data, {root => 'index.html'});
     
     $content = $data->{content};
 
