@@ -49,8 +49,8 @@ sub run {
     # Create description from first p tag
     $api->parse_description_from_first_p_tag($data);
 
-    # Prepare wrap content
-    $api->prepare_wrap($data);
+    # Read common templates
+    $api->read_common_templates($data);
     
     # Add meta title
     $api->add_meta_title($data);
@@ -132,8 +132,8 @@ EOS
   $data->{title} = '最新記事';
   $data->{description} = 'Perlゼミの最新記事です。';
 
-  # Prepare wrap content
-  $api->prepare_wrap($data);
+  # Read common templates
+  $api->read_common_templates($data);
 
   $api->wrap($data);
   
@@ -205,8 +205,8 @@ EOS
   
   my $data = {content => $list_content, file => 'list.html'};
 
-  # Prepare wrap content
-  $api->prepare_wrap($data);
+  # Read common templates
+  $api->read_common_templates($data);
   
   my $config = $api->config;
   my $site_title = $config->{site_title};
