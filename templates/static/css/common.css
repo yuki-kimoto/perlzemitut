@@ -1,0 +1,529 @@
+	* {
+	  margin:0;
+	  padding:0;
+	  
+    /* box-sizing: border-box */
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing: border-box;
+    
+    /* text-size-adjust: 100% */
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -o-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+	}
+	.container {
+	  background:#F0F5F0;
+	}
+	li {
+	  text-decoration:none;
+	  line-height:180%;
+	}
+	body {
+	  font-size:16px;
+	  color:#333;
+	}
+	.header {
+	  width:100%;
+	  max-width:840px;
+	  margin:0 auto;
+	  background:white;
+	}
+	.menu {
+	  overflow:hidden;
+	  padding-left:10px;
+	}
+	.menu li {
+	  float:left;
+	  list-style:none;
+	}
+	.menu li {
+	  padding:5px 10px 8px 10px;
+	}
+	.main {
+	  width:100%;
+	  max-width:840px;
+	  margin:0 auto;
+	  overflow:hidden;
+	}
+	.footer {
+	  width:100%;
+	  margin:0 auto;
+	  background:white;
+	  text-align:center;
+	  color:#666;
+	  padding:10px 0;
+	  margin-top:5px;
+	  font-size:13px;
+	}
+	.entry {
+	  float:left;
+	  width:77%;
+	  border:1px solid #D2D6DE;
+	  background:white;
+	  padding-bottom:30px;
+	}
+	.content img {
+	  display:block;
+	  margin:10px; 25px;
+	}
+	.side {
+	  float:right;
+	  width:22.4%;
+	  margin-left:0.6%;
+	}
+	.content ol {
+	  margin-left:35px;
+	}
+	.content ol li {
+	  list-style:decimal;
+	}
+	
+	.content ul {
+	  margin-left:35px;
+	}
+
+	.content ul li {
+	  list-style:dotted;
+	}
+
+	.block-link-list span {
+	  display:block;
+	  padding: 3px 0em;
+	  color:#565;
+	  font-size:12px;
+	}
+	.block-link-list ul {
+	  padding:0 16px;
+	  margin-left:0;
+	}
+	.block-link-list li {
+	  border: 1px solid #ddd;
+	  list-style:none;
+	  border-bottom:none;
+	  padding:5px 10px;
+	}
+	.block-link-list li a {
+	  font-size:17px;
+	  letter-spacing:0.5px;
+	  font-weight:bold;
+	}
+	.block-link-list li:last-child {
+	  border-bottom:1px solid #ddd;
+	}
+	.block-link-list li a:after {
+	  content: "\A";
+	  white-space: pre;
+	}
+
+  ol.bread {
+	  border:none;
+	  background:none;
+	  padding:0;
+	  margin:10px 10px;
+  }
+  .bread li {
+    display:inline-block;
+    list-style-type:none;
+    font-size:14px;
+  }
+  .bread a {
+    padding:3px 5px;
+    width:100%;
+    background:#3cb371;
+    color:white;
+    border-radius:3px;
+    text-decoration:none;
+  }
+  .bread a:hover {
+    background:#4cc381;
+  }
+  .bread a:visited {
+    color:white;
+  }
+
+	.top-image {
+	  width:100%;
+	  max-width:400px;
+	}
+
+	ul.check-list, ol.check-list {
+	  margin:18px 18px;
+	  border:1px solid #8ad1b9;
+	  border-radius:3px;
+	  background:#edf7f4;
+	  padding:25px 65px;
+	  background-image:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20161215/20161215223249.png?1481808783);
+	  background-repeat:no-repeat;
+	  background-position:15px 12px;
+	}
+	ul.check-list li:before {
+	  content: '';
+	  width: 6px;
+	  height: 6px;
+	  display: inline-block;
+	  border-radius: 100%;
+	  background: #73b7a0;
+	  position: relative;
+	  left: -15px;
+	  top: -3px;
+	}
+
+	ul.check-list li {
+	  background-position:0 5px;
+	  list-style:none;
+	  padding-left:0px;
+	}
+
+	blockquote {
+	  border-radius:3px;
+	  border:1px solid #ddd;
+	  background:#fff;
+	  margin:0 10px;
+	  margin-bottom:10px;
+	  padding:10px;
+	  font-size:98%;
+	  color:#433;
+	}
+	blockquote p {
+	  padding:0;
+	}
+
+	pre {
+	  font-size:14px;
+	  line-height:120%;
+	  border-radius:5px;
+	  padding:10px;
+	  margin:0 10px;
+	  margin-bottom:10px;
+	  border-color:#d2d6de;
+	  background:#F7F7F7;
+	  border:1px solid #D2D6DE;
+	}
+
+	p {
+	  color:#222;
+	  margin:18px 0;
+	  padding:0 18px;
+	  line-height:160%;
+	}
+
+	.label-red {
+	  color:white;
+	  background:#ff0a5f;
+	  border-radius:3px;
+	  font-size:12px;
+	  padding:2px 5px 2px 5px;
+	  margin-left:3px;
+	}
+	.label-orange {
+	  color:white;
+	  background:#ff700a;
+	  border-radius:3px;
+	  font-size:12px;
+	  padding:2px 5px 2px 5px;
+	  margin-left:3px;
+	}
+
+
+	div.icon-arrow {
+	  background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20161210/20161210234519_120.jpg?1481381130) no-repeat;
+	  background-position:0 5px;
+	  padding-left:25px;
+	  margin-left:35px;
+	}
+
+	i.icon-arrow {
+	  display: inline-block;
+	  width:20px;
+	  height:25px;
+	  background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20161210/20161210234519_120.jpg?1481381130) no-repeat;
+	  background-position:0 9px;
+	}
+
+	.new-topics {
+	  font-size: 14px;
+	  padding:2px 2px 2px 5px;
+	  text-indent:13px;
+	  background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20160908/20160908152718.gif?1473316070) no-repeat;
+	  background-position:0px 6px;
+	}
+	.new-topics a.new-topics-link {
+	  color: #fe329d;
+	}
+
+	.new-topics-new {
+	  color:red;
+	  font-weight:bold;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif;	
+	}
+	h1 {
+    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif;	
+	  padding: 5px 15px 9px 15px;
+	  border-bottom:2px solid #69c677;
+	  color:#333;
+	  font-family: "times new roman", "geogia", serif;
+	  margin-bottom:5px;
+	}
+	h1 a, h1 a:visited {
+	  color:white;
+	  color:#0e7a55;
+	  text-decoration:underline;
+	  font-weight:bold;
+	  letter-spacing:2px;
+	  font-size:20px;
+	  text-decoration:none;
+	}
+	
+	h1 img {
+    width:40px;
+    vertical-align:-10px;
+    margin-right:10px;
+	}
+
+	h2 {
+	  padding:12px 5px 5px 35px;
+	  font-size:21px;
+	  margin:0;
+	  margin-top:0px;
+	  margin-bottom:15px;
+	  display: block;
+	  vertical-align: middle;
+	  line-height:130%;
+	  border-left:none;
+	  background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20160908/20160908162216.png?1473319348) no-repeat;
+	  background-position:0 5px;
+	  border:3px solid #eaefee;
+	  border-top:3px solid #0f9b6c; 
+	  background-color:#e8efed;
+	  box-shadow: 2px 2px 2px rgba(0,0,0,0.4);
+	  background-position:10px 13px;
+	}
+	h2 a, h2 a:visited {
+	  color:#333;
+	  text-decoration:none;
+	}
+	h2 a:hover {
+	  text-decoration:underline;
+	}
+	h3 {
+	  font-size:21px;
+	  padding: 7px 8px 5px 13px;
+	  margin:18px 10px 14px 10px;
+	  border:1px solid #56bd9a;
+	  background:#e1fae1;
+	  color:#334433;
+	  margin-top:30px;
+	  background:#1c825f;
+	  color:white;
+	  border:none;
+	}
+
+	h4 {
+	  font-size:19px;
+	  color:#334433;
+	  margin:18px 13px 10px 13px;
+	  border-left:8px solid #56BD9A;
+	  padding:3px 0 0 8px;
+	  padding-bottom:1px;
+	  margin-top:35px;
+	  letter-spacing:1px;
+	}
+
+
+	ul {
+	  -webkit-margin-before: 0;
+	  -webkit-margin-after: 0;
+	  -webkit-margin-start: 0px;
+	  -webkit-margin-end: 0px;
+	  -webkit-padding-start: 0x;
+	}
+
+	.hatena-module {
+	  
+	}
+
+  .hatena-module ul li, .hatena-module ol li {
+    padding: 8px 8px;
+    border-bottom: 1px solid #edf0f4;
+    line-height: 1.3;
+    list-style:none;
+  }
+  .hatena-module a {
+    text-decoration: none;
+    font-size:14px;
+  }
+	.hatena-modulebody {
+	  background:#f8f8ff;
+	  border-bottom:none;
+	  border-right:1px solid #d2d6de;
+	  border-left:1px solid #d2d6de;
+	}
+
+   .hatena-modulebody ul {
+     margin-bottom:0;
+   }
+
+	.hatena-moduletitle {
+	  font-family: "times new roman", "geogia", serif;
+	  padding:6px 0 5px 0;
+	  font-size:14px;
+	  color:#2e8b57;
+	  background:#90ee90;
+	  border-left:0px solid #f4a460;
+	  border-bottom:none;
+	  text-align:center;
+	  font-weight:bold;
+	}
+
+	.site-description {
+	  font-size:14px;
+	  padding:1px 10px;
+	  margin:5px 11px 5px 5px;
+	  border:solid 1px #77cc00;;
+	  color:#333333;
+	  background:#f1f8ff;
+	}
+
+	.pconly {
+	  display:none;
+	}
+
+	.hatena-body {
+	  width:910px;
+	}
+	.div.adminmenu {
+	  width:910px;
+	}
+	.sidebar {
+	  float:left;
+	  margin:0;
+	  margin-top:10px;
+	  width:230px;
+	  border-left: none;
+	  border-right: 1px solid #d2d6de;
+	  border-bottom:none;
+	  border-right:none;
+	}
+
+	div.adminmenu {
+	  height:auto;
+	}
+
+	#pager-bottom {
+	  font-size:20px;
+	  margin-bottom:20px;
+	}
+
+	.ad {
+	  padding:10px;
+	  padding-top:0;
+	}
+
+	#pager-bottom a {
+	  color:#808080;
+	}
+
+	#pager-top {
+	  display:none;
+	}
+
+	a.top-button, a:visited.top-button {
+	  font-weight:bold;padding:0px 5px;background:#32cd32;text-decoration:none;border:1px solid #008080;border-radius:6px;font-size:21px;display:inline-block;color:white;margin:0 1px;margin-bottom:3px;
+	}
+
+	div.sgc-toc-level-1 {
+	  margin:0px;
+	  margin-left: 0em;
+	  line-height:1.5em;
+	}
+
+	div.sgc-toc-level-2 {
+	  margin:0px;
+	  margin-left: 2em;
+	}
+
+	div.sgc-toc-level-3 {
+	  margin:0px;
+	  margin-left: 2em;
+	}
+
+	div.sgc-toc-level-4 {
+	  margin-left: 2em;
+	}
+
+	div.sgc-toc-level-5 {
+	  margin:0px;
+	  margin-left: 2em;
+	}
+
+	div.sgc-toc-level-6 {
+	  margin:0px;
+	  margin-left: 2em;
+	}
+
+	a {
+	  color:#0000CC;
+	}
+
+	a:visited {
+	  color:#0000CC;
+	}
+
+	.content table {
+		border-collapse: collapse;
+		margin-left:15px;
+	}
+
+	table td {
+		border:1px solid #ddd;
+	  padding:7px;
+	}
+
+@media only screen and (max-width:960px) {
+	.entry {
+	  width:100%;
+	}
+	.side {
+	  display:none;
+	}
+  .site-title {
+    text-align:center;
+    width:100%;
+    background-color:1C825F;
+  }
+  .site-title a, .site-title a:visited {
+    color:white;
+  }
+  .hatena-body {
+    width:100%;
+  }
+  p.share-button {
+    position:static;
+    margin-left:0px;
+  }
+  div.icon-arrow {
+    padding-left:25px;
+    margin-left:20px;
+  }
+  li {
+    line-height:165%;
+  }
+  .block-link-list ul {
+    padding-left:0;
+    padding-right:0;
+    border-left:0;
+    border-right:0;
+  }
+
+  h3 {
+    margin-left:0;
+    margin-right:0;
+  }
+}
+
