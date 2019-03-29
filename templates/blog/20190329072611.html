@@ -180,7 +180,7 @@ JSONですべて完結できるかなぁと思っていたけど、ファイル�
   $(function() {
     $('.mail-form button').on('click', function () {
       var form_values = $('.mail-form form').serialize();
-      $.post("/mail2.cgi", form_values, function (data) {
+      $.post("/mail.cgi", form_values, function (data) {
         if (data) {
           $('.mail-form').html('<div>Thank you very much for contacting us.</div>');
         }
