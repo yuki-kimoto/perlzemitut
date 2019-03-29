@@ -1,0 +1,50 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+  $(function() {
+    $('.mail-form button').on('click', function () {
+      var form_values = $('.mail-form form').serialize();
+      $.post("/mail2.cgi", form_values, function (data) {
+        if (data) {
+          $('.mail-form').html('<div>Thank you very much for contacting us.</div>');
+        }
+        else {
+          alert('Fail sending mail');
+        }
+      });
+    });
+  });
+</script>
+
+<h2>Message Form</h2>
+<div class="mail-form">
+  <form>
+  	<label>
+  		<div class="mail-form-title">
+  		  Name:
+  		</div>
+  		<div class="mail-form-body">
+  		  <input type="text" size=50 name="name"><br>
+  		</div>
+    </label>
+  	<label>
+  		<div class="mail-form-title">
+  		  Mail:
+  		</div>
+  		<div class="mail-form-body">
+  		  <input type="text" size=50 name="email">
+  		</div>
+    </label>
+  	<label>
+  		<div class="mail-form-title">
+  		  Message:
+  		</div>
+  		<div class="mail-form-body">
+  		  <textarea cols=50 rows=3 name="message"></textarea>
+  		</div>
+    </label>
+  	<div>
+  	  <button type="button">Send</button> <input type="reset" value="Clear">
+  	</div>
+  </form>
+</div>
