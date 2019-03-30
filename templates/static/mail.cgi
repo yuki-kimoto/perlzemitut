@@ -12,7 +12,7 @@ use Encode 'decode', 'encode';
 my $q = CGI->new;
 
 # Mail to
-my $mailto = 'kimoto_yuki@shinshina.co.jp';
+my $mailto = 'kimoto.yuki+perlzemitutmail@gmail.com';
 
 # Mail title
 my $subject = 'Mail From giblog-mail';

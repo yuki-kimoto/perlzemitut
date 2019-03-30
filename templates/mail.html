@@ -6,7 +6,7 @@
       var form_values = $('.mail-form form').serialize();
       $.post("/mail.cgi", form_values, function (data) {
         if (data) {
-          $('.mail-form').html('<div>Thank you very much for contacting us.</div>');
+          $('.mail-form').html('<div>メッセージを受け付けました。ありがとうございます。</div>');
         }
         else {
           alert('Fail sending mail');
@@ -16,12 +16,12 @@
   });
 </script>
 
-<h2>Message Form</h2>
+<h2>お問合せフォーム</h2>
 <div class="mail-form">
   <form>
   	<label>
   		<div class="mail-form-title">
-  		  Name:
+  		  名前:
   		</div>
   		<div class="mail-form-body">
   		  <input type="text" size=50 name="name"><br>
@@ -29,7 +29,7 @@
     </label>
   	<label>
   		<div class="mail-form-title">
-  		  Mail:
+  		  メールアドレス:
   		</div>
   		<div class="mail-form-body">
   		  <input type="text" size=50 name="email">
@@ -37,14 +37,14 @@
     </label>
   	<label>
   		<div class="mail-form-title">
-  		  Message:
+  		  メッセージ:
   		</div>
   		<div class="mail-form-body">
   		  <textarea cols=50 rows=3 name="message"></textarea>
   		</div>
     </label>
   	<div>
-  	  <button type="button">Send</button> <input type="reset" value="Clear">
+  	  <button type="button">メッセージを送信</button>
   	</div>
   </form>
 </div>
