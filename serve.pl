@@ -3,6 +3,9 @@
 use strict;
 use warnings;
 
+use Mojo::Message::Response;
+use File::Temp 'tempfile';
+
 warn "Server start\n";
 
 my $cmd = 'giblog build';
@@ -21,6 +24,7 @@ app->hook(before_dispatch => sub {
   
   if ($path =~ /\.cgi$/) {
     my $method = $c->req->method;
+    my $script_name = $c->app->home->rel_file("public/$path");
     
     # CGI Environment variable
     local $ENV{AUTH_TYPE} = '';
@@ -35,13 +39,47 @@ app->hook(before_dispatch => sub {
     local $ENV{REMOTE_IDENT} = '';
     local $ENV{REMOTE_USER} = '';
     local $ENV{REQUEST_METHOD} = $method;
-    local $ENV{SCRIPT_NAME} = $c->app->home->rel_file("public/$path");
+    local $ENV{SCRIPT_NAME} = $script_name;
     local $ENV{SERVER_NAME} = 'localhost';
     local $ENV{SERVER_PORT} = $c->tx->remote_port;
     local $ENV{SERVER_SOFTWARE} = "Mojolicious (Perl)";
     local $ENV{SERVER_PROTOCOL} = 'HTTP/1.1';
     
-    $c->render(text => 'aaaa');
+    # Run CGI script
+    my $output;
+    if ($method eq 'GET') {
+      # GET requst
+      $output = `$^X $script_name`;
+      if ($?) {
+        $c->res->code('505');
+        $c->render(text => "Internal Server Error");
+      }
+    }
+    elsif ($method eq 'POST') {
+      # POST request
+      my $body = $req->body;
+      my ($in_fh, $in_file) = tempfile;
+      print $in_fh $body;
+      close $in_fh;
+      $output = `$^X -pe "" $in_file | $^X $script_name`;
+      if ($?) {
+        $c->res->code('505');
+        $c->render(text => "Internal Server Error");
+      }
+      unlink $in_file;
+    }
+    
+    # Header part and body part
+    my ($header_part, $body_part) = split("\n\n", $output, 2);
+    
+    # Response
+    my $res = Mojo::Message::Response->new;
+    while (!$res->is_finished) {
+      $res->parse($header_part);
+    }
+    $c->res->code($res->code);
+    $c->res->headers($res->headers);
+    $c->render(data => $body_part);
   }
 });
 
