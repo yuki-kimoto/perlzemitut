@@ -46,7 +46,7 @@ app->hook(before_dispatch => sub {
     local $ENV{SERVER_PROTOCOL} = 'HTTP/1.1';
     
     # Check script name
-    unless ($script_name =~ /^[a-zA-Z_0-9\/\.]+$/) {
+    unless ($script_name =~ /^[a-zA-Z_0-9\/\-\.]+$/) {
       die "Invalid script name";
     }
     
