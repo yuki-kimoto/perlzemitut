@@ -480,6 +480,13 @@
 		margin-left:15px;
 	}
 
+	table th {
+		border:1px solid #ddd;
+	  padding:7px;
+	  background:#efe;
+	  font-weight:bold;
+	}
+
 	table td {
 		border:1px solid #ddd;
 	  padding:7px;
