@@ -20,9 +20,16 @@ app->hook(before_dispatch => sub {
   
   my $req = $c->req;
   
-  my $path = $req->url->path;
+  my $path = $req->url->path->clone;
   
   if ($path =~ /\.cgi$/) {
+    
+    # Prevent directory traversal
+    $path->canonicalize;
+    if ($path =~ /^[\\\/]\./) {
+      die "Can't contain \. in path \"$path\"";
+    }
+
     my $method = $c->req->method;
     my $script_name = $c->app->home->rel_file("public/$path");
     
@@ -48,6 +55,11 @@ app->hook(before_dispatch => sub {
     # Check script name
     unless ($script_name =~ /^[a-zA-Z_0-9\/\-\.]+$/) {
       die "Invalid script name";
+    }
+    
+    # Check existance of CGI script
+    unless (-f $script_name) {
+      die "Not found CGI script";
     }
     
     # Run CGI script
