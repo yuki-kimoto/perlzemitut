@@ -1,0 +1,19 @@
+<h2>CentOS7/minimalでperlbrewを使えるようにする方法</h2>
+
+CentOS7/minimalでperlbrewを使ってPerlをインストールしようとしたときにいろいろと足りなかったのでメモ。
+
+以下をyumを使ってインストールするとうまくいった。
+
+<pre>
+# bzip2のインストール
+yum -y install bzip2
+
+# pacheのインストール
+yum -y install patch
+
+# Perlコアモジュールのインストール
+yum -y install perl-core
+
+# gccのインストール
+yum -y install gcc
+</pre>
