@@ -4,47 +4,61 @@
   $(function() {
     $('.mail-form button').on('click', function () {
       var form_values = $('.mail-form form').serialize();
-      $.post("/mail.cgi", form_values, function (data) {
-        if (data) {
-          $('.mail-form').html('<div>メッセージを受け付けました。ありがとうございます。</div>');
-        }
-        else {
-          alert('Fail sending mail');
-        }
-      });
+      $.post(
+        "/mail.cgi",
+        form_values,
+        function (data) {
+          if (data.success) {
+            $('.mail-form').html('<div>メッセージを受け付けました。ありがとうございます。</div>');
+          }
+          else {
+            // エラーメッセージ
+            var errors = data.errors;
+            for (var i = 0; i < errors.length; i++) {
+              var error = errors[i];
+              var li = $('<li></li>');
+              li.text(error);
+              $('.mail-form-errors').append(li);
+            }
+          }
+        },
+        "json"
+      );
     });
   });
 </script>
 
 <h2>お問合せフォーム</h2>
 <div class="mail-form">
+  <ul class="mail-form-errors">
+  </ul>
   <form>
-  	<label>
-  		<div class="mail-form-title">
-  		  名前:
-  		</div>
-  		<div class="mail-form-body">
-  		  <input type="text" size=50 name="name"><br>
-  		</div>
+    <label>
+      <div class="mail-form-title">
+        名前:
+      </div>
+      <div class="mail-form-body">
+        <input type="text" size=50 name="name"><br>
+      </div>
     </label>
-  	<label>
-  		<div class="mail-form-title">
-  		  メールアドレス:
-  		</div>
-  		<div class="mail-form-body">
-  		  <input type="text" size=50 name="email">
-  		</div>
+    <label>
+      <div class="mail-form-title">
+        メールアドレス:
+      </div>
+      <div class="mail-form-body">
+        <input type="text" size=50 name="email">
+      </div>
     </label>
-  	<label>
-  		<div class="mail-form-title">
-  		  メッセージ:
-  		</div>
-  		<div class="mail-form-body">
-  		  <textarea cols=50 rows=3 name="message"></textarea>
-  		</div>
+    <label>
+      <div class="mail-form-title">
+        メッセージ:
+      </div>
+      <div class="mail-form-body">
+        <textarea cols=50 rows=3 name="message"></textarea>
+      </div>
     </label>
-  	<div>
-  	  <button type="button">メッセージを送信</button>
-  	</div>
+    <div>
+      <button type="button">メッセージを送信</button>
+    </div>
   </form>
 </div>
