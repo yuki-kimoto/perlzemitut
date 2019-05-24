@@ -529,6 +529,9 @@
     padding:10px 0 7px 0;
     cursor:pointer;
   }
+  .mail-form-success {
+    color:green;
+  }
   .mail-form-errors {
     color:red;
   }
