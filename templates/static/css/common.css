@@ -491,7 +491,48 @@
     border:1px solid #ddd;
     padding:7px;
   }
-
+  
+  /* メールフォーム */
+  .mail-form {
+    padding:10px 20px;
+  }
+  .mail-form-title {
+    font-weight:bold;
+    margin-bottom:3px;
+    letter-spacing:1px;
+  }
+  
+  .mail-form label {
+    margin-bottom:14px;
+    display:block;
+  }
+  .mail-form input {
+    width:90%;
+    max-width:500px;
+    padding:5px;
+    font-size:16px;
+  }
+  .mail-form textarea {
+    width:90%;
+    max-width:500px;
+    min-height:200px;
+  }
+  .mail-form button {
+    width:300px;
+    background:#f7338b;
+    color:white;
+    border:none;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.4);
+    font-size:20px;
+    border-radius:10px;
+    margin-bottom:30px;
+    padding:10px 0 7px 0;
+    cursor:pointer;
+  }
+  .mail-form-errors {
+    color:red;
+  }
+  
 @media only screen and (max-width:960px) {
   .entry {
     width:100%;

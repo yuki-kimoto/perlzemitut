@@ -32,6 +32,10 @@ unless (length $name) {
 my $email = $q->param('email');
 $email = decode('UTF-8', $email);
 
+unless (length $email && $email =~ /\@/) {
+  push @errors, "Eメールアドレスを正しく入力してください。";
+}
+
 # Message
 my $message = $q->param('message');
 $message = decode('UTF-8', $message);
@@ -82,8 +86,6 @@ else {
 # JSON response
 my $res_json = encode_json($res_data);
 $res .= "$res_json\n";
-
-warn $res;
 
 # Print response
 print $res;

@@ -9,11 +9,12 @@
         form_values,
         function (data) {
           if (data.success) {
-            $('.mail-form').html('<div>メッセージを受け付けました。ありがとうございます。</div>');
+            $('.mail-form').html('<div>メッセージを受け付けました。</div>');
           }
           else {
             // エラーメッセージ
             var errors = data.errors;
+            $('.mail-form-errors').empty();
             for (var i = 0; i < errors.length; i++) {
               var error = errors[i];
               var li = $('<li></li>');
@@ -54,7 +55,7 @@
         メッセージ:
       </div>
       <div class="mail-form-body">
-        <textarea cols=50 rows=3 name="message"></textarea>
+        <textarea name="message"></textarea>
       </div>
     </label>
     <div>
