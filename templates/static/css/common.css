@@ -30,7 +30,27 @@
     max-width:840px;
     margin:0 auto;
     background:white;
+    border-bottom:2px solid #69c677;
+    margin-bottom:5px;
+    padding:5px 10px 7px 10px;
+    overflow:hidden;
   }
+  .header-description {
+    float:left;
+    width:54%;
+    display:inline-block;
+    font-weight:bold;
+    padding-top:22px;
+    font-size:14px;
+    letter-spacing:0.5px;
+  }
+  .header-otoiawase {
+    float:left;
+    width:20%;
+    text-align:center;
+    padding-top:21px;
+  }
+  
   .menu {
     overflow:hidden;
     padding-left:10px;
@@ -265,10 +285,13 @@
   h1 {
     font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif; 
     padding: 5px 15px 9px 15px;
-    border-bottom:2px solid #69c677;
     color:#333;
     font-family: "times new roman", "geogia", serif;
-    margin-bottom:5px;
+
+    float:left;
+    width:26%;
+    display:inline-block;
+    padding:10px;
   }
   h1 a, h1 a:visited {
     color:white;
@@ -576,5 +599,16 @@
     margin-left:0;
     margin-right:0;
   }
+  
+  h1 {
+    width:70%;
+  }
+  .header-description {
+    display:none;
+  }
+  .header-otoiawase {
+    width:30%;
+  }
+
 }
 
