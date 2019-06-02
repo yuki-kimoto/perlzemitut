@@ -13,7 +13,7 @@ use Encode 'decode', 'encode';
 my $q = CGI->new;
 
 # Mail to
-my $mailto = 'kimoto.yuki+perlzemitutmail@gmail.com';
+my $mailto = 'info@perlzemi.com';
 
 # Mail title
 my $subject = 'Perlゼミにメールが届いています';
