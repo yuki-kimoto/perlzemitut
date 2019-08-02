@@ -164,6 +164,8 @@ sub create_list {
   @template_files = reverse sort @template_files;
   
   my $list_content;
+
+  $list_content .= "<h2>Perlゼミ新着情報</h2>\n";
   
   $list_content .= "<ul>\n";
   my $before_year = 0;
