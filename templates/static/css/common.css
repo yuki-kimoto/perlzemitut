@@ -175,7 +175,7 @@
     border-radius:3px;
     background:#edf7f4;
     padding:25px 65px;
-    background-image:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20161215/20161215223249.png?1481808783);
+    background-image:url(/images/check.png);
     background-repeat:no-repeat;
     background-position:15px 12px;
   }
@@ -249,7 +249,7 @@
 
 
   div.icon-arrow {
-    background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20161210/20161210234519_120.jpg?1481381130) no-repeat;
+    background:url(/images/allow-right.jpg) no-repeat;
     background-position:0 5px;
     padding-left:25px;
     margin-left:35px;
@@ -259,7 +259,7 @@
     display: inline-block;
     width:20px;
     height:25px;
-    background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20161210/20161210234519_120.jpg?1481381130) no-repeat;
+    background:url(/images/allow-right.jpg) no-repeat;
     background-position:0 9px;
   }
 
@@ -267,7 +267,7 @@
     font-size: 14px;
     padding:2px 2px 2px 5px;
     text-indent:13px;
-    background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20160908/20160908152718.gif?1473316070) no-repeat;
+    background:url(red-allow.gif) no-repeat;
     background-position:0px 6px;
   }
   .new-topics a.new-topics-link {
@@ -319,7 +319,7 @@
     vertical-align: middle;
     line-height:130%;
     border-left:none;
-    background:url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20160908/20160908162216.png?1473319348) no-repeat;
+    background:url(/images/allow.png) no-repeat;
     background-position:0 5px;
     border:3px solid #eaefee;
     border-top:3px solid #0f9b6c; 
