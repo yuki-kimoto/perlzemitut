@@ -17,27 +17,38 @@
 </ol>
 <h2>lc関数 - 大文字を小文字に変換</h2>
 
-
-
-<strong>大文字から小文字へ変換</strong>するには<strong>lc関数</strong>を使用します。lc関数は引数のそれぞれの文字を小文字に変換します。変換できない文字の場合は引数に与えた文字がそのまま返されます。
+<strong>lc関数</strong>を使用すると、<strong>大文字から小文字へ変換</strong>することができます。lc関数は引数のそれぞれの文字を小文字に変換します。変換できない文字の場合は引数に与えた文字がそのまま返されます。
 
 <pre>
 my $str = lc "BBB";
 </pre>
 
-<h3>サンプル</h3>
+<h3>lc関数のプログラミングのサンプル</h3>
 
-大文字から小文字への変換のサンプルです。
+lc関数で大文字から小文字へ変換するプログラミングのサンプルです。
 
 <pre>
 use strict;
 use warnings;
 
-# 大文字から小文字への変換
-my $up_to_low = lc "BBB";
+# 大文字「BBB」から小文字「bbb」への変換
+my $str = lc "BBB";
 
-# ダブルクォート文字列では\Uと\Eで囲んで小文字にすることもできる
-my $up_to_low2 = "\LAB\ECD"; 
-print "BBB -> $up_to_low\n";
-print "ABCD -> $up_to_low2\n";
+print "$str\n";
 </pre>
+
+出力結果
+
+<pre>
+bbb
+</pre>
+
+<h3>lc関数の関連情報</h3>
+
+lc関数の関連情報です。
+
+<ul>
+  <li><a href="/blog/20100327127089.html">lcfirst関数 - 大文字を小文字に変換する</a>
+  <li><a href="/blog/20080903122057.html">uc関数 - 小文字を大文字に変換する</a>
+  <li><a href="/blog/20100325127089.html">ucfirst関数 - 文字列の先頭を大文字に変換する</a>
+</ul>

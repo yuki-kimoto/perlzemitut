@@ -17,27 +17,38 @@
 </ol>
 <h2>uc関数 - 小文字を大文字に変換する</h2>
 
-
-
 <strong>uc関数</strong>を使用すると小文字から大文字へ変換することができます。uc関数は引数のそれぞれの文字を大文字に変換します。変換できない文字の場合は引数に与えた文字がそのまま返されます。
 
 <pre>
 my $str = uc "aaa";
 </pre>
 
-<h3>サンプルプログラム</h3>
+<h3>uc関数のプログラミングのサンプル</h3>
 
-小文字から大文字への変換のサンプルです。
+uc関数を使った小文字から大文字への変換のプログラミングのサンプルです。
 
 <pre>
 use strict;
 use warnings;
 
-# 小文字から大文字への変換
-my $low_to_up = uc "aaa";
+# 小文字「aaa」から大文字「AAA」への変換
+my $str = uc "aaa";
 
-# ダブルクォート文字列では\Lと\Eで囲んで小文字にすることもできる
-my $low_to_up2 = "\Uab\Ecd";
-print "aaa -> $low_to_up\n";
-print "abcd -> $low_to_up2\n";
+print "$str\n";
 </pre>
+
+出力結果
+
+<pre>
+AAA
+</pre>
+
+<h3>uc関数の関連情報</h3>
+
+uc関数の関連情報です。
+
+<ul>
+  <li><a href="/blog/20100326127089.html">lc関数 - 大文字を小文字に変換</a>
+  <li><a href="/blog/20100327127089.html">lcfirst関数 - 大文字を小文字に変換</a>
+  <li><a href="/blog/20100325127089.html">ucfirst関数 - 文字列の先頭を大文字に変換</a>
+</ul>
