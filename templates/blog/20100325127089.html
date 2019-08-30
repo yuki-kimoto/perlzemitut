@@ -15,12 +15,41 @@
     here
   </li>
 </ol>
-<h2>ucfirst関数 - 文字列の先頭を大文字に変換</h2>
+<h2>ucfirst関数 - 文字列の先頭を小文字から大文字に変換する</h2>
 
-
-
-先頭の文字だけを大文字に変換するには<strong>ucfirst</strong>関数を使用します。
+<strong>ucfirst</strong>関数を使用すると、文字列の先頭だけを小文字から大文字に変換することができます。
 
 <pre>
+# 先頭の文字を大文字に変換
 $ret = ucfirst $string;
 </pre>
+
+<h3>ucfirst関数のプログラミングのサンプル</h3>
+
+ucfirst関数のプログラミングのサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# "foo"を"Foo"に変換
+my $str = ucfirst "foo";
+
+print "$str\n";
+</pre>
+
+出力結果
+
+<pre>
+Foo
+</pre>
+
+<h3>ucfirst関数の関連情報</h3>
+
+ucfirst関数の関連情報です。
+
+<ul>
+  <li><a href="/blog/20100326127089.html">lc関数 - 大文字を小文字に変換する</a>
+  <li><a href="/blog/20100327127089.html">lcfirst関数 - 文字列の先頭を大文字から小文字に変換する</a>
+  <li><a href="/blog/20080903122057.html">uc関数 - 小文字を大文字に変換する</a>
+</ul>
