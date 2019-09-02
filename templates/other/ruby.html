@@ -1,0 +1,60 @@
+<h2>PerlユーザーがRubyユーザーに伝えたいこと</h2>
+
+Perlユーザーとして、Rubyユーザーに伝えたいことを実名で書きます。匿名でPerlに対して書かれたネガティブな信頼性の低い記事がネット上に、あふれているからです。
+
+<h2>「RubyからPerlへ」という記事でPerlの価値を落とさないで</h2>
+
+Rubyの公式ドキュメントには、「間違いなく複雑」というPerlに対する誤解を招くネガティブなメッセージが含まれています。
+
+<blockquote>
+Perlはすばらしい言語です。ドキュメントもすばらしいし、Perlコミュニティもすばらしいコミュニティです。 しかし、<b>言語はかなり大きく、間違いなく複雑</b>です。
+<br><br>
+<a href="https://www.ruby-lang.org/ja/documentation/ruby-from-other-languages/to-ruby-from-perl/">RubyからPerlへ</a>
+</blockquote>
+
+Rubyの実装には、複雑さが少なく、Perlには多いような印象を、初見のユーザーに対して与えています。
+
+Rubyの言語実装は小さく、Perlは大きいような印象を与えています。
+
+<h3>Rubyの実装の複雑さ</h3>
+
+ひとつの例として、PerlとRubyのGCの実装について考えてみましょう。
+
+Perlは、<b>リファレンスカウントGC</b>と呼ばれるGCの実装を持っており、Rubyは、<b>世代別GC</b>というGCの実装を持っています。
+
+さて、リファレンスカウントGCと世代別GCは、どちらの実装が複雑でしょうか。
+
+一般的に理解されていることを、土台にすれば<b>世代別GCのほうが、実装が複雑</b>です。
+
+リファレンスカウントGCのほうが、シンプルなのです。
+
+このような一つの面を取り上げてみても、Rubyの公式ドキュメントが、Perlを複雑と一方的に語っているのは、不公平といえるでしょう。
+
+Rubyのドキュメントは、Rubyが、複雑さの側面を持っているのに、まるでPerlだけが、複雑であるかの印象を与えています。
+
+<h3>Rubyの言語の大きさ</h3>
+
+Rubyは、バージョンを追うごとに、新機能が追加され続けてきました。Rubyは、言語機能が大きくなり続けています。
+
+<ul>
+  <li><a href="https://magazine.rubyist.net/articles/0041/0041-200Special-note.html">Ruby 2.0 新機能</a></li>
+  <li><a href="https://techracho.bpsinc.jp/baba/2013_12_26/15026">Ruby 2.1 新機能</a></li>
+  <li><a href="https://allabout.co.jp/gm/gc/452102/">Ruby 2.2 新機能</a></li>
+  <li><a href="https://qiita.com/gipcompany/items/256a36ac727025f8f525">Ruby 2.3 新機能</a></li>
+  <li><a href="https://qiita.com/jnchito/items/9f9d45581816f121af07">Ruby 2.4 新機能</a></li>
+  <li><a href="https://qiita.com/jnchito/items/f182b6f0093a6a3701a1">Ruby 2.5 新機能</a></li>
+  <li><a href="https://qiita.com/jnchito/items/ce11cb7fccdf4b66af24">Ruby 2.6 新機能</a></li>
+  <li><a href="https://qiita.com/hanachin_/items/1aa1ba38a87dee91aed6">Ruby 2.7 新機能</a></li>
+</ul>
+
+一方Perlは、2002年Perl 5.8の時代に、言語機能をたくさん追加していく方針を転換しました。「もし、必要な機能があれば、モジュール(ライブラリ)において実装する」そういう方針への転換です。
+
+Rubyのドキュメントは、Perlについて、まったく反対のことを語っています。
+
+Perlは大きくなる速度をゆっくりさせたのに対して、Rubyは、言語の大きさを着実に増しているのです。
+
+言語の大きさに関して、Rubyの公式ドキュメントは、Perlに関する正しい事実をユーザーへ伝えていません。
+
+(まだまだ、今後も、記事は、続くよどこまでも。少なくとも5000文字は書きます。)
+
+
