@@ -1,6 +1,6 @@
-<h2>PerlユーザーがRubyユーザーに伝えたいこと</h2>
+<h2>PerlユーザーがRubyユーザーに伝えたいこと ～ PerlとRubyの比較を通して</h2>
 
-Perlユーザーとして、Rubyユーザーに伝えたいことを実名で書きます。匿名でPerlに対して書かれたネガティブな信頼性の低い記事がネット上に、あふれているからです。
+Perlユーザーとして、PerlとRubyを比較を通して、Rubyユーザーに伝えたいことを実名で書きます。匿名でPerlに対して書かれたネガティブな信頼性の低い記事がネット上に、あふれているからです。
 
 <h2>「RubyからPerlへ」という記事でPerlの価値を落とさないで</h2>
 
@@ -8,7 +8,7 @@ Rubyの公式ドキュメントには、「間違いなく複雑」というPerl
 
 <blockquote>
 Perlはすばらしい言語です。ドキュメントもすばらしいし、Perlコミュニティもすばらしいコミュニティです。 しかし、<b>言語はかなり大きく、間違いなく複雑</b>です。
-<br><br>
+
 <a href="https://www.ruby-lang.org/ja/documentation/ruby-from-other-languages/to-ruby-from-perl/">RubyからPerlへ</a>
 </blockquote>
 
@@ -55,6 +55,182 @@ Perlは大きくなる速度をゆっくりさせたのに対して、Rubyは、
 
 言語の大きさに関して、Rubyの公式ドキュメントは、Perlに関する正しい事実をユーザーへ伝えていません。
 
-(まだまだ、今後も、記事は、続くよどこまでも。少なくとも5000文字は書きます。)
+<h2>CSVを処理するRubyとPerlのソースコード</h2>
 
+「Perlの文法はクズのようだ」
 
+Rubyユーザーの皆様は、そう思っておられませんか。
+
+では、実際に、Perlの文字列処理でCSVを処理するコードを、実際に見てみませんか?
+
+<h3>Perlで標準入力から受け取ったCSVデータを、入力して、出力するサンプル</h3>
+
+ファイルあるいは、標準入力から受け取ったCSVデータを、入力して、出力するサンプルです。Windowsで日本語対応。
+
+<pre>
+# Perlで標準入力から受け取ったCSVデータを、入力して、出力するサンプル
+
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode', 'decode';
+
+# コマンドライン引数、あるいは、標準入力から受け取る
+while (my $line = <>) {
+  # Perlの内部文字列にデコード
+  $line = decode('cp932', $line);
+
+  # 改行削除
+  chomp $line;
+  
+  # split関数で分割して配列に代入
+  my @items = split(/,/, $line);
+  
+  # join関数でタブ区切りでつなげる
+  my $new_line = join("\t", @items);
+  
+  # 標準入力に出力
+  print encode('cp932', $new_line) . "\n";
+}
+</pre>
+
+どうでしょう。世間でPerlが、言われているような、可読性が皆無のクズみたいなコードでしょうか?
+
+それとも「うーん、まぁ、普通」という感じですか?
+
+実行はコマンドライン引数から受け取って
+
+<pre>
+perl script.pl foo.csv
+</pre>
+
+あるいは、標準入力から受け取って
+
+<pre>
+cat foo.csv | perl script.pl 
+</pre>
+
+ですね。
+
+「あれ、Perlって、CSV処理するライブラリ、ついてないの。ついてないの小学生までだよねー」
+
+なんて、思いませんでしたか?
+
+<b>Perlの標準ライブラリの設計は、CPANをブートストラップできる小さな構成です。</b>
+
+Perlのコア自体のライブラリを肥大化させず、Perlコア自体の開発者が、メンテナンスするコストを下げています。
+
+Perlでは、CPANから、Text::CSVか、処理速度の速いText::CSV_XSを、ダウンロードすることができます。
+
+<h3>RubyでCSVデータを、入力して、出力するサンプル</h3>
+
+RubyのCSV処理のサンプルはこちら。Rubyには、最初からCSV処理ライブラリが、入っています。便利ですね。
+
+<pre>
+require 'csv'
+
+csv_data = CSV.read('member.csv', headers: true)
+puts "start..."
+
+File.open("intro.txt", 'w') do |file|
+  csv_data.each do |data|
+    intro_msg = "#{data["club"]}クラブ所属の#{data["age"]}歳、#{data["name"]}です。\n"
+    puts intro_msg
+    file.write(intro_msg)
+  end
+end
+
+puts "complete! See intro.txt."
+</pre>
+
+<a href="https://qiita.com/shizuma/items/7719172eb5e8c29a7d6e">Ruby CSVを扱うためのメモ</a>から引用させていただきました。ありがとうございます。
+
+さて、PerlとRuby比べていかがですか?
+
+Rubyの方が、10倍、きれいに楽しく書けますか?
+
+それとも、まぁ、どっちもどっちでしょうか?
+
+<h2>Ruby開発者からのPerlへの悪口はストップ</h2>
+
+Rubyの作者のまつもとゆきひろ氏は、Perlのコアのコードを見て<b>「Perlは私が見たソースコードの中で最悪のソースコードです。」</b>と申しました。
+
+また、PHPでは、プログラムはきれいに書けないとか、Javaではきれいに書けないとか、申しておりました。
+
+Rubyのコミッター様のおひとりは、Perlに対して、PHPに対しても、Javaに対しても、C言語に対しても、攻撃を繰り広げておりました。
+
+この方は「俺は、Rubyに対する批判もしているからOK」みたいな態度をとっておられますが、さて、いったいこれは、どうなのでしょうか。
+
+読者の皆様は、Rubyは、過去に、全方位で、ネガティブキャンペーンを行っていたということを、知っておいてください。
+
+<h2>RubyとPerlのWebフレームワークの比較</h2>
+
+「Perlには代表的なWebフレームワークないしね」
+
+そんな会話がRubyコミュニティで話されていませんか?
+
+Rubyには「Ruby on Rails」と「Sinatra」という代表的なフレームワークがありますが、Perlには、何があるでしょう。
+
+Rubyユーザーの皆様に知っていただくために、PerlのWebフレームワークをご紹介します。(50音順)
+
+<ul>
+  <li><a href="https://github.com/akimacho/wiki/wiki/Amon2">Amon2</a></li>
+  <li><a href="https://codezine.jp/article/detail/4190">Catalyst</a></li>
+  <li><a href="https://metacpan.org/pod/Dancer2">Dancer2</a></li>
+  <li><a href="https://tutorial.perlzemi.com/blog/20140319139520.html">Mojolicious</a></li>
+  <li><a href="https://gihyo.jp/dev/serial/01/perl-hackers-hub/000101">Plack/PSGI</a></li>
+</ul>
+
+Amon2は日本の開発者が開発しているフレームワークです。
+
+ちなみに、わたくし、<a href="https://mojolicious.org/">Mojolicious</a>の開発チームに過去に参加していました。
+
+Mojoliciousのテスティングフレームワークである、Test::Mojoは、わたくしが実装しました。
+
+仲間とともに<a href="https://github.com/yuki-kimoto/mojolicious-guides-japanese/wiki">Mojoliciousの日本語への翻訳</a>もやっております。
+
+Plack/PSGIというのは、RubyのRackに該当するミドルウェアです。
+
+Perl/CGIは古いといわれ続けておりますが、実は、PerlのWebアプリ開発の主流は、CGIではありません。
+
+Webサーバーを立てて、リバースプロキシ構成を使うのが、PerlのWeb開発の主流なのであります。
+
+Rubyユーザーの知らないところで、PerlのWebフレームワークも発展しています。
+
+またわたくしの開発しているCMSツール<a href="https://jp.giblog.net/">Giblog</a>もWebサイト・ブログを作成するのに便利でございます。
+
+<h2>Rubyのgemに該当するのは、Perlのcpan/cpanm</h2>
+
+RubyにはRubyGemsというライブラリをWeb上に配置して、ダウンロードできる仕組みあります。
+
+Perlにも、これに該当するCPANという仕組みがありますが、<b>RubyGemsはPerlのCPANが発明され成功した後に、それを参考に作られたものです。</b>
+
+「RubyGemsすごい」は、「CPANすごい」にそのまま該当します。
+
+Perlには、cpanの動作を軽くして、バージョン管理とCAPNに加えて、Githubからのインストールも可能なcpanmという優れたツールもあります。
+
+RubyでBundlerを使ってバージョン管理できるように
+
+cpanmを使えば、PerlのCPANモジュールのバージョン管理を行うことができます。
+
+<h2>Rubyユーザーを攻撃するgo、python、JavaScript、Rustユーザー</h2>
+
+Webのてっぺんでは、10年前から、ずっと同じことが繰り返されています。
+
+Rubyに愛着があり、Rubyで開発しているユーザーに対して、go、python、JavaScript、Rustユーザーは、ネット上でネガティブキャンペーンを繰り広げております。
+
+「Rubyはチームを幸せにしない。これからは〇〇」という言葉を、残してRubyを去っていきます。
+
+Rubyで作った収益がでているサービスを、自分たちの言語で、リプレースしようと、狙っています。
+
+かつて、Railsは、WebのてっぺんをRailsへの賛美で埋め尽くしました。今度はPythonがWebと書店のてっぺんを賛美で埋め尽くしております。
+
+Perlゼミは、こういう不公平で、不健全で、不毛な状況を改善したいと思っております。
+
+Rubyユーザーの皆様は、気持ちがわかってきたと思うので、Perlに対して、やってきたことをどうか反省してください。
+
+プログラミング言語のそれぞれのユーザーは、実際は、本当の加害者ではありません。
+
+PerlやRubyを攻撃していたとしても、その人たちは、本当の意味での加害者ではありません。
+
+<b>もっと上流から「権威と一時的な札束」を使って、エンジニアを分断させて、自分たちが独占的な利益を得るために、悪意を流している大元がいます。</b>
