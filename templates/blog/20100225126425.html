@@ -17,8 +17,6 @@
 </ol>
 <h2>File::Basename - ファイルのベース名を取得</h2>
 
-
-
 <strong>File::Basename</strong>はファイル名からベース名やディレクトリ名を取得するためのモジュールです。次の3つの関数を使用することができます。
 
 <ul>
@@ -40,14 +38,18 @@
 use File::Basename 'basename', 'dirname';
 </pre>
 
-ファイルのベース名を取得するにはbasenameを使用します。ベース名というのはファイル名の中の末尾の部分です。
+<h3>basename関数</h3>
+
+ファイルのベース名を取得するにはbasename関数を使用します。ベース名というのはファイル名の中の末尾の部分です。
 
 <pre>
 # ベース名の取得
 $basename = basename $file;
 </pre>
 
-ディレクトリ名を取得するにはdirnameを使用します。
+<h3>dirname関数</h3>
+
+ディレクトリ名を取得するにはdirname関数を使用します。
 
 <pre>
 # ディレクトリ名の取得
