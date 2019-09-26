@@ -85,6 +85,8 @@ File::Copy::move($tmpfile, $infile)
   or die "Cannot move $tmpfile to $infile";
 </pre>
 
+<a href="/blog/20100123126425.html">while文</a>を使って、順番に安全に行を読み込んでいます。
+
 <h3>安全にファイルを読み書きを行う手法</h3>
 
 <a href="/blog/20080718121643.html">open関数</a>のドキュメントを読めば、ファイルを読み書きするには、open関数に、"+<" というオープンモードを指定すればよいと思うかもしれません。確かにこの方法でも読み書きできますが、非常に危険です。

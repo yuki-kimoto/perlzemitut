@@ -594,7 +594,7 @@ use List::Util 'shuffle';
 ($key, $value) = each %hash;
 </pre>
 
-すべてのキーと値のペアを順に処理するためにはwhileループと一緒に使用します。
+すべてのキーと値のペアを順に処理するためには<a href="/blog/20100123126425.html">while文</a>を使用します。
 
 <pre>
 while (my ($key, $value) = each %hash) {
@@ -667,7 +667,7 @@ close $fh;
 $line = <$fh>;
 </pre>
 
-通常はwhileループと一緒に使用します。
+通常は<a href="/blog/20100123126425.html">while文</a>と一緒に使用します。
 
 <pre>
 while (my $line = <$fh>) {
@@ -717,7 +717,7 @@ closedir $dh;
 $file = readdir $dh;
 </pre>
 
-通常はwhileループと一緒に使用します。
+通常は<a href="/blog/20100123126425.html">while文</a>と一緒に使用します。
 
 <pre>
 while (my $file = readdir $dh) {
