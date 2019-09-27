@@ -268,7 +268,7 @@ $sth->execute;
 $sth->fetchrow_array;
 </pre>
 
-通常これはwhileループの中で使用してすべての行を取得するまで繰り返します。
+通常これは<a href="/blog/20100123126425.html">while文</a>を使って、すべての行を取得するまで繰り返します。
 
 <pre>
 while (my @row = $sth->fetchrow_array) {
