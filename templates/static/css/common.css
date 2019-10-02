@@ -27,7 +27,7 @@
   }
   .header {
     width:100%;
-    max-width:840px;
+    max-width:880px;
     margin:0 auto;
     background:white;
     border-bottom:2px solid #69c677;
@@ -64,7 +64,7 @@
   }
   .main {
     width:100%;
-    max-width:840px;
+    max-width:880px;
     margin:0 auto;
     overflow:hidden;
   }
@@ -311,7 +311,7 @@
 
   h2 {
     padding:12px 5px 5px 35px;
-    font-size:21px;
+    font-size:22px;
     margin:0;
     margin-top:0px;
     margin-bottom:15px;
@@ -336,7 +336,7 @@
   }
   h3 {
     font-size:21px;
-    padding: 7px 8px 5px 13px;
+    padding: 8px 8px 6px 13px;
     margin:18px 10px 14px 10px;
     border:1px solid #56bd9a;
     background:#e1fae1;
@@ -345,6 +345,7 @@
     background:#1c825f;
     color:white;
     border:none;
+    letter-spacing:1px;
   }
 
   h4 {
@@ -418,10 +419,10 @@
   }
 
   .hatena-body {
-    width:910px;
+    width:880px;
   }
   .div.adminmenu {
-    width:910px;
+    width:880px;
   }
   .sidebar {
     float:left;
@@ -559,7 +560,7 @@
     color:red;
   }
   
-@media only screen and (max-width:960px) {
+@media only screen and (max-width:880px) {
   .entry {
     width:100%;
   }
