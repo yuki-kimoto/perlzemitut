@@ -559,7 +559,16 @@
   .mail-form-errors {
     color:red;
   }
-  
+
+  .giblog-banner {
+  }
+  .giblog-banner img {
+    width:100%;
+    max-width:360px;
+    margin-right:auto;
+    margin-left:auto;
+  }
+
 @media only screen and (max-width:880px) {
   .entry {
     width:100%;
