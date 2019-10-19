@@ -17,8 +17,6 @@
 </ol>
 <h2>perlbrew - ユーザー環境にPerlをインストールする</h2>
 
-
-
 ユーザー環境にPerlをインストールするにはperlbrewというツールを使用します。システム標準のPerlを利用したくない場合や新しいバージョンのPerlを利用したい場合は便利です。またperlbrewを使うと複数のバージョンのPerlの切り替えを行うことができます。
 
 <h3>perlbrewのインストール</h3>
@@ -46,7 +44,7 @@ sudo cpan App::perlbrew
 perlbrew init
 </pre>
 
-次にperlbrewのパスを通しましょう。perlbrewで用意されているbash用の設定ファイルを「.bashrc」に追加します(bashの場合)。
+次にperlbrewのパスを通しましょう。perlbrewで用意されているbash用の設定ファイルを「~/.bash_profile」に追加します(bashの場合)。
 
 <pre>
 echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bash_profile
@@ -56,16 +54,24 @@ echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bash_profile
 
 <h3>ユーザー環境へのPerlのインストール</h3>
 
-ユーザー環境にPerlをインストールします。5.16.3のPerlをインストールしてみましょう。時間がかかるので待ちます(約40分程度)。
+ユーザー環境にPerlをインストールします。5.28.2のPerlをインストールしてみましょう。時間がかかるので待ちます(約30分程度)。
 
 <pre>
-perlbrew install perl-5.16.3
+perlbrew install perl-5.28.2
 </pre>
 
-インストールできない場合で試験を飛ばして強制的にインストールしたい場合は「-n」オプションを使用します。
+インストールできない場合は、Perlのコンパイルに必要なツールが、まだインストールされていない可能性があります。以下のツールが必要になりますので、各環境に応じて、インストールしてください。
+
+<ul>
+  <li>make</li>
+  <li>gcc</li>
+  <li>patch</li>
+</ul>
+
+試験を強制的に飛ばして強制的にインストールしたい場合は「-n」オプションを使用します。
 
 <pre>
-perlbrew install -n perl-5.16.3
+perlbrew install -n perl-5.28.2
 </pre>
 
 利用できるPerlの一覧を見てみましょう。perlbrewのlistコマンドを使用します。
@@ -77,14 +83,14 @@ perlbrew list
 以下のように利用できるPerlが表示されます。アスタリスクのあるものが現在利用しているPerlです。
 
 <pre>
-  perl-5.16.3
+  perl-5.28.2
 * /usr/bin/perl (5.8.8)
 </pre>
 
 Perlを切り替えるにはperlbrewのswitchコマンドを使用します。
 
 <pre>
-perlbrew switch perl-5.16.3
+perlbrew switch perl-5.28.2
 </pre>
 
 Perlのバージョンを実際に確認してみましょう。
@@ -93,10 +99,10 @@ Perlのバージョンを実際に確認してみましょう。
 perl -v
 </pre>
 
-以下のように5.16.3のバージョンになっています。
+以下のように5.28.2のバージョンになっています。
 
 <pre>
-This is perl 5, version 16, subversion 3 (v5.16.3) built for i686-linux
+This is perl 5, version 16, subversion 3 (v5.28.2) built for i686-linux
 </pre>
 
 <h3>cpanmのインストール</h3>
@@ -115,7 +121,7 @@ cpanm JSON
 モジュールは以下のディレクトリなどにインストールされます。
 
 <pre>
-/home/kimoto/perl5/perlbrew/perls/perl-5.16.3/lib/site_perl/5.16.3/
+/home/kimoto/perl5/perlbrew/perls/perl-5.28.2/lib/site_perl/5.28.2/
 </pre>
 
 <h3>元のPerlに戻す</h3>
