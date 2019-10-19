@@ -14,26 +14,6 @@
     -o-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
-  .perlzemi-forum {
-    
-  }
-  .perlzemi-forum a, .perlzemi-forum a:visited {
-    display:block;
-    width:100%;
-    background:#f25cae;
-    color:white;
-    text-decoration:none;
-    font-size:19px;
-    font-weight:bold;
-    border-radius:5px;
-    margin:10px auto;
-    width:98%;
-    padding:20px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    text-shadow:1px 1px 1px #aa2074;
-    letter-spacing:1px;
-    line-height:1.6;
-  }
   .container {
     background:#F0F5F0;
   }
@@ -107,7 +87,7 @@
   }
   .content img {
     display:block;
-    margin:10px; 25px;
+    margin:10px;
   }
   .side {
     float:right;
@@ -587,6 +567,43 @@
     max-width:360px;
     margin-right:auto;
     margin-left:auto;
+  }
+
+  .perlzemi-forum {
+  }
+  .perlzemi-forum img {
+    float:left;
+    display:table-cell;
+    width:11%;
+    margin:0;
+    vertical-align:middle;
+  }
+  .perlzemi-forum-right {
+    float:left;
+    width:89%;
+    padding-left:15px;
+    display:table-cell;
+  }
+  .perlzemi-forum a, .perlzemi-forum a:visited {
+    overflow:hidden;
+    display:block;
+    width:100%;
+    color:white;
+    text-decoration:none;
+    font-size:19px;
+    font-weight:bold;
+    border-radius:5px;
+    margin:10px auto;
+    width:98%;
+    padding:17px 20px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    text-shadow:1px 1px 1px #aa2074;
+    letter-spacing:1px;
+    line-height:1.6;
+    background:url(/images/perlzemi-forum-icon.png) no-repeat 20px 15px;
+    background-size:80px;
+    background-color:#f048a4;
+    padding-left:120px;
   }
 
 @media only screen and (max-width:880px) {
