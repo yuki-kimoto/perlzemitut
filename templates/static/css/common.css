@@ -651,13 +651,13 @@
   }
   
   h1 {
-    width:70%;
+    width:60%;
   }
   .header-description {
     display:none;
   }
   .header-otoiawase {
-    width:30%;
+    width:40%;
   }
 
 }
