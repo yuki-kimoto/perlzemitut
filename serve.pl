@@ -1,18 +1,12 @@
-#!/usr/bin/env perl
-
 use strict;
 use warnings;
+use utf8;
+
+use Giblog;
+use Mojolicious::Lite;
 
 use Mojo::Message::Response;
 use File::Temp 'tempfile';
-
-warn "Server start\n";
-
-my $cmd = 'giblog build';
-system($cmd) == 0
-  or die "Can't execute $cmd: $!";
-
-use Mojolicious::Lite;
 
 # render CGI
 app->hook(before_dispatch => sub {
@@ -100,10 +94,13 @@ app->hook(before_dispatch => sub {
   }
 });
 
-get '/' => sub {
-  my $c = shift;
-  
-  $c->reply->static('index.html');
-};
 
-app->start;
+
+# Build
+Giblog->build;
+
+# Mojolicious::Lite Application
+my $app = app;
+
+# Serve
+Giblog->serve($app);
