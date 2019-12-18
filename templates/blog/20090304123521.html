@@ -15,9 +15,7 @@
     here
   </li>
 </ol>
-<h2>IO::Capture - 標準出力をキャプチャーする</h2>
-
-
+<h2>IO::Capture - 標準出力・標準エラー出力をキャプチャ</h2>
 
 標準出力を試験した場合がときどきあります。対話的なプログラミングを作成したり、print をソースコードの中で使用している関数を試験したい場合などです。
 
@@ -31,7 +29,7 @@ cpan IO::Capture
 
 でインストールします。
 
-<h3>1. 標準出力を取得する</h3>
+<h3>1. 標準出力をキャプチャする</h3>
 
 標準出力を取得するには、IO::Capture::Stdoutモジュールを使用します。IO::Captureモジュールをインストールすると一緒についてきます。
 
@@ -59,7 +57,32 @@ my @stdout = $capture->read;
 
 リストコンテキストで、readを呼び出すと、("aaa", "bbb") が取得できます。
 
-<h3>2. 標準エラー出力を取得する</h3>
+<h4>標準の機能だけを使って標準出力をキャプチャする方法</h4>
+
+モジュールを使わないで、標準の機能だけを使って標準出力をキャプチャする方法も存在したので、記述しておきます。
+
+open関数で、STDOUTの出力先を切り替える方法です。
+
+<pre>
+my $stdout;
+
+# STDOUTのキャプチャを開始
+open my $temp, '>&', STDOUT;
+close STDOUT;
+open STDOUT, '>', \$stdout;
+
+print "hoge";
+
+# STDOUTのキャプチャを終了
+close STDOUT;
+open STDOUT, '>&', $temp;
+close $temp;
+
+print $stdout; # "hoge"が出力
+</pre>
+
+
+<h3>2. 標準エラー出力をキャプチャする</h3>
 
 IO::Capture::Stderr を使って同じようにできます。
 
@@ -73,3 +96,27 @@ $capture->stop;
 my $stderr = $capture->read;
 </pre>
 
+<h4>標準の機能だけを使って標準エラー出力をキャプチャする方法</h4>
+
+モジュールを使わないで、標準の機能だけを使って標準エラー出力をキャプチャする方法も存在したので、記述しておきます。
+
+open関数で、STDERRの出力先を切り替える方法です。
+
+<pre>
+my $stderr;
+
+# Start capture STDERR
+open my $temp, '>&', STDERR;
+close STDERR;
+open STDERR, '>', \$stderr;
+
+print STDERR "hoge";
+
+# End capture STDERR
+close STDERR;
+open STDERR, '>&', $temp;
+close $temp;
+
+
+print $stderr; # "hoge" が出力
+</pre>
