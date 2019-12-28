@@ -1,0 +1,30 @@
+<h2>空のPDFファイルを作成する - PDF::API2で帳票作成</h2>
+
+PDF::API2で、空のPDFファイルを作成するには次のようにします。
+
+PDFの空の情報を作成するには、newメソッドを使用します。
+
+空のページを追加するには、pageメソッドを使います。
+
+最後にsaveasメソッドを使って、ファイルを保存します。
+
+この手順を行うことで、空の1ページが存在するPDFファイルを作成できます。
+
+<pre>
+use strict;
+use warnings;
+
+use PDF::API2;
+
+# PDFの空の情報を作成
+my $pdf = PDF::API2->new;
+
+# 空のページを追加
+my $page = $pdf->page;
+
+# PDFをファイルに保存
+my $pdf_file = 'empty.pdf';
+$pdf->saveas($pdf_file);
+</pre>
+
+空のPDFファイルが作成できれば、成功しています。
