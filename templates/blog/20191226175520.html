@@ -55,3 +55,76 @@ PDF::API2で、存在しているページ数を取得するには、pagesメソ
 # PDFドキュメントのページ数を取得
 my $pages_count = $pdf->pages;
 </pre>
+
+<h3>用紙サイズを設定するには?</h3>
+
+PDF::API2でページの用紙サイズを設定するには、mediaboxメソッドを使用します。
+
+<pre>
+# 名前で指定
+$pdf->mediabox($name);
+
+# 幅と高さで指定
+$pdf->mediabox($width, $height)
+</pre>
+
+指定できる名前はPDFで定義されている値です。以下に指定できる例を挙げておきます。
+
+<ul>
+  <li>Letter</li>
+  <li>A3</li>
+  <li>A4</li>
+  <li>B4</li>
+  <li>A5</li>
+  <li>B5</li>
+  <li>A6</li>
+  <li>B6</li>
+</ul>
+
+PDF座標系についての簡単な解説のページのリンクを張っておきます。
+
+<blockquote>
+幅と高さは、PDF単位という値で指定する必要があることに注意します。1単位は、1/72のインチ(約0.35mm)です。
+
+典型的なPDFドキュメントはページの幅が612単位、高さが792単位です。インチのサイズは、8.5"×11"です。幅と高さを72で割ることによって得られます。
+
+PDF文書が画面に与えられるとき、ピクセルなどの物理的な値が通常必要です。論理的にから物理的な単位まで変換するために、解像度は提供されなければなりません。解像度は、物理的な値に論理的な変換とき、使うインチにつき点（ピクセル）の値です。上記の例では、解像度として150を使用した場合、ピクセル単位のページサイズは1275×1650になります。これは8.5×11インチに150を乗算することによって得られます。
+
+(参考)<a target="_blank" href="http://docs.leadtools.grapecity.com/v19/dh/to/leadtools.topics.pdf~pdf.topics.pdfcoordinatesystem.html">PDF座標系</a>
+</blockquote>
+
+
+PDF::API2で、用紙サイズを指定するサンプルです。
+
+<pre>
+use PDF::API2;
+
+# A4サイズで指定
+{
+  my $pdf = PDF::API2->new();
+  $pdf->mediabox('A4');
+  my $mediabox = $pdf->mediabox;
+  my $page = $pdf->page;
+  my $pdf_file = 'size_a4.pdf';
+  $pdf->saveas($pdf_file);
+}
+
+# B5サイズで指定
+{
+  my $pdf = PDF::API2->new();
+  $pdf->mediabox('B5');
+  my $page = $pdf->page;
+  my $pdf_file = 'size_b5.pdf';
+  $pdf->saveas($pdf_file);
+}
+
+# PDF単位 幅595,高さ842で指定
+{
+  my $pdf = PDF::API2->new();
+  $pdf->mediabox(595, 842);
+  my $page = $pdf->page;
+  my $pdf_file = 'size_595_842.pdf';
+  $pdf->saveas($pdf_file);
+}
+</pre>
+
