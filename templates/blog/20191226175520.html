@@ -1,6 +1,6 @@
-<h2>空のPDFファイルを作成する - PDF::API2で帳票作成</h2>
+<h2>PDFファイルを作成する - PDF::API2で帳票作成</h2>
 
-PDF::API2で、空のPDFファイルを作成するには次のようにします。
+PDF::API2で、PDFファイルを作成するには次のようにします。
 
 PDFの空の情報を作成するには、newメソッドを使用します。
 
@@ -28,3 +28,30 @@ $pdf->saveas($pdf_file);
 </pre>
 
 空のPDFファイルが作成できれば、成功しています。
+
+<h3>既存のPDFファイルを開くには?</h3>
+
+PDF::API2で既存のPDFファイルを開くには、openメソッドを使用します。
+
+<pre>
+# 既存のPDFファイルを開く
+my $pdf = PDF::API2->open('some.pdf');
+</pre>
+
+<h3>既存のページを取得するには?</h3>
+
+PDF::API2で既に存在しているページを取得するには、openpageメソッドで、ページ番号を指定します。
+
+<pre>
+# すでに存在しているページを取得
+my $page = $pdf->openpage($page_number);
+</pre>
+
+<h3>ページ数を取得するには?</h3>
+
+PDF::API2で、存在しているページ数を取得するには、pagesメソッドを使用します。
+
+<pre>
+# PDFドキュメントのページ数を取得
+my $pages_count = $pdf->pages;
+</pre>
