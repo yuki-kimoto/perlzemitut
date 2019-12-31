@@ -421,6 +421,53 @@ XML::Simpleの利用が、簡単そうです。固定書式であれば、難し
 
 まず、英文字が始まるx座標を覚えておきます。また、英文字が始まった場合に、これを、$tmp_wordのような文字列に保存しておきましょう。テキスト出力はまだ待って、次のループに移動しましょう。英文字以外が来た場合に、その直前までが、一つの英単語です。もし、$tmp_wordの幅が、右端を超えていたら、改行して出力、超えていなかったら、そのまま出力です。
 
-<h3>フォントとは</h3>
+<h3>日本語を描画するためのフォント</h3>
 
-https://fontnavi.jp/zakkuri/105-font_for_mac_win.aspx
+日本語を描画するためには、日本語に対応したフォントが必要になります。コアフォントは、英語だけです。
+
+フォントの中でも、TrueType Font(トゥルータイプフォント)と呼ばれるフォントを使う必要があります。
+
+フォントは、一つのファイルとして提供されていて、TrueType Fontの拡張子は、ttfです。
+
+<h4>TrueType Fontの取得</h4>
+
+無料で利用できるTrueTypeフォントがあるので、それを取得しましょう。検索するとたくさんでてきます。
+
+選択の注意点としては、オープンフォントではなく、トゥルータイプフォントを選ぶことと、PDFに埋め込み可能なフォントを選ぶことです。
+
+トゥルータイプフォントファイルは、ポータブルなので、機種依存文字を使わない限りは、WindowsでもMacでもLinuxでも同じように扱えます。OSへのフォントのインストール方法に違いがありますが、ファイルを直接読み込む場合は、関係ありません。(参考:<a href="https://fontnavi.jp/zakkuri/105-font_for_mac_win.aspx">Windows用フォントとMac用フォントは違うのか</a>)
+
+ここでは、日本語を描画できるTrueTypeフォントの中で、kochi-gothic-subst.ttfというものを一つ紹介しておきます。
+
+<ul>
+  <li><a href="https://github.com/indico/indico-fonts/raw/master/indico_fonts/kochi-gothic-subst.ttf">kochi-gothic-subst.ttf</a>(<a href="https://github.com/indico/indico-fonts/tree/master/indico_fonts">フォント一覧ページ</a>)
+</ul>
+
+ダウンロードして、好きな場所に配置してください。
+
+<h4>TrueType Fontの読み込み</h4>
+
+TrueType Fontは、ttfontメソッドで読み込むことができます。取得したTrueType Fontのパスを指定します。
+
+<pre>
+my $true_type_font_file = '/path/kochi-gothic-subst.ttf';
+my $font = $pdf->ttfont($true_type_font_file);
+</pre>
+
+corefontでコアフォントを読み込んでいる場所を、上記に書き換えると、日本語を出力できます。
+
+Perlの日本語を扱う場合のお約束として、ファイルはUTF-8で保存して、use utf8を行ってください。
+
+<pre>
+use utf8;
+</pre>
+
+PDF::API2においては、フォントは、PDFファイルに埋め込まれ、PDFファイルは、フォントファイルを参照しません。
+
+プログラムのおいたディレクトリにフォントファイルを置いて、読み込む場合は、FindBinモジュールを使って、次のようにするのが簡単です。
+
+<pre>
+use FindBin;
+
+my $true_type_font_file = "$FindBin::Bin/kochi-gothic-subst.ttf";
+</pre>
