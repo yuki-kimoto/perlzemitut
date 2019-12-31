@@ -153,7 +153,7 @@ my $font_size = $text_state{fontsize};
 
 <h3>テキストの高さを取得する</h3>
 
-テキストの高さは、実は、フォントサイズと同じです。フォントサイズ16は、PDF単位の16と同じです。改行をする場合は、フォントサイズの幅で改行すれば、重なることがありません。
+テキストの高さは、実は、フォントサイズと同じです。フォントサイズ16は、PDF単位の16と同じです。改行をする場合は、フォントサイズで改行すれば、重なることがありません。
 
 <pre>
 my $font_size = 16;
@@ -177,6 +177,16 @@ my $line_height = $text_height + $line_margin;
 </pre>
 
 例えば、改行をして、移動するときは、行の高さを減算してあげればよいです。
+
+<h3>描画するテキストの幅を取得</h3>
+
+描画するテキストの幅をあらかじめ取得するにはadvancewidthメソッドを使用します。
+
+<pre>
+my $text_width = $text->advancewidth($string);
+</pre>
+
+右側にはみ出した場合に改行という処理を行う場合に、利用できます。
 
 <h3>余白の設定</h3>
 
@@ -253,13 +263,163 @@ my $render_end_x = $page_width - 1;
 my $render_end_y = 0;
 </pre>
 
+これに余白を追加すると以下のようになります。
 
+<pre>
+# 描画開始x座標
+my $render_start_x = $page_left_margin;
 
+# 描画開始y座標
+my $render_start_y = $page_height - 1 - $page_top_margin;
 
+# 描画終了x座標
+my $render_end_x = $page_width - 1 - $page_right_margin;
 
+# 描画終了y座標
+my $render_end_y = $page_bottom_margin;
+</pre>
 
+<h4>余白、改行、改ページに対応したテキストの描画</h4>
 
+では、ここで余白、改行、改ページを意識して、テキストを、描画してみましょう。右端に到達すると改行します。英語のみです。英単語は、1文字づつの単位で改行されます。下に到達すると改ページします。
 
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+use PDF::API2;
+
+my $pdf = PDF::API2->new;
+
+# コアフォントの読み込み
+my $font = $pdf->corefont('Helvetica-Bold');
+my $font_size = 11;
+
+# テキストの高さ
+my $text_height = $font_size;
+
+# 行間
+my $line_margin = 2;
+
+# 行の高さ
+my $line_height = $text_height + $line_margin;
+
+# 用紙サイズのデフォルトのグローバル設定(用紙サイズを取得するため)
+$pdf->mediabox(undef);
+
+# ページの高さと幅
+my @page_size_infos = $pdf->mediabox;
+my $page_width = $page_size_infos[2];
+my $page_height = $page_size_infos[3];
+
+# ページ余白
+my $page_top_margin = 36;
+my $page_bottom_margin = 36;
+my $page_left_margin = 36;
+my $page_right_margin = 36;
+
+# 描画開始x座標
+my $render_start_x = $page_left_margin;
+
+# 描画開始y座標
+my $render_start_y = $page_height - 1 - $page_top_margin;
+
+# 描画終了x座標
+my $render_end_x = $page_width - 1 - $page_right_margin;
+
+# 描画終了y座標
+my $render_end_y = $page_bottom_margin;
+
+# メッセージ(1000回の同じメッセージ繰り返し)
+my $message = 'Hello World!' x 1000;
+
+# 改行戻りx座標を保存
+my $new_line_left_x = $render_start_x;
+
+# 現在描画位置
+my $cur_render_x = $render_start_x;
+my $cur_render_y = $render_start_y;
+
+# ページの作成
+my $page = $pdf->page;
+
+# テキストを表現するコンテンツオブジェクトを取得
+my $text = $page->text();
+
+# フォント設定
+$text->font($font, $font_size);
+
+# 描画開始位置に移動
+$text->translate($render_start_x, $render_start_y);
+
+# 1文字づつ取り出し
+while ($message =~ /(.)/g) {
+  my $char = $1;
+  
+  # 現在描画位置が、描画終了x座標を超えていれば改行
+  if ($cur_render_x > $render_end_x) {
+    $cur_render_x = $new_line_left_x;
+    $cur_render_y -= $line_height;
+    
+    # 描画開始位置に移動
+    $text->translate($cur_render_x, $cur_render_y);
+  }
+
+  # 現在描画位置が、描画終了y座標を超えていれば改ページ
+  if ($cur_render_y < $render_end_y) {
+    $cur_render_x = $render_start_x;
+    $cur_render_y = $render_start_y;
+    
+    # ページの作成
+    $page = $pdf->page;
+
+    # テキストを表現するコンテンツオブジェクトを取得
+    $text = $page->text();
+
+    # フォント設定
+    $text->font($font, $font_size);
+
+    # 描画開始位置に移動
+    $text->translate($cur_render_x, $cur_render_y);
+  }
+  
+  # 文字を描画
+  $text->text($char);
+  
+  # 描画位置を更新
+  ($cur_render_x) = $text->textpos;
+}
+
+my $pdf_file = 'margin_full_text.pdf';
+$pdf->saveas($pdf_file);
+</pre>
+
+「Hello World!」が繰り返される、余白つきページが、3ページ出力されます。
+
+僕の環境では、1万2000文字で1～2秒かかっています。PDF出力は、意外に重い処理です。
+
+<h4>HTMLの見出しやpタグを表現するには?</h4>
+
+ここでは、詳しく解説しませんが、ヒントだけ書いておきます。少なくとも、タグを解析する必要があります。正規表現や、HTMLを解析してくれるモジュールが利用できるでしょう。後で、リストやテーブルに対応することを考えると、HTMLを解析してくれるモジュールを使うのが、汎用的でしょうか。
+
+<pre>
+<h1>タイトル</h1>
+
+<p>
+メッセージ
+</p>
+</pre>
+
+XML::Simpleの利用が、簡単そうです。固定書式であれば、難しいことを考えることがないので、XML::Simpleで、Perlの多次元データ構造にできれば、よさそうな感じはします。
+
+本を作るときのような、固定書式で出力するのであれば、CSSの解析はいらなさそうです。見出しやpタグごとの、マージンの設定をプログラム上で行う必要がありそうですね。
+
+<h4>英単語の単位で改行するには?</h4>
+
+英単語を改行の途中で切りたくないというのは、よくありそうですね。この場合は、少し難しいですが、次のように考えましょう。
+
+まず、英文字が始まるx座標を覚えておきます。また、英文字が始まった場合に、これを、$tmp_wordのような文字列に保存しておきましょう。テキスト出力はまだ待って、次のループに移動しましょう。英文字以外が来た場合に、その直前までが、一つの英単語です。もし、$tmp_wordの幅が、右端を超えていたら、改行して出力、超えていなかったら、そのまま出力です。
 
 <h3>フォントとは</h3>
 
