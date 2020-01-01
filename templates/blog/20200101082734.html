@@ -1,0 +1,79 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20191228171433.html">
+      <span itemprop="name">帳票作成</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>表を作成する - PDF::API2で帳票作成</h2>
+
+PDF::API2で、表を作成する方法を解説します。
+
+PDF::API2には、直線や円、塗りつぶし可能な三角形や四角形を作成できる機能があります。
+
+直線を書くことができれば、それを組み合わせて表を作成することができます。表に背景色を設定したい場合は、塗りつぶし可能な四角形を書くことで実現できます。
+
+HTMLのテーブルは表を作成するのに使えます。ここでは、以下の構造をPDFの表として表現できるようにしてみましょう。
+
+<pre>
+<table>
+  <tr><td>見出し1</td><td>見出し2</td><td>見出し3</td></tr>
+  <tr><td>項目</td><td>項目</td><td>項目</td></tr>
+  <tr><td>項目</td><td>項目</td><td>項目</td></tr>
+</table>
+</pre>
+
+<table>
+  <tr><td>見出し1</td><td>見出し2</td><td>見出し3</td></tr>
+  <tr><td>項目</td><td>項目</td><td>項目</td></tr>
+  <tr><td>項目</td><td>項目</td><td>項目</td></tr>
+</table>
+
+<h3>基本的な図形を描画する</h3>
+
+まず最初に、表を作成するための基礎として、PDF::API2で基本的な図形を描画してみましょう。
+
+<h4>グラフィック用のコンテンツオブジェクトを生成</h4>
+
+まず最初に、グラフィック用のコンテンツオブジェクトを生成します。ページオブジェクトからgfxメソッドを呼び出すことで、グラフィック用のコンテンツオブジェクトを生成できます。これはPDF::API2::Contentオブジェクトです。
+
+<pre>
+# PDFオブジェクトの生成
+my $pdf = PDF::API2->new;
+
+# ページの作成
+my $page = $pdf->page;
+
+# グラフィック用のコンテンツオブジェクトの生成
+my $gfx = $page->gfx;
+</pre>
+
+<h4>線を書く</h4>
+
+最も基本的な描画として、PDF::API2で線を書いてみましょう。moveメソッドで始点に移動します。lineメソッドで、終点を設定します。この時点で、始点から終点までのパスと呼ばれる情報が記憶されます。まだ、実際に線は書かれません。実際に線を書くには、strokeメソッドを呼び出します。
+
+<pre>
+# 線の始点の設定
+my $start_x = 100;
+my $start_y = 100;
+$gfx->move($start_x, $start_y);
+
+# 線の終点を設定
+my $end_x = 300;
+my $end_y = 300;
+$gfx->line($end_x, $end_y);
+
+# 線を描画
+$gfx->stroke;
+</pre>
+
