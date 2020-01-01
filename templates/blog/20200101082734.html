@@ -222,8 +222,6 @@ $pdf->saveas($pdf_file);
 
 そのまま実行できる四角形を描画できるサンプルです。
 
-これで表を描画する準備が整いました。
-
 <h3>その他の基本図形を書く</h3>
 
 その他の基本図形を書きたい場合に、どのメソッドを使うのかを紹介しておきます。
@@ -267,3 +265,117 @@ $pdf->saveas($pdf_file);
 <h4>図形を拡大・縮小する</h4>
 
 図形を拡大・縮小させるには、scaleメソッドを使用します。
+
+<h3>表を作成する</h3>
+
+では、表を作成してみましょう。
+
+表の考え方は、まず一番外側に、枠があります。それぞれの項目に対しても枠があります。項目の枠と外枠を重ねることができれば、表の完成です。四角形を組み合わせて、外側を重ねることで、描画できそうです。
+
+でも、この方法問題点が発覚しました。同じに位置に二回描画すると、線が濃くなってしまうのです。
+
+ですので、縦と横に線を引くというシンプルな方法で、表を作成してみます。
+
+<pre>
+use PDF::API2;
+
+# PDFオブジェクトの生成
+my $pdf = PDF::API2->new;
+
+# 用紙サイズのデフォルトのグローバル設定(用紙サイズを取得するため)
+$pdf->mediabox(undef);
+
+# ページの高さと幅
+my @page_size_infos = $pdf->mediabox;
+my $page_width = $page_size_infos[2];
+my $page_height = $page_size_infos[3];
+
+# 項目の高さ
+my $item_height = 25;
+
+# 行の数
+my $rows_count = 20;
+
+# 各項目の幅
+my $name_width = 230;
+my $unit_price_width = 80;
+my $count_width = 80;
+my $price_width = 80;
+my $table_width = $name_width + $unit_price_width + $count_width + $price_width;
+
+# テーブルの高さ
+my $table_height = $item_height * $rows_count;
+
+# テーブルの始点
+
+# 表の外枠
+my $table_start_x = 50;
+my $table_start_y = $page_height - 50;
+my $table_other_side_x = $table_start_x + $table_width;
+my $table_other_side_y = $table_start_y - $table_height;
+
+# ページの作成
+my $page = $pdf->page;
+
+# グラフィック用のコンテンツオブジェクトの生成
+my $gfx = $page->gfx;
+
+# 上の線を引く
+$gfx->move($table_start_x, $table_start_y);
+$gfx->line($table_start_x + $table_width, $table_start_y);
+
+# 左の線を引く
+$gfx->move($table_start_x, $table_start_y);
+$gfx->line($table_start_x, $table_start_y - $table_height);
+
+my $cur_x = $table_start_x;
+my $cur_y = $table_start_y;
+
+# 各項目の枠の描画
+for (my $column = 0; $column < $rows_count; $column++) {
+  
+  # 名前の枠(右と下)
+  $gfx->move($cur_x + $name_width, $cur_y);
+  $gfx->line($cur_x + $name_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $name_width, $cur_y - $item_height);
+  $cur_x += $name_width;
+
+  # 単価の枠(右と下)
+  $gfx->move($cur_x + $unit_price_width, $cur_y);
+  $gfx->line($cur_x + $unit_price_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $unit_price_width, $cur_y - $item_height);
+  $cur_x += $unit_price_width;
+
+  # 数量の枠(右と下)
+  $gfx->move($cur_x + $count_width, $cur_y);
+  $gfx->line($cur_x + $count_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $count_width, $cur_y - $item_height);
+  $cur_x += $count_width;
+
+  # 価格の枠(右と下)
+  $gfx->move($cur_x + $price_width, $cur_y);
+  $gfx->line($cur_x + $price_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $price_width, $cur_y - $item_height);
+  $cur_x += $price_width;
+  
+  # 次の行へ
+  $cur_x = $table_start_x;
+  $cur_y -= $item_height;
+}
+
+# 線の色を、黒より少し薄い色に
+$gfx->strokecolor('#333');
+
+# 四角形を塗りつぶして線を描画
+$gfx->stroke;
+
+my $pdf_file = 'table.pdf';
+$pdf->saveas($pdf_file);
+</pre>
+
+情報が何も入っていない表が完成しました。
+
