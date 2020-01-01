@@ -379,3 +379,203 @@ $pdf->saveas($pdf_file);
 
 情報が何も入っていない表が完成しました。
 
+<h4>見出しと項目が入った表のサンプル</h4>
+
+最後に、見出しと項目が入った表のサンプルを作成してみましょう。
+
+PDFに以下の表が書き出されます。
+
+<table>
+  <tr><th>Name</th><th>Unit</th><th>Count</th><th>Price</th></tr>
+  <tr><td>Book1</td><td>1000</td><td>3</td><td>3000</td></tr>
+  <tr><td>Book2</td><td>2000</td><td>6</td><td>12000</td></tr>
+  <tr><td>Book3</td><td>1500</td><td>5</td><td>7500</td></tr>
+</table>
+
+<div style="margin-bottom:10px"></div>
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+use PDF::API2;
+
+# PDFオブジェクトの生成
+my $pdf = PDF::API2->new;
+
+# 用紙サイズのデフォルトのグローバル設定(用紙サイズを取得するため)
+$pdf->mediabox(undef);
+
+# ページの高さと幅
+my @page_size_infos = $pdf->mediabox;
+my $page_width = $page_size_infos[2];
+my $page_height = $page_size_infos[3];
+
+# 項目の高さ
+my $item_height = 25;
+
+# 行の数
+my $rows_count = 20;
+
+# 各項目の幅
+my $name_width = 230;
+my $unit_price_width = 80;
+my $count_width = 80;
+my $price_width = 80;
+my $table_width = $name_width + $unit_price_width + $count_width + $price_width;
+
+# テーブルの高さ
+my $table_height = $item_height * $rows_count;
+
+# テーブルの始点
+
+# 表の外枠
+my $table_start_x = 50;
+my $table_start_y = $page_height - 50;
+my $table_other_side_x = $table_start_x + $table_width;
+my $table_other_side_y = $table_start_y - $table_height;
+
+# ページの作成
+my $page = $pdf->page;
+
+# グラフィック用のコンテンツオブジェクトの生成
+my $gfx = $page->gfx;
+
+# テキスト用のコンテンツオブジェクトの生成
+my $text = $page->text;
+my $font = $pdf->corefont('Helvetica');
+my $font_bold = $pdf->corefont('Helvetica-Bold');
+my $font_size = 11;
+$text->font($font, $font_size);
+my $text_height = $font_size;
+
+my $books = [
+  {
+    name => 'Book1',
+    unit_price => 1000,
+    count => 3,
+  },
+  {
+    name => 'Book2',
+    unit_price => 2000,
+    count => 6,
+  },
+  {
+    name => 'Book3',
+    unit_price => 1500,
+    count => 5,
+  }
+];
+my $books_length = @$books;
+
+# 上の線を引く
+$gfx->move($table_start_x, $table_start_y);
+$gfx->line($table_start_x + $table_width, $table_start_y);
+
+# 左の線を引く
+$gfx->move($table_start_x, $table_start_y);
+$gfx->line($table_start_x, $table_start_y - $table_height);
+
+my $cur_x = $table_start_x;
+my $cur_y = $table_start_y;
+
+my $item_padding_top = 17;
+my $item_padding_left = 5;
+
+# 各項目の枠の描画
+for (my $column = 0; $column < $rows_count; $column++) {
+  
+  my $book_index = $column - 1;
+  
+  # 名前の枠(右と下)
+  # 見出し
+  $text->translate($cur_x + $item_padding_left, $cur_y - $item_padding_top);
+  if ($column == 0) {
+    $text->font($font_bold, $font_size);
+    $text->text('Name');
+  }
+  # 項目
+  else {
+    $text->font($font, $font_size);
+    if ($book_index < $books_length) {
+      $text->text($books->[$book_index]{name});
+    }
+  }
+  $gfx->move($cur_x + $name_width, $cur_y);
+  $gfx->line($cur_x + $name_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $name_width, $cur_y - $item_height);
+  $cur_x += $name_width;
+
+  # 単価の枠(右と下)
+  $text->translate($cur_x + $item_padding_left, $cur_y - $item_padding_top);
+  if ($column == 0) {
+    $text->font($font_bold, $font_size);
+    $text->text('Unit');
+  }
+  # 項目
+  else {
+    $text->font($font, $font_size);
+    if ($book_index < $books_length) {
+      $text->text($books->[$book_index]{unit_price});
+    }
+  }
+  $gfx->move($cur_x + $unit_price_width, $cur_y);
+  $gfx->line($cur_x + $unit_price_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $unit_price_width, $cur_y - $item_height);
+  $cur_x += $unit_price_width;
+
+  # 数量の枠(右と下)
+  # 見出し
+  $text->translate($cur_x + $item_padding_left, $cur_y - $item_padding_top);
+  if ($column == 0) {
+    $text->font($font_bold, $font_size);
+    $text->text('Count');
+  }
+  # 項目
+  else {
+    $text->font($font, $font_size);
+    if ($book_index < $books_length) {
+      $text->text($books->[$book_index]{count});
+    }
+  }
+  $gfx->move($cur_x + $count_width, $cur_y);
+  $gfx->line($cur_x + $count_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $count_width, $cur_y - $item_height);
+  $cur_x += $count_width;
+
+  # 価格の枠(右と下)
+  # 見出し
+  $text->translate($cur_x + $item_padding_left, $cur_y - $item_padding_top);
+  if ($column == 0) {
+    $text->font($font_bold, $font_size);
+    $text->text('Pirce');
+  }
+  # 項目
+  else {
+    $text->font($font, $font_size);
+    if ($book_index < $books_length) {
+      $text->text($books->[$book_index]{unit_price} * $books->[$book_index]{count});
+    }
+  }
+  $gfx->move($cur_x + $price_width, $cur_y);
+  $gfx->line($cur_x + $price_width, $cur_y - $item_height);
+  $gfx->move($cur_x, $cur_y - $item_height);
+  $gfx->line($cur_x + $price_width, $cur_y - $item_height);
+  $cur_x += $price_width;
+  
+  # 次の行へ
+  $cur_x = $table_start_x;
+  $cur_y -= $item_height;
+}
+
+# 線の色を、黒より少し薄い色に
+$gfx->strokecolor('#333');
+
+# 四角形を塗りつぶして線を描画
+$gfx->stroke;
+</pre>
+
