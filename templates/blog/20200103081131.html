@@ -1,0 +1,193 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20191228171433.html">
+      <span itemprop="name">帳票作成</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>請求書の作成 - PDF::API2で帳票作成</h2>
+
+PDF::API2で請求書を作成してみました。見積書、申込書、レシート、サービス利用明細など、本格的な帳票の作成の基本的なひな型として利用できます。
+
+<ul>
+  <li>日本語対応</li>
+  <li>太字対応</li>
+  <li>フォントサイズ対応</li>
+  <li>下線対応</li>
+  <li>表の表示</li>
+  <li>表のカラーリング</li>
+  <li>単価、数量、価格</li>
+  <li>価格合計</li>
+  <li>会社ロゴの挿入</li>
+</ul>
+
+<h3>PDF::API2で書いた請求書のソースコード</h3>
+
+PDF::API2で書いた請求書のソースコードです。
+
+会社ロゴを入れる場合は、同一ディレクトリに、会社ロゴlogo.pngを入れて、ソースコードの該当箇所のコメントアウトをはずしてください。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+use PDF::API2;
+
+my $pdf = PDF::API2->new;
+
+$pdf->mediabox('A4');
+
+my @page_size_infos = $pdf->mediabox;
+my $page_width = $page_size_infos[2];
+my $page_height = $page_size_infos[3];
+
+my $default_font_size = 10;
+
+# ページ余白
+my $page_top_margin = 50;
+my $page_bottom_margin = 50;
+my $page_left_margin = 50;
+my $page_right_margin = 50;
+
+# 描画開始x座標
+my $render_start_x = $page_left_margin;
+
+# 描画開始y座標
+my $render_start_y = $page_height - 1 - $page_top_margin;
+
+# 描画終了x座標
+my $render_end_x = $page_width - 1 - $page_right_margin;
+
+# 描画終了y座標
+my $render_end_y = $page_bottom_margin;
+
+# 日本語に対応したTrueTypeフォントの読み込み
+my $true_type_font_file = "$FindBin::Bin/AozoraMinchoRegular.ttf";
+my $font = $pdf->ttfont($true_type_font_file);
+my $true_type_font_bold_file = "$FindBin::Bin/AozoraMincho-bold.ttf";
+my $font_bold = $pdf->ttfont($true_type_font_bold_file);
+
+my $cur_column = 0;
+
+my $item_height = 20;
+my $item_width = ($render_end_x - $render_start_x) / 100;
+my $text_bottom_margin = 3;
+
+my $receive_company_end_items_count = 55;
+my $send_company_start_items_count = 66;
+
+my $page = $pdf->page;
+
+my $text = $page->text;
+$text->font($font, $default_font_size);
+
+my $line_width_basic = 0.3;
+
+my $gfx = $page->gfx;
+
+# 一番上飾り太線
+$gfx->move($render_start_x, $render_start_y);
+$gfx->line($render_end_x, $render_start_y);
+$gfx->linewidth(8);
+$gfx->stroke;
+$cur_column += 1;
+
+# 申し込み日付
+$text->translate($render_end_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->text_right('2019年10月14日');
+$gfx->move($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_column);
+$gfx->line($render_end_x, $render_start_y - $item_height * $cur_column);
+$gfx->linewidth($line_width_basic);
+$gfx->stroke;
+$cur_column += 2;
+
+# 請求書タイトル
+$text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font_bold, 20);
+$text->text('請求書');
+$cur_column += 2;
+
+# 請求書タイトル
+my $receive_company_name = 'XXXXX株式会社';
+$text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($receive_company_name);
+$text->translate($render_start_x + $receive_company_end_items_count * $item_width , $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->text_right('御中');
+$gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
+$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
+$gfx->linewidth($line_width_basic);
+$gfx->stroke;
+$cur_column += 2;
+
+# 件名
+my $subject_label = '件　名:';
+$text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($subject_label);
+my $subject = '2019年3月3日の商品売買契約';
+$text->translate($render_start_x + 10 * $item_width, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($subject);
+$gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
+$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
+$gfx->linewidth($line_width_basic);
+$gfx->stroke;
+$cur_column += 1;
+
+# 納品日
+my $delivery_date_label = '納品日';
+$text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($delivery_date_label);
+my $delivery_date = '2019年3月30日';
+$text->translate($render_start_x + 10 * $item_width, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($delivery_date);
+$gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
+$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
+$gfx->linewidth($line_width_basic);
+$gfx->stroke;
+$cur_column += 2;
+
+# 請求メッセージ
+$text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text('下記の通り、ご請求申し上げます。');
+$cur_column += 2;
+
+# 金額
+my $price_total_top_label = '金額';
+$text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($price_total_top_label);
+my $price_total_top = '￥30,000円';
+$text->translate($render_start_x + 48 * $item_width, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size + 5);
+$text->text_right($price_total_top);
+my $price_total_top = '税込';
+$text->translate($render_start_x + 50 * $item_width, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($price_total_top);
+$gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
+$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
+$gfx->move($render_start_x, $render_start_y - $item_height * $cur_column - 2);
+$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column - 2);
+$gfx->linewidth($line_width_basic);
+$gfx->stroke;
+$cur_column += 2;
+
+my $pdf_file = 'quote.pdf';
+$pdf->saveas($pdf_file);
+</pre>
