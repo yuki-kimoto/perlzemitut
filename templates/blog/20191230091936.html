@@ -28,7 +28,7 @@ my $pdf = PDF::API2->new;
 my $page = $pdf->page;
 
 # コアフォントの読み込み
-my $font = $pdf->corefont('Helvetica-Bold');
+my $font = $pdf->corefont('Helvetica');
 
 # テキストを表現するコンテンツオブジェクトを取得
 my $text = $page->text();
@@ -52,7 +52,7 @@ PDF::API2では、フォントを表現するフォントオブジェクトをco
 
 <pre>
 # コアフォントの読み込み
-my $font = $pdf->corefont('Helvetica-Bold');
+my $font = $pdf->corefont('Helvetica');
 </pre>
 
 コアフォントを取得するにはcorefontメソッドを使います。注意点としては、corefontでは、日本語が描画できないことに注意してください。日本語を利用したい場合は、ttfontで日本語をサポートするトゥルータイプフォントを、指定する必要があります。
@@ -106,6 +106,35 @@ PDF::API2でテキストにアンダーラインを描画するにはtextメソ�
 <pre>
 # アンダーラインを描画
 $text->text('Hello World!', -underline => 'auto');
+</pre>
+
+<h3>太字にする</h3>
+
+コアフォントで、太字を使うには、太字用のフォントを指定します。
+
+<pre>
+# コアフォントの読み込み
+my $font = $pdf->corefont('Helvetica-Bold');
+</pre>
+
+コンピューターにおける太字というのは、表現方法に二種類あって、太字用のフォントを使うか、アプリケーションで、文字を重ねて描画するかのどちらかです。
+
+注意点として、PDF::API2は、太字にするためのAPIを持っていません。文字を横に拡大するhscaleというメソッドを持っていますが、文字間隔も開いて、太字としては、不自然な見栄えになってしまいます。
+
+代替的な表現として、フォントサイズを1増やすことも検討してみてください。
+
+<pre>
+# 太字の代替表現として、フォントサイズを1増やす
+$text->font($font, $font_size + 1);
+</pre>
+
+<h3>文字間隔を設定</h3>
+
+文字間隔を設定するにはcharspaceメソッドを使用します。デフォルトは0です。
+
+<pre>
+# 文字間隔を設定
+$text->charspace(1);
 </pre>
 
 <h3>テキストを指定位置を中心として描画</h3>
@@ -470,4 +499,173 @@ PDF::API2においては、フォントは、PDFファイルに埋め込まれ�
 use FindBin;
 
 my $true_type_font_file = "$FindBin::Bin/kochi-gothic-subst.ttf";
+</pre>
+
+<h4>日本語対応のTrueTypeフォントで太字にしたい</h4>
+
+日本語対応のTrueType Fontで太字にしたい場合は、ノーマルフォントとは別に、太字のフォントも用意されているフォントを利用しましょう。
+
+日本語、TrueTypeフォント、太字あり、商用利用可能なものを、調べたので紹介します。
+
+<b>あおぞら明朝フォント</b>
+
+<ul>
+  <a href="http://blueskis.wktk.so/AozoraMincho/">あおぞら明朝フォント</a>(<a href="http://ayapin-film.sakura.ne.jp/Jttf/jttf.html">日本語TTFフリーフォント for X11</a>)
+</ul>
+
+ダウンロードは以下から。
+
+<a href="http://blueskis.wktk.so/AozoraMincho/archive/v0.1/aozoramincho-readme-ttf.zip">あおぞら明朝フォントのダウンロード</a>
+
+aozoramincho-readme-ttf.zipを解凍すると、以下のフォントファイルがあります。
+
+<pre>
+AozoraMincho-bold.ttf 太字
+AozoraMincho-thin.ttf
+AozoraMinchoBlack.ttf
+AozoraMinchoHeavy.ttf
+AozoraMinchoLight.ttf
+AozoraMinchoMedium.ttf
+AozoraMinchoRegular.ttf 通常
+</pre>
+
+これらのファイルを使うと、通常と太字に対応できます。
+
+<pre>
+# 通常
+my $true_type_font_file = '/path/AozoraMinchoRegular.ttf';
+my $font = $pdf->ttfont($true_type_font_file);
+
+# 太字
+my $true_type_font_bold_file = '/path/AozoraMincho-bold.ttf';
+my $font_bold = $pdf->ttfont($true_type_font_file);
+</pre>
+
+<h3>余白、改行、改ページ、日本語、太字に対応したサンプル</h3>
+
+余白、改行、改ページ、日本語、太字に対応したサンプルです。「こんにちは、世界。」と繰り返し表示され、世界の場合だけ太字になります。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+use FindBin;
+
+use PDF::API2;
+
+my $pdf = PDF::API2->new;
+
+# 日本語に対応したTrueTypeフォントの読み込み
+my $true_type_font_file = "$FindBin::Bin/AozoraMinchoRegular.ttf";
+my $font = $pdf->ttfont($true_type_font_file);
+my $true_type_font_bold_file = "$FindBin::Bin/AozoraMincho-bold.ttf";
+my $font_bold = $pdf->ttfont($true_type_font_bold_file);
+
+my $font_size = 11;
+
+# テキストの高さ
+my $text_height = $font_size;
+
+# 行間
+my $line_margin = 2;
+
+# 行の高さ
+my $line_height = $text_height + $line_margin;
+
+# 用紙サイズのデフォルトのグローバル設定(用紙サイズを取得するため)
+$pdf->mediabox(undef);
+
+# ページの高さと幅
+my @page_size_infos = $pdf->mediabox;
+my $page_width = $page_size_infos[2];
+my $page_height = $page_size_infos[3];
+
+# ページ余白
+my $page_top_margin = 36;
+my $page_bottom_margin = 36;
+my $page_left_margin = 36;
+my $page_right_margin = 36;
+
+# 描画開始x座標
+my $render_start_x = $page_left_margin;
+
+# 描画開始y座標
+my $render_start_y = $page_height - 1 - $page_top_margin;
+
+# 描画終了x座標
+my $render_end_x = $page_width - 1 - $page_right_margin;
+
+# 描画終了y座標
+my $render_end_y = $page_bottom_margin;
+
+# メッセージ(1000回の同じメッセージ繰り返し)
+my $message = 'こんにちは、世界。' x 1000;
+
+# 改行戻りx座標を保存
+my $new_line_left_x = $render_start_x;
+
+# 現在描画位置
+my $cur_render_x = $render_start_x;
+my $cur_render_y = $render_start_y;
+
+# ページの作成
+my $page = $pdf->page;
+
+# テキストを表現するコンテンツオブジェクトを取得
+my $text = $page->text();
+
+# フォント設定
+$text->font($font, $font_size);
+
+# 描画開始位置に移動
+$text->translate($render_start_x, $render_start_y);
+  
+# 1文字づつ取り出し
+while ($message =~ /(.)/g) {
+  my $char = $1;
+  
+  # 現在描画位置が、描画終了x座標を超えていれば改行
+  if ($cur_render_x > $render_end_x) {
+    $cur_render_x = $new_line_left_x;
+    $cur_render_y -= $line_height;
+    
+    # 描画開始位置に移動
+    $text->translate($cur_render_x, $cur_render_y);
+  }
+
+  # 現在描画位置が、描画終了y座標を超えていれば改ページ
+  if ($cur_render_y < $render_end_y) {
+    $cur_render_x = $render_start_x;
+    $cur_render_y = $render_start_y;
+    
+    # ページの作成
+    $page = $pdf->page;
+
+    # テキストを表現するコンテンツオブジェクトを取得
+    $text = $page->text();
+
+    # フォント設定
+    $text->font($font, $font_size);
+
+    # 描画開始位置に移動
+    $text->translate($cur_render_x, $cur_render_y);
+  }
+  
+  # 世界を太字
+  if ($char eq '世' || $char eq '界') {
+    $text->font($font_bold, $font_size);
+  }
+  else {
+    $text->font($font, $font_size);
+  }
+
+  # 文字を描画
+  $text->text($char);
+  
+  # 描画位置を更新
+  ($cur_render_x) = $text->textpos;
+}
+
+my $pdf_file = 'margin_full_text_jp.pdf';
+$pdf->saveas($pdf_file);
 </pre>
