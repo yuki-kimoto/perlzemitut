@@ -51,10 +51,6 @@ my $image_object = $pdf->image_png($image_file)
 
 「Unsupported Interlace」というエラーがでた場合は、PNGのインターレース機能を解除する必要があります。
 
-「Unsupported Compression」というエラーがでた場合は、PNGの圧縮機能を解除する必要があります。
-
-「Unsupported Filter」というエラーがでた場合は、PNGのフィルタ機能を解除する必要があります。
-            
 <b>GIFファイルの読み込み</b>
 
 PDF::API2で、GIFファイルを読み込むには、image_gifメソッドを使用します。GIF画像を表現するリソースオブジェクトが返されます。
@@ -64,8 +60,6 @@ PDF::API2で、GIFファイルを読み込むには、image_gifメソッドを�
 my $image_file = '/path/image.gif';
 my $image_object = $pdf->image_gif($image_file)
 </pre>
-
-「unsupported graphic control extension」というエラーが出た場合は、GIFのグラフィックコントロール拡張を削除する必要があります。
 
 <h4>画像コンテンツオブジェクトの生成</h4>
 
