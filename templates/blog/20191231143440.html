@@ -49,6 +49,12 @@ my $image_file = '/path/image.png';
 my $image_object = $pdf->image_png($image_file)
 </pre>
 
+「Unsupported Interlace」というエラーがでた場合は、PNGのインターレース機能を解除する必要があります。
+
+「Unsupported Compression」というエラーがでた場合は、PNGの圧縮機能を解除する必要があります。
+
+「Unsupported Filter」というエラーがでた場合は、PNGのフィルタ機能を解除する必要があります。
+            
 <b>GIFファイルの読み込み</b>
 
 PDF::API2で、GIFファイルを読み込むには、image_gifメソッドを使用します。GIF画像を表現するリソースオブジェクトが返されます。
@@ -58,6 +64,8 @@ PDF::API2で、GIFファイルを読み込むには、image_gifメソッドを�
 my $image_file = '/path/image.gif';
 my $image_object = $pdf->image_gif($image_file)
 </pre>
+
+「unsupported graphic control extension」というエラーが出た場合は、GIFのグラフィックコントロール拡張を削除する必要があります。
 
 <h4>画像コンテンツオブジェクトの生成</h4>
 
@@ -88,3 +96,31 @@ $gfx->image($image_object, $x, $y, $scale);
 幅と高さは、PDF単位であることに注意してください。
 
 例として、600x600のイメージを600dpiの解像度で表示したい場合は、72を指定します。
+
+<h3>PNG画像を挿入するサンプル</h3>
+
+PNG画像を挿入するサンプルを書いてみます。
+
+<pre>
+use PDF::API2;
+
+my $pdf = PDF::API2->new;
+
+my $page = $pdf->page;
+
+# PNG画像を表現するリソースオブジェクトを生成
+my $image_file = "$FindBin::Bin/rokkaku.png";
+my $image_object = $pdf->image_png($image_file);
+
+# 画像を挿入するために必要なコンテンツオブジェクト
+my $gfx = $page->gfx;
+
+# 指定した位置に画像を挿入
+my $x = 50;
+my $y = 500;
+$gfx->image($image_object, $x, $y);
+
+my $pdf_file = 'image_png.pdf';
+$pdf->saveas($pdf_file);
+</pre>
+
