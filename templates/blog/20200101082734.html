@@ -113,11 +113,24 @@ $gfx->strokecolor('%FF000000');
 
 色の書式は、塗りつぶしの色の設定の場合も同じです。
 
-<h4>線で囲む</h4>
+<h4>線で囲んで三角形を書く</h4>
 
 線を書く応用として、線で囲んで三角形を書いてみましょう。lineメソッドで、点をつなげて、最後に始点に戻ります。
 
 <pre>
+use strict;
+use warnings;
+use utf8;
+
+use PDF::API2;
+
+# PDFオブジェクトの生成
+my $pdf = PDF::API2->new;
+
+my $page = $pdf->page;
+
+my $gfx = $page->gfx;
+
 # 点P1
 my $x1 = 100;
 my $y1 = 100;
@@ -138,7 +151,12 @@ $gfx->line($x1, $y1);
 
 # 線を描画
 $gfx->stroke;
+
+my $pdf_file = 'render_tri.pdf';
+$pdf->saveas($pdf_file);
 </pre>
+
+<a href="/examples/pdf/render_tri.pdf">出力結果 三角形</a>
 
 <h4>塗りつぶす</h4>
 
@@ -379,6 +397,8 @@ $pdf->saveas($pdf_file);
 
 情報が何も入っていない表が完成しました。
 
+<a href="/examples/pdf/table.pdf">出力結果 空の表</a>、
+
 <h4>見出しと項目が入った表のサンプル</h4>
 
 最後に、見出しと項目が入った表のサンプルを作成してみましょう。
@@ -581,4 +601,6 @@ $gfx->stroke;
 my $pdf_file = 'table_items.pdf';
 $pdf->saveas($pdf_file);
 </pre>
+
+<a href="/examples/pdf/table_items.pdf">出力結果 項目ありの表</a>
 
