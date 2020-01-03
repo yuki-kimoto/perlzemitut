@@ -42,6 +42,7 @@ PDF::API2で書いた請求書のソースコードです。
 use strict;
 use warnings;
 use utf8;
+use FindBin;
 
 use PDF::API2;
 
@@ -112,6 +113,9 @@ $gfx->line($render_end_x, $render_start_y - $item_height * $cur_column);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_column += 1;
+
+# ロゴの開始位置を保存
+my $cur_logo_column = $cur_column - 0.5;
 
 # 請求書タイトル
 $text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
@@ -191,6 +195,20 @@ $gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $re
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_column += 2;
+
+=pod
+# 会社ロゴ挿入
+my $logo_image_file = "$FindBin::Bin/logo.png";
+my $logo_image_object = $pdf->image_png($logo_image_file);
+my $logo_image_width = 60;
+$gfx->image(
+  $logo_image_object,
+  $render_start_x + $send_company_start_items_count * $item_width,
+  $render_start_y - $item_height * $cur_logo_column - $logo_image_width,
+  $logo_image_width,
+  $logo_image_width,
+);
+=cut
 
 # 請求者
 my $sender_company_name = '木本システム株式会社';
