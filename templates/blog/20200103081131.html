@@ -22,14 +22,16 @@ PDF::API2で請求書を作成してみました。見積書、申込書、レ�
 <ul>
   <li>日本語対応</li>
   <li>太字対応</li>
+  <li>背景色対応</li>
   <li>フォントサイズ対応</li>
   <li>下線対応</li>
   <li>表の表示</li>
-  <li>表のカラーリング</li>
+  <li>表の偶奇カラーリング</li>
   <li>単価、数量、価格</li>
   <li>価格合計</li>
   <li>印鑑押印用の四角</li>
   <li>会社ロゴの挿入</li>
+  <li>金額桁区切り</li>
 </ul>
 
 <h3>PDF::API2で書いた請求書のソースコード</h3>
@@ -45,6 +47,30 @@ use utf8;
 use FindBin;
 
 use PDF::API2;
+
+my $books = [
+  {
+    name => '本1',
+    unit_price => 1000,
+    count => 3,
+  },
+  {
+    name => '本2',
+    unit_price => 2000,
+    count => 6,
+  },
+  {
+    name => '本3',
+    unit_price => 1500,
+    count => 5,
+  }
+];
+
+my $total_price = 0;
+for my $book (@$books) {
+  $total_price += $book->{unit_price} * $book->{count};
+}
+my $total_price_disp = price_disp($total_price);
 
 my $pdf = PDF::API2->new;
 
@@ -82,7 +108,7 @@ my $font_bold = $pdf->ttfont($true_type_font_bold_file);
 
 my $cur_row = 0;
 
-my $item_height = 15;
+my $item_height = 14;
 my $item_width = ($render_end_x - $render_start_x) / 100;
 my $text_bottom_margin = 3;
 
@@ -186,7 +212,7 @@ my $price_total_top_label = '金額';
 $text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
 $text->font($font, $default_font_size);
 $text->text($price_total_top_label);
-my $price_total_top = '￥30,000円';
+my $price_total_top = "￥${total_price_disp}円";
 $text->translate($render_start_x + 48 * $item_width, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
 $text->font($font, $default_font_size + 5);
 $text->text_right($price_total_top);
@@ -200,7 +226,7 @@ $gfx->move($render_start_x, $render_start_y - $item_height * $cur_row - 2);
 $gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_row - 2);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
-$cur_row += 2;
+$cur_row += 1;
 
 #=pod
 # 会社ロゴ挿入
@@ -338,4 +364,117 @@ my $price_items_count = 28;
 $text->translate($render_start_x + $cur_column_items_count * $item_width + ($price_items_count * $item_width / 2), $render_start_y - $item_height * $cur_row + $text_bottom_margin);
 $text->font($font, $default_font_size);
 $text->text_center('金額');
+$cur_column_items_count = 0;
+
+$cur_row++;
+
+my $rows_count = 25;
+
+# 各項目の枠の描画
+for (my $column = 0; $column < $rows_count; $column++) {
+  my $book = $books->[$column];
+  
+  if ($column % 2 == 1) {
+    $gfx->rectxy(
+      $render_start_x,
+      $render_start_y - $item_height * $cur_row,
+      $render_end_x,
+      $render_start_y - $item_height * ($cur_row - 1),
+    );
+    $gfx->fillcolor('#eee');
+    $gfx->fill;
+  }
+  
+  # No
+  if ($book) {
+    $text->translate($render_start_x + $cur_column_items_count * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+    $text->font($font, $default_font_size);
+    $text->text($column + 1);
+  }
+  $cur_column_items_count += $no_items_count;
+
+  # 項目
+  $gfx->poly(
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * $cur_row,
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+  );
+  $gfx->linewidth(1.5);
+  $gfx->strokecolor('#ccc');
+  $gfx->stroke;
+  if ($book) {
+    $text->translate($render_start_x + $cur_column_items_count * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+    $text->font($font, $default_font_size);
+    $text->text($book->{name});
+  }
+  $cur_column_items_count += $name_items_count;
+
+  # 数量
+  $gfx->poly(
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * $cur_row,
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+  );
+  $gfx->linewidth(1.5);
+  $gfx->strokecolor('#ccc');
+  $gfx->stroke;
+  if ($book) {
+    $text->translate($render_start_x + $cur_column_items_count * $item_width + ($count_items_count * $item_width) - $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+    $text->font($font, $default_font_size);
+    $text->text_right($book->{count});
+  }
+  $cur_column_items_count += $count_items_count;
+
+  # 単価
+  $gfx->poly(
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * $cur_row,
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+  );
+  $gfx->linewidth(1.5);
+  $gfx->strokecolor('#ccc');
+  $gfx->stroke;
+  if ($book) {
+    $text->translate($render_start_x + $cur_column_items_count * $item_width + ($unit_price_items_count * $item_width) - $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+    $text->font($font, $default_font_size);
+    my $unit_price_disp = price_disp($book->{unit_price});
+    $text->text_right($unit_price_disp);
+  }
+  $cur_column_items_count += $unit_price_items_count;
+
+  # 金額
+  $gfx->poly(
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * $cur_row,
+    $render_start_x + $cur_column_items_count * $item_width,
+    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+  );
+  $gfx->linewidth(1.5);
+  $gfx->strokecolor('#ccc');
+  $gfx->stroke;
+  if ($book) {
+    $text->translate($render_start_x + $cur_column_items_count * $item_width + ($price_items_count * $item_width) - $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+    $text->font($font, $default_font_size);
+    my $price_disp = price_disp($book->{unit_price} * $book->{count});
+    $text->text_right($price_disp);
+  }
+  $cur_column_items_count = 0;
+
+  $cur_row++;
+}
+
+sub price_disp {
+  my ($price) = @_;
+  
+  1 while $price =~ s/(.*\d)(\d\d\d)/$1,$2/;
+  
+  return $price;
+}
+
+
+my $pdf_file = 'quote.pdf';
+$pdf->saveas($pdf_file);
 </pre>
