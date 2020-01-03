@@ -81,7 +81,7 @@ my $font_bold = $pdf->ttfont($true_type_font_bold_file);
 
 my $cur_column = 0;
 
-my $item_height = 20;
+my $item_height = 15;
 my $item_width = ($render_end_x - $render_start_x) / 100;
 my $text_bottom_margin = 3;
 
@@ -100,9 +100,9 @@ my $gfx = $page->gfx;
 # 一番上飾り太線
 $gfx->move($render_start_x, $render_start_y);
 $gfx->line($render_end_x, $render_start_y);
-$gfx->linewidth(8);
+$gfx->linewidth(10);
 $gfx->stroke;
-$cur_column += 1;
+$cur_column += 2;
 
 # 申し込み日付
 $text->translate($render_end_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
@@ -111,15 +111,18 @@ $gfx->move($render_start_x + $send_company_start_items_count * $item_width, $ren
 $gfx->line($render_end_x, $render_start_y - $item_height * $cur_column);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
-$cur_column += 2;
+$cur_column += 1;
 
 # 請求書タイトル
 $text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
 $text->font($font_bold, 20);
 $text->text('請求書');
-$cur_column += 2;
+$cur_column += 3;
 
-# 請求書タイトル
+# 右列の開始位置を保存
+my $cur_right_column = $cur_column + 2;
+
+# 納品先企業名
 my $receive_company_name = 'XXXXX株式会社';
 $text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
 $text->font($font, $default_font_size);
@@ -130,7 +133,7 @@ $gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
 $gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
-$cur_column += 2;
+$cur_column += 4;
 
 # 件名
 my $subject_label = '件　名:';
@@ -160,7 +163,7 @@ $gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
 $gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
-$cur_column += 2;
+$cur_column += 4;
 
 # 請求メッセージ
 $text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
@@ -177,10 +180,10 @@ my $price_total_top = '￥30,000円';
 $text->translate($render_start_x + 48 * $item_width, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
 $text->font($font, $default_font_size + 5);
 $text->text_right($price_total_top);
-my $price_total_top = '税込';
+my $price_total_top_zeikomi = '税込';
 $text->translate($render_start_x + 50 * $item_width, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
 $text->font($font, $default_font_size);
-$text->text($price_total_top);
+$text->text($price_total_top_zeikomi);
 $gfx->move($render_start_x, $render_start_y - $item_height * $cur_column);
 $gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_column);
 $gfx->move($render_start_x, $render_start_y - $item_height * $cur_column - 2);
@@ -188,6 +191,77 @@ $gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $re
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_column += 2;
+
+# 請求者
+my $sender_company_name = '木本システム株式会社';
+$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($sender_company_name);
+$cur_right_column += 1;
+
+# 郵便番号
+my $sender_zip_code = '住所:123-4567';
+$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($sender_zip_code);
+$cur_right_column += 1;
+
+# 住所
+my $sender_address = '東京都港区〇〇 １２３－４';
+$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($sender_address);
+$cur_right_column += 1;
+
+# 電話番号
+my $sender_tel = 'TEL:090-1234-5678';
+$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($sender_tel);
+$cur_right_column += 1;
+
+# FAX
+my $sender_fax = 'FAX:090-1234-5679';
+$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($sender_fax);
+$cur_right_column += 1;
+
+# 担当
+my $sender_staff = '担当:田中太郎';
+$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_column + $text_bottom_margin);
+$text->font($font, $default_font_size);
+$text->text($sender_staff);
+
+# 印鑑押印四角形
+my $sleal_width = 60;
+$gfx->rectxy(
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 2,
+  $render_start_y - $item_height * ($cur_right_column - 1) + $sleal_width,
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 3,
+  $render_start_y - $item_height * ($cur_right_column - 1)
+);
+$gfx->rectxy(
+  $render_start_x + $send_company_start_items_count * $item_width,
+  $render_start_y - $item_height * $cur_right_column ,
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 3,
+  $render_start_y - $item_height * $cur_right_column - $sleal_width 
+);
+$gfx->poly(
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width,
+  $render_start_y - $item_height * $cur_right_column ,
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width,
+  $render_start_y - $item_height * $cur_right_column - $sleal_width 
+);
+$gfx->poly(
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 2,
+  $render_start_y - $item_height * $cur_right_column ,
+  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 2,
+  $render_start_y - $item_height * $cur_right_column - $sleal_width 
+);
+$gfx->strokecolor('#bbb');
+$gfx->stroke;
+
 
 my $pdf_file = 'quote.pdf';
 $pdf->saveas($pdf_file);
