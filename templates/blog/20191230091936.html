@@ -104,6 +104,28 @@ $text->text('Hello World!');
 
 テキストはフォントのベースライン上に書き出されることに注意してください。
 
+<h3>フォントの色を設定する</h3>
+
+フォントの色を設定するには、strokecolorとfillcolorに色を設定します。フォントの色を直接指定できるメソッドはないので注意してください。
+
+<pre>
+# フォントの色を設定する - 色名
+$text->strokecolor('red');
+$text->fillcolor('red');
+
+# フォントの色を設定する - RGB
+$text->strokecolor('red');
+$text->fillcolor('red');
+
+# フォントの色を設定する - CMYK
+$text->strokecolor('%FF000000');
+$text->fillcolor('%FF000000');
+</pre>
+
+テキストの描画も、コンテンツの描画の機能を使って、フォントに存在するアウトラインのパスを作成した後に、パスの内部を塗りつぶすことで作成しています。
+
+図形の描画とstrokecolorとfillcolorの詳しい解説は、<a href="/blog/20200101082734.html">基本図形の描画と表の作成</a>を参考にしてください。
+
 <h3>アンダーラインを描画</h3>
 
 PDF::API2でテキストにアンダーラインを描画するにはtextメソッドの「-underline」オプションを指定します。「auto」で自動的にアンダーラインの位置が決まります。
