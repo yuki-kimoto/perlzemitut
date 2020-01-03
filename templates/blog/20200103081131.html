@@ -28,6 +28,7 @@ PDF::API2で請求書を作成してみました。見積書、申込書、レ�
   <li>表のカラーリング</li>
   <li>単価、数量、価格</li>
   <li>価格合計</li>
+  <li>印鑑押印用の四角</li>
   <li>会社ロゴの挿入</li>
 </ul>
 
@@ -147,7 +148,7 @@ $gfx->stroke;
 $cur_column += 1;
 
 # 納品日
-my $delivery_date_label = '納品日';
+my $delivery_date_label = '納品日:';
 $text->translate($render_start_x, $render_start_y - $item_height * $cur_column + $text_bottom_margin);
 $text->font($font, $default_font_size);
 $text->text($delivery_date_label);
