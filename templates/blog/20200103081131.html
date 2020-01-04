@@ -396,13 +396,8 @@ $gfx->strokecolor($color_black);
 $gfx->stroke;
 $cur_row += 1;
 
-# 見積書見出し下飾り太線
-$gfx->move($render_start_x, $render_start_y - $unit_height * $cur_row);
-$gfx->hline($render_end_x);
-$gfx->linewidth($line_width_bold);
-$gfx->strokecolor($color_black);
-$gfx->stroke;
-$gfx->stroke;
+# 見積書見出し下飾り太線の位置を保存
+my $header_bottom_line_row = $cur_row;
 
 my $cur_column_units_count = 0;
 
@@ -477,7 +472,7 @@ for (my $row = 0; $row < $rows_count; $row++) {
     $render_start_x + $cur_column_units_count * $unit_width,
     $render_start_y - $unit_height * $cur_row,
     $render_start_x + $cur_column_units_count * $unit_width,
-    $render_start_y - $unit_height * ($cur_row - 1) - ($row == 0 ? 1 : 0)
+    $render_start_y - $unit_height * ($cur_row - 1)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
@@ -497,7 +492,7 @@ for (my $row = 0; $row < $rows_count; $row++) {
     $render_start_x + $cur_column_units_count * $unit_width,
     $render_start_y - $unit_height * $cur_row,
     $render_start_x + $cur_column_units_count * $unit_width,
-    $render_start_y - $unit_height * ($cur_row - 1) - ($row == 0 ? 1 : 0)
+    $render_start_y - $unit_height * ($cur_row - 1)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
@@ -517,7 +512,7 @@ for (my $row = 0; $row < $rows_count; $row++) {
     $render_start_x + $cur_column_units_count * $unit_width,
     $render_start_y - $unit_height * $cur_row,
     $render_start_x + $cur_column_units_count * $unit_width,
-    $render_start_y - $unit_height * ($cur_row - 1) - ($row == 0 ? 1 : 0)
+    $render_start_y - $unit_height * ($cur_row - 1)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
@@ -538,7 +533,7 @@ for (my $row = 0; $row < $rows_count; $row++) {
     $render_start_x + $cur_column_units_count * $unit_width,
     $render_start_y - $unit_height * $cur_row,
     $render_start_x + $cur_column_units_count * $unit_width,
-    $render_start_y - $unit_height * ($cur_row - 1) - ($row == 0 ? 1 : 0)
+    $render_start_y - $unit_height * ($cur_row - 1)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
@@ -556,6 +551,13 @@ for (my $row = 0; $row < $rows_count; $row++) {
 
   $cur_row++;
 }
+
+# 見積書見出し下飾り太線(灰色の縦線の上に書くためこの位置で描画)
+$gfx->move($render_start_x, $render_start_y - $unit_height * $header_bottom_line_row);
+$gfx->hline($render_end_x);
+$gfx->linewidth($line_width_bold);
+$gfx->strokecolor($color_black);
+$gfx->stroke;
 
 # 太線
 $gfx->move($render_start_x, $render_start_y - $unit_height * ($cur_row - 1));
