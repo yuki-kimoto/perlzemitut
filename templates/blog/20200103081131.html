@@ -40,16 +40,24 @@ PDF::API2で請求書を作成してみました。見積書、申込書、レ�
 
 PDF::API2で書いた請求書のソースコードです。
 
-会社ロゴを入れる場合は、同一ディレクトリに、会社ロゴlogo.pngを入れて、ソースコードの該当箇所のコメントアウトをはずしてください。
+<b>注意点</b>
+
+会社ロゴは、同一ディレクトリに「logo.png」という名前で、配置してください。
+
+日本語用フォントは、<a href="/blog/20191230091936.html">テキストを描画する</a>で紹介した、あおぞら明朝フォントを使っています。通常フォント「AozoraMinchoRegular.ttf」と太字フォント「AozoraMincho-bold.ttf」を同一ディレクトリに配置してください。
+
+レイアウトのアルゴリズムは、表の構造になっています。1つの縦幅を指定して、行を進めています。列は、100分割されていて、その割合を示した位置に表示しています。
+
+<b>PDF::API2で書いた請求書のソースコード</b>
 
 <pre>
 use strict;
 use warnings;
 use utf8;
 use FindBin;
-
 use PDF::API2;
 
+# 商品データ(本)
 my $books = [
   {
     name => '本1',
@@ -68,32 +76,47 @@ my $books = [
   }
 ];
 
-my $total_price_no_tax = 0;
+# 金額小計
+my $price_total_no_tax = 0;
 for my $book (@$books) {
-  $total_price_no_tax += $book->{unit_price} * $book->{count};
+  $price_total_no_tax += $book->{unit_price} * $book->{count};
 }
-my $total_price_no_tax_disp = price_disp($total_price_no_tax);
-my $tax_rate = 0.1;
-my $tax = int($total_price_no_tax * $tax_rate);
-my $tax_disp = price_disp($tax);
-my $total_price = $total_price_no_tax + $tax;
-my $total_price_disp = price_disp($total_price);
+my $price_total_no_tax_disp = price_disp($price_total_no_tax);
 
+# 消費税
+my $tax_rate = 0.1;
+my $tax = int($price_total_no_tax * $tax_rate);
+my $tax_disp = price_disp($tax);
+
+# 税込金額
+my $price_total = $price_total_no_tax + $tax;
+my $price_total_disp = price_disp($price_total);
+
+# PDF
 my $pdf = PDF::API2->new;
 
+# 用紙サイズ A4設定
 $pdf->mediabox('A4');
 
+# 用紙サイズの取得
 my @page_size_infos = $pdf->mediabox;
 my $page_width = $page_size_infos[2];
 my $page_height = $page_size_infos[3];
-
-my $default_font_size = 10;
 
 # ページ余白
 my $page_top_margin = 48;
 my $page_bottom_margin = 48;
 my $page_left_margin = 49;
 my $page_right_margin = 49;
+
+# 日本語に対応したTrueTypeフォントの読み込み - 通常フォントと太字フォント
+my $true_type_font_file = "$FindBin::Bin/AozoraMinchoRegular.ttf";
+my $font = $pdf->ttfont($true_type_font_file);
+my $true_type_font_bold_file = "$FindBin::Bin/AozoraMincho-bold.ttf";
+my $font_bold = $pdf->ttfont($true_type_font_bold_file);
+
+# フォントサイズ - デフォルト
+my $font_size_default = 10;
 
 # 描画開始x座標
 my $render_start_x = $page_left_margin;
@@ -107,48 +130,55 @@ my $render_end_x = $page_width - 1 - $page_right_margin;
 # 描画終了y座標
 my $render_end_y = $page_bottom_margin;
 
-# 日本語に対応したTrueTypeフォントの読み込み
-my $true_type_font_file = "$FindBin::Bin/AozoraMinchoRegular.ttf";
-my $font = $pdf->ttfont($true_type_font_file);
-my $true_type_font_bold_file = "$FindBin::Bin/AozoraMincho-bold.ttf";
-my $font_bold = $pdf->ttfont($true_type_font_bold_file);
+# レイアウトは、テーブル構造になっていて
+# 縦幅と横幅の最小単位を設定、横幅は、100分割したものが最小単位
+my $unit_height = 14;
+my $unit_width = ($render_end_x - $render_start_x) / 100;
 
-my $cur_row = 0;
+# テキスト描画のパディング
+my $text_bottom_padding = 3;
+my $text_left_padding = 3;
 
-my $item_height = 14;
-my $item_width = ($render_end_x - $render_start_x) / 100;
-my $text_bottom_margin = 3;
+# 受取企業欄の幅
+my $receive_company_end_tds_count = 55;
 
-my $receive_company_end_items_count = 55;
-my $send_company_start_items_count = 66;
+# 請求企業欄の開始位置
+my $send_company_start_tds_count = 66.5;
 
-my $table_text_left_margin = 3;
+# 色の一覧
+my $color_black = '#000';
 
-my $page = $pdf->page;
-
-my $gfx = $page->gfx;
-
-my $text = $page->text;
-$text->font($font, $default_font_size);
-$text->strokecolor('#000');
-$text->fillcolor('#000');
-
+# 線の幅
 my $line_width_basic = 0.3;
 my $line_width_bold = 2;
 
+# ページ
+my $page = $pdf->page;
 
-# 一番上飾り太線
+# グラフィック描画
+my $gfx = $page->gfx;
+
+# テキスト描画
+my $text = $page->text;
+
+# 現在の行
+my $cur_row = 0;
+
+# 一番上太線
 $gfx->move($render_start_x, $render_start_y);
-$gfx->line($render_end_x, $render_start_y);
+$gfx->hline($render_end_x);
 $gfx->linewidth(10);
 $gfx->stroke;
 $cur_row += 1.5;
 
 # 申し込み日付
-$text->translate($render_end_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+$text->translate($render_end_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
+$text->strokecolor($color_black);
+$text->fillcolor($color_black);
 $text->text_right('2019年10月14日');
-$gfx->move($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_row);
-$gfx->line($render_end_x, $render_start_y - $item_height * $cur_row);
+$gfx->move($render_start_x + $send_company_start_tds_count * $unit_width);
+$gfx->hline($render_end_x);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_row += 2;
@@ -157,7 +187,7 @@ $cur_row += 2;
 my $cur_logo_row = $cur_row - 1.5;
 
 # 請求書タイトル
-$text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+$text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
 $text->font($font_bold, 20);
 $text->text('請求書');
 $cur_row += 3;
@@ -167,211 +197,209 @@ my $cur_right_row = $cur_row + 1;
 
 # 納品先企業名
 my $receive_company_name = 'XXXXX株式会社';
-$text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($receive_company_name);
-$text->translate($render_start_x + $receive_company_end_items_count * $item_width , $render_start_y - $item_height * $cur_row + $text_bottom_margin);
+$text->translate($render_start_x + $receive_company_end_tds_count * $unit_width , $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
 $text->text_right('御中');
-$gfx->move($render_start_x, $render_start_y - $item_height * $cur_row);
-$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_row);
+$gfx->move($render_start_x, $render_start_y - $unit_height * $cur_row);
+$gfx->hline($render_start_x + $receive_company_end_tds_count * $unit_width);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_row += 4;
 
 # 件名
 my $subject_label = '件　名:';
-$text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($subject_label);
 my $subject = '2019年3月3日の商品売買契約';
-$text->translate($render_start_x + 10 * $item_width, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + 10 * $unit_width, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($subject);
-$gfx->move($render_start_x, $render_start_y - $item_height * $cur_row);
-$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_row);
+$gfx->move($render_start_x, $render_start_y - $unit_height * $cur_row);
+$gfx->hline($render_start_x + $receive_company_end_tds_count * $unit_width);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_row += 1;
 
 # 納品日
 my $delivery_date_label = '納品日:';
-$text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($delivery_date_label);
 my $delivery_date = '2019年3月30日';
-$text->translate($render_start_x + 10 * $item_width, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + 10 * $unit_width, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($delivery_date);
-$gfx->move($render_start_x, $render_start_y - $item_height * $cur_row);
-$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_row);
+$gfx->move($render_start_x, $render_start_y - $unit_height * $cur_row);
+$gfx->hline($render_start_x + $receive_company_end_tds_count * $unit_width);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_row += 2.8;
 
 # 請求メッセージ
-$text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text('下記の通り、ご請求申し上げます。');
 $cur_row += 2;
 
 # 金額
 my $price_total_top_label = '金額';
-$text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($price_total_top_label);
-my $price_total_top = "￥${total_price_disp}円";
-$text->translate($render_start_x + 48 * $item_width, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size + 5);
+my $price_total_top = "￥${price_total_disp}円";
+$text->translate($render_start_x + 48 * $unit_width, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default + 5);
 $text->text_right($price_total_top);
-my $price_total_top_zeikomi = '税込';
-$text->translate($render_start_x + 50 * $item_width, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+my $price_total_top_zeikomi = '(税込)';
+$text->translate($render_start_x + 50 * $unit_width, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($price_total_top_zeikomi);
-$gfx->move($render_start_x, $render_start_y - $item_height * $cur_row);
-$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_row);
-$gfx->move($render_start_x, $render_start_y - $item_height * $cur_row - 2);
-$gfx->line($render_start_x + $receive_company_end_items_count * $item_width, $render_start_y - $item_height * $cur_row - 2);
+$gfx->move($render_start_x, $render_start_y - $unit_height * $cur_row);
+$gfx->hline($render_start_x + $receive_company_end_tds_count * $unit_width);
+$gfx->move($render_start_x, $render_start_y - $unit_height * $cur_row - 2);
+$gfx->hline($render_start_x + $receive_company_end_tds_count * $unit_width);
 $gfx->linewidth($line_width_basic);
 $gfx->stroke;
 $cur_row += 0.5;
 
-#=pod
 # 会社ロゴ挿入
 my $logo_image_file = "$FindBin::Bin/logo.png";
 my $logo_image_object = $pdf->image_png($logo_image_file);
 my $logo_image_width = 60;
 $gfx->image(
   $logo_image_object,
-  $render_start_x + $send_company_start_items_count * $item_width,
-  $render_start_y - $item_height * $cur_logo_row - $logo_image_width,
+  $render_start_x + $send_company_start_tds_count * $unit_width,
+  $render_start_y - $unit_height * $cur_logo_row - $logo_image_width,
   $logo_image_width,
   $logo_image_width,
 );
-#=cut
 
 # 請求者
 my $sender_company_name = '木本システム株式会社';
-$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + $send_company_start_tds_count * $unit_width, $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($sender_company_name);
 $cur_right_row += 1;
 
 # 郵便番号
 my $sender_zip_code = '住所:123-4567';
-$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + $send_company_start_tds_count * $unit_width, $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($sender_zip_code);
 $cur_right_row += 1;
 
 # 住所
 my $sender_address = '東京都港区〇〇 １２３－４';
-$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + $send_company_start_tds_count * $unit_width, $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($sender_address);
 $cur_right_row += 1;
 
 # 電話番号
 my $sender_tel = 'TEL:090-1234-5678';
-$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + $send_company_start_tds_count * $unit_width, $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($sender_tel);
 $cur_right_row += 1;
 
 # FAX
 my $sender_fax = 'FAX:090-1234-5679';
-$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + $send_company_start_tds_count * $unit_width, $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($sender_fax);
 $cur_right_row += 1;
 
 # 担当
 my $sender_staff = '担当:田中太郎';
-$text->translate($render_start_x + $send_company_start_items_count * $item_width, $render_start_y - $item_height * $cur_right_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_start_x + $send_company_start_tds_count * $unit_width, $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($sender_staff);
 
 # 印鑑押印四角形
 my $sleal_width = 55;
 $gfx->rectxy(
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 2,
-  $render_start_y - $item_height * ($cur_right_row - 1) + $sleal_width,
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 3,
-  $render_start_y - $item_height * ($cur_right_row - 1)
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width * 2,
+  $render_start_y - $unit_height * ($cur_right_row - 1) + $sleal_width,
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width * 3,
+  $render_start_y - $unit_height * ($cur_right_row - 1)
 );
 $gfx->rectxy(
-  $render_start_x + $send_company_start_items_count * $item_width,
-  $render_start_y - $item_height * $cur_right_row ,
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 3,
-  $render_start_y - $item_height * $cur_right_row - $sleal_width 
+  $render_start_x + $send_company_start_tds_count * $unit_width,
+  $render_start_y - $unit_height * $cur_right_row ,
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width * 3,
+  $render_start_y - $unit_height * $cur_right_row - $sleal_width 
 );
 $gfx->poly(
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width,
-  $render_start_y - $item_height * $cur_right_row ,
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width,
-  $render_start_y - $item_height * $cur_right_row - $sleal_width 
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width,
+  $render_start_y - $unit_height * $cur_right_row ,
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width,
+  $render_start_y - $unit_height * $cur_right_row - $sleal_width 
 );
 $gfx->poly(
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 2,
-  $render_start_y - $item_height * $cur_right_row ,
-  $render_start_x + $send_company_start_items_count * $item_width + $sleal_width * 2,
-  $render_start_y - $item_height * $cur_right_row - $sleal_width 
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width * 2,
+  $render_start_y - $unit_height * $cur_right_row ,
+  $render_start_x + $send_company_start_tds_count * $unit_width + $sleal_width * 2,
+  $render_start_y - $unit_height * $cur_right_row - $sleal_width 
 );
 $gfx->strokecolor('#bbb');
 $gfx->stroke;
 
 # 見積書見出し背景
-$gfx->rectxy($render_start_x, $render_start_y - $item_height * $cur_row, $render_end_x, $render_start_y - $item_height * ($cur_row + 1));
+$gfx->rectxy($render_start_x, $render_start_y - $unit_height * $cur_row, $render_end_x, $render_start_y - $unit_height * ($cur_row + 1));
 $gfx->fillcolor('#eee');
 $gfx->fill;
 
 # 見積書見出し上飾り太線
-$gfx->poly($render_start_x, $render_start_y - $item_height * $cur_row, $render_end_x, $render_start_y - $item_height * $cur_row);
+$gfx->poly($render_start_x, $render_start_y - $unit_height * $cur_row, $render_end_x, $render_start_y - $unit_height * $cur_row);
 $gfx->linewidth($line_width_bold);
-$gfx->strokecolor('#000');
+$gfx->strokecolor($color_black);
 $gfx->stroke;
 $cur_row += 1;
 
 # 見積書見出し下飾り太線
-$gfx->poly($render_start_x, $render_start_y - $item_height * $cur_row, $render_end_x, $render_start_y - $item_height * $cur_row);
+$gfx->poly($render_start_x, $render_start_y - $unit_height * $cur_row, $render_end_x, $render_start_y - $unit_height * $cur_row);
 $gfx->linewidth($line_width_bold);
 $gfx->stroke;
 
-my $cur_column_items_count = 0;
+my $cur_column_units_count = 0;
 
 # No
-my $no_items_count = 10;
-$text->translate($render_start_x + $cur_column_items_count * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+my $no_units_count = 10;
+$text->translate($render_start_x + $cur_column_units_count * $unit_width + $text_left_padding, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text('No.');
-$cur_column_items_count += $no_items_count;
+$cur_column_units_count += $no_units_count;
 
 # 項目
-my $name_items_count = 34;
-$text->translate($render_start_x + $cur_column_items_count * $item_width + ($name_items_count * $item_width / 2), $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+my $name_units_count = 34;
+$text->translate($render_start_x + $cur_column_units_count * $unit_width + ($name_units_count * $unit_width / 2), $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text_center('項目');
-$cur_column_items_count += $name_items_count;
+$cur_column_units_count += $name_units_count;
 
 # 数量
-my $count_items_count = 14;
-$text->translate($render_start_x + $cur_column_items_count * $item_width + ($count_items_count * $item_width / 2), $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+my $count_units_count = 14;
+$text->translate($render_start_x + $cur_column_units_count * $unit_width + ($count_units_count * $unit_width / 2), $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text_center('数量');
-$cur_column_items_count += $count_items_count;
+$cur_column_units_count += $count_units_count;
 
 # 単価
-my $unit_price_items_count = 14;
-$text->translate($render_start_x + $cur_column_items_count * $item_width + ($unit_price_items_count * $item_width / 2), $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+my $unit_price_units_count = 14;
+$text->translate($render_start_x + $cur_column_units_count * $unit_width + ($unit_price_units_count * $unit_width / 2), $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text_center('単価');
-$cur_column_items_count += $unit_price_items_count;
+$cur_column_units_count += $unit_price_units_count;
 
 # 金額
-my $price_items_count = 28;
-$text->translate($render_start_x + $cur_column_items_count * $item_width + ($price_items_count * $item_width / 2), $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+my $price_units_count = 28;
+$text->translate($render_start_x + $cur_column_units_count * $unit_width + ($price_units_count * $unit_width / 2), $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text_center('金額');
-$cur_column_items_count = 0;
+$cur_column_units_count = 0;
 
 $cur_row++;
 
@@ -384,9 +412,9 @@ for (my $column = 0; $column < $rows_count; $column++) {
   if ($column % 2 == 1) {
     $gfx->rectxy(
       $render_start_x,
-      $render_start_y - $item_height * $cur_row,
+      $render_start_y - $unit_height * $cur_row,
       $render_end_x,
-      $render_start_y - $item_height * ($cur_row - 1),
+      $render_start_y - $unit_height * ($cur_row - 1),
     );
     $gfx->fillcolor('#eee');
     $gfx->fill;
@@ -394,122 +422,141 @@ for (my $column = 0; $column < $rows_count; $column++) {
   
   # No
   if ($book) {
-    $text->translate($render_start_x + $cur_column_items_count * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-    $text->font($font, $default_font_size);
+    $text->translate(
+      $render_start_x + $cur_column_units_count * $unit_width + $text_left_padding,
+      $render_start_y - $unit_height * $cur_row + $text_bottom_padding
+    );
+    $text->font($font, $font_size_default);
     $text->text($column + 1);
   }
-  $cur_column_items_count += $no_items_count;
+  $cur_column_units_count += $no_units_count;
 
   # 項目
   $gfx->poly(
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * $cur_row,
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * $cur_row,
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
   $gfx->stroke;
   if ($book) {
-    $text->translate($render_start_x + $cur_column_items_count * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-    $text->font($font, $default_font_size);
+    $text->translate(
+      $render_start_x + $cur_column_units_count * $unit_width + $text_left_padding,
+      $render_start_y - $unit_height * $cur_row + $text_bottom_padding
+    );
+    $text->font($font, $font_size_default);
     $text->text($book->{name});
   }
-  $cur_column_items_count += $name_items_count;
+  $cur_column_units_count += $name_units_count;
 
   # 数量
   $gfx->poly(
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * $cur_row,
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * $cur_row,
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
   $gfx->stroke;
   if ($book) {
-    $text->translate($render_start_x + $cur_column_items_count * $item_width + ($count_items_count * $item_width) - $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-    $text->font($font, $default_font_size);
+    $text->translate(
+      $render_start_x + $cur_column_units_count * $unit_width + ($count_units_count * $unit_width) - $text_left_padding,
+      $render_start_y - $unit_height * $cur_row + $text_bottom_padding
+    );
+    $text->font($font, $font_size_default);
     $text->text_right($book->{count});
   }
-  $cur_column_items_count += $count_items_count;
+  $cur_column_units_count += $count_units_count;
 
   # 単価
   $gfx->poly(
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * $cur_row,
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * $cur_row,
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
   $gfx->stroke;
   if ($book) {
-    $text->translate($render_start_x + $cur_column_items_count * $item_width + ($unit_price_items_count * $item_width) - $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-    $text->font($font, $default_font_size);
+    $text->translate(
+      $render_start_x + $cur_column_units_count * $unit_width + ($unit_price_units_count * $unit_width) - $text_left_padding,
+      $render_start_y - $unit_height * $cur_row + $text_bottom_padding
+    );
+    $text->font($font, $font_size_default);
     my $unit_price_disp = price_disp($book->{unit_price});
     $text->text_right($unit_price_disp);
   }
-  $cur_column_items_count += $unit_price_items_count;
+  $cur_column_units_count += $unit_price_units_count;
 
   # 金額
   $gfx->poly(
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * $cur_row,
-    $render_start_x + $cur_column_items_count * $item_width,
-    $render_start_y - $item_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * $cur_row,
+    $render_start_x + $cur_column_units_count * $unit_width,
+    $render_start_y - $unit_height * ($cur_row - 1) - ($column == 0 ? 1 : 0)
   );
   $gfx->linewidth(1.5);
   $gfx->strokecolor('#ccc');
   $gfx->stroke;
   if ($book) {
-    $text->translate($render_start_x + $cur_column_items_count * $item_width + ($price_items_count * $item_width) - $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-    $text->font($font, $default_font_size);
+    $text->translate(
+      $render_start_x + $cur_column_units_count * $unit_width + ($price_units_count * $unit_width) - $text_left_padding,
+      $render_start_y - $unit_height * $cur_row + $text_bottom_padding
+    );
+    $text->font($font, $font_size_default);
     my $price_disp = price_disp($book->{unit_price} * $book->{count});
     $text->text_right($price_disp);
   }
-  $cur_column_items_count = 0;
+  $cur_column_units_count = 0;
 
   $cur_row++;
 }
 
 # 太線
-$gfx->poly($render_start_x, $render_start_y - $item_height * ($cur_row - 1), $render_end_x, $render_start_y - $item_height * ($cur_row - 1));
+$gfx->poly($render_start_x, $render_start_y - $unit_height * ($cur_row - 1), $render_end_x, $render_start_y - $unit_height * ($cur_row - 1));
 $gfx->linewidth($line_width_bold);
-$gfx->strokecolor('#000');
+$gfx->strokecolor($color_black);
 $gfx->stroke;
 
 # 小計
-my $total_price_no_tax_label = '小計';
-$text->translate($render_start_x + ($no_items_count + $name_items_count + $count_items_count) * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);$text->font($font, $default_font_size);
-$text->text($total_price_no_tax_label);
-$text->translate($render_end_x, , $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
-$text->text_right($total_price_no_tax_disp);
+my $price_total_no_tax_label = '小計';
+$text->translate($render_start_x + ($no_units_count + $name_units_count + $count_units_count) * $unit_width + $text_left_padding, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
+$text->text($price_total_no_tax_label);
+$text->translate($render_end_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
+$text->text_right($price_total_no_tax_disp);
 $cur_row += 1;
 
 # 消費税
 my $tax_label = '消費税';
-$text->translate($render_start_x + ($no_items_count + $name_items_count + $count_items_count) * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);$text->font($font, $default_font_size);
+$text->translate($render_start_x + ($no_units_count + $name_units_count + $count_units_count) * $unit_width + $text_left_padding, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text($tax_label);
-$text->translate($render_end_x, , $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
+$text->translate($render_end_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
 $text->text_right($tax_disp);
 $cur_row += 1;
 
 # 消費税
-my $total_price_label = '税込合計';
-$text->translate($render_start_x + ($no_items_count + $name_items_count + $count_items_count) * $item_width + $table_text_left_margin, $render_start_y - $item_height * $cur_row + $text_bottom_margin);$text->font($font, $default_font_size);
-$text->text($total_price_label);
-$text->translate($render_end_x, , $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-$text->font($font, $default_font_size);
-$text->text_right("￥$total_price_disp");
+my $price_total_label = '税込合計';
+$text->translate($render_start_x + ($no_units_count + $name_units_count + $count_units_count) * $unit_width + $text_left_padding, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
+$text->text($price_total_label);
+$text->translate($render_end_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+$text->font($font, $font_size_default);
+$text->text_right("￥$price_total_disp");
 $cur_row += 1;
 
 # 太線
-$gfx->poly($render_start_x, $render_start_y - $item_height * ($cur_row - 1), $render_end_x, $render_start_y - $item_height * ($cur_row - 1));
+$gfx->move($render_start_x, $render_start_y - $unit_height * ($cur_row - 1));
+$gfx->hline($render_end_x);
 $gfx->linewidth($line_width_bold);
-$gfx->strokecolor('#000');
+$gfx->strokecolor($color_black);
 $gfx->stroke;
 
 # 振込先
@@ -520,16 +567,17 @@ my $furikomi_disp = <<"EOS";
 木本システム株式会社
 EOS
 for my $line (split /\n/, $furikomi_disp) {
-  $text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-  $text->font($font, $default_font_size);
+  $text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+  $text->font($font, $font_size_default);
   $text->text($line);
   $cur_row += 1;
 }
 
 # 細い線
-$gfx->poly($render_start_x, $render_start_y - $item_height * ($cur_row - 1), $render_end_x, $render_start_y - $item_height * ($cur_row - 1));
+$gfx->move($render_start_x, $render_start_y - $unit_height * ($cur_row - 1));
+$gfx->hline($render_end_x);
 $gfx->linewidth($line_width_basic);
-$gfx->strokecolor('#000');
+$gfx->strokecolor($color_black);
 $gfx->stroke;
 
 # 備考
@@ -537,19 +585,20 @@ my $bikou_disp = <<"EOS";
 納品日の翌月の末日までのお支払いをお願いいたします。
 EOS
 for my $line (split /\n/, $bikou_disp) {
-  $text->translate($render_start_x, $render_start_y - $item_height * $cur_row + $text_bottom_margin);
-  $text->font($font, $default_font_size);
+  $text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
+  $text->font($font, $font_size_default);
   $text->text($line);
   $cur_row += 1;
 }
 
 # 太線
-$gfx->poly($render_start_x, $render_end_y, $render_end_x, $render_end_y);
+$gfx->move($render_start_x, $render_end_y);
+$gfx->hline($render_end_x);
 $gfx->linewidth($line_width_bold);
-$gfx->strokecolor('#000');
+$gfx->strokecolor($color_black);
 $gfx->stroke;
 
-
+# 3桁区切りで金額を表示してくれるサブルーチン
 sub price_disp {
   my ($price) = @_;
   
@@ -559,6 +608,6 @@ sub price_disp {
 }
 
 
-my $pdf_file = 'quote.pdf';
+my $pdf_file = 'invoice.pdf';
 $pdf->saveas($pdf_file);
 </pre>
