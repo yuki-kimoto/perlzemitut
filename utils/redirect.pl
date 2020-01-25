@@ -19,8 +19,8 @@ for my $blog_file (@blog_files) {
   
   $blog_content = "$redirect_js\n$blog_content";
   
-  open my $blog_fh, '>', $blog_path
+  open my $blog_out_fh, '>', $blog_path
     or die "Can't open $blog_path for write: $!";
   
-  print $blog_fh $blog_content;
+  print $blog_out_fh $blog_content;
 }
