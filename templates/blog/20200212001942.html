@@ -1,0 +1,56 @@
+<h2>Dモジュール</h2>
+
+Dモジュールは、データをエンコードし標準エラー出力へダンプするユーティリティ関数を提供します。
+
+<h3>インストール</h3>
+cpanmでインストールする方法
+<pre>
+$ cpanm install D
+</pre>
+
+githubからダウンロードしてインストールする方法
+<pre>
+$ git clone https://github.com/YoshiyukiItoh/D.git
+$ cd D
+$ perl Makefile.PL
+$ make
+$ make test
+$ make install
+</pre>
+
+<h3>利用例</h3>
+
+Dモジュールは、以下のように利用します。
+<pre>
+use utf8;
+ 
+# dw, du, dn関数をexportします
+use D;
+ 
+# デコードされた文字列を含むデータ(リファレンス)を準備します
+my $data = [{name => 'あ'}, {name => 'い'}];
+ 
+# データ(リファレンス)をエンコード(utf8)し標準エラー出力にダンプします
+du $data;
+ 
+# データ(リファレンス)をエンコード(cp932)し標準エラー出力にダンプします
+dw $data;
+ 
+# データ(リファレンス)をエンコードせずに標準エラー出力にダンプします
+dn $data;
+</pre>
+
+
+<h3>特徴</h3>
+<ul>
+<li>du, dw, dn関数をexportします。これらの関数名は、2文字のため'p' などのデバックコマンドと競合しないでください。</li>
+<li>du, dw関数はリファレンスデータの全ての文字列をエンコードします。</li>
+<li>duは'dump UTF-8'の短縮名です。</li>
+<li>dwは'dump Windows cp932'の短縮名です。</li>
+<li>dnは'dump no encoding'の短縮名です。</li>
+<li>One Linerは便利です。'use D; du $data;' or 'use D; dw $data;' or 'use D; dn $data;'</li>
+<li>Data::DumperのDump関数を使用してデータをダンプします。</li>
+<li>行番号とファイル名を標準エラーへ出力します。</li>
+<li>ダンプされたデータのハッシュのキーでソートします。</li>
+<li>Data::Dumperのデフォルトとは異なり、'$VAR1 ='を出力しません。</li>
+</ul>
