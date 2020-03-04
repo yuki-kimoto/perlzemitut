@@ -383,8 +383,8 @@
 
   .hatena-moduletitle {
     font-family: "times new roman", "geogia", serif;
-    padding:6px 0 5px 0;
-    font-size:14px;
+    padding:10px 0 8px 0;
+    font-size:16px;
     color:#2e8b57;
     background:#90ee90;
     border-left:0px solid #f4a460;
@@ -595,6 +595,36 @@
     background-size:76px;
     background-color:#f048a4;
     padding-left:115px;
+  }
+
+  .bottom ul {
+    background:#ffb8eb;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-wrap:wrap;
+  }
+  .bottom li {
+    width:50%;
+    margin-top:50px;
+    list-style:none;
+    margin:0;
+    padding:0;
+    padding:7px;
+  }
+  .bottom a {
+    background:white;
+    display:block;
+    width:100%;
+    padding:30px;
+    height:100%;
+    text-decoration:none;
+    color:#434;
+    font-weight:bold;
+    border:2px solid #f52abc;
+  }
+  .bottom a:hover {
+    opacity:0.8;
   }
 
 @media only screen and (max-width:880px) {
