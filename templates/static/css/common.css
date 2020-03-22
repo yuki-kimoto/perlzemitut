@@ -56,6 +56,7 @@
     max-width:880px;
     margin:0 auto;
     overflow:hidden;
+    padding-bottom:20px;
   }
   .footer {
     width:100%;
@@ -63,10 +64,63 @@
     background:white;
     text-align:center;
     color:#666;
-    padding:10px 0;
-    margin-top:70px;
     font-size:13px;
   }
+
+  .footer .what-is-perl {
+    width:95%;
+    padding:25px 0;
+    font-size:16px;
+  }
+  .footer .what-is-perl b {
+    padding-left:3px;
+    padding-right:3px;
+    font-size:101%;
+  }
+  .footer .what-is-perl ul {
+  }
+  .footer .what-is-perl li {
+    list-style:none;
+  }
+  .footer .what-is-perl img {
+    width:100%;
+    max-width:110px;
+    margin-bottom:15px;
+  }
+  
+  /* footer */
+  .footer .kimoto_system_link img {
+    width:105px;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:20px;
+  }
+  .footer .kimoto_system_link a, .footer .kimoto_system_link a:visited {
+    color:white;
+    display:block;
+    height:100%;
+    padding:28px 0 25px 0;
+    font-size:18px;
+    font-weight:bold;
+    color:white;
+    text-align:center;
+    background:#2E75B6;
+    letter-spacing:1px;
+    font-size:18px;
+    cursor:pointer;
+  }
+  .footer .kimoto_system_link a:hover {
+    opacity:0.8;
+  }
+  .footer .copyright {
+    background:white;
+    color:#333;
+    padding:9px 0 8px 0;
+    font-size:14px;
+    text-align:center;
+  }
+
   .entry {
     float:left;
     width:77%;
