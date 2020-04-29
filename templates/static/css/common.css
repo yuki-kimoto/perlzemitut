@@ -650,6 +650,13 @@
     padding-left:115px;
   }
 
+  .bottom {
+    padding-bottom:30px;
+    padding-top:30px;
+    width:calc(100% - 30px);
+    margin-left:auto;
+    margin-right:auto;
+  }
   .bottom ul {
     background:#ffb8eb;
     margin:0;
@@ -665,7 +672,7 @@
     padding:0;
     padding:7px;
   }
-  .bottom a {
+  .bottom ul a {
     background:white;
     display:block;
     width:100%;
@@ -676,7 +683,8 @@
     font-weight:bold;
     border:2px solid #f52abc;
   }
-  .bottom a:hover {
+  
+  .bottom ul a:hover {
     opacity:0.8;
   }
 
