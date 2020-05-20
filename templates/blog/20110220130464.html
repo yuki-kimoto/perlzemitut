@@ -44,13 +44,17 @@ sudo cpan App::perlbrew
 perlbrew init
 </pre>
 
-次にperlbrewのパスを通しましょう。perlbrewで用意されているbash用の設定ファイルを「~/.bash_profile」に追加します(bashの場合)。
+次にperlbrewのパスを通しましょう。perlbrewで用意されているbash用の設定ファイルを「~/.bashrc」に追加します(bashの場合)。
 
 <pre>
-echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bash_profile
+echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bashrc
 </pre>
 
-そして、シェルを立ち上げなおします。
+「.bashrc」を読み込みなおします。
+
+<pre>
+source  ~/.bashrc
+</pre>
 
 <h3>ユーザー環境へのPerlのインストール</h3>
 
