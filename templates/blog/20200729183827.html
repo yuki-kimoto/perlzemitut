@@ -1,0 +1,343 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<h2>Amazon::S3::Thin - 薄くて、軽量、低レベル操作ができるAmazon S3クライアント</h2>
+
+Amazon::S3::Thinは薄くて、軽量、低レベル操作ができるAmazon S3クライアントです。以下は、<a href="https://metacpan.org/pod/Amazon::S3::Thin">Amazon::S3::Thin </a> 0.29の日本語訳です。
+
+<h3>概要</h3>
+
+<pre>
+use Amazon::S3::Thin;
+ 
+my $s3client = Amazon::S3::Thin->new({
+      aws_access_key_id     => $aws_access_key_id,
+      aws_secret_access_key => $aws_secret_access_key,
+      aws_session_token     => $aws_session_token, # optional
+      region                => $region, # e.g. 'ap-northeast-1'
+    });
+ 
+my $bucket = "mybucket";
+my $key = "dir/file.txt";
+my $response;
+ 
+$response = $s3client->put_bucket($bucket);
+ 
+$response = $s3client->put_object($bucket, $key, "hello world");
+ 
+$response = $s3client->get_object($bucket, $key);
+print $response->content; # => "hello world"
+ 
+$response = $s3client->delete_object($bucket, $key);
+ 
+$response = $s3client->list_objects(
+                            $bucket,
+                            {prefix => "foo", delimiter => "/"}
+                           );
+</pre>
+
+また、任意のユーザーエージェントを好きなように渡すことができます
+
+<pre>
+my $s3client = Amazon::S3::Thin->new({
+        ...
+        ua => $any_LWP_copmatible_useragent,
+    });
+</pre>
+
+デフォルトでは、署名バージョン 4 が使用されます。署名バージョン 2 を使用するには、オプションを追加します。signature_version
+
+<pre>
+my $s3client = Amazon::S3::Thin->new({
+        ...
+        signature_version     => 2,
+    });
+</pre>
+
+<h3>説明</h3>
+
+Amazon::S3:::Thin は薄くて軽量で低レベルの Amazon S3 クライアントです。
+
+リクエストを送信して応答を得るという目的だけで設計されています。
+
+詳細には、次の機能を提供しています。
+
+<b>低レベル</b>
+
+<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクトを返して、内部で何が起こっているかを簡単に調べることができ、必要に応じてエラーを処理できます。
+
+<b>低依存</b>
+
+XML::*モジュールは必要ないので、インストールは簡単です。
+
+<b>低学習コスト</b>
+
+インターフェイスは、S3 公式 REST API に従うように設計されています。だから、学ぶことは簡単です。
+
+<b>以前に作られたモジュールとの比較</b>
+
+すでにAmazon::S3、Net::Amazon::S3のような便利なモジュールがあります。彼らはPerlプログラマにとってきれいに見える「Perlish」インターフェイスを提供しますが、低レベルの動作も隠しています。たとえば、「get_key」メソッドは、HTTP ステータス 404 を undef に変換し、HTTP 5xx ステータスを例外に変換します。
+
+状況によっては、生の HTTP 通信を確認することが非常に重要です。だから私はこのモジュールを作ったのです。
+
+<h3>コンストラクタ</h3>
+
+<h4>new( \%params )</h4>
+
+<b>引数:</b>オプションを含んだハッシュリファレンス.
+
+<b>戻り値</b>:Amazon::S3::薄いオブジェクト
+
+次の引数を受け取ることができます。
+
+<ul>
+  <li>aws_access_key_id (<b>必須</b>)- 資格情報のアクセス キー ID。</li>
+  <li>aws_secret_access_key (<b>必須</b>)- 資格情報の秘密のアクセスキー。</li>
+  <li>region - (<b>必須</b>)アクセスするバケットのリージョン(現在は署名バージョンが4の場合にのみ使用)</li>
+  <li>secure- httpsを使用するかどうか。デフォルトは 0 (http) です。</li>
+  <li>ua- ユーザー エージェント オブジェクトで、LWP::UserAgent と互換性があります。デフォルトはLWP::ユーザーエージェントのインスタンスです。</li>  <li>signature_version- 使用する AWS 署名バージョン。サポートされる値は 2 と 4 です。デフォルトは 4 です。</li>
+  <li>debug- デバッグオプション。デフォルトは 0 (偽) です。設定値 1 の場合、HTTP 要求と応答の内容は stderr に表示されます。</li>
+  <li>virtual_host- 仮想ホスト型の要求形式を使用するかどうか。デフォルトは 0 (パススタイル) です。</li>
+</ul>
+
+<h3>アクセサ</h3>
+
+次のアクセサが提供されます。これらを使用して、オブジェクトの属性を取得/設定できます。
+
+<h4>secure</h4>
+
+S3 に接続するときに https (1) または http (0) を使用するかどうか。
+
+<h4>ua</h4>
+
+ユーザー エージェントは、要求を実行し、応答を返すために内部で使用しました。この属性を設定する場合は、<a href="https://metacpan.org/pod/LWP::UserAgent">LWP::UserAgent</a>(同じインターフェイスを提供する)と互換性のあるオブジェクトで設定してください。
+
+<h4>debug</h4>
+
+デバッグ オプション。
+
+<h3>バケットに対する操作</h3>
+
+<h4>put_bucket($bucket[,$headers])</h4>
+
+<b>引数:</b>
+
+1. バケット - バケットを持つ文字列
+
+2. ヘッダー (オプション) - 余分なヘッダー情報を含むハッシュリファレンス
+
+<h4>delete_bucket($bucket[$headers])</h4>
+
+<b>引数:</b>
+
+1. バケット - バケットを持つ文字列
+
+2. ヘッダー (オプション) - 余分なヘッダー情報を含むハッシュリファレンス
+
+<h3>オブジェクトに対する操作</h3>
+
+<h4>get_object($bucket, $key[, $headers] )</h4>
+
+<b>引数:</b>
+
+1. バケット - バケットを持つ文字列
+
+2. キー - キーを持つ文字列
+
+3. ヘッダー (オプション) - 余分なヘッダー情報を含むハッシュリファレンス
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。返されたオブジェクトに対してcontent()メソッドを使用して、内容を読み取れます。
+
+<pre>
+my $res = $s3->get_object( 'my.bucket', 'my/key.ext' );
+ 
+if ($res->is_success) {
+    my $content = $res->content;
+}
+</pre>
+
+GET オペレーションは、Amazon S3 からオブジェクトを取得します。
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectGET.html">GETに関するAmazonのドキュメント</a>を参照してください。
+
+<h4>head_object($bucket, $key)</h4>
+
+<b>引数:</b>
+
+1. バケット - バケットを持つ文字列
+
+2. キー - キーを持つ文字列
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。返されたオブジェクトに対してheader()メソッドを使用して、メタデータを読み取れます。
+
+<pre>
+my $res = $s3->head_object( 'my.bucket', 'my/key.ext' );
+ 
+if ($res->is_success) {
+    my $etag = $res->header('etag'); #=> `"fba9dede5f27731c9771645a39863328"`
+}
+</pre>
+
+HEAD オペレーションは、Amazon S3 からオブジェクトのメタデータを取得します。
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html">HEADに関するAmazonのドキュメント</a>を参照してください。
+
+<h4>delete_object($bucket, $key)</h4>
+
+<b>引数:</b> バケット名を持つ文字列と、キー名を持つ文字列。
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。
+
+DELETE 操作は、オブジェクトの null バージョン (存在する場合) を削除し、削除マーカーを挿入します。null バージョンがない場合、Amazon S3 はオブジェクトを削除しません。
+
+応答オブジェクトを使用して、成功したかどうかを確認します。
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectDELETE.html">DELETEに関するAmazonのドキュメント</a>を参照してください。
+
+<h4>copy_object( $src_bucket, $src_key, $dst_bucket, $dst_key [, $headers] )</h4>
+
+<b>引数:</b> ソース (バケット、キー) と宛先 (バケット、キー) を持つリスト、追加のヘッダー情報を含むハッシュリファレンス (オプション)。
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。
+
+このメソッドは、Amazon の S3 API で説明されている PUT 操作のバリエーションです。すでに Amazon S3 に保存されているオブジェクトのコピーを作成します。この「PUT コピー」操作は、古いバケット/キーから GET を実行し、新しいバケット/キーに PUT を実行するのと同じです。
+
+COPY 要求は 200 OK でエラー応答を返す場合がありますが、このメソッドはエラー応答を判別し、状況コードを 500 に書き換えます。
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html">COPYに関するAmazonのドキュメント</a>を参照してください。
+
+<h4>put_object($bucket, $key, $content[,$headers] )</h4>
+
+<b>引数:</b>
+
+1. バケット - 宛先バケットを含む文字列
+
+2. キー - 宛先キーを持つ文字列
+
+3. コンテンツ - アップロードするコンテンツを含む文字列
+
+4. ヘッダー (オプション) - 余分なヘッダー情報を含むハッシュリファレンス
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。
+
+PUT 操作は、バケットにオブジェクトを追加します。Amazon S3 は、部分オブジェクトを追加しません。成功レスポンスを受け取った場合、Amazon S3 はオブジェクト全体をバケットに追加します。
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUT.html">PUTに関するAmazonのドキュメント</a>を参照してください。
+
+<h4>delete_multiple_objects($bucket, @keys)</h4>
+
+<b>引数:</b> バケット名を持つ文字列と、削除するすべてのキーを含む配列。
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。
+
+複数オブジェクトの削除操作では、単一の HTTP リクエストを使用して、バケットから複数のオブジェクト (最大 1000) を削除できます。削除するオブジェクトキーがわかっている場合、この操作は、個々の削除要求を 送信する代わりに、要求ごとのオーバーヘッドを削減します。delete_object()
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/multiobjectdeleteapi.html">複数オブジェクトの削除に関するDELETEのAmazonのドキュメント</a>を参照してください。
+
+<h4>list_objects( $bucket [, \%options] )</h4>
+
+<b>引数:</b> バケット名を持つ文字列、および以下のオプションを含むハッシュリファレンス(オプション)のいずれかを使用します。
+
+<ul>
+  <li>prefix (文字列)- 指定したプレフィックスで始まるキーのみを返します。ファイルシステム内のフォルダーを使用する場合と同じように、プレフィックスを使用してバケットを異なるグループのキーに分けることができます。</li>
+  <li>delimiter (文字列)- キーの先頭 (または指定されている場合はプレフィックスの後) と区切り文字の最初の出現との間に同じ文字列を含むグループ キー。</li>
+  <li>encoding-type (文字列)- "url" に設定すると、応答のキーがエンコードされます (XML パーサーが Unicode キーを動作できない場合に便利です)。</li>
+  <li>marker (文字列)- オブジェクトをリストする際に開始するキーを指定します。Amazon S3 は、オブジェクトキーをアルファベット順に、マーカーの直後のキーから順に返します。</li>
+  <li>max-keys (文字列)- 応答本文に返されるキーの最大数を設定します。デフォルトの 1000 キーより少ない数のキーを取得する場合は、これをリクエストに追加できます。</li>
+</ul>
+
+<b>戻り値:</b>リクエストに応じた<a href="https://metacpan.org/pod/HTTP::Response">HTTP::Response</a>オブジェクト。返されたオブジェクトに対してcontent()メソッドを使用して、内容を読み取れます。
+
+このメソッドは、バケット内のオブジェクトの一部または全部 (最大 1000 個) を返します。応答に含まれるキーは少なくなる可能性がありますが、それ以上は含まれていないことに注意してください。検索条件を満たすキーが制限値 (1000 または max-key) を超えたために返されなかった場合、応答には .追加のキーを返す場合は、上記の「marker」を参照してください。
+
+詳細については、<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGET.html">AMAZONのRESTバケットGETのドキュメント</a>を参照してください。
+
+<h4>generate_presigned_post($bucket, $key [, $fields, $conditions, $expires_in ] )</h4>
+
+<b>引数:</b>
+
+1. バケット (文字列) - 送信先バケットを含む文字列
+
+2. キー (文字列) - 宛先キーを持つ文字列
+
+3. フィールド (配列リファレンス) - キー/値ペアの配列リファレンスを事前に記入したフォームフィールドに対して、上に構築します。
+
+4. 条件 (配列リファレンス) - ポリシーに含める条件 (配列リファレンスまたはハッシュリファレンス) の配列リファレンス
+
+5. expires_in (数) - 署名付き URL が期限切れになる前の現在の時刻からの秒数
+
+<b>戻り値:</b> 「url」と「fields」という2 つの要素を持つハッシュリファレンスを返します。「url」は、ポストされたURLです。「fields」は、POSTをサブミットしたときに使用された、フォームのフィールドとそれぞれの値です。 は、投稿を送信するときに使用するフォームフィールドとそれぞれの値を記入した配列リファレンスです。(fieldsの順序に従う必要があります。)
+
+このメソッドは、HTTP POST を使用して Amazon S3 にファイルをアップロードするための署名付き URL を生成します。boto3 からの元の実装は、<a href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.generate_presigned_post">S3Client.generate_presigned_post()</a>を参照して移植されました。
+
+注: このメソッドは、シグネチャ v4 のみがサポートされています。
+
+これは、署名付き URL を生成し、ファイル「test.txt」をアップロードする例です。この場合、任意の値を持つオブジェクトメタデータ「x-amz-meta-foo」を設定することができ、アップロードサイズは1MBに制限されています。
+
+<pre>
+my $presigned = $s3->generate_presigned_post('my.bucket', 'my/key.ext', [
+    'x-amz-meta-foo' => 'bar',
+], [
+    ['starts-with' => '$x-amz-meta-foo', ''],
+    ['content-length-range' => 1, 1024*1024],
+], 24*60*60);
+ 
+my $ua = LWP::UserAgent->new;
+my $res = $ua->post(
+    $presigned->{url},
+    Content_Type => 'multipart/form-data',
+    Content      => [
+        @{$presigned->{fields}},
+        file => ['test.txt'],
+    ],
+);
+</pre>
+
+詳細については、<a href="https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-HTTPPOSTConstructPolicy.html">POSTポリシーの作成に関するAmazonのドキュメント</a>を参照してください。
+
+<h3>Todo</h3>
+
+多くの API はまだ実装されていません。
+
+リポジトリ
+
+<a href="https://github.com/DQNEO/Amazon-S3-Thin">https://github.com/DQNEO/Amazon-S3-Thin</a>
+
+<h3>ライセンス</h3>
+
+著作権(C)DQNEO。
+
+このライブラリはフリーソフトウェアです。Perl 自体と同じ用語で再配布したり、変更することができます。
+
+<h3>著者</h3>
+
+DQNEO
+
+<h3>サンクス</h3>
+
+ティモシー・アプネル・ブレノ・G・デ・オリベイラ
+
+<h3>参考</h3>
+
+Amazon::S3 <a href="https://github.com/tima/perl-amazon-s3">https://github.com/tima/perl-amazon-s3</a>
+
+Net::Amazon::S3
+
+アマゾン S3 API リファレンス : REST API
+
+Amazon S3 API リファレンス : エラーコードのリスト
