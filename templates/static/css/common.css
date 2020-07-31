@@ -657,37 +657,6 @@
     margin-left:auto;
     margin-right:auto;
   }
-  .bottom ul {
-    background:#ffb8eb;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-wrap:wrap;
-  }
-  .bottom li {
-    width:50%;
-    margin-top:50px;
-    list-style:none;
-    margin:0;
-    padding:0;
-    padding:7px;
-  }
-  .bottom ul a {
-    background:white;
-    display:block;
-    width:100%;
-    padding:30px;
-    height:100%;
-    text-decoration:none;
-    color:#434;
-    font-weight:bold;
-    border:2px solid #f52abc;
-  }
-  
-  .bottom ul a:hover {
-    opacity:0.8;
-  }
-
 @media only screen and (max-width:880px) {
   .entry {
     width:100%;
