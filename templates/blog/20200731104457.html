@@ -1,0 +1,53 @@
+<h2>Perlにおけるお勧めのシェバンの書き方</h2>
+
+Perlにおける、お勧めのシェバンの書き方。「#!/usr/bin/env perl」。
+
+<pre>
+#!/usr/bin/env perl
+</pre>
+
+Unix/Linuxには、シェバンと呼ばれる機能があり、シェバンに書かれたコマンドで、ファイルに書かれた内容を実行してくれます。
+
+シェバンは「#!」で始まります。
+
+「#!/usr/bin/env perl」がお勧めな理由は、ほとんどの<a href="https://linux.perlzemi.com/">Linux</a>/Unix環境で動くからです。
+
+<a href="https://tutorial.perlzemi.com/blog/20110220130464.html">perlbrew</a>や<a href="https://tutorial.perlzemi.com/blog/20180816153437.html">plenv</a>でユーザー環境にPerlをインストールした場合でも正しく動きます。
+
+envコマンドは、環境変数PATHのディレクトリを検索して最初に見つかったperlで実行してくれます。
+
+<h3>envを使うことのデメリット</h3>
+
+envを使うことのデメリットは、どのPerlを使うかが確定されないということです。envという名前のとおり、PATH環境変数という、環境に依存します。
+
+Perlスクリプトのポータビリティを高めるか、指定したPerlでプログラムを実行するのと、どちらがメリットがあるかという選択になります。
+
+<h3>シェバン行は必須ですか?</h3>
+
+シェバン行は必須ではないです。
+
+perlコマンドを実行すれば、シェバンに関係なく、perlで実行できるからです。
+
+<pre>
+perl script.pl
+</pre>
+
+Windows環境であれば、シェバンを書かずに、直接Perlで実行するということも多いでしょう。
+
+サーバー運用の現場で作るプログラムでは、perlスクリプトは、シェバンを書いて、拡張子をなしにして、実行ファイルのように扱うという規約や慣例があれば、それに従ってください。
+
+Perlを中心に開発している現場では、Perlのプログラムは、拡張子をplにして、perlで実行するという選択もよいでしょう。
+
+CGIスクリプトにおいては、シェバンは必須です。CGIというプロトコルは、実行権限のあるファイルをそのまま実行し、perlというコマンドで実行してくれるわけではないからです。ApacheなどのWebサーバーでは、シェバンを書かないと「Internal Server Error」になります。
+
+<h3>CPANモジュールに含むスクリプトは「#!perl」がお勧め</h3>
+
+CPANモジュールを配布する場合に含むスクリプトは「#!perl」がお勧めです。
+
+<pre>
+#!perl
+</pre>
+
+<a href="https://mojolicious.perlzemi.com/">Mojolicious</a>の本番サーバー起動コマンドの<a href="https://mojolicious.perlzemi.com/blog/20110122130016.html">hypnotoad</a>も「#!perl」を使っています。CPANクライアントは、インストール先の、Unix/Linux/Windowsで、スクリプトを実行できるように、この行を、自動的に書き換えてくれます。
+
+<a href="https://github.com/mojolicious/mojo/blob/master/script/hypnotoad">hypnotoadで「#!perl」をシェバンとして使っている例</a>
