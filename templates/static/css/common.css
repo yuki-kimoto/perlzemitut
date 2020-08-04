@@ -388,7 +388,6 @@
     border:none;
     letter-spacing:1px;
   }
-
   h4 {
     font-size:19px;
     color:#334433;
@@ -653,10 +652,17 @@
   .bottom {
     padding-bottom:30px;
     padding-top:30px;
-    width:calc(100% - 30px);
     margin-left:auto;
     margin-right:auto;
   }
+  .bottom h3 {
+    background:orange;
+    padding-top:17px;
+    padding-bottom:16px;
+    text-align:center;
+  }
+
+
 @media only screen and (max-width:880px) {
   .entry {
     width:100%;
