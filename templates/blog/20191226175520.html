@@ -200,3 +200,21 @@ my @page_size_infos = $page->mediabox;
 </pre>
 
 一般的には、左下からのマージンXが0、 左下からのマージンYが0で返ってきますので、右上の座標Xが幅、右上の座標Yが、高さと考えてよいでしょう。
+
+<h2>複数のPDFファイルを結合する</h2>
+
+複数のPDFファイルを結合する手順を紹介します。新しいPDF::API2オブジェクトを作成します。既存のPDFファイルを開きます。
+
+import_pageメソッドを使って、既存のPDFファイルを新しいPDFに挿入します。
+
+最後に、新しいPDFを保存して終了です。
+
+<pre>
+my $pdf = PDF::API2->new();
+my $old = PDF::API2->open('our/old.pdf');
+ 
+# Add page 2 from the old PDF as page 1 of the new PDF
+$pdf->import_page($old, 2);
+ 
+$pdf->saveas('our/new.pdf');
+</pre>
