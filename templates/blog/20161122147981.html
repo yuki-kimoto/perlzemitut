@@ -121,7 +121,7 @@ my $dbh = DBI->connect(
   "DBI:mysql:$database:$hostname",
   $user,
   $password
-) or die "cannot connect to MySWL: $DBI::errstr";
+) or die "cannot connect to MySQL: $DBI::errstr";
 </pre>
 
 <h3>現在時刻をMySQLの日付時刻型に変換する</h3>
