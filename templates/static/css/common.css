@@ -89,14 +89,14 @@
   }
   
   /* footer */
-  .footer .kimoto_system_link img {
+  .footer .perlri_link img {
     width:105px;
     display:block;
     margin-left:auto;
     margin-right:auto;
     margin-bottom:20px;
   }
-  .footer .kimoto_system_link a, .footer .kimoto_system_link a:visited {
+  .footer .perlri_link a, .footer .perlri_link a:visited {
     color:white;
     display:block;
     height:100%;
@@ -105,22 +105,14 @@
     font-weight:bold;
     color:white;
     text-align:center;
-    background:#2E75B6;
+    background:#70AD47;
     letter-spacing:1px;
     font-size:18px;
     cursor:pointer;
   }
-  .footer .kimoto_system_link a:hover {
+  .footer .perlri_link a:hover {
     opacity:0.8;
   }
-  .footer .copyright {
-    background:white;
-    color:#333;
-    padding:9px 0 8px 0;
-    font-size:14px;
-    text-align:center;
-  }
-
   .entry {
     float:left;
     width:75%;
