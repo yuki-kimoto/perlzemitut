@@ -653,8 +653,25 @@
     padding-bottom:16px;
     text-align:center;
   }
-
-
+  
+  .youtube_block {
+    width:calc(100% - 30px);
+    margin:0 auto;
+  }
+  .youtube {
+    position: relative;
+    width: 100%;
+    margin:0 auto;
+    padding-top: 56.25%;
+  }
+  .youtube iframe {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
 @media only screen and (max-width:880px) {
   .entry {
     width:100%;
