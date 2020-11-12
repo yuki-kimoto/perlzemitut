@@ -67,22 +67,22 @@
     font-size:13px;
   }
 
-  .footer .what-is-perl {
+  .footer .what_is_this_site {
     width:95%;
     padding:25px 0;
     font-size:16px;
   }
-  .footer .what-is-perl b {
+  .footer .what_is_this_site b {
     padding-left:3px;
     padding-right:3px;
     font-size:101%;
   }
-  .footer .what-is-perl ul {
+  .footer .what_is_this_site ul {
   }
-  .footer .what-is-perl li {
+  .footer .what_is_this_site li {
     list-style:none;
   }
-  .footer .what-is-perl img {
+  .footer .what_is_this_site img {
     width:100%;
     max-width:110px;
     margin-bottom:15px;
