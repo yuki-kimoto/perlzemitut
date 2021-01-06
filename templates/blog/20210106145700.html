@@ -1,0 +1,19 @@
+<h2>Selenium::FirefoxでJavaScript対応のWebスクレイピングを行う</h2>
+
+Selenium::FirefoxでJavaScript対応のWebスクレイピングを行ってみます。Selenium::Firefoxは、Firefox用にカスタマイズされた<a href="/blog/20210105145700.html">Selenium::Remote::Driver</a>です。
+
+<pre>
+# ドライバを生成。以下の二つは同じですが、Firefox 48+でのみ動作します。
+my $driver = Selenium::Firefox->new;
+$driver = Selenium::Firefox->new( marionette_enabled => 1 );
+ 
+# 何かを行う
+
+# ドライバをシャットダウンする
+$driver->shutdown_binary;
+
+# For Firefox 47とそれりも古い場合。マリオネットは無効になっています。
+$driver = Selenium::Firefox->new( marionette_enabled => 0 );
+$driver->shutdown_binary;</pre>
+</pre>
+
