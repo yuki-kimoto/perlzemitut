@@ -1059,58 +1059,115 @@ $driver->delete_cookie_named('foo');
 
 <h4><a href="#find_element" ></a>find_element</h4>
 
-<div>Search for an element on the page, starting from the document</div><div>root. The located element will be returned as a WebElement</div><div>object. If the element cannot be found, we will CROAK, killing</div><div>your script. If you wish for a warning instead, use <a href="/pod/the">the</a></div><div>parameterized version of the finders:</div><div></div><div>find_element_by_class</div><div>find_element_by_class_name</div><div>find_element_by_css</div><div>find_element_by_id</div><div>find_element_by_link</div><div>find_element_by_link_text</div><div>find_element_by_name</div><div>find_element_by_partial_link_text</div><div>find_element_by_tag_name</div><div>find_element_by_xpath</div><div></div><div>These functions all take a single 文字列 argument: the locator</div><div>search target of the element you want. If the element is found, we</div><div>will receive a WebElement. Otherwise, we will return 0. Note that</div><div>invoking methods on 0 will of course kill your script.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+ドキュメントルートから始めて、ページ上の要素を検索します。見つかった要素は、WebElementオブジェクトとして返されます。要素が見つからない場合は、CROAKを実行して、スクリプトを強制終了します。代わりに警告が必要な場合は、パラメーター化されたバージョンのファインダーを使用してください。
 
+find_element_by_class
+
+find_element_by_class_name
+
+find_element_by_css
+
+find_element_by_id
+
+find_element_by_link
+
+find_element_by_link_text
+
+find_element_by_name
+
+find_element_by_partial_link_text
+
+find_element_by_tag_name
+
+find_element_by_xpathThese
+
+
+これらの関数はすべて、単一の文字列引数を取ります。つまり、必要な要素のロケーター検索ターゲットです。要素が見つかった場合、WebElementを受け取ります。それ以外の場合は、0を返します。0でメソッドを呼び出すと、もちろんスクリプトが強制終了されることに注意してください。
+
+<b>入力:</b>
+
+2つ (1つは任意)
+
+必須:
+
+文字列 - 検索ターゲット.
+
+任意:
+
+文字列 - 要素の検索に使用するロケータースキーム、使用可能なスキーム:
+
+{class, class_name, css, id, link, link_text, partial_link_text, tag_name, name, xpath}
+
+インスタンス化するときに中にグローバルに設定されていない場合、デフォルトは「xpath」です。
+ 
 <b>出力:</b>
 
+Selenium::Remote::WebElement - WebElement Object
 
-<div>Selenium::Remote::WebElement - WebElement Object</div><div>(This could be a subclass of L&lt;Selenium::Remote::WebElement&gt; if C&lt;webelement_class&gt; was set.</div><div></div>
+これは<b>webelement_class</b>が設定されている場合は、Selenium::Remote::WebElementのサブクラスである可能性があります。
 
 <b>使用方法:</b>
+
 <pre>
 $driver->find_element("//input[\@name='q']");
 </pre>
-
+   
 <h4><a href="#find_elements" ></a>find_elements</h4>
 
-<div>Search for multiple elements on the page, starting from the document root.</div><div>The located elements will be returned as an array of WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+ドキュメントルートから始めて、ページ上の複数の要素を検索します。見つかった要素は、WebElementオブジェクトの配列として返されます。
 
+<b>入力:</b>
+
+2つ (1つは任意)
+
+必須:
+
+文字列 - 検索ターゲット.
+
+任意:
+
+文字列 - 要素の検索に使用するロケータースキーム、使用可能なスキーム:
+
+{class, class_name, css, id, link, link_text, partial_link_text, tag_name, name, xpath}
+
+インスタンス化するときに中にグローバルに設定されていない場合、デフォルトは「xpath」です。
+                
 <b>出力:</b>
 
-
-<div>配列 or 配列REF of WebElement Objects</div><div></div>
+複数のWebElementオブジェクトを含んだ&lt;配列|配列リファレンス&gt;
 
 <b>使用方法:</b>
+
 <pre>
 $driver->find_elements("//input");
 </pre>
 
 <h4><a href="#find_child_element" ></a>find_child_element</h4>
 
-<div>Search for an element on the page, starting from the identified element. The</div><div>located element will be returned as a WebElement object.</div><div></div><div>Input: 3 (1 optional)</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>文字列 - The search target. (Do not use <a href="/pod/a">a</a> double whack('//')</div><div>in an xpath to search for a child element</div><div>ex: '//option[@]'</div><div>instead use <a href="/pod/a">a</a> dot whack ('./')</div><div>ex: './option[@]')</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+Search for an element on the page, starting from the identified element. Thelocated element will be returned as a WebElement object.Input: 3 (1 optional)必須:Selenium::Remote::WebElement - WebElement object from where you want tostart searching.文字列 - The search target. (Do not use <a href="/pod/a">a</a> double whack('//')in an xpath to search for a child elementex: '//option[@]'instead use <a href="/pod/a">a</a> dot whack ('./')ex: './option[@]')Optional:文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:{class, class_name, css, id, link, link_text, partial_link_text,tag_name, name, xpath}Defaults to 'xpath' if not configured global during instantiation.
 
 <b>出力:</b>
 
 
-<div>WebElement Object</div><div></div>
+WebElement Object
 
 <b>使用方法:</b>
 <pre>
-<div>my $elem1 = $driver->find_element("//select[\@name='ned']");<div># note the usage of ./ when searching for a child element instead of //</div><div>my $child = $driver->find_child_element($elem1, "./option[\@value='es_ar']");
+my $elem1 = $driver->find_element("//select[\@name='ned']");# note the usage of ./ when searching for a child element instead of //my $child = $driver->find_child_element($elem1, "./option[\@value='es_ar']");
 </pre>
 
 <h4><a href="#find_child_elements" ></a>find_child_elements</h4>
 
-<div>Search for multiple element on the page, starting from the identified</div><div>element. The located elements will be returned as an array of WebElement</div><div>objects.</div><div></div><div>Input: 3 (1 optional)</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+Search for multiple element on the page, starting from the identifiedelement. The located elements will be returned as an array of WebElementobjects.Input: 3 (1 optional)必須:Selenium::Remote::WebElement - WebElement object from where you want tostart searching.文字列 - The search target.Optional:文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:{class, class_name, css, id, link, link_text, partial_link_text,tag_name, name, xpath}Defaults to 'xpath' if not configured global during instantiation.
 
 <b>出力:</b>
 
 
-<div>配列 of WebElement Objects.</div><div></div>
+配列 of WebElement Objects.
 
 <b>使用方法:</b>
 <pre>
-<div>my $elem1 = $driver->find_element("//select[\@name='ned']");<div># note the usage of ./ when searching for a child element instead of //</div><div>my $child = $driver->find_child_elements($elem1, "./option");
+my $elem1 = $driver->find_element("//select[\@name='ned']");# note the usage of ./ when searching for a child element instead of //my $child = $driver->find_child_elements($elem1, "./option");
 </pre>
 
 <h4><a href="#find_element_by_class" ></a>find_element_by_class</h4>
@@ -1155,14 +1212,14 @@ $driver->find_elements("//input");
 
 <h4><a href="#get_active_element" ></a>get_active_element</h4>
 
-<div>Get the element on the page that currently has focus.. The located element</div><div>will be returned as a WebElement object.</div><div></div>
+現在フォーカスがあるページ上の要素を取得します。検索された要素はWebElementオブジェクトとして返されます。
 
 <b>出力:</b>
 
-
-<div>WebElement Object</div><div></div>
+WebElementオブジェクト
 
 <b>使用方法:</b>
+
 <pre>
 $driver->get_active_element();
 </pre>
