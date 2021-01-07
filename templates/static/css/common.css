@@ -255,6 +255,7 @@
     border-color:#d2d6de;
     background:#F7F7F7;
     border:1px solid #D2D6DE;
+    white-space: pre-wrap ;
   }
 
   p {
