@@ -40,7 +40,7 @@ Selenium::Remote::Driver-Seleniumリモートドライバー用のPerlクライ�
 
 <h3><a href="#SYNOPSIS" ></a>概要</h3>
 
-<pre><div>use <a href="/pod/Selenium::Remote::Driver">Selenium::Remote::Driver</a>;<div></div><div>my $driver = Selenium::Remote::Driver-&gt;new;<div>$driver-&gt;get('<a href="http://www.google.com">http://www.google.com</a>');<div>print $driver-&gt;get_title();<div>$driver-&gt;quit();
+<pre><div>use <a href="/pod/Selenium::Remote::Driver">Selenium::Remote::Driver</a>;<div></div><div>my $driver = Selenium::Remote::Driver-&gt;new;$driver->get('<a href="http://www.google.com">http://www.google.com</a>');<div>print $driver-&gt;get_title();$driver->quit();
 </pre>
 
 <h3><a href="#DESCRIPTION" ></a>説明</h3>
@@ -105,14 +105,14 @@ WC3 Webdriverは常に進化している標準であるため、特定の時点�
 
 さらに、古いドライバーはおそらくWD3として識別されますが、いくつかのメソッドを実装し、JSONWire機能を保持しています。これに対処する1つの方法は、次のように設定することです。
 
-<pre><div>$driver-&gt;{is_wd3} = 0</div>
+<pre>$driver->{is_wd3} = 0</div>
 </pre>
 
 もちろん、これにより新しいWC3メソッドにアクセスできなくなりますが、ブラウザーのドライバーが一緒に動作するようになるまで、テストに合格する可能性があります。
 
 Selenium::Remote::WebElement::get_attributeなど、メソッドでエミュレートするJSONWireの動作もいくつかあります。これを回避するには、サブに追加のフラグを渡すか、次のように設定します。
 
-<pre><div>$driver-&gt;{emulate_jsonwire} = 0;
+<pre>$driver->{emulate_jsonwire} = 0;
 </pre>
 
 WC3Webdriverモードの場合。
@@ -364,7 +364,7 @@ Selenium::Remote::Driverオブジェクト
 
 さらに、すでにインスタンス化されているドライバーでいつでも設定および/またはクリアできます。
 
-<pre><div># later, change the error handler to something else</div><div>$driver-&gt;error_handler( sub { print $_[1]; croak 'hello'; } );<div></div><div># stop handling errors manually and use the default S:R:D behavior</div><div># (we will croak about the exception)</div><div>$driver-&gt;clear_error_handler;
+<pre><div># later, change the error handler to something else</div>$driver->error_handler( sub { print $_[1]; croak 'hello'; } );<div></div><div># stop handling errors manually and use the default S:R:D behavior</div><div># (we will croak about the exception)</div>$driver->clear_error_handler;
 </pre>
 
 エラーハンドラは3つの引数を受け取ります。最初の引数は$driverオブジェクト自体であり、2番目の引数は例外メッセージと1つの複数行文字列のスタックトレースです。最後の引数は、実行されたばかりのコマンドの引数配列です。
@@ -420,7 +420,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;debug_on;
+$driver->debug_on;
 </pre>
 
 <h4><a href="#debug_off" ></a>debug_off</h4>
@@ -429,7 +429,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;debug_off;
+$driver->debug_off;
 </pre>
 
 <h4><a href="#get_sessions" ></a>get_sessions</h4>
@@ -476,7 +476,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;send_keys_to_active_element('abcd', 'efg');<div>$driver-&gt;send_keys_to_active_element('hijk');<div></div><div>or</div><div></div><div># include the WDKeys module</div><div>use <a href="/pod/Selenium::Remote::WDKeys">Selenium::Remote::WDKeys</a>;<div>$driver-&gt;send_keys_to_active_element(KEYS-&gt;{'space'}, KEYS-&gt;{'enter'});
+$driver->send_keys_to_active_element('abcd', 'efg');$driver->send_keys_to_active_element('hijk');<div></div><div>or</div><div></div><div># include the WDKeys module</div><div>use <a href="/pod/Selenium::Remote::WDKeys">Selenium::Remote::WDKeys</a>;$driver->send_keys_to_active_element(KEYS-&gt;{'space'}, KEYS-&gt;{'enter'});
 </pre>
 
 <h4><a href="#send_keys_to_alert" ></a>send_keys_to_alert</h4>
@@ -488,17 +488,17 @@ send_keys_to_promptと同義
 <div>Sends keystrokes to a JavaScript prompt() dialog.</div><div></div>
 
 <b>入力:</b>
-<div>{string} keys to send</div><div></div><div>Example:</div><div>$driver-&gt;send_keys_to_prompt('hello world');<div>or</div><div>ok($driver-&gt;get_alert_text eq 'Please Input your name','prompt appears');<div>$driver-&gt;send_keys_to_alert("Larry Wall");<div>$driver-&gt;accept_alert;
+<div>{string} keys to send</div><div></div><div>Example:</div>$driver->send_keys_to_prompt('hello world');<div>or</div><div>ok($driver-&gt;get_alert_text eq 'Please Input your name','prompt appears');$driver->send_keys_to_alert("Larry Wall");$driver->accept_alert;
 </pre>
 
 <h4><a href="#accept_alert" ></a>accept_alert</h4>
 
-<div>Accepts the currently displayed alert dialog. Usually, this is</div><div>equivalent to clicking the 'OK' button in the dialog.</div><div></div><div>Example:</div><div>$driver-&gt;accept_alert;
+<div>Accepts the currently displayed alert dialog. Usually, this is</div><div>equivalent to clicking the 'OK' button in the dialog.</div><div></div><div>Example:</div>$driver->accept_alert;
 </pre>
 
 <h4><a href="#dismiss_alert" ></a>dismiss_alert</h4>
 
-<div>Dismisses the currently displayed alert dialog. For comfirm()</div><div>and prompt() dialogs, this is equivalent to clicking the</div><div>'Cancel' button. For alert() dialogs, this is equivalent to</div><div>clicking the 'OK' button.</div><div></div><div>Example:</div><div>$driver-&gt;dismiss_alert;
+<div>Dismisses the currently displayed alert dialog. For comfirm()</div><div>and prompt() dialogs, this is equivalent to clicking the</div><div>'Cancel' button. For alert() dialogs, this is equivalent to</div><div>clicking the 'OK' button.</div><div></div><div>Example:</div>$driver->dismiss_alert;
 </pre>
 
 <h4><a href="#general_action" ></a>general_action</h4>
@@ -507,7 +507,7 @@ Webドライバーが入力デバイスを使用できるように、「アク�
 
 そうは言っても、ほとんどのデータは次のようになっているようです。
 
-<pre><div>$driver-&gt;general_action( actions =&gt; [{</div><div>type =&gt; 'pointer|key|none|somethingElseSuperSpecialDefinedByYourBrowserDriver',</div><div>id =&gt; MUST be mouse|key|none|other. And by 'other' I mean anything else. The first 3 are 'special' in that they are used in the global actions queue.</div><div>If you want say, another mouse action to execute in parallel to other mouse actions (to simulate multi-touch, for example), call your action 'otherMouseAction' or something.</div><div>parameters =&gt; {</div><div>someOption =&gt; "basically these are global parameters used by all steps in the forthcoming "action chain".</div><div>},</div><div>actions =&gt; [</div><div>{</div><div>type =&gt; "keyUp|KeyDown if key, pointerUp|pointerDown|pointerMove|pointerCancel if pointer, pause if any type",</div><div>key =&gt; A raw keycode or character from the keyboard if this is a key event,</div><div>duration =&gt; how many 'ticks' this action should take, you probably want this to be 0 all of the time unless you are evading Software debounce.</div><div>button =&gt; what number button if you are using a pointer (this sounds terribly like it might be re-purposed to be a joypad in the future sometime)</div><div>origin =&gt; Point of Origin if moving a pointer around</div><div>x =&gt; unit vector to travel along x-axis if pointerMove event</div><div>y =&gt; unit vector to travel along y-axis if pointerMove event</div><div>},</div><div>...</div><div>]</div><div>},</div><div>...</div><div>]</div><div>)</div>
+<pre>$driver->general_action( actions =&gt; [{</div><div>type =&gt; 'pointer|key|none|somethingElseSuperSpecialDefinedByYourBrowserDriver',</div><div>id =&gt; MUST be mouse|key|none|other. And by 'other' I mean anything else. The first 3 are 'special' in that they are used in the global actions queue.</div><div>If you want say, another mouse action to execute in parallel to other mouse actions (to simulate multi-touch, for example), call your action 'otherMouseAction' or something.</div><div>parameters =&gt; {</div><div>someOption =&gt; "basically these are global parameters used by all steps in the forthcoming "action chain".</div><div>},</div><div>actions =&gt; [</div><div>{</div><div>type =&gt; "keyUp|KeyDown if key, pointerUp|pointerDown|pointerMove|pointerCancel if pointer, pause if any type",</div><div>key =&gt; A raw keycode or character from the keyboard if this is a key event,</div><div>duration =&gt; how many 'ticks' this action should take, you probably want this to be 0 all of the time unless you are evading Software debounce.</div><div>button =&gt; what number button if you are using a pointer (this sounds terribly like it might be re-purposed to be a joypad in the future sometime)</div><div>origin =&gt; Point of Origin if moving a pointer around</div><div>x =&gt; unit vector to travel along x-axis if pointerMove event</div><div>y =&gt; unit vector to travel along y-axis if pointerMove event</div><div>},</div><div>...</div><div>]</div><div>},</div><div>...</div><div>]</div><div>)</div>
 </pre>
 
 WebDriver3対応のセレニウムサーバーでのみ使用できます。
@@ -562,7 +562,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get_timeouts();
+$driver->get_timeouts();
 </pre>
 
 <h4><a href="#set_timeout" ></a>set_timeout</h4>
@@ -574,7 +574,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_timeout('script', 1000);
+$driver->set_timeout('script', 1000);
 </pre>
 
 <h4><a href="#set_async_script_timeout" ></a>set_async_script_timeout</h4>
@@ -586,7 +586,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_async_script_timeout(1000);
+$driver->set_async_script_timeout(1000);
 </pre>
 
 <h4><a href="#set_implicit_wait_timeout" ></a>set_implicit_wait_timeout</h4>
@@ -603,7 +603,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_implicit_wait_timeout(10);
+$driver->set_implicit_wait_timeout(10);
 </pre>
 
 <h4><a href="#pause" ></a>pause</h4>
@@ -612,7 +612,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;pause(10000); # 10 second delay</div><div>$driver-&gt;pause(); # 1 second delay default</div><div></div><div>DEPRECATED: consider using Time::HiRes instead.</div>
+$driver->pause(10000); # 10 second delay</div>$driver->pause(); # 1 second delay default</div><div></div><div>DEPRECATED: consider using Time::HiRes instead.</div>
 </pre>
 
 <h4><a href="#close" ></a>close</h4>
@@ -621,7 +621,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;close();<div>or</div><div>#close a popup window</div><div>my $handles = $driver-&gt;get_window_handles;<div>$driver-&gt;switch_to_window($handles-&gt;[1]);<div>$driver-&gt;close();<div>$driver-&gt;switch_to_window($handles-&gt;[0]);
+$driver->close();<div>or</div><div>#close a popup window</div><div>my $handles = $driver-&gt;get_window_handles;$driver->switch_to_window($handles-&gt;[1]);$driver->close();$driver->switch_to_window($handles-&gt;[0]);
 </pre>
 
 <h4><a href="#quit" ></a>quit</h4>
@@ -630,7 +630,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;quit();
+$driver->quit();
 </pre>
 
 <h4><a href="#get_current_window_handle" ></a>get_current_window_handle</h4>
@@ -658,7 +658,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print Dumper $driver-&gt;get_window_handles;<div>or</div><div># get popup, close, then back</div><div>my $handles = $driver-&gt;get_window_handles;<div>$driver-&gt;switch_to_window($handles-&gt;[1]);<div>$driver-&gt;close;<div>$driver-&gt;switch_to_window($handles-&gt;[0]);
+<div>print Dumper $driver-&gt;get_window_handles;<div>or</div><div># get popup, close, then back</div><div>my $handles = $driver-&gt;get_window_handles;$driver->switch_to_window($handles-&gt;[1]);$driver->close;$driver->switch_to_window($handles-&gt;[0]);
 </pre>
 
 <h4><a href="#get_window_size" ></a>get_window_size</h4>
@@ -718,7 +718,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;navigate('<a href="http://www.google.com">http://www.google.com</a>');
+$driver->navigate('<a href="http://www.google.com">http://www.google.com</a>');
 </pre>
 
 <h4><a href="#get" ></a>get</h4>
@@ -730,7 +730,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get('<a href="http://www.google.com">http://www.google.com</a>');
+$driver->get('<a href="http://www.google.com">http://www.google.com</a>');
 </pre>
 
 <h4><a href="#get_title" ></a>get_title</h4>
@@ -753,7 +753,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;go_back();
+$driver->go_back();
 </pre>
 
 <h4><a href="#go_forward" ></a>go_forward</h4>
@@ -762,7 +762,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;go_forward();
+$driver->go_forward();
 </pre>
 
 <h4><a href="#refresh" ></a>refresh</h4>
@@ -771,7 +771,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;refresh();
+$driver->refresh();
 </pre>
 
 <h4><a href="#has_javascript" ></a>has_javascript</h4>
@@ -838,7 +838,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;capture_screenshot($filename);<div>$driver-&gt;capture_screenshot($filename, {'full' =&gt; 1});
+$driver->capture_screenshot($filename);$driver->capture_screenshot($filename, {'full' =&gt; 1});
 </pre>
 
 <h4><a href="#available_engines" ></a>available_engines</h4>
@@ -866,7 +866,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;switch_to_frame('frame_1');<div>or</div><div>$driver-&gt;switch_to_frame($driver-&gt;find_element('iframe', 'tag_name'));
+$driver->switch_to_frame('frame_1');<div>or</div>$driver->switch_to_frame($driver-&gt;find_element('iframe', 'tag_name'));
 </pre>
 
 <h4><a href="#switch_to_parent_frame" ></a>switch_to_parent_frame</h4>
@@ -884,7 +884,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;switch_to_window('MY Homepage');<div>or</div><div># close a popup window and switch back</div><div>my $handles = $driver-&gt;get_window_handles;<div>$driver-&gt;switch_to_window($handles-&gt;[1]);<div>$driver-&gt;close;<div>$driver-&gt;switch_to_window($handles-&gt;[0]);
+$driver->switch_to_window('MY Homepage');<div>or</div><div># close a popup window and switch back</div><div>my $handles = $driver-&gt;get_window_handles;$driver->switch_to_window($handles-&gt;[1]);$driver->close;$driver->switch_to_window($handles-&gt;[0]);
 </pre>
 
 <h4><a href="#set_window_position" ></a>set_window_position</h4>
@@ -901,7 +901,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_window_position(50, 50);
+$driver->set_window_position(50, 50);
 </pre>
 
 <h4><a href="#set_window_size" ></a>set_window_size</h4>
@@ -918,7 +918,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_window_size(640, 480);
+$driver->set_window_size(640, 480);
 </pre>
 
 <h4><a href="#maximize_window" ></a>maximum_window</h4>
@@ -935,7 +935,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;maximize_window();
+$driver->maximize_window();
 </pre>
 
 <h4><a href="#minimize_window" ></a>minimize_window</h4>
@@ -949,7 +949,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;minimize_window();
+$driver->minimize_window();
 </pre>
 
 <h4><a href="#fullscreen_window" ></a>fullscreen_window</h4>
@@ -963,7 +963,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;fullscreen_window();
+$driver->fullscreen_window();
 </pre>
 
 <h4><a href="#get_all_cookies" ></a>get_all_cookies</h4>
@@ -986,7 +986,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;add_cookie('foo', 'bar', '/', '.google.com', 0, 1)</div>
+$driver->add_cookie('foo', 'bar', '/', '.google.com', 0, 1)</div>
 </pre>
 
 <h4><a href="#delete_all_cookies" ></a>delete_all_cookies</h4>
@@ -995,7 +995,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;delete_all_cookies();
+$driver->delete_all_cookies();
 </pre>
 
 <h4><a href="#get_cookie_named" ></a>get_cookie_named</h4>
@@ -1024,7 +1024,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;delete_cookie_named('foo');
+$driver->delete_cookie_named('foo');
 </pre>
 
 <h4><a href="#get_page_source" ></a>get_page_source</h4>
@@ -1052,7 +1052,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;find_element("//input[\@name='q']");
+$driver->find_element("//input[\@name='q']");
 </pre>
 
 <h4><a href="#find_elements" ></a>find_elements</h4>
@@ -1066,7 +1066,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;find_elements("//input");
+$driver->find_elements("//input");
 </pre>
 
 <h4><a href="#find_child_element" ></a>find_child_element</h4>
