@@ -251,7 +251,7 @@ chrome 75（および適切なドライバーバージョン）の時点で、WC
 <dd>
 
 </dd>
-<dt ><a href="#pageLoadStrategy-STRING-OPTIONAL,-'normal|eager|none'.-default-'normal'.-WebDriver3-only." ></a><a ></a><a ></a><b>pageLoadStrategy</b> -STRING-OPTIONAL、 'normal | eager | none'。デフォルトの「通常」。WebDriver3のみ。</dt>
+<dt ><a href="#pageLoadStrategy-文字列-OPTIONAL,-'normal|eager|none'.-default-'normal'.-WebDriver3-only." ></a><a ></a><a ></a><b>pageLoadStrategy</b> -文字列-OPTIONAL、 'normal | eager | none'。デフォルトの「通常」。WebDriver3のみ。</dt>
 <dd>
 
 </dd>
@@ -300,14 +300,14 @@ WebDriver3では、「extra_capabilities」がブラウザに必要なパラメ�
 
 <dl>
 
-<dt ><a href="#proxyType-<string>-REQUIRED,-Possible-values-are:" ></a><a ></a><a ></a><b>proxyType-</b> &lt;string&gt;-必須、可能な値は次のとおりです。</dt>
+<dt ><a href="#proxyType-<string>-必須,-Possible-values-are:" ></a><a ></a><a ></a><b>proxyType-</b> &lt;string&gt;-必須、可能な値は次のとおりです。</dt>
 <dd>
 
 <pre><div>direct - A direct connection - no proxy in use,</div><div>manual - Manual proxy settings configured, e.g. setting a proxy for HTTP, a proxy for FTP, etc,</div><div>pac - Proxy autoconfiguration from a URL,</div><div>autodetect - proxy autodetection, probably with WPAD,</div><div>system - Use system settings</div>
 </pre>
 
 </dd>
-<dt ><a href="#proxyAutoconfigUrl-<string>-REQUIRED-if-proxyType-is-'pac',-ignored-otherwise.-Expected-format:-http://hostname.com:1234/pacfile-or-file:///path/to/pacfile" ></a><a ></a><a ></a><b>proxyAutoconfigUrl-</b> &lt;string&gt; <b>-proxyType</b>が 'pac'の場合は必須、それ以外の場合は無視されます。予想される形式:http://hostname.com:1234 / pacfileまたはfile:/// path / to / pacfile</dt>
+<dt ><a href="#proxyAutoconfigUrl-<string>-必須-if-proxyType-is-'pac',-ignored-otherwise.-Expected-format:-http://hostname.com:1234/pacfile-or-file:///path/to/pacfile" ></a><a ></a><a ></a><b>proxyAutoconfigUrl-</b> &lt;string&gt; <b>-proxyType</b>が 'pac'の場合は必須、それ以外の場合は無視されます。予想される形式:http://hostname.com:1234 / pacfileまたはfile:/// path / to / pacfile</dt>
 <dd>
 
 </dd>
@@ -380,7 +380,7 @@ Selenium::Remote::Driverオブジェクト
 </pre>
 <b>入力:</b>
 <pre>
-<div>The only respected keys in the input hash are:</div><div></div><div>desired_capabilities - HASHREF - defaults to {}</div><div>remote_server_addr - STRING - defaults to localhost</div><div>port - INTEGER - defaults to 4444</div><div>default_finder - STRING - defaults to xpath</div><div>webelement_class - STRING - defaults to Selenium::Remote::WebElement</div><div>auto_close - BOOLEAN - defaults to 1</div><div>error_handler - CODEREF - defaults to croaking on exceptions</div><div></div><div>Except for C&lt;desired_capabilities&gt;, these keys perform exactly the</div><div>same as listed in the regular "new" constructor.</div><div></div><div>The hashref you pass in as desired_capabilities only gets json</div><div>encoded before being passed to the Selenium server; no default</div><div>options of any sort will be added.</div><div></div><div>This means you must handle normalization and casing of the input</div><div>options (like "browser_name" vs "browserName") and take care of</div><div>things like encoding the firefox profile if applicable. More</div><div>information about the desired capabilities object is available on</div><div>the Selenium wiki:</div><div></div><div><a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">https://code.google.com/p/selenium/wiki/JsonWireProtocol</a>#Capabilities_JSON_Object</div><div></div>
+<div>The only respected keys in the input hash are:</div><div></div><div>desired_capabilities - HASHREF - defaults to {}</div><div>remote_server_addr - 文字列 - defaults to localhost</div><div>port - INTEGER - defaults to 4444</div><div>default_finder - 文字列 - defaults to xpath</div><div>webelement_class - 文字列 - defaults to Selenium::Remote::WebElement</div><div>auto_close - BOOLEAN - defaults to 1</div><div>error_handler - CODEREF - defaults to croaking on exceptions</div><div></div><div>Except for C&lt;desired_capabilities&gt;, these keys perform exactly the</div><div>same as listed in the regular "new" constructor.</div><div></div><div>The hashref you pass in as desired_capabilities only gets json</div><div>encoded before being passed to the Selenium server; no default</div><div>options of any sort will be added.</div><div></div><div>This means you must handle normalization and casing of the input</div><div>options (like "browser_name" vs "browserName") and take care of</div><div>things like encoding the firefox profile if applicable. More</div><div>information about the desired capabilities object is available on</div><div>the Selenium wiki:</div><div></div><div><a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">https://code.google.com/p/selenium/wiki/JsonWireProtocol</a>#Capabilities_JSON_Object</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -474,7 +474,7 @@ Selenium::Remote::Driverオブジェクト
 </pre>
 <b>入力1:</b>
 <pre>
-<div>Required:</div><div>{ARRAY | STRING} - Array of strings or a string.</div><div></div>
+<div>必須:</div><div>{ARRAY | 文字列} - Array of strings or a string.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -535,7 +535,7 @@ WebDriver3対応のセレニウムサーバーでのみ使用できます。
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING -</div><div></div>
+<div>文字列 -</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -576,7 +576,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>入力:</b>
 <pre>
-<div>type - &lt;STRING&gt; - The type of operation to set the timeout for.</div><div>Valid values are:</div><div>"script" : for script timeouts,</div><div>"implicit" : for modifying the implicit wait timeout</div><div>"page load" : for setting a page load timeout.</div><div>ms - &lt;NUMBER&gt; - The amount of time, in milliseconds, that time-limited</div><div>commands are permitted to run.</div><div></div>
+<div>type - &lt;文字列&gt; - The type of operation to set the timeout for.</div><div>Valid values are:</div><div>"script" : for script timeouts,</div><div>"implicit" : for modifying the implicit wait timeout</div><div>"page load" : for setting a page load timeout.</div><div>ms - &lt;NUMBER&gt; - The amount of time, in milliseconds, that time-limited</div><div>commands are permitted to run.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -650,7 +650,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING - the window handle</div><div></div>
+<div>文字列 - the window handle</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -664,7 +664,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>出力:</b>
 <pre>
-<div>ARRAY of STRING - list of the window handles</div><div></div>
+<div>ARRAY of 文字列 - list of the window handles</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -678,7 +678,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>入力:</b>
 <pre>
-<div>STRING - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
+<div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -697,7 +697,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>入力:</b>
 <pre>
-<div>STRING - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
+<div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -716,7 +716,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING - url</div><div></div>
+<div>文字列 - url</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -730,7 +730,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>入力:</b>
 <pre>
-<div>STRING - url</div><div></div>
+<div>文字列 - url</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -744,7 +744,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>入力:</b>
 <pre>
-<div>STRING - url</div><div></div>
+<div>文字列 - url</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -758,7 +758,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING - Page title</div><div></div>
+<div>文字列 - Page title</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -803,7 +803,7 @@ mouse_move_to_locationと同義
 
 <h4><a href="#execute_async_script" ></a>execute_async_script</h4>
 
-<div>Inject a snippet of JavaScript into the page for execution in the context</div><div>of the currently selected frame. The executed script is assumed to be</div><div>asynchronous and must signal that is done by invoking the provided</div><div>callback, which is always provided as the final argument to the function.</div><div>The value to this callback will be returned to the client.</div><div></div><div>Asynchronous script commands may not span page loads. If an unload event</div><div>is fired while waiting for a script result, an error should be returned</div><div>to the client.</div><div></div><div>Input: 2 (1 optional)</div><div>Required:</div><div>STRING - Javascript to execute on the page</div><div>Optional:</div><div>ARRAY - list of arguments that need to be passed to the script.</div><div></div>
+<div>Inject a snippet of JavaScript into the page for execution in the context</div><div>of the currently selected frame. The executed script is assumed to be</div><div>asynchronous and must signal that is done by invoking the provided</div><div>callback, which is always provided as the final argument to the function.</div><div>The value to this callback will be returned to the client.</div><div></div><div>Asynchronous script commands may not span page loads. If an unload event</div><div>is fired while waiting for a script result, an error should be returned</div><div>to the client.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - Javascript to execute on the page</div><div>Optional:</div><div>ARRAY - list of arguments that need to be passed to the script.</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -817,7 +817,7 @@ mouse_move_to_locationと同義
 
 <h4><a href="#execute_script" ></a>execute_script</h4>
 
-<div>Inject a snippet of JavaScript into the page and return its result.</div><div>WebElements that should be passed to the script as an argument should be</div><div>specified in the arguments array as WebElement object. Likewise,</div><div>any WebElements in the script result will be returned as WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>Required:</div><div>STRING - Javascript to execute on the page</div><div>Optional:</div><div>ARRAY - list of arguments that need to be passed to the script.</div><div></div>
+<div>Inject a snippet of JavaScript into the page and return its result.</div><div>WebElements that should be passed to the script as an argument should be</div><div>specified in the arguments array as WebElement object. Likewise,</div><div>any WebElements in the script result will be returned as WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - Javascript to execute on the page</div><div>Optional:</div><div>ARRAY - list of arguments that need to be passed to the script.</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -836,7 +836,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING - base64 encoded image</div><div></div>
+<div>文字列 - base64 encoded image</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -880,7 +880,7 @@ mouse_move_to_locationと同義
 </pre>
 <b>入力1:</b>
 <pre>
-<div>Required:</div><div>{STRING | NUMBER | NULL | WebElement} - ID of the frame which can be one of the three</div><div>mentioned.</div><div></div>
+<div>必須:</div><div>{文字列 | NUMBER | NULL | WebElement} - ID of the frame which can be one of the three</div><div>mentioned.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -898,7 +898,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 </pre>
 <b>入力1:</b>
 <pre>
-<div>Required:</div><div>STRING - Window handle or the Window name</div><div></div>
+<div>必須:</div><div>文字列 - Window handle or the Window name</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -912,7 +912,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 </pre>
 <b>入力:</b>
 <pre>
-<div>INT - x co-ordinate</div><div>INT - y co-ordinate</div><div>STRING - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
+<div>INT - x co-ordinate</div><div>INT - y co-ordinate</div><div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -931,7 +931,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 </pre>
 <b>入力:</b>
 <pre>
-<div>INT - height of the window</div><div>INT - width of the window</div><div>STRING - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
+<div>INT - height of the window</div><div>INT - width of the window</div><div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -950,7 +950,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 </pre>
 <b>入力:</b>
 <pre>
-<div>STRING - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
+<div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -992,7 +992,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <h4><a href="#get_all_cookies" ></a>get_all_cookies</h4>
 
-<div>Retrieve all cookies visible to the current page. Each cookie will be</div><div>returned as a HASH reference with the following keys &amp; their value types:</div><div></div><div>'name' - STRING</div><div>'value' - STRING</div><div>'path' - STRING</div><div>'domain' - STRING</div><div>'secure' - BOOLEAN</div><div></div>
+<div>Retrieve all cookies visible to the current page. Each cookie will be</div><div>returned as a HASH reference with the following keys &amp; their value types:</div><div></div><div>'name' - 文字列</div><div>'value' - 文字列</div><div>'path' - 文字列</div><div>'domain' - 文字列</div><div>'secure' - BOOLEAN</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1006,7 +1006,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <h4><a href="#add_cookie" ></a>add_cookie</h4>
 
-<div>Set a cookie on the domain.</div><div></div><div>Input: 2 (4 optional)</div><div>Required:</div><div>'name' - STRING</div><div>'value' - STRING</div><div></div><div>Optional:</div><div>'path' - STRING</div><div>'domain' - STRING</div><div>'secure' - BOOLEAN - default false.</div><div>'httponly' - BOOLEAN - default false.</div><div>'expiry' - TIME_T - default 20 years in the future</div><div></div>
+<div>Set a cookie on the domain.</div><div></div><div>Input: 2 (4 optional)</div><div>必須:</div><div>'name' - 文字列</div><div>'value' - 文字列</div><div></div><div>Optional:</div><div>'path' - 文字列</div><div>'domain' - 文字列</div><div>'secure' - BOOLEAN - default false.</div><div>'httponly' - BOOLEAN - default false.</div><div>'expiry' - TIME_T - default 20 years in the future</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1031,7 +1031,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 </pre>
 <b>入力:</b>
 <pre>
-<div>Cookie Name - STRING</div>
+<div>Cookie Name - 文字列</div>
 </pre>
 
 get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返します。
@@ -1046,7 +1046,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 </pre>
 <b>入力1:</b>
 <pre>
-<div>Required:</div><div>STRING - name of cookie to delete</div><div></div>
+<div>必須:</div><div>文字列 - name of cookie to delete</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1060,7 +1060,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING - The page source.</div><div></div>
+<div>文字列 - The page source.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1069,7 +1069,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <h4><a href="#find_element" ></a>find_element</h4>
 
-<div>Search for an element on the page, starting from the document</div><div>root. The located element will be returned as a WebElement</div><div>object. If the element cannot be found, we will CROAK, killing</div><div>your script. If you wish for a warning instead, use <a href="/pod/the">the</a></div><div>parameterized version of the finders:</div><div></div><div>find_element_by_class</div><div>find_element_by_class_name</div><div>find_element_by_css</div><div>find_element_by_id</div><div>find_element_by_link</div><div>find_element_by_link_text</div><div>find_element_by_name</div><div>find_element_by_partial_link_text</div><div>find_element_by_tag_name</div><div>find_element_by_xpath</div><div></div><div>These functions all take a single STRING argument: the locator</div><div>search target of the element you want. If the element is found, we</div><div>will receive a WebElement. Otherwise, we will return 0. Note that</div><div>invoking methods on 0 will of course kill your script.</div><div></div><div>Input: 2 (1 optional)</div><div>Required:</div><div>STRING - The search target.</div><div>Optional:</div><div>STRING - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+<div>Search for an element on the page, starting from the document</div><div>root. The located element will be returned as a WebElement</div><div>object. If the element cannot be found, we will CROAK, killing</div><div>your script. If you wish for a warning instead, use <a href="/pod/the">the</a></div><div>parameterized version of the finders:</div><div></div><div>find_element_by_class</div><div>find_element_by_class_name</div><div>find_element_by_css</div><div>find_element_by_id</div><div>find_element_by_link</div><div>find_element_by_link_text</div><div>find_element_by_name</div><div>find_element_by_partial_link_text</div><div>find_element_by_tag_name</div><div>find_element_by_xpath</div><div></div><div>These functions all take a single 文字列 argument: the locator</div><div>search target of the element you want. If the element is found, we</div><div>will receive a WebElement. Otherwise, we will return 0. Note that</div><div>invoking methods on 0 will of course kill your script.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1083,7 +1083,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <h4><a href="#find_elements" ></a>find_elements</h4>
 
-<div>Search for multiple elements on the page, starting from the document root.</div><div>The located elements will be returned as an array of WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>Required:</div><div>STRING - The search target.</div><div>Optional:</div><div>STRING - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+<div>Search for multiple elements on the page, starting from the document root.</div><div>The located elements will be returned as an array of WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1097,7 +1097,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <h4><a href="#find_child_element" ></a>find_child_element</h4>
 
-<div>Search for an element on the page, starting from the identified element. The</div><div>located element will be returned as a WebElement object.</div><div></div><div>Input: 3 (1 optional)</div><div>Required:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>STRING - The search target. (Do not use <a href="/pod/a">a</a> double whack('//')</div><div>in an xpath to search for a child element</div><div>ex: '//option[@]'</div><div>instead use <a href="/pod/a">a</a> dot whack ('./')</div><div>ex: './option[@]')</div><div>Optional:</div><div>STRING - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+<div>Search for an element on the page, starting from the identified element. The</div><div>located element will be returned as a WebElement object.</div><div></div><div>Input: 3 (1 optional)</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>文字列 - The search target. (Do not use <a href="/pod/a">a</a> double whack('//')</div><div>in an xpath to search for a child element</div><div>ex: '//option[@]'</div><div>instead use <a href="/pod/a">a</a> dot whack ('./')</div><div>ex: './option[@]')</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1111,7 +1111,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <h4><a href="#find_child_elements" ></a>find_child_elements</h4>
 
-<div>Search for multiple element on the page, starting from the identified</div><div>element. The located elements will be returned as an array of WebElement</div><div>objects.</div><div></div><div>Input: 3 (1 optional)</div><div>Required:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>STRING - The search target.</div><div>Optional:</div><div>STRING - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
+<div>Search for multiple element on the page, starting from the identified</div><div>element. The located elements will be returned as an array of WebElement</div><div>objects.</div><div></div><div>Input: 3 (1 optional)</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1198,7 +1198,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 </pre>
 <b>入力:</b>
 <pre>
-<div>Required:</div><div>HASH: A hash with key C&lt;location&gt; whose value is a Location hashref. See</div><div>usage section for example.</div><div></div>
+<div>必須:</div><div>HASH: A hash with key C&lt;location&gt; whose value is a Location hashref. See</div><div>usage section for example.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1231,11 +1231,11 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 </pre>
 <b>入力:</b>
 <pre>
-<div>Required:</div><div>&lt;STRING&gt; - Type of log to retrieve:</div><div>{client|driver|browser|server}. There may be others available; see</div><div>get_log_types for a full list for your driver.</div><div></div>
+<div>必須:</div><div>&lt;文字列&gt; - Type of log to retrieve:</div><div>{client|driver|browser|server}. There may be others available; see</div><div>get_log_types for a full list for your driver.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get_log( $log_type );</div><div></div>
+<div>$driver->get_log( $log_type );</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1249,7 +1249,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>my @types = $driver-&gt;get_log_types;</div><div>$driver-&gt;get_log($types[0]);</div><div></div>
+<div>my @types = $driver->get_log_types;</div><div>$driver->get_log($types[0]);</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1264,11 +1264,11 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 </pre>
 <b>入力:</b>
 <pre>
-<div>Required:</div><div>&lt;STRING&gt; - Orientation {LANDSCAPE|PORTRAIT}</div><div></div>
+<div>必須:</div><div>&lt;文字列&gt; - Orientation {LANDSCAPE|PORTRAIT}</div><div></div>
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_orientation( $orientation );</div><div></div>
+<div>$driver->set_orientation( $orientation );</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1282,26 +1282,26 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;get_orientation;</div><div></div>
+<div>print $driver->get_orientation;</div><div></div>
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>&lt;STRING&gt; - your orientation.</div>
+<div>&lt;文字列&gt; - your orientation.</div>
 </pre>
 
 <h4><a href="#send_modifier" ></a>send_modifier</h4>
 
-<div>Send an event to the active element to depress or release a modifier key.</div><div></div><div>Input: 2</div><div>Required:</div><div>value - String - The modifier key event to be sent. This key must be one 'Ctrl','Shift','Alt',' or 'Command'/'Meta' as defined by the send keys command</div><div>isdown - Boolean/String - Whether to generate a key down or key up</div><div></div>
+<div>Send an event to the active element to depress or release a modifier key.</div><div></div><div>Input: 2</div><div>必須:</div><div>value - String - The modifier key event to be sent. This key must be one 'Ctrl','Shift','Alt',' or 'Command'/'Meta' as defined by the send keys command</div><div>isdown - Boolean/String - Whether to generate a key down or key up</div><div></div>
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;send_modifier('Alt','down');</div><div>$elem-&gt;send_keys('c');</div><div>$driver-&gt;send_modifier('Alt','up');</div><div></div><div>or</div><div></div><div>$driver-&gt;send_modifier('Alt',1);</div><div>$elem-&gt;send_keys('c');</div><div>$driver-&gt;send_modifier('Alt',0);</div>
+<div>$driver->send_modifier('Alt','down');</div><div>$elem-&gt;send_keys('c');</div><div>$driver->send_modifier('Alt','up');</div><div></div><div>or</div><div></div><div>$driver->send_modifier('Alt',1);</div><div>$elem-&gt;send_keys('c');</div><div>$driver->send_modifier('Alt',0);</div>
 </pre>
 
 <h4><a href="#compare_elements" ></a>compare_elements</h4>
 
-<div>Test if two element IDs refer to the same DOM element.</div><div></div><div>Input: 2</div><div>Required:</div><div>Selenium::Remote::WebElement - WebElement Object</div><div>Selenium::Remote::WebElement - WebElement Object</div><div></div>
+<div>Test if two element IDs refer to the same DOM element.</div><div></div><div>Input: 2</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement Object</div><div>Selenium::Remote::WebElement - WebElement Object</div><div></div>
 
 </pre>
 <b>出力:</b>
@@ -1310,7 +1310,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;compare_elements($elem_obj1, $elem_obj2);</div>
+<div>$driver->compare_elements($elem_obj1, $elem_obj2);</div>
 </pre>
 
 <h4><a href="#click" ></a>click</h4>
@@ -1324,7 +1324,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;click('LEFT');</div><div>$driver-&gt;click(1); #MIDDLE</div><div>$driver-&gt;click('RIGHT');</div><div>$driver-&gt;click; #Defaults to left</div>
+<div>$driver->click('LEFT');</div><div>$driver->click(1); #MIDDLE</div><div>$driver->click('RIGHT');</div><div>$driver->click; #Defaults to left</div>
 </pre>
 
 <h4><a href="#double_click" ></a>double_click</h4>
@@ -1333,7 +1333,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;double_click(button);</div>
+<div>$driver->double_click(button);</div>
 </pre>
 
 <h4><a href="#button_down" ></a>button_down</h4>
@@ -1360,7 +1360,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>my $remote_fname = $driver-&gt;upload_file( $fname );</div><div>my $element = $driver-&gt;find_element( '//input[@]' );</div><div>$element-&gt;send_keys( $remote_fname );</div>
+<div>my $remote_fname = $driver->upload_file( $fname );</div><div>my $element = $driver->find_element( '//input[@]' );</div><div>$element-&gt;send_keys( $remote_fname );</div>
 </pre>
 
 <h4><a href="#get_text" ></a>get_text</h4>
@@ -1369,7 +1369,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$text = $driver-&gt;get_text("//div[\@name='q']");</div>
+<div>$text = $driver->get_text("//div[\@name='q']");</div>
 </pre>
 
 <h4><a href="#get_body" ></a>get_body</h4>
@@ -1378,7 +1378,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$body_text = $driver-&gt;get_body();</div>
+<div>$body_text = $driver->get_body();</div>
 </pre>
 
 <h4><a href="#get_path" ></a>get_path</h4>
@@ -1387,7 +1387,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$path = $driver-&gt;get_path();</div>
+<div>$path = $driver->get_path();</div>
 </pre>
 
 <h4><a href="#get_user_agent" ></a>get_user_agent</h4>
@@ -1396,7 +1396,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$user_agent = $driver-&gt;get_user_agent()</div>
+<div>$user_agent = $driver->get_user_agent()</div>
 </pre>
 
 <h4><a href="#set_inner_window_size" ></a>set_inner_window_size</h4>
@@ -1415,7 +1415,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_inner_window_size(640, 480)</div>
+<div>$driver->set_inner_window_size(640, 480)</div>
 </pre>
 
 <h4><a href="#get_local_storage_item" ></a>get_local_storage_item</h4>
@@ -1425,30 +1425,32 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 </pre>
 <b>入力1:</b>
 <pre>
-<div>Required:</div><div>STRING - name of the key to be retrieved</div><div></div>
+<div>必須:</div><div>文字列 - name of the key to be retrieved</div><div></div>
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>STRING - value of the local storage item</div><div></div>
+<div>文字列 - value of the local storage item</div><div></div>
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get_local_storage_item('key')</div>
+<div>$driver->get_local_storage_item('key')</div>
 </pre>
 
 <h4><a href="#delete_local_storage_item" ></a>delete_local_storage_item</h4>
 
-<div>Get the value of a local storage item specified by the given key.</div><div></div>
+指定されたキーで指定されたローカルストレージアイテムの値を削除します。
 
 </pre>
+
 <b>入力1:</b>
-<pre>
-<div>Required</div><div>STRING - name of the key to be deleted</div><div></div>
+
+必須: 文字列 - 削除するキーの名前
 
 <b>使用方法:</b>
+
 <pre>
-<div>$driver-&gt;delete_local_storage_item('key')</div>
+$driver->delete_local_storage_item('key')
 </pre>
 
 <h3><a href="#SEE-ALSO" ></a><a ></a>関連項目</h3>
