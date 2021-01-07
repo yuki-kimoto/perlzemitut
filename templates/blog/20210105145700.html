@@ -255,7 +255,7 @@ chrome 75（および適切なドライバーバージョン）の時点で、WC
 <dd>
 
 </dd>
-<dt ><a href="#extra_capabilities-HASH-Any-other-extra-capabilities.-Accepted-keys-will-vary-by-browser.-If-firefox_profile-is-passed,-the-args-(or-profile)-key-will-be-overwritten,-depending-on-how-it-was-passed." ></a><a ></a><a ></a><b>extra_capabilities</b> - <b>HASH-</b>その他の追加機能。使用できるキーはブラウザによって異なります。firefox_profileが渡されると、渡された方法に応じて、args（またはprofile）キーが上書きされます。</dt>
+<dt ><a href="#extra_capabilities-ハッシュ-Any-other-extra-capabilities.-Accepted-keys-will-vary-by-browser.-If-firefox_profile-is-passed,-the-args-(or-profile)-key-will-be-overwritten,-depending-on-how-it-was-passed." ></a><a ></a><a ></a><b>extra_capabilities</b> - <b>ハッシュ-</b>その他の追加機能。使用できるキーはブラウザによって異なります。firefox_profileが渡されると、渡された方法に応じて、args（またはprofile）キーが上書きされます。</dt>
 <dd>
 
 </dd>
@@ -295,7 +295,7 @@ WebDriver3では、「extra_capabilities」がブラウザに必要なパラメ�
 <dd>
 
 </dd>
-<dt ><a href="#proxy-HASH-Proxy-configuration-with-the-following-keys:" ></a><a ></a><a ></a><b>proxy</b> -HASH-次のキーを使用したプロキシ構成:</dt>
+<dt ><a href="#proxy-ハッシュ-Proxy-configuration-with-the-following-keys:" ></a><a ></a><a ></a><b>proxy</b> -ハッシュ-次のキーを使用したプロキシ構成:</dt>
 <dd>
 
 <dl>
@@ -331,7 +331,7 @@ WebDriver3では、「extra_capabilities」がブラウザに必要なパラメ�
 <dd>
 
 </dd>
-<dt ><a href="#noProxy-<ARRAY>-OPTIONAL,-list-of-URLs-to-bypass-the-proxy-for.-WebDriver3-only." ></a><a ></a><a ></a><b>noProxy-</b> &lt;ARRAY&gt;-オプション、プロキシをバイパスするURLのリスト。WebDriver3のみ。</dt>
+<dt ><a href="#noProxy-<配列>-OPTIONAL,-list-of-URLs-to-bypass-the-proxy-for.-WebDriver3-only." ></a><a ></a><a ></a><b>noProxy-</b> &lt;配列&gt;-オプション、プロキシをバイパスするURLのリスト。WebDriver3のみ。</dt>
 <dd>
 
 </dd>
@@ -377,14 +377,12 @@ Selenium::Remote::Driverオブジェクト
 
 <div>For experienced users who want complete control over the desired</div><div>capabilities, use <a href="/pod/this">this</a> alternative constructor along with the</div><div>C&lt;desired_capabilities&gt; hash key in the init hash. Unlike "new",</div><div>this constructor will not assume any defaults for your desired</div><div>capabilities.</div><div></div><div>This alternate constructor IGNORES all other browser-related</div><div>desiredCapability options; the only options that will be respected</div><div>are those that are NOT part of the Capabilities JSON Object as</div><div>described in the Json Wire Protocol.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
-<div>The only respected keys in the input hash are:</div><div></div><div>desired_capabilities - HASHREF - defaults to {}</div><div>remote_server_addr - 文字列 - defaults to localhost</div><div>port - INTEGER - defaults to 4444</div><div>default_finder - 文字列 - defaults to xpath</div><div>webelement_class - 文字列 - defaults to Selenium::Remote::WebElement</div><div>auto_close - BOOLEAN - defaults to 1</div><div>error_handler - CODEREF - defaults to croaking on exceptions</div><div></div><div>Except for C&lt;desired_capabilities&gt;, these keys perform exactly the</div><div>same as listed in the regular "new" constructor.</div><div></div><div>The hashref you pass in as desired_capabilities only gets json</div><div>encoded before being passed to the Selenium server; no default</div><div>options of any sort will be added.</div><div></div><div>This means you must handle normalization and casing of the input</div><div>options (like "browser_name" vs "browserName") and take care of</div><div>things like encoding the firefox profile if applicable. More</div><div>information about the desired capabilities object is available on</div><div>the Selenium wiki:</div><div></div><div><a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">https://code.google.com/p/selenium/wiki/JsonWireProtocol</a>#Capabilities_JSON_Object</div><div></div>
+<div>The only respected keys in the input hash are:</div><div></div><div>desired_capabilities - ハッシュREF - defaults to {}</div><div>remote_server_addr - 文字列 - defaults to localhost</div><div>port - INTEGER - defaults to 4444</div><div>default_finder - 文字列 - defaults to xpath</div><div>webelement_class - 文字列 - defaults to Selenium::Remote::WebElement</div><div>auto_close - BOOLEAN - defaults to 1</div><div>error_handler - CODEREF - defaults to croaking on exceptions</div><div></div><div>Except for C&lt;desired_capabilities&gt;, these keys perform exactly the</div><div>same as listed in the regular "new" constructor.</div><div></div><div>The hashref you pass in as desired_capabilities only gets json</div><div>encoded before being passed to the Selenium server; no default</div><div>options of any sort will be added.</div><div></div><div>This means you must handle normalization and casing of the input</div><div>options (like "browser_name" vs "browserName") and take care of</div><div>things like encoding the firefox profile if applicable. More</div><div>information about the desired capabilities object is available on</div><div>the Selenium wiki:</div><div></div><div><a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">https://code.google.com/p/selenium/wiki/JsonWireProtocol</a>#Capabilities_JSON_Object</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>Remote Driver object</div><div></div>
 
 <b>使用方法:</b>
@@ -438,9 +436,9 @@ Selenium::Remote::Driverオブジェクト
 
 <div>Returns a list of the currently active sessions. Each session will be</div><div>returned as an array of Hashes with the following keys:</div><div></div><div>'id' : The session ID</div><div>'capabilities: An object describing session's capabilities</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>Array of Hashes</div><div></div>
 
 <b>使用方法:</b>
@@ -452,9 +450,9 @@ Selenium::Remote::Driverオブジェクト
 
 <div>Query the server's current status. All server implementations</div><div>should return two basic objects describing the server's current</div><div>platform and when the server was built.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>Hash ref</div><div></div>
 
 <b>使用方法:</b>
@@ -474,7 +472,7 @@ Selenium::Remote::Driverオブジェクト
 </pre>
 <b>入力1:</b>
 <pre>
-<div>必須:</div><div>{ARRAY | 文字列} - Array of strings or a string.</div><div></div>
+<div>必須:</div><div>{配列 | 文字列} - Array of strings or a string.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -489,9 +487,7 @@ send_keys_to_promptと同義
 
 <div>Sends keystrokes to a JavaScript prompt() dialog.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>{string} keys to send</div><div></div><div>Example:</div><div>$driver-&gt;send_keys_to_prompt('hello world');<div>or</div><div>ok($driver-&gt;get_alert_text eq 'Please Input your name','prompt appears');<div>$driver-&gt;send_keys_to_alert("Larry Wall");<div>$driver-&gt;accept_alert;
 </pre>
 
@@ -532,9 +528,9 @@ WebDriver3対応のセレニウムサーバーでのみ使用できます。
 
 <div>Move the mouse by an offset of the specificed element. If no</div><div>element is specified, the move is relative to the current mouse</div><div>cursor. If an element is provided but no offset, the mouse will be</div><div>moved to the center of the element. If the element is not visible,</div><div>it will be scrolled into view.</div><div></div><div>Compatibility:</div><div>Due to limitations in the Webdriver 3 API, mouse movements have to be executed 'lazily' e.g. only right before a click() event occurs.</div><div>This is because there is no longer any persistent mouse location state; mouse movements are now totally atomic.</div><div>This has several problematic aspects; for one, I can't think of a way to both hover an element and then do another action relying on the element staying hover()ed,</div><div>Aside from using javascript workarounds.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>文字列 -</div><div></div>
 
 <b>使用方法:</b>
@@ -550,10 +546,10 @@ mouse_move_to_locationと同義
 
 <div>Retrieve the capabilities of the specified session.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>HASH of all the capabilities.</div><div></div>
+
+
+<div>ハッシュ of all the capabilities.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -573,9 +569,7 @@ mouse_move_to_locationと同義
 
 <div>Configure the amount of time that a particular type of operation can execute</div><div>for before they are aborted and a |Timeout| error is returned to the client.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>type - &lt;文字列&gt; - The type of operation to set the timeout for.</div><div>Valid values are:</div><div>"script" : for script timeouts,</div><div>"implicit" : for modifying the implicit wait timeout</div><div>"page load" : for setting a page load timeout.</div><div>ms - &lt;NUMBER&gt; - The amount of time, in milliseconds, that time-limited</div><div>commands are permitted to run.</div><div></div>
 
 <b>使用方法:</b>
@@ -587,9 +581,7 @@ mouse_move_to_locationと同義
 
 <div>Set the amount of time, in milliseconds, that asynchronous scripts executed</div><div>by execute_async_script() are permitted to run before they are</div><div>aborted and a |Timeout| error is returned to the client.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>ms - &lt;NUMBER&gt; - The amount of time, in milliseconds, that time-limited</div><div>commands are permitted to run.</div><div></div>
 
 <b>使用方法:</b>
@@ -601,14 +593,12 @@ mouse_move_to_locationと同義
 
 <div>Set the amount of time the driver should wait when searching for elements.</div><div>When searching for a single element, the driver will poll the page until</div><div>an element is found or the timeout expires, whichever occurs first.</div><div>When searching for multiple elements, the driver should poll the page until</div><div>at least one element is found or the timeout expires, at which point it</div><div>will return an empty list. If this method is never called, the driver will</div><div>default to an implicit wait of 0ms.</div><div></div><div>This is exactly equivalent to calling L&lt;/set_timeout&gt; with a type</div><div>arg of C&lt;"implicit"&gt;.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>Time in milliseconds.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>Server Response Hash with no data returned back from the server.</div><div></div>
 
 <b>使用方法:</b>
@@ -647,9 +637,9 @@ mouse_move_to_locationと同義
 
 <div>Retrieve the current window handle.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>文字列 - the window handle</div><div></div>
 
 <b>使用方法:</b>
@@ -661,10 +651,10 @@ mouse_move_to_locationと同義
 
 <div>Retrieve the list of window handles used in the session.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>ARRAY of 文字列 - list of the window handles</div><div></div>
+
+
+<div>配列 of 文字列 - list of the window handles</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -675,15 +665,13 @@ mouse_move_to_locationと同義
 
 <div>Retrieve the window size</div><div></div><div>Compatibility:</div><div>The ability to get the size of arbitrary handles by passing input only exists in WebDriver2.</div><div>You will have to switch to the window first going forward.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>HASH - containing keys 'height' &amp; 'width'</div><div></div>
+
+
+<div>ハッシュ - containing keys 'height' &amp; 'width'</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -694,15 +682,13 @@ mouse_move_to_locationと同義
 
 <div>Retrieve the window position</div><div></div><div>Compatibility:</div><div>The ability to get the size of arbitrary handles by passing input only exists in WebDriver2.</div><div>You will have to switch to the window first going forward.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>HASH - containing keys 'x' &amp; 'y'</div><div></div>
+
+
+<div>ハッシュ - containing keys 'x' &amp; 'y'</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -713,9 +699,9 @@ mouse_move_to_locationと同義
 
 <div>Retrieve the url of the current page</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>文字列 - url</div><div></div>
 
 <b>使用方法:</b>
@@ -727,9 +713,7 @@ mouse_move_to_locationと同義
 
 <div>Navigate to a given url. This is same as get() method.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>文字列 - url</div><div></div>
 
 <b>使用方法:</b>
@@ -741,9 +725,7 @@ mouse_move_to_locationと同義
 
 <div>Navigate to a given url</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>文字列 - url</div><div></div>
 
 <b>使用方法:</b>
@@ -755,9 +737,9 @@ mouse_move_to_locationと同義
 
 <div>Get the current page title</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>文字列 - Page title</div><div></div>
 
 <b>使用方法:</b>
@@ -803,11 +785,11 @@ mouse_move_to_locationと同義
 
 <h4><a href="#execute_async_script" ></a>execute_async_script</h4>
 
-<div>Inject a snippet of JavaScript into the page for execution in the context</div><div>of the currently selected frame. The executed script is assumed to be</div><div>asynchronous and must signal that is done by invoking the provided</div><div>callback, which is always provided as the final argument to the function.</div><div>The value to this callback will be returned to the client.</div><div></div><div>Asynchronous script commands may not span page loads. If an unload event</div><div>is fired while waiting for a script result, an error should be returned</div><div>to the client.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - Javascript to execute on the page</div><div>Optional:</div><div>ARRAY - list of arguments that need to be passed to the script.</div><div></div>
+<div>Inject a snippet of JavaScript into the page for execution in the context</div><div>of the currently selected frame. The executed script is assumed to be</div><div>asynchronous and must signal that is done by invoking the provided</div><div>callback, which is always provided as the final argument to the function.</div><div>The value to this callback will be returned to the client.</div><div></div><div>Asynchronous script commands may not span page loads. If an unload event</div><div>is fired while waiting for a script result, an error should be returned</div><div>to the client.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - Javascript to execute on the page</div><div>Optional:</div><div>配列 - list of arguments that need to be passed to the script.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>{*} - Varied, depending on the type of result expected back from the script.</div><div></div>
 
 <b>使用方法:</b>
@@ -817,11 +799,11 @@ mouse_move_to_locationと同義
 
 <h4><a href="#execute_script" ></a>execute_script</h4>
 
-<div>Inject a snippet of JavaScript into the page and return its result.</div><div>WebElements that should be passed to the script as an argument should be</div><div>specified in the arguments array as WebElement object. Likewise,</div><div>any WebElements in the script result will be returned as WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - Javascript to execute on the page</div><div>Optional:</div><div>ARRAY - list of arguments that need to be passed to the script.</div><div></div>
+<div>Inject a snippet of JavaScript into the page and return its result.</div><div>WebElements that should be passed to the script as an argument should be</div><div>specified in the arguments array as WebElement object. Likewise,</div><div>any WebElements in the script result will be returned as WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - Javascript to execute on the page</div><div>Optional:</div><div>配列 - list of arguments that need to be passed to the script.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>{*} - Varied, depending on the type of result expected back from the script.</div><div></div>
 
 <b>使用方法:</b>
@@ -833,9 +815,9 @@ mouse_move_to_locationと同義
 
 <div>Get a screenshot of the current page as a base64 encoded image.</div><div>Optionally pass {'full' =&gt; 1} as argument to take a full screenshot and not</div><div>only the viewport. (Works only with firefox and geckodriver &gt;= 0.24.0)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>文字列 - base64 encoded image</div><div></div>
 
 <b>使用方法:</b>
@@ -849,9 +831,9 @@ mouse_move_to_locationと同義
 
 <div>Capture a screenshot and save as a PNG to provided file name.</div><div>(The method is compatible with the WWW::Selenium method of the same name)</div><div>Optionally pass {'full' =&gt; 1} as second argument to take a full screenshot</div><div>and not only the viewport. (Works only with firefox and geckodriver &gt;= 0.24.0)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>TRUE - (Screenshot is written to file)</div><div></div>
 
 <b>使用方法:</b>
@@ -863,9 +845,9 @@ mouse_move_to_locationと同義
 
 <div>List all available engines on the machine. To use <a href="/pod/an">an</a> engine, it has to be present in this list.</div><div></div><div>Compatibility:</div><div>Does not appear to be available on Webdriver3 enabled selenium servers.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>{Array.&lt;string&gt;} A list of available engines</div><div></div>
 
 <b>使用方法:</b>
@@ -909,14 +891,12 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <div>Set the position (on screen) where you want your browser to be displayed.</div><div></div><div>Compatibility:</div><div>In webDriver 3 enabled selenium servers, you may only operate on the focused window.</div><div>As such, the window handle argument below will be ignored in this context.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>INT - x co-ordinate</div><div>INT - y co-ordinate</div><div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>BOOLEAN - Success or failure</div><div></div>
 
 <b>使用方法:</b>
@@ -928,14 +908,12 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <div>Set the size of the browser window</div><div></div><div>Compatibility:</div><div>In webDriver 3 enabled selenium servers, you may only operate on the focused window.</div><div>As such, the window handle argument below will be ignored in this context.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>INT - height of the window</div><div>INT - width of the window</div><div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>BOOLEAN - Success or failure</div><div></div>
 
 <b>使用方法:</b>
@@ -947,14 +925,12 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <div>Maximizes the browser window</div><div></div><div>Compatibility:</div><div>In webDriver 3 enabled selenium servers, you may only operate on the focused window.</div><div>As such, the window handle argument below will be ignored in this context.</div><div></div><div>Also, on chromedriver maximize is actually just setting the window size to the screen's</div><div>available height and width.</div><div></div>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>文字列 - &lt;optional&gt; - window handle (default is 'current' window)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>BOOLEAN - Success or failure</div><div></div>
 
 <b>使用方法:</b>
@@ -966,9 +942,9 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <div>Minimizes the currently focused browser window (webdriver3 only)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>BOOLEAN - Success or failure</div><div></div>
 
 <b>使用方法:</b>
@@ -980,9 +956,9 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <div>Fullscreens the currently focused browser window (webdriver3 only)</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>BOOLEAN - Success or failure</div><div></div>
 
 <b>使用方法:</b>
@@ -992,12 +968,12 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <h4><a href="#get_all_cookies" ></a>get_all_cookies</h4>
 
-<div>Retrieve all cookies visible to the current page. Each cookie will be</div><div>returned as a HASH reference with the following keys &amp; their value types:</div><div></div><div>'name' - 文字列</div><div>'value' - 文字列</div><div>'path' - 文字列</div><div>'domain' - 文字列</div><div>'secure' - BOOLEAN</div><div></div>
+<div>Retrieve all cookies visible to the current page. Each cookie will be</div><div>returned as a ハッシュ reference with the following keys &amp; their value types:</div><div></div><div>'name' - 文字列</div><div>'value' - 文字列</div><div>'path' - 文字列</div><div>'domain' - 文字列</div><div>'secure' - BOOLEAN</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>ARRAY of HASHES - list of all the cookie hashes</div><div></div>
+
+
+<div>配列 of ハッシュES - list of all the cookie hashes</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1028,9 +1004,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <pre>
 
-</pre>
 <b>入力:</b>
-<pre>
 <div>Cookie Name - 文字列</div>
 </pre>
 
@@ -1057,9 +1031,9 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <div>Get the current page source.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>文字列 - The page source.</div><div></div>
 
 <b>使用方法:</b>
@@ -1071,9 +1045,9 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <div>Search for an element on the page, starting from the document</div><div>root. The located element will be returned as a WebElement</div><div>object. If the element cannot be found, we will CROAK, killing</div><div>your script. If you wish for a warning instead, use <a href="/pod/the">the</a></div><div>parameterized version of the finders:</div><div></div><div>find_element_by_class</div><div>find_element_by_class_name</div><div>find_element_by_css</div><div>find_element_by_id</div><div>find_element_by_link</div><div>find_element_by_link_text</div><div>find_element_by_name</div><div>find_element_by_partial_link_text</div><div>find_element_by_tag_name</div><div>find_element_by_xpath</div><div></div><div>These functions all take a single 文字列 argument: the locator</div><div>search target of the element you want. If the element is found, we</div><div>will receive a WebElement. Otherwise, we will return 0. Note that</div><div>invoking methods on 0 will of course kill your script.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>Selenium::Remote::WebElement - WebElement Object</div><div>(This could be a subclass of L&lt;Selenium::Remote::WebElement&gt; if C&lt;webelement_class&gt; was set.</div><div></div>
 
 <b>使用方法:</b>
@@ -1085,10 +1059,10 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <div>Search for multiple elements on the page, starting from the document root.</div><div>The located elements will be returned as an array of WebElement object.</div><div></div><div>Input: 2 (1 optional)</div><div>必須:</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>ARRAY or ARRAYREF of WebElement Objects</div><div></div>
+
+
+<div>配列 or 配列REF of WebElement Objects</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1099,9 +1073,9 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <div>Search for an element on the page, starting from the identified element. The</div><div>located element will be returned as a WebElement object.</div><div></div><div>Input: 3 (1 optional)</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>文字列 - The search target. (Do not use <a href="/pod/a">a</a> double whack('//')</div><div>in an xpath to search for a child element</div><div>ex: '//option[@]'</div><div>instead use <a href="/pod/a">a</a> dot whack ('./')</div><div>ex: './option[@]')</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>WebElement Object</div><div></div>
 
 <b>使用方法:</b>
@@ -1113,10 +1087,10 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <div>Search for multiple element on the page, starting from the identified</div><div>element. The located elements will be returned as an array of WebElement</div><div>objects.</div><div></div><div>Input: 3 (1 optional)</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement object from where you want to</div><div>start searching.</div><div>文字列 - The search target.</div><div>Optional:</div><div>文字列 - Locator scheme to use <a href="/pod/to">to</a> search the element, available schemes:</div><div>{class, class_name, css, id, link, link_text, partial_link_text,</div><div>tag_name, name, xpath}</div><div>Defaults to 'xpath' if not configured global during instantiation.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
-<div>ARRAY of WebElement Objects.</div><div></div>
+
+
+<div>配列 of WebElement Objects.</div><div></div>
 
 <b>使用方法:</b>
 <pre>
@@ -1167,9 +1141,9 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <div>Get the element on the page that currently has focus.. The located element</div><div>will be returned as a WebElement object.</div><div></div>
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 <div>WebElement Object</div><div></div>
 
 <b>使用方法:</b>
@@ -1182,12 +1156,14 @@ $driver->get_active_element();
 Get the status of the html5 application cache.
 
 <b>使用方法:</b>
+
 <pre>
 print $driver-&gt;cache_status;
-
 </pre>
+
 <b>出力:</b>
-<pre>
+
+
 &lt;number&gt; - Status code for application cache: {UNCACHED = 0, IDLE = 1, CHECKING = 2, DOWNLOADING = 3, UPDATE_READY = 4, OBSOLETE = 5}
 </pre>
 
@@ -1195,18 +1171,16 @@ print $driver-&gt;cache_status;
 
 Set the current geographic location - note that your driver mustimplement this endpoint, or else it will crash your session. At thevery least, it works in v2.12 of Chromedriver.
 
-</pre>
 <b>入力:</b>
-<pre>
-必須:HASH: A hash with key C&lt;location&gt; whose value is a Location hashref. Seeusage section for example.
+必須:ハッシュ: A hash with key C&lt;location&gt; whose value is a Location hashref. Seeusage section for example.
 
 <b>使用方法:</b>
 <pre>
 $driver->set_geolocation( location =&gt; {latitude =&gt; 40.714353,longitude =&gt; -74.005973,altitude =&gt; 0.056747});
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 BOOLEAN - success or failure
 </pre>
 
@@ -1218,9 +1192,9 @@ Get the current geographic location. Note that your webdriver mustimplement this
 <pre>
 print $driver-&gt;get_geolocation;
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 { latitude: number, longitude: number, altitude: number } - The current geo location.
 </pre>
 
@@ -1228,19 +1202,17 @@ print $driver-&gt;get_geolocation;
 
 Get the log for a given log type. Log buffer is reset after each request.
 
-</pre>
 <b>入力:</b>
-<pre>
 必須:&lt;文字列&gt; - Type of log to retrieve:{client|driver|browser|server}. There may be others available; seeget_log_types for a full list for your driver.
 
 <b>使用方法:</b>
 <pre>
 $driver->get_log( $log_type );
 
-</pre>
 <b>出力:</b>
-<pre>
-&lt;ARRAY|ARRAYREF&gt; - An array of log entries since the most recent request.
+
+
+&lt;配列|配列REF&gt; - An array of log entries since the most recent request.
 </pre>
 
 <h4><a href="#get_log_types" ></a>get_log_types</h4>
@@ -1251,28 +1223,26 @@ Get available log types. By default, every driver should have client,driver, bro
 <pre>
 my @types = $driver->get_log_types;$driver->get_log($types[0]);
 
-</pre>
 <b>出力:</b>
-<pre>
-&lt;ARRAYREF&gt; - The list of log types.
+
+
+&lt;配列REF&gt; - The list of log types.
 </pre>
 
 <h4><a href="#set_orientation" ></a>set_orientation</h4>
 
 Set the browser orientation.
 
-</pre>
 <b>入力:</b>
-<pre>
 必須:&lt;文字列&gt; - Orientation {LANDSCAPE|PORTRAIT}
 
 <b>使用方法:</b>
 <pre>
 $driver->set_orientation( $orientation );
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 BOOLEAN - success or failure
 </pre>
 
@@ -1284,9 +1254,9 @@ Get the current browser orientation. Returns either LANDSCAPE|PORTRAIT.
 <pre>
 print $driver->get_orientation;
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 &lt;文字列&gt; - your orientation.
 </pre>
 
@@ -1303,9 +1273,9 @@ $driver->send_modifier('Alt','down');$elem-&gt;send_keys('c');$driver->send_modi
 
 Test if two element IDs refer to the same DOM element.Input: 2必須:Selenium::Remote::WebElement - WebElement ObjectSelenium::Remote::WebElement - WebElement Object
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 BOOLEAN
 
 <b>使用方法:</b>
@@ -1317,9 +1287,7 @@ $driver->compare_elements($elem_obj1, $elem_obj2);
 
 Click any mouse button (at the coordinates set by the last moveto command).
 
-</pre>
 <b>入力:</b>
-<pre>
 button - any one of 'LEFT'/0 'MIDDLE'/1 'RIGHT'/2defaults to 'LEFT'queue - (optional) queue the click, rather than executing it. WD3 only.
 
 <b>使用方法:</b>
@@ -1403,14 +1371,12 @@ $user_agent = $driver->get_user_agent()
 
 Set the inner window size by closing the current window andreopening the current page in a new window. This can be usefulwhen using browsers to mock as mobile devices.This sub will be fired automatically if you set theC&lt;inner_window_size&gt; hash key option during instantiation.
 
-</pre>
 <b>入力:</b>
-<pre>
 INT - height of the windowINT - width of the window
 
-</pre>
 <b>出力:</b>
-<pre>
+
+
 BOOLEAN - Success or failure
 
 <b>使用方法:</b>
@@ -1420,19 +1386,20 @@ $driver->set_inner_window_size(640, 480);
 
 <h4><a href="#get_local_storage_item" ></a>get_local_storage_item</h4>
 
-Get the value of a local storage item specified by the given key.
+指定されたキーで指定されたローカルストレージ項目の値を取得します。
 
 </pre>
+
 <b>入力1:</b>
-<pre>
+
 必須:文字列 - name of the key to be retrieved
 
-</pre>
 <b>出力:</b>
-<pre>
+
 文字列 - value of the local storage item
 
 <b>使用方法:</b>
+
 <pre>
 $driver->get_local_storage_item('key')
 </pre>
