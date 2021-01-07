@@ -40,7 +40,7 @@ Selenium::Remote::Driver-Seleniumリモートドライバー用のPerlクライ�
 
 <h3><a href="#SYNOPSIS" ></a>概要</h3>
 
-<pre><div>use <a href="/pod/Selenium::Remote::Driver">Selenium::Remote::Driver</a>;</div><div></div><div>my $driver = Selenium::Remote::Driver-&gt;new;</div><div>$driver-&gt;get('<a href="http://www.google.com">http://www.google.com</a>');</div><div>print $driver-&gt;get_title();</div><div>$driver-&gt;quit();</div>
+<pre><div>use <a href="/pod/Selenium::Remote::Driver">Selenium::Remote::Driver</a>;<div></div><div>my $driver = Selenium::Remote::Driver-&gt;new;<div>$driver-&gt;get('<a href="http://www.google.com">http://www.google.com</a>');<div>print $driver-&gt;get_title();<div>$driver-&gt;quit();
 </pre>
 
 <h3><a href="#DESCRIPTION" ></a>説明</h3>
@@ -71,7 +71,7 @@ WebElementを操作するには、最初にWebElementを「検索」する必要
 
 Selenium::Remote::WebElementのサブクラスは、コンストラクターのオプションとしてそのクラス名を提供することにより、Selenium::Remote::WebElementの代わりに使用できます。
 
-<pre><div>my $driver = Selenium::Remote::Driver-&gt;new( webelement_class =&gt; ... );</div>
+<pre><div>my $driver = Selenium::Remote::Driver-&gt;new( webelement_class =&gt; ... );
 </pre>
 
 たとえば、testing-subclassは、テストメソッドを使用してWeb要素オブジェクトを拡張できます。
@@ -85,12 +85,12 @@ Selenium::Remote::WebElementのサブクラスは、コンストラクターの�
 
 これを回避するには、LWPのタイムアウト値を構成します。独自のLWPを作成し、インスタンス化中に::Driverに渡します。
 
-<pre><div>my $timeout_ua = LWP::UserAgent-&gt;new;</div><div>$timeout_ua-&gt;timeout(360); # this value is in seconds!</div><div>my $d = Selenium::Remote::Driver-&gt;new( ua =&gt; $timeout_ua );</div>
+<pre><div>my $timeout_ua = LWP::UserAgent-&gt;new;<div>$timeout_ua-&gt;timeout(360); # this value is in seconds!</div><div>my $d = Selenium::Remote::Driver-&gt;new( ua =&gt; $timeout_ua );
 </pre>
 
 または、必要に応じてその場でタイムアウトを構成します。
 
-<pre><div>use <a href="/pod/feature">feature</a> qw/say/;</div><div>use <a href="/pod/Selenium::Remote::Driver">Selenium::Remote::Driver</a>;</div><div></div><div>my $d = Selenium::Remote::Driver-&gt;new;</div><div>say $d-&gt;ua-&gt;timeout; # 180 seconds is the default</div><div></div><div>$d-&gt;ua-&gt;timeout(2); # LWP wants seconds, not milliseconds!</div><div>$d-&gt;set_timeout('script', 1000); # S::R::D wants milliseconds!</div><div></div><div># Async scripts only return when the callback is invoked. Since there</div><div># is no callback here, Selenium will block for the entire duration of</div><div># the async timeout script. This will hit Selenium's async script</div><div># timeout before hitting LWP::UserAgent's read timeout</div><div>$d-&gt;execute_async_script('return "hello"');</div><div></div><div>$d-&gt;quit;</div>
+<pre><div>use <a href="/pod/feature">feature</a> qw/say/;<div>use <a href="/pod/Selenium::Remote::Driver">Selenium::Remote::Driver</a>;<div></div><div>my $d = Selenium::Remote::Driver-&gt;new;<div>say $d-&gt;ua-&gt;timeout; # 180 seconds is the default</div><div></div><div>$d-&gt;ua-&gt;timeout(2); # LWP wants seconds, not milliseconds!</div><div>$d-&gt;set_timeout('script', 1000); # S::R::D wants milliseconds!</div><div></div><div># Async scripts only return when the callback is invoked. Since there</div><div># is no callback here, Selenium will block for the entire duration of</div><div># the async timeout script. This will hit Selenium's async script</div><div># timeout before hitting LWP::UserAgent's read timeout</div><div>$d-&gt;execute_async_script('return "hello"');<div></div><div>$d-&gt;quit;
 </pre>
 
 <h3><a href="#TESTING" ></a>テスト</h3>
@@ -112,7 +112,7 @@ WC3 Webdriverは常に進化している標準であるため、特定の時点�
 
 Selenium::Remote::WebElement::get_attributeなど、メソッドでエミュレートするJSONWireの動作もいくつかあります。これを回避するには、サブに追加のフラグを渡すか、次のように設定します。
 
-<pre><div>$driver-&gt;{emulate_jsonwire} = 0;</div>
+<pre><div>$driver-&gt;{emulate_jsonwire} = 0;
 </pre>
 
 WC3Webdriverモードの場合。
@@ -121,7 +121,7 @@ WC3Webdriverモードの場合。
 
 この定数は、wd2からwd3までの古い要素ファインダーエイリアスのhashrefマップです。
 
-<pre><div>use <a href="/pod/Data::Dumper">Data::Dumper</a>;</div><div>print Dumper($Selenium::Remote::Driver::FINDERS);</div>
+<pre><div>use <a href="/pod/Data::Dumper">Data::Dumper</a>;<div>print Dumper($Selenium::Remote::Driver::FINDERS);
 </pre>
 
 <h4><a href="#WC3-WEBDRIVER-CURRENT-STATUS" ></a><a ></a>WC3WEBDRIVERの現在のステータス</h4>
@@ -168,7 +168,7 @@ WC3Webdriverモードの場合。
 
 geckodriverを使用してWD3対応サーバー上のfirefoxにextra_capabilitiesを渡す場合は、次のことを行う必要があります。
 
-<pre><div>$Selenium::Remote::Driver::FORCE_WD3=1;</div>
+<pre><div>$Selenium::Remote::Driver::FORCE_WD3=1;
 </pre>
 
 これは、geckoドライバーがレガシー機能を好むためです。レガシー機能は通常、互換性の理由から渡されます。
@@ -184,7 +184,7 @@ chromedriverが有効になっているWD3対応サーバーでextra_capabilitie
 
 chrome 75（および適切なドライバーバージョン）の時点で、WC3仕様がついに実装されました。そのため、これより古いChromeを使用するには、JSONWireモードを手動で強制する必要があります。
 
-<pre><div>$Selenium::Remote::Driver::FORCE_WD2=1;</div>
+<pre><div>$Selenium::Remote::Driver::FORCE_WD2=1;
 </pre>
 
 <h4><a href="#Notes-on-Running-Selenium-at-Scale-via-selenium.jar" ></a><a ></a>selenium.jarを介したSeleniumの大規模な実行に関する注意</h4>
@@ -350,7 +350,7 @@ Selenium::Remote::Driverオブジェクト
 
 使用法:
 
-<pre><div>my $driver = Selenium::Remote::Driver-&gt;new;</div><div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('browser_name' =&gt; 'firefox',</div><div>'platform' =&gt; 'MAC');</div><div></div><div>#or (for Firefox 47 or lower on Selenium 3+)</div><div>my $driver = Selenium::Remote::Driver-&gt;new('browser_name' =&gt; 'firefox',</div><div>'platform' =&gt; 'MAC',</div><div>'extra_capabilities' =&gt; {</div><div>'marionette' =&gt; \0,</div><div>});</div><div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('remote_server_addr' =&gt; '10.10.1.1',</div><div>'port' =&gt; '2222',</div><div>'auto_close' =&gt; 0);</div><div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('browser_name' =&gt;'chrome',</div><div>'extra_capabilities' =&gt; {</div><div>'goog:chromeOptions' =&gt; {</div><div>'args' =&gt; [</div><div>'window-size=1260,960',</div><div>'incognito'</div><div>],</div><div>'prefs' =&gt; {</div><div>'session' =&gt; {</div><div>'restore_on_startup' =&gt; 4,</div><div>'urls_to_restore_on_startup' =&gt; [</div><div>'<a href="http://www.google.com">http://www.google.com</a>',</div><div>'<a href="http://docs.seleniumhq.org">http://docs.seleniumhq.org</a>'</div><div>]},</div><div>'first_run_tabs' =&gt; [</div><div>'<a href="http://www.google.com">http://www.google.com</a>',</div><div>'<a href="http://docs.seleniumhq.org">http://docs.seleniumhq.org</a>'</div><div>]</div><div>}</div><div>}</div><div>});</div><div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('proxy' =&gt; {'proxyType' =&gt; 'manual', 'httpProxy' =&gt; 'myproxy.com:1234'});</div><div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('default_finder' =&gt; 'css');</div>
+<pre><div>my $driver = Selenium::Remote::Driver-&gt;new;<div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('browser_name' =&gt; 'firefox',</div><div>'platform' =&gt; 'MAC');<div></div><div>#or (for Firefox 47 or lower on Selenium 3+)</div><div>my $driver = Selenium::Remote::Driver-&gt;new('browser_name' =&gt; 'firefox',</div><div>'platform' =&gt; 'MAC',</div><div>'extra_capabilities' =&gt; {</div><div>'marionette' =&gt; \0,</div><div>});<div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('remote_server_addr' =&gt; '10.10.1.1',</div><div>'port' =&gt; '2222',</div><div>'auto_close' =&gt; 0);<div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('browser_name' =&gt;'chrome',</div><div>'extra_capabilities' =&gt; {</div><div>'goog:chromeOptions' =&gt; {</div><div>'args' =&gt; [</div><div>'window-size=1260,960',</div><div>'incognito'</div><div>],</div><div>'prefs' =&gt; {</div><div>'session' =&gt; {</div><div>'restore_on_startup' =&gt; 4,</div><div>'urls_to_restore_on_startup' =&gt; [</div><div>'<a href="http://www.google.com">http://www.google.com</a>',</div><div>'<a href="http://docs.seleniumhq.org">http://docs.seleniumhq.org</a>'</div><div>]},</div><div>'first_run_tabs' =&gt; [</div><div>'<a href="http://www.google.com">http://www.google.com</a>',</div><div>'<a href="http://docs.seleniumhq.org">http://docs.seleniumhq.org</a>'</div><div>]</div><div>}</div><div>}</div><div>});<div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('proxy' =&gt; {'proxyType' =&gt; 'manual', 'httpProxy' =&gt; 'myproxy.com:1234'});<div></div><div>#or</div><div>my $driver = Selenium::Remote::Driver-&gt;new('default_finder' =&gt; 'css');
 </pre>
 
 <h5 ><a href="#error_handler1" ></a>error_handler</h5>
@@ -359,12 +359,12 @@ Selenium::Remote::Driverオブジェクト
 
 オプションのコンストラクター引数と関連するセッター/クリアラー:独自のエラーハンドラーをインストールする場合は、error_handlerインスタンス化中に次のようにコードrefを渡すことができます。
 
-<pre><div>my $driver = Selenium::Remote::Driver-&gt;new(</div><div>error_handler =&gt; sub { print $_[1]; croak 'goodbye'; }</div><div>);</div>
+<pre><div>my $driver = Selenium::Remote::Driver-&gt;new(</div><div>error_handler =&gt; sub { print $_[1]; croak 'goodbye'; }</div><div>);
 </pre>
 
 さらに、すでにインスタンス化されているドライバーでいつでも設定および/またはクリアできます。
 
-<pre><div># later, change the error handler to something else</div><div>$driver-&gt;error_handler( sub { print $_[1]; croak 'hello'; } );</div><div></div><div># stop handling errors manually and use the default S:R:D behavior</div><div># (we will croak about the exception)</div><div>$driver-&gt;clear_error_handler;</div>
+<pre><div># later, change the error handler to something else</div><div>$driver-&gt;error_handler( sub { print $_[1]; croak 'hello'; } );<div></div><div># stop handling errors manually and use the default S:R:D behavior</div><div># (we will croak about the exception)</div><div>$driver-&gt;clear_error_handler;
 </pre>
 
 エラーハンドラは3つの引数を受け取ります。最初の引数は$driverオブジェクト自体であり、2番目の引数は例外メッセージと1つの複数行文字列のスタックトレースです。最後の引数は、実行されたばかりのコマンドの引数配列です。
@@ -389,7 +389,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>my $driver = Selenium::Remote::Driver-&gt;new_from_caps(</div><div>'desired_capabilities' =&gt; {'browserName' =&gt; 'firefox'}</div><div>);</div><div></div><div>The above would generate a POST to the webdriver server at</div><div>localhost:4444 with the exact payload of '{"desiredCapabilities":</div><div>{"browserName": "firefox" }}'.</div>
+<div>my $driver = Selenium::Remote::Driver-&gt;new_from_caps(</div><div>'desired_capabilities' =&gt; {'browserName' =&gt; 'firefox'}</div><div>);<div></div><div>The above would generate a POST to the webdriver server at</div><div>localhost:4444 with the exact payload of '{"desiredCapabilities":</div><div>{"browserName": "firefox" }}'.</div>
 </pre>
 
 <h3><a href="#METHODS" ></a>方法</h3>
@@ -422,7 +422,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;debug_on;</div>
+<div>$driver-&gt;debug_on;
 </pre>
 
 <h4><a href="#debug_off" ></a>debug_off</h4>
@@ -431,7 +431,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;debug_off;</div>
+<div>$driver-&gt;debug_off;
 </pre>
 
 <h4><a href="#get_sessions" ></a>get_sessions</h4>
@@ -445,7 +445,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>print Dumper $driver-&gt;get_sessions();</div>
+<div>print Dumper $driver-&gt;get_sessions();
 </pre>
 
 <h4><a href="#status" ></a>status</h4>
@@ -459,12 +459,12 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>print Dumper $driver-&gt;status;</div>
+<div>print Dumper $driver-&gt;status;
 </pre>
 
 <h4><a href="#get_alert_text" ></a>get_alert_text</h4>
 
-<div>Gets the text of the currently displayed JavaScript alert(), confirm()</div><div>or prompt() dialog.</div><div></div><div>Example</div><div>my $string = $driver-&gt;get_alert_text;</div>
+<div>Gets the text of the currently displayed JavaScript alert(), confirm()</div><div>or prompt() dialog.</div><div></div><div>Example</div><div>my $string = $driver-&gt;get_alert_text;
 </pre>
 
 <h4><a href="#send_keys_to_active_element" ></a>send_keys_to_active_element</h4>
@@ -478,7 +478,7 @@ Selenium::Remote::Driverオブジェクト
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;send_keys_to_active_element('abcd', 'efg');</div><div>$driver-&gt;send_keys_to_active_element('hijk');</div><div></div><div>or</div><div></div><div># include the WDKeys module</div><div>use <a href="/pod/Selenium::Remote::WDKeys">Selenium::Remote::WDKeys</a>;</div><div>$driver-&gt;send_keys_to_active_element(KEYS-&gt;{'space'}, KEYS-&gt;{'enter'});</div>
+<div>$driver-&gt;send_keys_to_active_element('abcd', 'efg');<div>$driver-&gt;send_keys_to_active_element('hijk');<div></div><div>or</div><div></div><div># include the WDKeys module</div><div>use <a href="/pod/Selenium::Remote::WDKeys">Selenium::Remote::WDKeys</a>;<div>$driver-&gt;send_keys_to_active_element(KEYS-&gt;{'space'}, KEYS-&gt;{'enter'});
 </pre>
 
 <h4><a href="#send_keys_to_alert" ></a>send_keys_to_alert</h4>
@@ -492,17 +492,17 @@ send_keys_to_promptと同義
 </pre>
 <b>入力:</b>
 <pre>
-<div>{string} keys to send</div><div></div><div>Example:</div><div>$driver-&gt;send_keys_to_prompt('hello world');</div><div>or</div><div>ok($driver-&gt;get_alert_text eq 'Please Input your name','prompt appears');</div><div>$driver-&gt;send_keys_to_alert("Larry Wall");</div><div>$driver-&gt;accept_alert;</div>
+<div>{string} keys to send</div><div></div><div>Example:</div><div>$driver-&gt;send_keys_to_prompt('hello world');<div>or</div><div>ok($driver-&gt;get_alert_text eq 'Please Input your name','prompt appears');<div>$driver-&gt;send_keys_to_alert("Larry Wall");<div>$driver-&gt;accept_alert;
 </pre>
 
 <h4><a href="#accept_alert" ></a>accept_alert</h4>
 
-<div>Accepts the currently displayed alert dialog. Usually, this is</div><div>equivalent to clicking the 'OK' button in the dialog.</div><div></div><div>Example:</div><div>$driver-&gt;accept_alert;</div>
+<div>Accepts the currently displayed alert dialog. Usually, this is</div><div>equivalent to clicking the 'OK' button in the dialog.</div><div></div><div>Example:</div><div>$driver-&gt;accept_alert;
 </pre>
 
 <h4><a href="#dismiss_alert" ></a>dismiss_alert</h4>
 
-<div>Dismisses the currently displayed alert dialog. For comfirm()</div><div>and prompt() dialogs, this is equivalent to clicking the</div><div>'Cancel' button. For alert() dialogs, this is equivalent to</div><div>clicking the 'OK' button.</div><div></div><div>Example:</div><div>$driver-&gt;dismiss_alert;</div>
+<div>Dismisses the currently displayed alert dialog. For comfirm()</div><div>and prompt() dialogs, this is equivalent to clicking the</div><div>'Cancel' button. For alert() dialogs, this is equivalent to</div><div>clicking the 'OK' button.</div><div></div><div>Example:</div><div>$driver-&gt;dismiss_alert;
 </pre>
 
 <h4><a href="#general_action" ></a>general_action</h4>
@@ -539,7 +539,7 @@ WebDriver3対応のセレニウムサーバーでのみ使用できます。
 
 <b>使用方法:</b>
 <pre>
-<div># element - the element to move to. If not specified or is null, the offset is relative to current position of the mouse.</div><div># xoffset - X offset to move to, relative to the top-left corner of the element. If not specified, the mouse will move to the middle of the element.</div><div># yoffset - Y offset to move to, relative to the top-left corner of the element. If not specified, the mouse will move to the middle of the element.</div><div></div><div>print $driver-&gt;mouse_move_to_location(element =&gt; e, xoffset =&gt; x, yoffset =&gt; y);</div>
+<div># element - the element to move to. If not specified or is null, the offset is relative to current position of the mouse.</div><div># xoffset - X offset to move to, relative to the top-left corner of the element. If not specified, the mouse will move to the middle of the element.</div><div># yoffset - Y offset to move to, relative to the top-left corner of the element. If not specified, the mouse will move to the middle of the element.</div><div></div><div>print $driver-&gt;mouse_move_to_location(element =&gt; e, xoffset =&gt; x, yoffset =&gt; y);
 </pre>
 
 <h4><a href="#move_to" ></a>move_to</h4>
@@ -557,7 +557,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>my $capab = $driver-&gt;get_capabilities();</div><div>print Dumper($capab);</div>
+<div>my $capab = $driver-&gt;get_capabilities();<div>print Dumper($capab);
 </pre>
 
 <h4><a href="#get_timeouts" ></a>get_timeouts</h4>
@@ -566,7 +566,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get_timeouts();</div>
+<div>$driver-&gt;get_timeouts();
 </pre>
 
 <h4><a href="#set_timeout" ></a>set_timeout</h4>
@@ -580,7 +580,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_timeout('script', 1000);</div>
+<div>$driver-&gt;set_timeout('script', 1000);
 </pre>
 
 <h4><a href="#set_async_script_timeout" ></a>set_async_script_timeout</h4>
@@ -594,7 +594,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_async_script_timeout(1000);</div>
+<div>$driver-&gt;set_async_script_timeout(1000);
 </pre>
 
 <h4><a href="#set_implicit_wait_timeout" ></a>set_implicit_wait_timeout</h4>
@@ -613,7 +613,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_implicit_wait_timeout(10);</div>
+<div>$driver-&gt;set_implicit_wait_timeout(10);
 </pre>
 
 <h4><a href="#pause" ></a>pause</h4>
@@ -631,7 +631,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;close();</div><div>or</div><div>#close a popup window</div><div>my $handles = $driver-&gt;get_window_handles;</div><div>$driver-&gt;switch_to_window($handles-&gt;[1]);</div><div>$driver-&gt;close();</div><div>$driver-&gt;switch_to_window($handles-&gt;[0]);</div>
+<div>$driver-&gt;close();<div>or</div><div>#close a popup window</div><div>my $handles = $driver-&gt;get_window_handles;<div>$driver-&gt;switch_to_window($handles-&gt;[1]);<div>$driver-&gt;close();<div>$driver-&gt;switch_to_window($handles-&gt;[0]);
 </pre>
 
 <h4><a href="#quit" ></a>quit</h4>
@@ -640,7 +640,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;quit();</div>
+<div>$driver-&gt;quit();
 </pre>
 
 <h4><a href="#get_current_window_handle" ></a>get_current_window_handle</h4>
@@ -654,7 +654,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;get_current_window_handle();</div>
+<div>print $driver-&gt;get_current_window_handle();
 </pre>
 
 <h4><a href="#get_window_handles" ></a>get_window_handles</h4>
@@ -668,7 +668,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print Dumper $driver-&gt;get_window_handles;</div><div>or</div><div># get popup, close, then back</div><div>my $handles = $driver-&gt;get_window_handles;</div><div>$driver-&gt;switch_to_window($handles-&gt;[1]);</div><div>$driver-&gt;close;</div><div>$driver-&gt;switch_to_window($handles-&gt;[0]);</div>
+<div>print Dumper $driver-&gt;get_window_handles;<div>or</div><div># get popup, close, then back</div><div>my $handles = $driver-&gt;get_window_handles;<div>$driver-&gt;switch_to_window($handles-&gt;[1]);<div>$driver-&gt;close;<div>$driver-&gt;switch_to_window($handles-&gt;[0]);
 </pre>
 
 <h4><a href="#get_window_size" ></a>get_window_size</h4>
@@ -687,7 +687,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>my $window_size = $driver-&gt;get_window_size();</div><div>print $window_size-&gt;{'height'}, $window_size-&gt;{'width'};</div>
+<div>my $window_size = $driver-&gt;get_window_size();<div>print $window_size-&gt;{'height'}, $window_size-&gt;{'width'};
 </pre>
 
 <h4><a href="#get_window_position" ></a>get_window_position</h4>
@@ -706,7 +706,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>my $window_size = $driver-&gt;get_window_position();</div><div>print $window_size-&gt;{'x'}, $window_size-&gt;('y');</div>
+<div>my $window_size = $driver-&gt;get_window_position();<div>print $window_size-&gt;{'x'}, $window_size-&gt;('y');
 </pre>
 
 <h4><a href="#get_current_url" ></a>get_current_url</h4>
@@ -720,7 +720,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;get_current_url();</div>
+<div>print $driver-&gt;get_current_url();
 </pre>
 
 <h4><a href="#navigate" ></a>navigate</h4>
@@ -734,7 +734,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;navigate('<a href="http://www.google.com">http://www.google.com</a>');</div>
+<div>$driver-&gt;navigate('<a href="http://www.google.com">http://www.google.com</a>');
 </pre>
 
 <h4><a href="#get" ></a>get</h4>
@@ -748,7 +748,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get('<a href="http://www.google.com">http://www.google.com</a>');</div>
+<div>$driver-&gt;get('<a href="http://www.google.com">http://www.google.com</a>');
 </pre>
 
 <h4><a href="#get_title" ></a>get_title</h4>
@@ -762,7 +762,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;get_title();</div>
+<div>print $driver-&gt;get_title();
 </pre>
 
 <h4><a href="#go_back" ></a>go_back</h4>
@@ -771,7 +771,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;go_back();</div>
+<div>$driver-&gt;go_back();
 </pre>
 
 <h4><a href="#go_forward" ></a>go_forward</h4>
@@ -780,7 +780,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;go_forward();</div>
+<div>$driver-&gt;go_forward();
 </pre>
 
 <h4><a href="#refresh" ></a>refresh</h4>
@@ -789,7 +789,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;refresh();</div>
+<div>$driver-&gt;refresh();
 </pre>
 
 <h4><a href="#has_javascript" ></a>has_javascript</h4>
@@ -812,7 +812,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>my $script = q{</div><div>var arg1 = arguments[0];</div><div>var callback = arguments[arguments.length-1];</div><div>var elem = window.document.findElementById(arg1);</div><div>callback(elem);</div><div>};</div><div>my $elem = $driver-&gt;execute_async_script($script,'myid');</div><div>$elem-&gt;click;</div>
+<div>my $script = q{</div><div>var arg1 = arguments[0];<div>var callback = arguments[arguments.length-1];<div>var elem = window.document.findElementById(arg1);<div>callback(elem);<div>};<div>my $elem = $driver-&gt;execute_async_script($script,'myid');<div>$elem-&gt;click;
 </pre>
 
 <h4><a href="#execute_script" ></a>execute_script</h4>
@@ -826,7 +826,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>my $script = q{</div><div>var arg1 = arguments[0];</div><div>var elem = window.document.findElementById(arg1);</div><div>return elem;</div><div>};</div><div>my $elem = $driver-&gt;execute_script($script,'myid');</div><div>$elem-&gt;click;</div>
+<div>my $script = q{</div><div>var arg1 = arguments[0];<div>var elem = window.document.findElementById(arg1);<div>return elem;<div>};<div>my $elem = $driver-&gt;execute_script($script,'myid');<div>$elem-&gt;click;
 </pre>
 
 <h4><a href="#screenshot" ></a>screenshot</h4>
@@ -840,7 +840,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;screenshot();</div><div>print $driver-&gt;screenshot({'full' =&gt; 1});</div>
+<div>print $driver-&gt;screenshot();<div>print $driver-&gt;screenshot({'full' =&gt; 1});
 </pre>
 
 スクリーンショットをファイルに簡単に書き込むには、<a href="#capture_screenshot">「capture_screenshot」を</a>参照してください。
@@ -856,7 +856,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;capture_screenshot($filename);</div><div>$driver-&gt;capture_screenshot($filename, {'full' =&gt; 1});</div>
+<div>$driver-&gt;capture_screenshot($filename);<div>$driver-&gt;capture_screenshot($filename, {'full' =&gt; 1});
 </pre>
 
 <h4><a href="#available_engines" ></a>available_engines</h4>
@@ -870,7 +870,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>print Dumper $driver-&gt;available_engines;</div>
+<div>print Dumper $driver-&gt;available_engines;
 </pre>
 
 <h4><a href="#switch_to_frame" ></a>switch_to_frame</h4>
@@ -884,7 +884,7 @@ mouse_move_to_locationと同義
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;switch_to_frame('frame_1');</div><div>or</div><div>$driver-&gt;switch_to_frame($driver-&gt;find_element('iframe', 'tag_name'));</div>
+<div>$driver-&gt;switch_to_frame('frame_1');<div>or</div><div>$driver-&gt;switch_to_frame($driver-&gt;find_element('iframe', 'tag_name'));
 </pre>
 
 <h4><a href="#switch_to_parent_frame" ></a>switch_to_parent_frame</h4>
@@ -902,7 +902,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;switch_to_window('MY Homepage');</div><div>or</div><div># close a popup window and switch back</div><div>my $handles = $driver-&gt;get_window_handles;</div><div>$driver-&gt;switch_to_window($handles-&gt;[1]);</div><div>$driver-&gt;close;</div><div>$driver-&gt;switch_to_window($handles-&gt;[0]);</div>
+<div>$driver-&gt;switch_to_window('MY Homepage');<div>or</div><div># close a popup window and switch back</div><div>my $handles = $driver-&gt;get_window_handles;<div>$driver-&gt;switch_to_window($handles-&gt;[1]);<div>$driver-&gt;close;<div>$driver-&gt;switch_to_window($handles-&gt;[0]);
 </pre>
 
 <h4><a href="#set_window_position" ></a>set_window_position</h4>
@@ -921,7 +921,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_window_position(50, 50);</div>
+<div>$driver-&gt;set_window_position(50, 50);
 </pre>
 
 <h4><a href="#set_window_size" ></a>set_window_size</h4>
@@ -940,7 +940,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_window_size(640, 480);</div>
+<div>$driver-&gt;set_window_size(640, 480);
 </pre>
 
 <h4><a href="#maximize_window" ></a>maximum_window</h4>
@@ -959,7 +959,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;maximize_window();</div>
+<div>$driver-&gt;maximize_window();
 </pre>
 
 <h4><a href="#minimize_window" ></a>minimize_window</h4>
@@ -973,7 +973,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;minimize_window();</div>
+<div>$driver-&gt;minimize_window();
 </pre>
 
 <h4><a href="#fullscreen_window" ></a>fullscreen_window</h4>
@@ -987,7 +987,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;fullscreen_window();</div>
+<div>$driver-&gt;fullscreen_window();
 </pre>
 
 <h4><a href="#get_all_cookies" ></a>get_all_cookies</h4>
@@ -1001,7 +1001,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>print Dumper($driver-&gt;get_all_cookies());</div>
+<div>print Dumper($driver-&gt;get_all_cookies());
 </pre>
 
 <h4><a href="#add_cookie" ></a>add_cookie</h4>
@@ -1019,7 +1019,7 @@ Webdriver 3は、引数なしでswitch_to_frameを呼び出すのと同じです
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;delete_all_cookies();</div>
+<div>$driver-&gt;delete_all_cookies();
 </pre>
 
 <h4><a href="#get_cookie_named" ></a>get_cookie_named</h4>
@@ -1050,7 +1050,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;delete_cookie_named('foo');</div>
+<div>$driver-&gt;delete_cookie_named('foo');
 </pre>
 
 <h4><a href="#get_page_source" ></a>get_page_source</h4>
@@ -1064,7 +1064,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;get_page_source();</div>
+<div>print $driver-&gt;get_page_source();
 </pre>
 
 <h4><a href="#find_element" ></a>find_element</h4>
@@ -1078,7 +1078,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;find_element("//input[\@name='q']");</div>
+<div>$driver-&gt;find_element("//input[\@name='q']");
 </pre>
 
 <h4><a href="#find_elements" ></a>find_elements</h4>
@@ -1092,7 +1092,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;find_elements("//input");</div>
+<div>$driver-&gt;find_elements("//input");
 </pre>
 
 <h4><a href="#find_child_element" ></a>find_child_element</h4>
@@ -1106,7 +1106,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>my $elem1 = $driver-&gt;find_element("//select[\@name='ned']");</div><div># note the usage of ./ when searching for a child element instead of //</div><div>my $child = $driver-&gt;find_child_element($elem1, "./option[\@value='es_ar']");</div>
+<div>my $elem1 = $driver-&gt;find_element("//select[\@name='ned']");<div># note the usage of ./ when searching for a child element instead of //</div><div>my $child = $driver-&gt;find_child_element($elem1, "./option[\@value='es_ar']");
 </pre>
 
 <h4><a href="#find_child_elements" ></a>find_child_elements</h4>
@@ -1120,7 +1120,7 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>my $elem1 = $driver-&gt;find_element("//select[\@name='ned']");</div><div># note the usage of ./ when searching for a child element instead of //</div><div>my $child = $driver-&gt;find_child_elements($elem1, "./option");</div>
+<div>my $elem1 = $driver-&gt;find_element("//select[\@name='ned']");<div># note the usage of ./ when searching for a child element instead of //</div><div>my $child = $driver-&gt;find_child_elements($elem1, "./option");
 </pre>
 
 <h4><a href="#find_element_by_class" ></a>find_element_by_class</h4>
@@ -1174,267 +1174,267 @@ get_all_cookies（）;の要素と同様に、Cookie定義ハッシュを返し�
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;get_active_element();</div>
+$driver->get_active_element();
 </pre>
 
 <h4><a href="#cache_status" ></a>cache_status</h4>
 
-<div>Get the status of the html5 application cache.</div><div></div>
+Get the status of the html5 application cache.
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;cache_status;</div><div></div>
+print $driver-&gt;cache_status;
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>&lt;number&gt; - Status code for application cache: {UNCACHED = 0, IDLE = 1, CHECKING = 2, DOWNLOADING = 3, UPDATE_READY = 4, OBSOLETE = 5}</div>
+&lt;number&gt; - Status code for application cache: {UNCACHED = 0, IDLE = 1, CHECKING = 2, DOWNLOADING = 3, UPDATE_READY = 4, OBSOLETE = 5}
 </pre>
 
 <h4><a href="#set_geolocation" ></a>set_geolocation</h4>
 
-<div>Set the current geographic location - note that your driver must</div><div>implement this endpoint, or else it will crash your session. At the</div><div>very least, it works in v2.12 of Chromedriver.</div><div></div>
+Set the current geographic location - note that your driver mustimplement this endpoint, or else it will crash your session. At thevery least, it works in v2.12 of Chromedriver.
 
 </pre>
 <b>入力:</b>
 <pre>
-<div>必須:</div><div>HASH: A hash with key C&lt;location&gt; whose value is a Location hashref. See</div><div>usage section for example.</div><div></div>
+必須:HASH: A hash with key C&lt;location&gt; whose value is a Location hashref. Seeusage section for example.
 
 <b>使用方法:</b>
 <pre>
-<div>$driver-&gt;set_geolocation( location =&gt; {</div><div>latitude =&gt; 40.714353,</div><div>longitude =&gt; -74.005973,</div><div>altitude =&gt; 0.056747</div><div>});</div><div></div>
+$driver->set_geolocation( location =&gt; {latitude =&gt; 40.714353,longitude =&gt; -74.005973,altitude =&gt; 0.056747});
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>BOOLEAN - success or failure</div>
+BOOLEAN - success or failure
 </pre>
 
 <h4><a href="#get_geolocation" ></a>get_geolocation</h4>
 
-<div>Get the current geographic location. Note that your webdriver must</div><div>implement this endpoint - otherwise, it will crash your session. At</div><div>the time of release, we couldn't get this to work on the desktop</div><div>FirefoxDriver or desktop Chromedriver.</div><div></div>
+Get the current geographic location. Note that your webdriver mustimplement this endpoint - otherwise, it will crash your session. Atthe time of release, we couldn't get this to work on the desktopFirefoxDriver or desktop Chromedriver.
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver-&gt;get_geolocation;</div><div></div>
+print $driver-&gt;get_geolocation;
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>{ latitude: number, longitude: number, altitude: number } - The current geo location.</div>
+{ latitude: number, longitude: number, altitude: number } - The current geo location.
 </pre>
 
 <h4><a href="#get_log" ></a>get_log</h4>
 
-<div>Get the log for a given log type. Log buffer is reset after each request.</div><div></div>
+Get the log for a given log type. Log buffer is reset after each request.
 
 </pre>
 <b>入力:</b>
 <pre>
-<div>必須:</div><div>&lt;文字列&gt; - Type of log to retrieve:</div><div>{client|driver|browser|server}. There may be others available; see</div><div>get_log_types for a full list for your driver.</div><div></div>
+必須:&lt;文字列&gt; - Type of log to retrieve:{client|driver|browser|server}. There may be others available; seeget_log_types for a full list for your driver.
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->get_log( $log_type );</div><div></div>
+$driver->get_log( $log_type );
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>&lt;ARRAY|ARRAYREF&gt; - An array of log entries since the most recent request.</div>
+&lt;ARRAY|ARRAYREF&gt; - An array of log entries since the most recent request.
 </pre>
 
 <h4><a href="#get_log_types" ></a>get_log_types</h4>
 
-<div>Get available log types. By default, every driver should have client,</div><div>driver, browser, and server types, but there may be more available,</div><div>depending on your driver.</div><div></div>
+Get available log types. By default, every driver should have client,driver, browser, and server types, but there may be more available,depending on your driver.
 
 <b>使用方法:</b>
 <pre>
-<div>my @types = $driver->get_log_types;</div><div>$driver->get_log($types[0]);</div><div></div>
+my @types = $driver->get_log_types;$driver->get_log($types[0]);
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>&lt;ARRAYREF&gt; - The list of log types.</div>
+&lt;ARRAYREF&gt; - The list of log types.
 </pre>
 
 <h4><a href="#set_orientation" ></a>set_orientation</h4>
 
-<div>Set the browser orientation.</div><div></div>
+Set the browser orientation.
 
 </pre>
 <b>入力:</b>
 <pre>
-<div>必須:</div><div>&lt;文字列&gt; - Orientation {LANDSCAPE|PORTRAIT}</div><div></div>
+必須:&lt;文字列&gt; - Orientation {LANDSCAPE|PORTRAIT}
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->set_orientation( $orientation );</div><div></div>
+$driver->set_orientation( $orientation );
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>BOOLEAN - success or failure</div>
+BOOLEAN - success or failure
 </pre>
 
 <h4><a href="#get_orientation" ></a>get_orientation</h4>
 
-<div>Get the current browser orientation. Returns either LANDSCAPE|PORTRAIT.</div><div></div>
+Get the current browser orientation. Returns either LANDSCAPE|PORTRAIT.
 
 <b>使用方法:</b>
 <pre>
-<div>print $driver->get_orientation;</div><div></div>
+print $driver->get_orientation;
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>&lt;文字列&gt; - your orientation.</div>
+&lt;文字列&gt; - your orientation.
 </pre>
 
 <h4><a href="#send_modifier" ></a>send_modifier</h4>
 
-<div>Send an event to the active element to depress or release a modifier key.</div><div></div><div>Input: 2</div><div>必須:</div><div>value - String - The modifier key event to be sent. This key must be one 'Ctrl','Shift','Alt',' or 'Command'/'Meta' as defined by the send keys command</div><div>isdown - Boolean/String - Whether to generate a key down or key up</div><div></div>
+Send an event to the active element to depress or release a modifier key.Input: 2必須:value - String - The modifier key event to be sent. This key must be one 'Ctrl','Shift','Alt',' or 'Command'/'Meta' as defined by the send keys commandisdown - Boolean/String - Whether to generate a key down or key up
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->send_modifier('Alt','down');</div><div>$elem-&gt;send_keys('c');</div><div>$driver->send_modifier('Alt','up');</div><div></div><div>or</div><div></div><div>$driver->send_modifier('Alt',1);</div><div>$elem-&gt;send_keys('c');</div><div>$driver->send_modifier('Alt',0);</div>
+$driver->send_modifier('Alt','down');$elem-&gt;send_keys('c');$driver->send_modifier('Alt','up');or$driver->send_modifier('Alt',1);$elem-&gt;send_keys('c');$driver->send_modifier('Alt',0);
 </pre>
 
 <h4><a href="#compare_elements" ></a>compare_elements</h4>
 
-<div>Test if two element IDs refer to the same DOM element.</div><div></div><div>Input: 2</div><div>必須:</div><div>Selenium::Remote::WebElement - WebElement Object</div><div>Selenium::Remote::WebElement - WebElement Object</div><div></div>
+Test if two element IDs refer to the same DOM element.Input: 2必須:Selenium::Remote::WebElement - WebElement ObjectSelenium::Remote::WebElement - WebElement Object
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>BOOLEAN</div><div></div>
+BOOLEAN
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->compare_elements($elem_obj1, $elem_obj2);</div>
+$driver->compare_elements($elem_obj1, $elem_obj2);
 </pre>
 
 <h4><a href="#click" ></a>click</h4>
 
-<div>Click any mouse button (at the coordinates set by the last moveto command).</div><div></div>
+Click any mouse button (at the coordinates set by the last moveto command).
 
 </pre>
 <b>入力:</b>
 <pre>
-<div>button - any one of 'LEFT'/0 'MIDDLE'/1 'RIGHT'/2</div><div>defaults to 'LEFT'</div><div>queue - (optional) queue the click, rather than executing it. WD3 only.</div><div></div>
+button - any one of 'LEFT'/0 'MIDDLE'/1 'RIGHT'/2defaults to 'LEFT'queue - (optional) queue the click, rather than executing it. WD3 only.
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->click('LEFT');</div><div>$driver->click(1); #MIDDLE</div><div>$driver->click('RIGHT');</div><div>$driver->click; #Defaults to left</div>
+$driver->click('LEFT');$driver->click(1); #MIDDLE$driver->click('RIGHT');$driver->click; #Defaults to left
 </pre>
 
 <h4><a href="#double_click" ></a>double_click</h4>
 
-<div>Double-clicks at the current mouse coordinates (set by moveto).</div><div></div><div>Compatibility:</div><div>On webdriver3 enabled servers, you can double click arbitrary mouse buttons.</div><div></div>
+Double-clicks at the current mouse coordinates (set by moveto).Compatibility:On webdriver3 enabled servers, you can double click arbitrary mouse buttons.
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->double_click(button);</div>
+$driver->double_click(button);
 </pre>
 
 <h4><a href="#button_down" ></a>button_down</h4>
 
-<div>Click and hold the left mouse button (at the coordinates set by the</div><div>last moveto command). Note that the next mouse-related command that</div><div>should follow is buttonup . Any other mouse command (such as click</div><div>or another call to buttondown) will yield undefined behaviour.</div><div></div><div>Compatibility:</div><div>On WebDriver 3 enabled servers, all this does is queue a button down action.</div><div>You will either have to call general_action() to perform the queue, or an action like click() which also clears the queue.</div><div></div>
+Click and hold the left mouse button (at the coordinates set by thelast moveto command). Note that the next mouse-related command thatshould follow is buttonup . Any other mouse command (such as clickor another call to buttondown) will yield undefined behaviour.Compatibility:On WebDriver 3 enabled servers, all this does is queue a button down action.You will either have to call general_action() to perform the queue, or an action like click() which also clears the queue.
 
 <b>使用方法:</b>
 <pre>
-<div>$self-&gt;button_down;</div>
+$self-&gt;button_down;
 </pre>
 
 <h4><a href="#button_up" ></a>button_up</h4>
 
-<div>Releases the mouse button previously held (where the mouse is</div><div>currently at). Must be called once for every buttondown command</div><div>issued. See the note in click and buttondown about implications of</div><div>out-of-order commands.</div><div></div><div>Compatibility:</div><div>On WebDriver 3 enabled servers, all this does is queue a button down action.</div><div>You will either have to call general_action() to perform the queue, or an action like click() which also clears the queue.</div><div></div>
+Releases the mouse button previously held (where the mouse iscurrently at). Must be called once for every buttondown commandissued. See the note in click and buttondown about implications ofout-of-order commands.Compatibility:On WebDriver 3 enabled servers, all this does is queue a button down action.You will either have to call general_action() to perform the queue, or an action like click() which also clears the queue.
 
 <b>使用方法:</b>
 <pre>
-<div>$self-&gt;button_up;</div>
+$self-&gt;button_up;
 </pre>
 
 <h4><a href="#upload_file" ></a>send_keys</h4>
 
-<div>Upload a file from the local machine to the selenium server</div><div>machine. That file then can be used for testing file upload on web</div><div>forms. Returns the remote-server's path to the file.</div><div></div><div>Passing raw data as an argument past the filename will upload</div><div>that rather than the file's contents.</div><div></div><div>When passing raw data, be advised that it expects a zipped</div><div>and then base64 encoded version of a single file.</div><div>Multiple files and/or directories are not supported by the remote server.</div><div></div>
+Upload a file from the local machine to the selenium servermachine. That file then can be used for testing file upload on webforms. Returns the remote-server's path to the file.Passing raw data as an argument past the filename will uploadthat rather than the file's contents.When passing raw data, be advised that it expects a zippedand then base64 encoded version of a single file.Multiple files and/or directories are not supported by the remote server.
 
 <b>使用方法:</b>
 <pre>
-<div>my $remote_fname = $driver->upload_file( $fname );</div><div>my $element = $driver->find_element( '//input[@]' );</div><div>$element-&gt;send_keys( $remote_fname );</div>
+my $remote_fname = $driver->upload_file( $fname );my $element = $driver->find_element( '//input[@]' );$element-&gt;send_keys( $remote_fname );
 </pre>
 
 <h4><a href="#get_text" ></a>get_text</h4>
 
-<div>Get the text of a particular element. Wrapper around L&lt;find_element()&gt;</div><div></div>
+Get the text of a particular element. Wrapper around L&lt;find_element()&gt;
 
 <b>使用方法:</b>
 <pre>
-<div>$text = $driver->get_text("//div[\@name='q']");</div>
+$text = $driver->get_text("//div[\@name='q']");
 </pre>
 
 <h4><a href="#get_body" ></a>get_body</h4>
 
-<div>Get the current text for the whole body. If you want the entire raw HTML instead,</div><div>See L&lt;get_page_source&gt;.</div><div></div>
+Get the current text for the whole body. If you want the entire raw HTML instead,See L&lt;get_page_source&gt;.
 
 <b>使用方法:</b>
 <pre>
-<div>$body_text = $driver->get_body();</div>
+$body_text = $driver->get_body();
 </pre>
 
 <h4><a href="#get_path" ></a>get_path</h4>
 
-<div>Get the path part of the current browser location.</div><div></div>
+Get the path part of the current browser location.
 
 <b>使用方法:</b>
 <pre>
-<div>$path = $driver->get_path();</div>
+$path = $driver->get_path();
 </pre>
 
 <h4><a href="#get_user_agent" ></a>get_user_agent</h4>
 
-<div>Convenience method to get the user agent string, according to the</div><div>browser's value for window.navigator.userAgent.</div><div></div>
+Convenience method to get the user agent string, according to thebrowser's value for window.navigator.userAgent.
 
 <b>使用方法:</b>
 <pre>
-<div>$user_agent = $driver->get_user_agent()</div>
+$user_agent = $driver->get_user_agent()
 </pre>
 
 <h4><a href="#set_inner_window_size" ></a>set_inner_window_size</h4>
 
-<div>Set the inner window size by closing the current window and</div><div>reopening the current page in a new window. This can be useful</div><div>when using browsers to mock as mobile devices.</div><div></div><div>This sub will be fired automatically if you set the</div><div>C&lt;inner_window_size&gt; hash key option during instantiation.</div><div></div>
+Set the inner window size by closing the current window andreopening the current page in a new window. This can be usefulwhen using browsers to mock as mobile devices.This sub will be fired automatically if you set theC&lt;inner_window_size&gt; hash key option during instantiation.
 
 </pre>
 <b>入力:</b>
 <pre>
-<div>INT - height of the window</div><div>INT - width of the window</div><div></div>
+INT - height of the windowINT - width of the window
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>BOOLEAN - Success or failure</div><div></div>
+BOOLEAN - Success or failure
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->set_inner_window_size(640, 480)</div>
+$driver->set_inner_window_size(640, 480);
 </pre>
 
 <h4><a href="#get_local_storage_item" ></a>get_local_storage_item</h4>
 
-<div>Get the value of a local storage item specified by the given key.</div><div></div>
+Get the value of a local storage item specified by the given key.
 
 </pre>
 <b>入力1:</b>
 <pre>
-<div>必須:</div><div>文字列 - name of the key to be retrieved</div><div></div>
+必須:文字列 - name of the key to be retrieved
 
 </pre>
 <b>出力:</b>
 <pre>
-<div>文字列 - value of the local storage item</div><div></div>
+文字列 - value of the local storage item
 
 <b>使用方法:</b>
 <pre>
-<div>$driver->get_local_storage_item('key')</div>
+$driver->get_local_storage_item('key')
 </pre>
 
 <h4><a href="#delete_local_storage_item" ></a>delete_local_storage_item</h4>
