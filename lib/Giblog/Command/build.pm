@@ -70,18 +70,18 @@ sub run {
       my $description = $data->{description} || '';
       
       my $twitter_card = <<"EOS";
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="\@perlzemi" />
 <meta name="twitter:title" content="$title" />
 <meta name="twitter:description" content="$description" />
-<meta name="twitter:image" content="$site_url/images/perlzemi-twitter-card.png" />
+<meta name="twitter:image" content="$site_url/images/twitter_card_large_kaeru.png" />
 EOS
       
       $meta .= "\n$twitter_card\n";
       
       $data->{meta} = $meta;
     }
-    
+
     # Build entry html
     $api->build_entry($data);
     
