@@ -36,8 +36,6 @@ msys2をインストールしましょう。64bit版Windowsの場合は64bit版�
 
 現在(2021年3月8日)では、たいていのWindowsは64bit版かと思われますので、普通は64bit版で大丈夫なはず。以下の解説は64bit版を前提に行います。
 
-
-
 <ul>
   <li>
     <a href="https://www.msys2.org/">トップページ - 「1. Download the installer: msys2-x86_64-日付.exe」をクリック</a>
@@ -118,7 +116,7 @@ pacman -S perl perl-CPAN msys2-devel make libcrypt-devel
 
 インストールするか聞かれるので「Enter」を押して進めましょう。何を聞かれても「Enter」で大丈夫。
 
-以下がインストールされます。これが、Perlを正しく動かすために必要な最小限の環境です。
+以下がインストールされます。これが、Perlを正しく動かすために必要な最小限の環境です。Perlは<a href="https://c.perlzemi.com/">C言語</a>で書かれており、PerlのモジュールのコンパイルにC言語コンパイラ<a href="https://linux.perlzemi.com/blog/20201216103956.html">gcc</a>が必要です。
 
 <ul>
   <li>
@@ -215,7 +213,7 @@ Windows 10である場合は、デフォルトのウイルスソフトであるW
 
 <h3>よく使うLinuxコマンド</h3>
 
-gitやrsyncなどの、よく使うLinuxコマンドも一緒にインストールしておくと、よいでしょう。
+<a href="https://git.perlzemi.com/">git</a>やrsyncなどの、よく使う<a href="https://linux.perlzemi.com/blog/20200211081227.html">Linuxコマンド</a>も一緒にインストールしておくと、よいでしょう。
 
 <pre>
 pacman -S git
