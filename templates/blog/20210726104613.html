@@ -73,6 +73,55 @@ for my $window (@windows) {
 }
 </pre>
 
+<h4>ウィンドウのテキストを取得</h4>
+
+ウィンドウのテキストを取得するにはGetWindowText関数を使います。
+
+<pre>
+# ウィンドウのテキストを取得
+my $win_text = GetWindowText($win);
+</pre>
+
+ウィンドウのテキストは、ブラウザの種類によって、異なる可能性があります。Google Chromeで確認したものでは、以下のように「ウィンドウのタイトル - アプリケーション名」になっていました。
+
+<pre>
+Perl元気塾 - Google Chrome
+</pre>
+
+<h4>対象ウィンドウの取得</h4>
+
+Webブラウザ自動操作ロボットを作る場合は、子ウィンドウの一覧から、対象のウィンドウを取得する必要があります。対象のウィンドウを取得するサンプルを記述します。確実に、対象のWebブラウザの対象のページが、一つ立ち上がっていることをチェックします。
+
+<pre>
+# 対象のウィンドウを取得(Perl元気塾 - Google Chrome)
+my $win;
+{
+  my $desktop_win = GetDesktopWindow();
+  die "Oops!" if GetParent($desktop_win) != 0;
+
+  my @browser_wins;
+  my $browser_name = 'Chrome';
+  for my $win (GetChildWindows($desktop_win)) {
+
+    # ウィンドウの名前
+    my $win_text    = GetWindowText($win);
+
+    # ブラウザ名
+    if ($win_text =~ /\b$browser_name\b/) {
+      if ($win_text =~ /Perl元気塾/) {
+        push @browser_wins, $win;
+      }
+    }
+  }
+
+  my $browser_wins_count = @browser_wins;
+  unless ($browser_wins_count == 1) {
+    die "Must be open one window");
+  }
+  $win = $browser_wins[0];
+}
+</pre>
+
 <!--
 
 <h4>キーボード入力</h4>
