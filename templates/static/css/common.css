@@ -673,11 +673,12 @@
   }
   
 @media only screen and (max-width:880px) {
+  .side {
+    width:100%;
+    margin:0;
+  }
   .entry {
     width:100%;
-  }
-  .side {
-    display:none;
   }
   .site-title {
     text-align:center;
