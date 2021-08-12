@@ -16,7 +16,7 @@
   }
   .header {
     width:100%;
-    max-width:960px;
+    max-width:1180px;
     margin:0 auto;
     background:white;
     border-bottom:2px solid #69c677;
@@ -53,7 +53,7 @@
   }
   .main {
     width:100%;
-    max-width:960px;
+    max-width:1180px;
     margin:0 auto;
     overflow:hidden;
     padding-bottom:20px;
@@ -115,7 +115,7 @@
   }
   .entry {
     float:left;
-    width:75%;
+    width:850px;
     border:1px solid #D2D6DE;
     background:white;
   }
@@ -125,7 +125,7 @@
   }
   .side {
     float:right;
-    width:24.4%;
+    width:320px;
     margin-left:0.6%;
   }
   .content ol {
@@ -672,7 +672,7 @@
     height: 100%;
   }
   
-@media only screen and (max-width:880px) {
+@media only screen and (max-width:1180px) {
   .side {
     width:100%;
     margin:0;
