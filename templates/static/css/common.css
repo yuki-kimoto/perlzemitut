@@ -16,7 +16,7 @@
   }
   .header {
     width:100%;
-    max-width:1180px;
+    max-width:1030px;
     margin:0 auto;
     background:white;
     border-bottom:2px solid #69c677;
@@ -53,7 +53,7 @@
   }
   .main {
     width:100%;
-    max-width:1180px;
+    max-width:1030px;
     margin:0 auto;
     overflow:hidden;
     padding-bottom:20px;
@@ -115,7 +115,7 @@
   }
   .entry {
     float:left;
-    width:850px;
+    width:calc(1030px - 330px);
     border:1px solid #D2D6DE;
     background:white;
   }
@@ -672,7 +672,7 @@
     height: 100%;
   }
   
-@media only screen and (max-width:1180px) {
+@media only screen and (max-width:1030px) {
   .side {
     width:100%;
     margin:0;
