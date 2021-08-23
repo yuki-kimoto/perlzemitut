@@ -4,6 +4,38 @@ Perlゼミは、プロのWeb開発者を目指す方の第一歩としてのPerl
 
 Perlは正規表現が、プログラミング言語の機能として組み込まれており、文章の中にある単語を簡単に検索・置換できます。Perlは、Linux/Unixミドルウェアを支えるツールの基盤であるため、ほとんどのLinux/Unixの環境にインストールされており、後方互換性が高く安定して運用できることに定評があります。
 
+<h3>Perlプログラミングをすぐにお試し</h3>
+
+以下のコードをリンク先で、貼り付けて「Save for 30 days & run」のボタンをクリックしてみてください。
+
+<pre>
+use strict;
+use warnings;
+
+# 「,」カンマ区切りデータを「|」区切りに変換する
+while (my $line = <DATA>) {
+    chomp $line;
+    my @items = split(/,/, $line);
+    my $new_line = join('|', @items);
+    print "$new_line\n";
+}
+
+__DATA__
+1,Web Development,2000
+2,Perl Tutorial,1500
+</pre>
+
+<a href="https://perlbanjo.com/">Perlをすぐに試す</a>
+
+出力結果は、以下のようになりましたか?
+
+<pre>
+1|Web Development|2000
+2|Perl Tutorial|1500
+</pre>
+
+プロのWeb開発者になるための、最初のPerlテキスト処理プログラミングを実行しました。おめでとうございます!
+
 <h3>Perlプログラミング入門</h3>
 
 <div class="block-link-list"> 
