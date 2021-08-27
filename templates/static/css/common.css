@@ -401,32 +401,32 @@
     -webkit-padding-start: 0x;
   }
 
-  .hatena-module {
+  .side_list {
     
   }
 
-  .hatena-module ul li, .hatena-module ol li {
+  .side_list ul li, .side_list ol li {
     padding: 8px 8px;
     border-bottom: 1px solid #edf0f4;
     line-height: 1.3;
     list-style:none;
   }
-  .hatena-module a {
+  .side_list a {
     text-decoration: none;
     font-size:14px;
   }
-  .hatena-modulebody {
+  .side_list_body {
     background:#f8f8ff;
     border-bottom:none;
     border-right:1px solid #d2d6de;
     border-left:1px solid #d2d6de;
   }
 
-   .hatena-modulebody ul {
+   .side_list_body ul {
      margin-bottom:0;
    }
 
-  .hatena-moduletitle {
+  .side_list_title {
     font-family: "times new roman", "geogia", serif;
     padding:10px 0 8px 0;
     font-size:16px;
