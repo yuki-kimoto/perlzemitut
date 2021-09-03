@@ -26,11 +26,11 @@
   }
   .header-description {
     float:left;
-    width:54%;
+    width:50%;
     display:inline-block;
     font-weight:bold;
-    padding-top:15px;
-    font-size:14px;
+    padding-top:5px;
+    font-size:16px;
     letter-spacing:0.5px;
     text-align:center;
   }
@@ -323,7 +323,7 @@
     color:#333;
     font-family: "times new roman", "geogia", serif;
     float:left;
-    width:40%;
+    width:50%;
     display:inline-block;
     padding:2px;
   }
@@ -675,6 +675,7 @@
   
 @media only screen and (max-width:1030px) {
   .side {
+    display:none;
     width:100%;
     margin:0;
   }
@@ -714,17 +715,5 @@
     margin-left:0;
     margin-right:0;
   }
-  
-  h1 {
-    width:100%;
-    text-align:center;
-  }
-  .header-description {
-    width:calc(100% - 30px);
-  }
-  .header-otoiawase {
-    width:40%;
-  }
-
 }
 

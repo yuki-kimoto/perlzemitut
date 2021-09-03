@@ -1,46 +1,6 @@
-<h2>Perlプログラミング入門 - プロのITエンジニアを目指す第一歩</h2>
+<h2>Perlプログラミング入門 - Perlの基本を丁寧に解説</h2>
 
 Perlゼミは、PerlのインストールとPerlプログラミングの基礎を丁寧に解説します。プロのITエンジニアを目指す方の第一歩としてのPerlプログラミングの基本的な知識をマスターしましょう。
-
-Perlは、初心者が始めやすいテキスト処理が得意なプログラミング言語です。需要の高いLinuxサーバー管理や、Web開発のHTML・CSS編集では、テキスト表現を頻繁に扱いますので、Perlプログラミングの基本をしっかりマスターすることが、プロのITエンジニアを目指す近道のひとつです。
-
-Perlは正規表現が、プログラミング言語の機能として組み込まれており、文章の中にある単語を簡単に検索・置換できます。(置換の例)「perl -p -e 's/りんご/みかん/g'」。Perlは、Linux/Unixミドルウェアを支えるツールの基盤であるため、ほとんどのLinux/Unixの環境にインストールされており、後方互換性が高く安定して運用できることに定評があります。
-
-PerlってCGIじゃないの? 古くて嫌われているんじゃないの? 「$」「@」記号だらけで読みにくいんじゃないの? そんな疑問・不安をお持ちの方も多いようです。安心してください。2021年のPerl Web開発は、1990年代と異なり、扱いやすいWebフレームワーク・良質な開発ライブラリがあり、クラウドサーバー対応、パフォーマンス良好で、push通知やリアルタイム更新などの現代的なWeb開発機能を実現できます。
-
-パブリッククラウドのひとつのAmazon AWSでは、PerlのAIライブラリAI::MXNet(C++ライブラリへのバインディング)が公式にサポートされており、トレンド技術への対応も進んでいます。
-
-<h3>Perlプログラミングをすぐにお試し</h3>
-
-以下のコードをリンク先で、貼り付けて「Save for 30 days & run」のボタンをクリックしてみてください。
-
-<pre>
-use strict;
-use warnings;
-
-# 「,」カンマ区切りデータを「|」区切りに変換する
-while (my $line = <DATA>) {
-    chomp $line;
-    my @items = split(/,/, $line);
-    my $new_line = join('|', @items);
-    print "$new_line\n";
-}
-
-__DATA__
-1,Web Development,2000
-2,Perl Tutorial,1500
-</pre>
-
-<a rel="nofollow" href="https://perlbanjo.com/">Perlをすぐに試す</a>
-
-出力結果は、以下のようになりましたか?
-
-<pre>
-1|Web Development|2000
-2|Perl Tutorial|1500
-</pre>
-
-プロのITエンジニアになるための、最初のPerlテキスト処理プログラミングを実行しました。おめでとうございます!
 
 <h3>Perlプログラミング入門</h3>
 
@@ -87,7 +47,7 @@ Perlプログラミングの基礎を学びましょう。テキスト処理・�
   </ul>
 </div>
 
-<h3>Perlの学習教材</h3>
+<h3>Perlプログラミング入門書</h3>
 
 Perlプログラミングの基礎が学べる学習教材です。
 
@@ -108,8 +68,6 @@ Perlプログラミングの基礎が学べる学習教材です。
   </div>
   <div style="margin-top:10px;">ログ解析など日本語を含むテキスト処理の実践!</div>
 </div>
-
-<a href="/blog/20200728215543.html">書籍紹介</a>
 
 <h3>Perl辞典</h3>
 
@@ -135,10 +93,47 @@ Perlの辞典です。標準関数・文法・演算子・特殊変数・モジ�
   </ul>
 </div>
 
-<div>
-<script async src="https://cse.google.com/cse.js?cx=5ff91049d03e80272"></script>
-<div class="gcse-search"></div>
-</div>
+<h3>Perlプログラミングの特徴</h3>
+
+Perlは、初心者が始めやすいテキスト処理が得意なプログラミング言語です。需要の高いLinuxサーバー管理や、Web開発のHTML・CSS編集では、テキスト表現を頻繁に扱いますので、Perlプログラミングの基本をしっかりマスターすることが、プロのITエンジニアを目指す近道のひとつです。
+
+Perlは正規表現が、プログラミング言語の機能として組み込まれており、文章の中にある単語を簡単に検索・置換できます。(置換の例)「perl -p -e 's/りんご/みかん/g'」。Perlは、Linux/Unixミドルウェアを支えるツールの基盤であるため、ほとんどのLinux/Unixの環境にインストールされており、後方互換性が高く安定して運用できることに定評があります。
+
+PerlってCGIじゃないの? 古くて嫌われているんじゃないの? 「$」「@」記号だらけで読みにくいんじゃないの? そんな疑問・不安をお持ちの方も多いようです。安心してください。2021年のPerl Web開発は、1990年代と異なり、扱いやすいWebフレームワーク・良質な開発ライブラリがあり、クラウドサーバー対応、パフォーマンス良好で、push通知やリアルタイム更新などの現代的なWeb開発機能を実現できます。
+
+パブリッククラウドのひとつのAmazon AWSでは、PerlのAIライブラリAI::MXNet(C++ライブラリへのバインディング)が公式にサポートされており、トレンド技術への対応も進んでいます。
+
+<h3>Perlプログラミングをすぐにお試し</h3>
+
+以下のコードをリンク先で、貼り付けて「Save for 30 days & run」のボタンをクリックしてみてください。
+
+<pre>
+use strict;
+use warnings;
+
+# 「,」カンマ区切りデータを「|」区切りに変換する
+while (my $line = <DATA>) {
+    chomp $line;
+    my @items = split(/,/, $line);
+    my $new_line = join('|', @items);
+    print "$new_line\n";
+}
+
+__DATA__
+1,Web Development,2000
+2,Perl Tutorial,1500
+</pre>
+
+<a rel="nofollow" href="https://perlbanjo.com/">Perlをすぐに試す</a>
+
+出力結果は、以下のようになりましたか?
+
+<pre>
+1|Web Development|2000
+2|Perl Tutorial|1500
+</pre>
+
+プロのITエンジニアになるための、最初のPerlテキスト処理プログラミングを実行しました。おめでとうございます!
 
 <h3>Perlゼミの記事一覧</h3>
 
@@ -153,18 +148,18 @@ Perlの辞典です。標準関数・文法・演算子・特殊変数・モジ�
 
 <h3>Perl関連講座</h3>
 
+Perlはテキスト処理の記述性とパフォーマンスに優れ、正規表現が言語に組み込まれているプログラミング言語です。Linuxサーバー管理でのフィルタリングプログラム、複数行の文字列を処理、ファイル内容の検索・置換などが得意。
+
+Webシステム開発もMojoliciousで簡単で高速。gitやopensslなどLinuxミドルウェアの支援ツールとして採用されています。
+
 Perlに関連する講座です。Perl動画講義・Perlの哲学・Linuxサーバー管理・環境構築・HTML・CSS・Web開発・Webサイト制作・データベースが学べます。プロのITエンジニアの技術を、ステップアップしながら、効率よく学ぶことができます。
 
 <ul>
-  <li><a rel="nofollow" href="https://www.youtube.com/channel/UCbeAS6ZXpSKqkzb-Nykb0ZQ" target="_blank">Perl元気ちゃんねる - Perl動画講義</a></li>
-  <li><a rel="nofollow"  href="https://philosophy-perl-genki.com/" target="_blank">Perlの哲学 - Perlへの誤解を解きたい</a></li>
+  <li><a rel="nofollow" href="https://www.youtube.com/channel/UCbeAS6ZXpSKqkzb-Nykb0ZQ" target="_blank">Perlプログラミング動画講義</a></li>
   <li><a href="https://linux-perl-genki.com/" target="_blank">Linuxサーバー管理入門</a></li>
-  <li><a href="https://ubuntu-perl-web.com/" target="_blank">Ubuntu Webシステム開発 環境構築</a></li> 
-  <li><a href="https://git-perl-genki.com/" target="_blank">Git入門</a></li>
-  <li><a href="https://www.c-language-perl-genki.com/" target="_blank">C言語入門</a></li>
+  <li><a href="https://ubuntu-perl-web.com/" target="_blank">Ubuntu開発環境構築</a></li> 
   <li><a href="https://web-html-css-perl-genki.com/" target="_blank">HTML・CSS入門</a></li> 
   <li><a href="https://jp.giblog.net" target="_blank">Webサイト制作 - Giblog</a></li>
   <li><a href="https://web-application-perl-genki.com/" target="_blank">Webアプリケーション開発入門</a></li>
-  <li><a href="https://mariadb-perl-genki.com/" target="_blank">MariaDBデータベース入門</a></li>
   <li><a href="https://perlri.com/learning" target="_blank">Perlクラブ - ゆとりあるエンジニアライフを創造中</a></li>
 </ul>
