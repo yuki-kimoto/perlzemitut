@@ -1,0 +1,17 @@
+<h2>WindowsのコマンドプロンプトでUTF-8を表示する方法</h2>
+
+WindowsのコマンドプロンプトでUTF-8を表示する方法を紹介します。2021年9月3日にWindows 10で確認したものです。
+
+コマンドプロンプトのショートカットを作成します。右クリックで、プロパティを表示。リンク先を以下のようにします。65001というコードがUTF-8のコードです。
+
+<pre>
+%windir%\system32\cmd.exe /k "chcp 65001"
+</pre>
+
+<img src="/images/commandprompt/win_command_utf8.png">
+
+Perlのプログラムは、UTF-8でソースコードを記述するのが、現在推奨される方法なので、UTF-8をコマンドプロンプトで表示できるのはありがたいですね。
+
+以下の情報を参考にしました。
+
+<a href="https://qiita.com/s4i/items/75c19c9feb10b54c1ce9">PowerShell起動時、文字コードをUTF-8に変える方法 - Qiita</a>
