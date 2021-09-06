@@ -402,7 +402,7 @@
   }
 
   .side_list {
-    
+    margin-bottom:30px;
   }
 
   .side_list ul li, .side_list ol li {
@@ -417,7 +417,7 @@
   }
   .side_list_body {
     background:#f8f8ff;
-    border-bottom:none;
+    border-bottom:1px solid #d2d6de;
     border-right:1px solid #d2d6de;
     border-left:1px solid #d2d6de;
   }
