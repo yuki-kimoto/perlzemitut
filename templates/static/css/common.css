@@ -673,6 +673,27 @@
     height: 100%;
   }
   
+  .perlclub_register {
+    width:calc(100% - 30%);
+    max-width:500px;
+    margin:0 auto;
+  }
+  .perlclub_register a {
+    line-height:1.9;
+    text-align:center;
+    font-weight:bold;
+    font-size:19px;
+    display:block;
+    padding:33px 30px;
+    background:#FF4DA0;
+    text-decoration:none;
+    border-radius:5px;
+    color:white;
+  }
+  .perlclub_register a:hover {
+    opacity:0.8;
+  }
+  
 @media only screen and (max-width:1030px) {
   .side {
     display:none;
