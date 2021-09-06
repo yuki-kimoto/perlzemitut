@@ -418,6 +418,8 @@
     border-bottom:1px solid #d2d6de;
     border-right:1px solid #d2d6de;
     border-left:1px solid #d2d6de;
+    line-height:1.8;
+    font-size:15px;
   }
 
    .side_list_body ul {
@@ -426,8 +428,8 @@
 
   .side_list_title {
     font-family: "times new roman", "geogia", serif;
-    padding:10px 0 8px 0;
-    font-size:16px;
+    padding:13px 0 11px 0;
+    font-size:17px;
     color:#2e8b57;
     background:#90ee90;
     border-left:0px solid #f4a460;
