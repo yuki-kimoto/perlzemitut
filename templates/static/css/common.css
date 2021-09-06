@@ -16,31 +16,58 @@
   }
   .header {
     width:100%;
-    max-width:1030px;
-    margin:0 auto;
-    background:white;
     border-bottom:2px solid #69c677;
     margin-bottom:5px;
-    padding:5px 10px 7px 10px;
-    overflow:hidden;
+    background:white;
   }
-  .header-description {
+  .header_main {
+    width:100%;
+    max-width:1030px;
+    display:flex;
+    margin:0 auto;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif; 
+  }
+  h1 {
+    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif; 
+    padding: 5px 15px 9px 15px;
+    color:#333;
+    font-family: "times new roman", "geogia", serif;
     float:left;
-    width:50%;
+    width:65%;
     display:inline-block;
-    font-weight:bold;
-    padding-top:5px;
-    font-size:16px;
-    letter-spacing:0.5px;
-    text-align:center;
+    padding:5px 10px 7px 10px;
   }
-  .header-otoiawase {
-    float:left;
-    width:20%;
-    text-align:center;
-    padding-top:13px;
+  h1 a, h1 a:visited {
+    color:white;
+    color:#0e7a55;
+    text-decoration:underline;
+    font-weight:bold;
+    letter-spacing:1px;
+    font-size:20px;
+    text-decoration:none;
   }
   
+  h1 img {
+    width:40px;
+    vertical-align:-10px;
+    margin-right:10px;
+  }
+  .header_right {
+    width:35%;
+    text-align:right;
+  }
+  .header_right a,.header_right a:visited {
+    display:inline-block;
+    background:#FF4DA0;
+    color:white;
+    text-decoration:none;
+    padding:15px 25px 10px 25px;
+    text-align:center;
+    font-weight:bold;
+    height:100%;
+  }
   .menu {
     overflow:hidden;
     padding-left:10px;
@@ -312,35 +339,6 @@
   .new-topics-new {
     color:red;
     font-weight:bold;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif; 
-  }
-  h1 {
-    font-family: “Calibri”,”メイリオ”,Meiryo,”ヒラギノ角ゴ Pro W3″,Hiragino Kaku Gothic Pro,”ＭＳ Ｐゴシック”,sans-serif; 
-    padding: 5px 15px 9px 15px;
-    color:#333;
-    font-family: "times new roman", "geogia", serif;
-    float:left;
-    width:50%;
-    display:inline-block;
-    padding:2px;
-  }
-  h1 a, h1 a:visited {
-    color:white;
-    color:#0e7a55;
-    text-decoration:underline;
-    font-weight:bold;
-    letter-spacing:1px;
-    font-size:20px;
-    text-decoration:none;
-  }
-  
-  h1 img {
-    width:40px;
-    vertical-align:-10px;
-    margin-right:10px;
   }
 
   h2 {
@@ -674,7 +672,7 @@
   }
   
   .perlclub_register {
-    width:calc(100% - 30%);
+    width:calc(100% - 30px);
     max-width:500px;
     margin:0 auto;
   }
