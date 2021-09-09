@@ -420,6 +420,8 @@
     border-left:1px solid #d2d6de;
     line-height:1.8;
     font-size:15px;
+    text-align:center;
+    letter-spacing:1px;
   }
 
    .side_list_body ul {
@@ -696,7 +698,6 @@
   
 @media only screen and (max-width:1030px) {
   .side {
-    display:none;
     width:100%;
     margin:0;
   }
