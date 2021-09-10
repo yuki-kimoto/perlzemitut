@@ -419,13 +419,23 @@
     border-right:1px solid #d2d6de;
     border-left:1px solid #d2d6de;
     line-height:1.8;
-    font-size:15px;
     text-align:center;
     letter-spacing:1px;
+    font-weight:bold;
+    line-height:1.5;
+    font-size:16px;
+  }
+
+  .side_list_image img {
+    width:235px;
   }
 
    .side_list_body ul {
      margin-bottom:0;
+   }
+   
+   .side_list_description {
+     margin-top:10px;
    }
 
   .side_list_title {
