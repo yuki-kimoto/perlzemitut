@@ -709,10 +709,6 @@
   }
   
 @media only screen and (max-width:1030px) {
-  .side {
-    width:100%;
-    margin:0;
-  }
   .entry {
     width:100%;
   }
@@ -748,6 +744,31 @@
   h3 {
     margin-left:0;
     margin-right:0;
+  }
+
+  /* ヘッダ */
+  .header_main, h2,h4,h5, p, pre {
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .header_right a,.header_right a:visited {
+    padding:15px 10px 10px 10px;
+  }
+
+  /* サイドバー */
+  .side {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:auto;
+    overflow:visible;
+  }
+  .side_list li {
+    border-left:none;
+    border-right:none;
+  }
+  .side_list li:last-child {
+    border-bottom:none;
   }
 }
 
