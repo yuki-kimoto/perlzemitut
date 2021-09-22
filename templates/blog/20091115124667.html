@@ -17,8 +17,6 @@
 </ol>
 <h2>Net::FTP - FTPを使ったファイル転送</h2>
 
-
-
 Net::FTPを使用すると、FTPでファイルのダウンロード・アップロードができます。
 
 IT関連の仕事ではサーバにアクセスしてファイルをダウンロード・アップロードすることが頻繁にあります。FFFTPなどのFTPのクライアントのソフトウェアなどを使用してこれを行うのは非常に手間がかかります。できれば自動化したいと思うことでしょう。
@@ -347,3 +345,39 @@ $ftp->get('index.html')
 $ftp->quit;
 </pre>
 
+<h3>FTPSによる接続 - FTP over SSL/TLS</h3>
+
+Net::FTPによるFTPSによる接続方法について解説します。FTPSは、SSL/TSL上でFTP接続するプロトコルです。SSH上でファイル転送を行うSFTPとは、異なるものなので注意してください。
+
+ここでは、FTPのポート番号(標準で21)でFTP接続した後に、AUTHコマンドでSSL接続要求を行う「明示的なTSL/SSL暗号化」を行う方法について解説します。
+
+Net::FTPは、IO::Socket::SSLがインストールされている場合、FTPSを使って通信を行うことができます。IO::Socket::SSLのバージョンが古い場合は、アップグレードしてください。
+
+「明示的なTSL/SSL暗号化」を行うには、newメソッドで接続した直後に、starttlsメソッドを呼び出すだけです。上記のサンプルを「明示的なTSL/SSL暗号化」で書き直してみましょう。
+
+<pre>
+use strict;
+use warnings;
+
+use Net::FTP;
+
+my $host = 'ftp.u-aizu.ac.jp';
+my $user = 'anonymous';
+
+my $ftp = Net::FTP->new($host)
+  or die "Cannot connect to '$host': $!";
+
+# 明示的なTSL/SSL暗号化を開始
+$ftp->starttls() or die "Can't upgrade start TLS:";
+
+$ftp->login($user)
+  or die "Cannot login '$host:$user':" . $ftp->message;
+
+$ftp->cwd('/pub/CPAN')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->get('index.html')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->quit;
+</pre>
