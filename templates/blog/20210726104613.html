@@ -85,7 +85,7 @@ my $win_text = GetWindowText($win);
 ウィンドウのテキストは、ブラウザの種類によって、異なる可能性があります。Google Chromeで確認したものでは、以下のように「ウィンドウのタイトル - アプリケーション名」になっていました。
 
 <pre>
-Perl元気塾 - Google Chrome
+Perlクラブ - Google Chrome
 </pre>
 
 <h4>対象ウィンドウの取得</h4>
@@ -93,7 +93,7 @@ Perl元気塾 - Google Chrome
 Webブラウザ自動操作ロボットを作る場合は、子ウィンドウの一覧から、対象のウィンドウを取得する必要があります。対象のウィンドウを取得するサンプルを記述します。確実に、対象のWebブラウザの対象のページが、一つ立ち上がっていることをチェックします。
 
 <pre>
-# 対象のウィンドウを取得(Perl元気塾 - Google Chrome)
+# 対象のウィンドウを取得(Perlクラブ - Google Chrome)
 my $win;
 {
   my $desktop_win = GetDesktopWindow();
@@ -108,7 +108,7 @@ my $win;
 
     # ブラウザ名
     if ($win_text =~ /\b$browser_name\b/) {
-      if ($win_text =~ /Perl元気塾/) {
+      if ($win_text =~ /Perlクラブ/) {
         push @browser_wins, $win;
       }
     }
