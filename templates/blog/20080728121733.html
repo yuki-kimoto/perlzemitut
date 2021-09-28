@@ -19,7 +19,7 @@
 
 実際にCSVファイルを読み込んで、Perlのデータ型(配列の配列)に変換して、標準出力に書き出すサンプルです。csvから配列の配列への変換はサブルーチンを使って行っています。何らかのファイルを読み込んで編集するといった場合の基本的な雛形にもなると思います。
 
-改行などを含んでいるCSVなどは、以下のプログラムでは正しく処理できません。正しくCSVを処理したい場合は、<a href="https://perldoc.jp/docs/modules/Text-CSV_XS-0.23/Text-CSV_XS-0.23.pod">Text::CSV_XS</a>あるいは、<a href="https://tutorial.perlzemi.com/blog/20110627131112.html">Text::CSV::Encoded</a>があります。Text::CSV::Encodedは、Text::CSVあるいはText::CSV_XSのラッパーモジュールで、日本語を簡単に扱えます。
+改行などを含んでいるCSVなどは、以下のプログラムでは正しく処理できません。正しくCSVを処理したい場合は、<a href="https://perldoc.jp/docs/modules/Text-CSV_XS-0.23/Text-CSV_XS-0.23.pod">Text::CSV_XS</a>あるいは、<a href="https://perlzemi.com/blog/20110627131112.html">Text::CSV::Encoded</a>があります。Text::CSV::Encodedは、Text::CSVあるいはText::CSV_XSのラッパーモジュールで、日本語を簡単に扱えます。
 
 <pre>
 use strict;
