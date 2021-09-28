@@ -297,7 +297,7 @@ $gfx->image(
 );
 
 # 請求者
-my $sender_company_name = '木本システム株式会社';
+my $sender_company_name = 'Perlクラブ';
 $text->translate(
   $render_start_x + $send_company_start_tds_count * $unit_width,
   $render_start_y - $unit_height * $cur_right_row + $text_bottom_padding
@@ -612,7 +612,7 @@ my $furikomi_disp = <<"EOS";
 お振込先
 みずほ銀行芝支店
 普通口座 34521xx
-木本システム株式会社
+Perlクラブ
 EOS
 for my $line (split /\n/, $furikomi_disp) {
   $text->translate($render_start_x, $render_start_y - $unit_height * $cur_row + $text_bottom_padding);
