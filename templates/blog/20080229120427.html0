@@ -1,0 +1,68 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>Perl発展編</h2>
+
+Perlの発展的な話題はこちら。
+
+<ul>
+  <li>
+    <a href="/blog/20161006147575.html">文字コード</a>
+  </li>
+  <li>
+    <a href="/blog/20161123147990.html">日付・時刻</a>
+  </li>
+  <li>
+    <a href="/blog/20170130148603.html">データベース</a>
+  </li>
+  <li>
+    <a href="/blog/20191228171433.html">帳票作成</a>
+  </li>
+  <li>
+    <a href="/blog/20080806121804.html">ビット演算子</a>
+  </li>
+  <li>
+    <a href="/blog/20161130148051.html">モジュール基礎</a>
+  </li>
+  <li>
+    <a href="/blog/20150210142353.html">Perlの特徴</a>
+  </li>
+  <li>
+    <a href="/blog/20160225145640.html">Perlリリース情報</a>
+  </li>
+  <li>
+    <a href="/blog/20090221123410.html">プログラムの自動試験</a>
+  </li>
+  <li>
+    <a href="/blog/20090406123890.html">ソケット</a>
+  </li>
+  <li>
+    <a href="/blog/20161103147817.html">プロセス間通信</a>
+  </li>
+  <li>
+    <a href="/blog/20161121147982.html">ワンライナー</a>
+  </li>
+  <li>
+    <a href="/blog/20121214135538.html">統計・解析</a>
+  </li>
+  <li>
+    <a href="/blog/20100809127859.html">XS入門</a>
+  </li>
+  <li>
+    <a href="/blog/20130416136637.html">言語実装の研究</a>
+  </li>
+  <li>
+    <a href="/blog/20100802127859.html">豆知識</a>
+  </li>
+  <li>
+    <a href="/blog/20161030147778.html">オブジェクト指向</a>
+  </li>
+</ul>

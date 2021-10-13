@@ -1,0 +1,90 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>redo文 - 繰り返しの先頭に戻る</h2>
+
+
+
+<b>redo文</b>を使うと繰り返しの先頭に戻ることができます。
+
+<pre>
+redo
+</pre>
+
+redoを使ったサンプルプログラムです。今いるループの先頭に戻っています。
+
+<pre>
+use strict;
+use warnings;
+
+my @nums = (1, 2, 3);
+
+while (1) {
+  my $num = pop @nums;
+  print "$num\n";
+  
+  if (@nums) {
+    redo;
+  }
+  else {
+    last;
+  }
+}
+</pre>
+
+<h3>redoは非推奨の構文です</h3>
+
+<a href="/blog/20091120124667.html">Perlの現代的な記述方法</a>にも書いていますが、redo文は、お勧めしない記述方法です。
+
+理由は、<a href="/blog/20100123126425.html">while文</a>, for文, last文, next文、if文があれば、あらゆる繰り返しと条件分岐が書けるので、redoを積極的に利用する理由がないからです。redoは、Perl独自の構文で、見慣れないものですし、ソースコードの見通しがよくなるというわけでもありません。
+
+<h3>関連情報</h3>
+
+redoのようにループを制御する構文として<b>next文</b>と<b>last文</b>があります。
+
+<h4>next文を使うとループの先頭にジャンプできる</h4>
+
+next文を使うと、次のループの先頭に移動することができます。
+
+<pre>
+next
+</pre>
+
+next文については、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20080329120687.html">next文 - 次の繰り返しの先頭にジャンプする</a>
+  </li>
+</ul>
+
+<h4>last文を使うとループを脱出できる</h4>
+
+last文を使うと、ループを抜けることができます。
+
+<pre>
+last
+</pre>
+
+last文については、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20170527149589.html">last文 - 繰り返しから抜ける</a>
+  </li>
+</ul>
+

@@ -1,0 +1,629 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20160912147368.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">Object::Simple</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>Object::Simple - 簡単すぎるクラスビルダー、Mojo::Baseの移植、速くて省メモリ【日本語訳】</h2>
+
+
+
+<ul>
+  <li>
+    <b>簡単すぎるクラスビルダー</b>。 覚えることは「has」関数だけ。
+  </li>
+  <li>
+    <b>Mojo::Baseの移植</b>。 Mojoliciousが好きですか。もしそうなら、これは良い選択だ!
+  </li>
+  <li>
+    <b>速くって、省メモリ</b>。速い「new」メソッドとアクセッサメソッド。省メモリの実装。
+  </li>
+</ul>
+
+<h3>使い方</h3>
+
+<pre>
+  package SomeClass;
+  use Object::Simple -base;
+  
+  # アクセッサの作成
+  has 'foo';
+  
+  # デフォルト値を持つアクセッサを作成
+  has foo => 1;
+  has foo => sub { [] };
+  has foo => sub { {} };
+  has foo => sub { OtherClass->new };
+  
+  # 一度に複数のアクセッサを作成
+  has ['foo', 'bar', 'baz'];
+  has ['foo', 'bar', 'baz'] => 0;
+</pre>
+
+オブジェクトを作成しましょう。
+
+<pre>
+  # 新しいオブジェクトの作成
+  my $obj = SomeClass->new;
+  my $obj = SomeClass->new(foo => 1, bar => 2);
+  my $obj = SomeClass->new({foo => 1, bar => 2});
+  
+  # 値の設定と取得
+  my $foo = $obj->foo;
+  $obj->foo(1);
+  
+  # 値の設定のためのアクセッサは、チェーンできる
+  $obj->foo(1)->bar(2);
+</pre>
+
+継承の書き方。
+
+<pre>
+  package Foo;
+  use Object::Simple -base;
+  
+  # BarはFooを継承する
+  package Bar;
+  use Object::Simple 'Foo';
+  
+  # 継承の他の書き方(これはObject::Simpleだけの書き方)
+  package Bar;
+  use Object::Simple -base => 'Foo';
+
+  # 継承の他の書き方(これはObject::Simpleだけの書き方)
+  use Foo -base;
+</pre>
+
+<h3>説明</h3>
+
+Object::Simpleは、<b>簡単すぎるクラスビルダー</b>です。覚えることは「has」関数だけ。すべての機能を<b>たった一時間</b>で覚えることができます。難しいものは何もありません。
+
+<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojolicious.pm">Mojolicious</a>が好きですか。実際に、Object::Simpleは<b>Mojo::Baseの移植</b>です。<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Base.pm">Mojo::Base</a>は、Mojoliciousの基本的なクラスビルダーです。もしMojoliciousが好きなら、これは良い選択です。すでにMojo::Baseを知っているなら、覚えることは何もありません。
+
+「new」メソッドとアクセッサは<b>速い</b>です。実装は、ピュアなPerlで、単純なハッシュベースのオブジェクトです。メモリは省メモリ。余分なオブジェクトは何も作られません。とても軽いオブジェクト指向モジュールです。
+
+<h4>Class::Accessor::Fastとの比較</h4>
+
+<a href="http://search.cpan.org/dist/Class-Accessor/lib/Class/Accessor/Fast.pm">Class::Accessor::Fast</a>は簡単です。けれどもいくつかの機能が欠けています。「new」メソッドは、ハッシュの引数を受け取ることができません。デフォルト値の設定ができません。複数の値が、アクセッサに与えられたとき、警告なしに、配列のリファレンスへと変換されてしまいます。
+
+<h4>Mooseとの比較</h4>
+
+<a href="http://search.cpan.org/dist/Moose/lib/Moose.pm">Moose</a>はとても複雑な構文を持ち、とてもたくさんのモジュールに依存しています。あなたは、オブジェクト指向プログラミングをするために、とても多くのことを学ばなければなりません。ソースコードを理解することは、難しいです。コンパイル時間はとても遅く、メモリ使用率も高いです。実行速度も速くありません。単純なオブジェクト指向をするには、大きすぎます。<a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>は、この点で、改善がされています。
+
+<h3>チュートリアル</h3>
+
+<h4>クラスとアクセッサの作成</h4>
+
+最初に、クラスを作ってみましょう。
+
+<pre>
+  package SomeClass;
+  use Object::Simple -base;
+</pre>
+
+「-base」オプションを使うと、「SomeClass」はObject::Simpleを継承し、「has」メソッドをインポートします。
+
+Object::Simpleは「new」メソッドを持ちます。「new」メソッドはコンストラクタです。C<new>メソッドは、ハッシュとハッシュリファレンスを受け取ることができます。
+
+<pre>
+  my $obj = SomeClass->new;
+  my $obj = SomeClass->new(foo => 1, bar => 2);
+  my $obj = SomeClass->new({foo => 1, bar => 2});
+</pre>
+
+「has」関数を使って、アクセッサを作成することができます。
+
+<pre>
+  has 'foo';
+</pre>
+
+アクセッサを作成すれば、値を設定、また取得することができます。
+
+<pre>
+  # 値の設定
+  $obj->foo(1);
+  
+  # 値の取得
+  my $foo = $obj->foo;
+</pre>
+
+値を設定するアクセッサは、チェーンすることができます。
+
+<pre>
+  $obj->foo(1)->bar(2);
+</pre>
+
+デフォルト値を設定することもできます。
+
+<pre>
+  has foo => 1;
+</pre>
+
+もし「C<foo>」の値が存在しなければ、デフォルト値が利用されます。
+
+<pre>
+  my $foo_default = $obj->foo;
+</pre>
+
+もし、リファレンスやオブジェクトをデフォルト値として使いたい場合は、コードリファレンスによって、デフォルト値を囲む必要があります。戻り値が、デフォルト値になります。
+
+<pre>
+  has foo => sub { [] };
+  has foo => sub { {} };
+  has foo => sub { SomeClass->new };
+</pre>
+
+複数のアクセッサを一度に生成することもできます。
+
+<pre>
+  has ['foo', 'bar', 'baz'];
+  has ['foo', 'bar', 'baz'] => 0;
+</pre>
+
+<h4>メソッドのオーバーライド</h4>
+
+メソッドは、オーバーライドすることができます。
+
+<b>サンプル</b>
+
+オブジェクトの初期化。
+
+<pre>
+  sub new {
+    my $self = shift->SUPER::new(@_);
+    
+    # 初期化
+    
+    return $self;
+  }
+</pre>
+
+<b>サンプル</b>
+
+「new」の引数の変更。
+
+<pre>
+  sub new {
+    my $self = shift;
+    
+    $self->SUPER::new(x => $_[0], y => $_[1]);
+    
+    return $self;
+  }
+</pre>
+
+上記のようにすれば、配列も渡せます。
+
+<pre>
+  my $point = Point->new(4, 5);
+</pre>
+
+<h4>クラス、アクセッサ、継承、メソッドオーバーライドのサンプル</h4>
+
+Object::Simpleのサンプルを紹介しよう。
+
+ポイントクラス: ふたつのアクセッサ「x」と「y」を持つ。そして、「x」と「y」値を0に設定する「clear」メソッドを持つ。
+
+<pre>
+  package Point;
+  use Object::Simple -base;
+
+  has x => 0;
+  has y => 0;
+  
+  sub clear {
+    my $self = shift;
+    
+    $self->x(0);
+    $self->y(0);
+  }
+</pre>
+
+ポイントクラスを使ってみましょう。
+
+<pre>
+  use Point;
+  my $point = Point->new(x => 3, y => 5);
+  print $point->x;
+  $point->y(9);
+  $point->clear;
+</pre>
+
+Point3Dクラス: Point3Dはポイントクラスを継承します。
+
+Point3Dクラスは、「ｘ」「y」に加えて、「z」アクセッサを持ちます。
+「clear」メソッドはオーバーライドされ、「x」「y」「z」の値をクリアします。
+
+<pre>
+  package Point3D;
+  use Object::Simple 'Point';
+  
+  has z => 0;
+  
+  sub clear {
+    my $self = shift;
+    
+    $self->SUPER::clear;
+    
+    $self->z(0);
+  }
+</pre>
+
+Point3Dクラスの使用。
+
+<pre>
+  use Point3D;
+  my $point = Point->new(x => 3, y => 5, z => 8);
+  print $point->z;
+  $point->z(9);
+  $point->clear;
+</pre>
+
+<h3>オブジェクト指向プログラミングとは何ですか</h3>
+
+オブジェクト指向プログラミングの概念について紹介します。
+
+<h4>継承</h4>
+
+最初の概念は「継承」です。継承は「もしクラスQがクラスPを継承していたら、クラスQはクラスPのすべてのメソッド利用できる」ということを意味します。
+
+<pre>
+  +---+
+  | P | ベースクラス
+  +---+   「method1」と「method2」を持つ
+    |
+  +---+
+  | Q | サブクラス
+  +---+   「method3」を持つ。
+</pre>
+
+「クラスQ」は「クラスP」を継承しています。「Q」は「Q」のメソッドに加え「P」のすべてのメソッドを呼び出すことができます。
+
+言い換えれば「Q」は、「method1」「method2」「method3」を呼び出すことができます。次のように記述すると「Q」は「P」を継承します。
+
+<pre>
+  # P.pm
+  package P;
+  use Object::Simple -base;
+  
+  sub method1 { ... }
+  sub method2 { ... }
+  
+  # Q.pm
+  package Q;
+  use Object::Simple 'P';
+  
+  sub method3 { ... }
+</pre>
+
+Perlはオブジェクト指向プログラミングのための便利な関数とメソッドを持ちます。
+
+もし、オブジェクトがどのクラスに属しているのかを知りたいのであれば、「ref」関数を使用できます。
+
+<pre>
+  my $class = ref $obj;
+</pre>
+
+どのクラスを継承しているのかを知りたければ、「isa」メソッドを使用することができます。
+
+<pre>
+  $obj->isa('SomeClass');
+</pre>
+
+オブジェクト、あるいはクラスが、特定のメソッドを持っているかを調べるには、「can」メソッドを使用できます。
+
+<pre>
+  SomeClass->can('method1');
+  $obj->can('method1');
+</pre>
+
+<h4>カプセル化</h4>
+
+二番目の概念は、カプセル化です。「カプセル化」は「内部的なデータ構造に直接アクセスしないで! 内部のデータにアクセスするときは、公開メソッドを使うべきだ」ということを意味しています。
+
+このルールを守るには、アクセッサを作成して、常にそれを使ってください。
+
+<pre>
+  my $value = $obj->foo;
+  $obj->foo(1);
+</pre>
+
+<h4>ポリモーフィズム</h4>
+
+三つ目の概念は、「ポリモーフィズム」です。「ポリモーフィズム」は、さらに二つの概念「オーバーロード」と「オーバーライド」に分割することができます。
+
+Perlプログラマーは、オーバーロードについては意識する必要がありません。Perlは動的型を持つ言語であり、サブルーチンは、どんな値もとることができるからです。
+
+「オーバーライド」は「サブクラスで、メソッドの振る舞いを変更することができる」ということを意味しています。
+
+<pre>
+  # P.pm
+  package P;
+  use Object::Simple -base;
+  
+  sub method1 { return 1 }
+  
+  # Q.pm
+  package Q;
+  use Object::Simple 'P';
+  
+  sub method1 { return 2 }
+</pre>
+
+Pの「method1」は「1」を返します。Qの「method1」は「2」を返します。Qの「method1」は、Pの「method1」をオーバライドしています。
+
+<pre>
+  # Pの「method1」は「1」を返す
+  my $obj_a = P->new;
+  $obj_p->method1; 
+  
+  Qの「method1」は「2」を返す
+  my $obj_b = Q->new;
+  $obj_q->method1;
+</pre>
+
+もし、サブクラスで、スーパークラスのメソッドを使いたい場合は、「SUPER」疑似クラスを使うことができます。
+
+<pre>
+  package Q;
+  use Object::Simple 'P';
+  
+  sub method1 {
+    my $self = shift;
+    
+    # スーパークラスPの「method1」を呼び出す
+    my $value = $self->SUPER::method1;
+    
+    return 2 + $value;
+  }
+</pre>
+
+この三つの概念を理解すれば、オブジェクト指向プログラミングの主要な部分をマスターしたことになります。
+
+<h3>関数</h3>
+
+<h4>has</h4>
+
+アクセッサを作成します。
+
+<pre>
+  has 'foo';
+  has ['foo', 'bar', 'baz'];
+  has foo => 1;
+  has foo => sub { {} };
+
+  has ['foo', 'bar', 'baz'];
+  has ['foo', 'bar', 'baz'] => 0;
+</pre>
+
+「has」関数は、アクセッサ名とデフォルト値を受け取ります。デフォルト値は、オプショナルです。複数のアクセッサを一度に作成したい場合は、第一引数に、アクセッサの名前を格納した、配列のリファレンスを指定します。
+
+もし、デフォルト値にリファレンスかオブジェクトを指定したい場合は、他のオブジェクトと共有しないために、コードリファレンスとして、渡す必要があります。
+
+値の取得と設定。
+
+<pre>
+  my $foo = $obj->foo;
+  $obj->foo(1);
+</pre>
+
+もし、デフォルト値が指定されており、値が存在しなければ、デフォルト値を取得することができます。
+
+設定のためのアクセッサは、戻り値として自分自身を返します。それで、メソッドをチェーンすることができます。
+
+<pre>
+  $obj->foo(1)->bar(2);
+</pre>
+
+<h3>メソッド</h3>
+
+<h4>new</h4>
+
+<pre>
+  my $obj = Object::Simple->new;
+  my $obj = Object::Simple->new(foo => 1, bar => 2);
+  my $obj = Object::Simple->new({foo => 1, bar => 2});
+</pre>
+
+新しいオブジェクトを生成します。「new」はハッシュとハッシュリファレンスを引数として受け取ることができます。
+
+<h4>attr</h4>
+
+<pre>
+  __PACKAGE__->attr('foo');
+  __PACKAGE__->attr(['foo', 'bar', 'baz']);
+  __PACKAGE__->attr(foo => 1);
+  __PACKAGE__->attr(foo => sub { {} });
+
+  __PACKAGE__->attr(['foo', 'bar', 'baz']);
+  __PACKAGE__->attr(['foo', 'bar', 'baz'] => 0);
+</pre>
+
+アクセッサを作成します。「attr」メソッドは「has」関数と使用方法がが全く同じです。
+
+<h3>オプション</h3>
+
+<h4> -base</h4>
+
+「-base」オプションを使うと、Object::Simpleを継承し、「has」関数をインポートします。
+
+<pre>
+  package Foo;
+  use Object::Simple -base;
+  
+  has x => 1;
+  has y => 2;
+</pre>
+
+「strict」と「warnings」が自動的に有効になります。
+
+もし特定のクラスを継承したい場合は、次のように書きます。
+
+<pre>
+  # BarはFooを継承する
+  package Bar;
+  use Object::Simple 'Foo';
+</pre>
+
+次の構文も使うことができます。これはObject::Simpleだけの機能です。
+
+<pre>
+  # 上と同じ
+  package Bar;
+  use Object::Simple -base => 'Foo';
+</pre>
+
+「-base」オプションは、サブクラスでも、他のクラスを継承するために、使うことができます。これは、Object::Simpleだけの機能です。
+
+<pre>
+  # 上と同じ
+  package Bar;
+  use Foo -base;
+</pre>
+
+<h3>FAQ</h3>
+
+<h3>本当にこんなに少ない機能で十分なオブジェクト指向プラグラミングを行うことができるんですか。</h3>
+
+はい、できます。たとえば、Mojoliciousはとても大きなプロジェクトです。実際に、ソースコードはクリーンで、単一継承だけを使っています。一般的にいって、読みやすいソースコードは、複雑な機能ではなく、単純な概念の上に成り立っています。
+
+<a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>の「BUILD」「BUILDARGS」「DEMOLISH」メソッドのようなものは、よいオブジェクト指向で必須ですか?もし、多重継承やロールを使いたいのであれば、これらのメソッドは必須です。
+
+でも、わたしは、オブジェクト指向プログラミングにおいて、単一継承だけを使うことを強く勧めます。単一継承は、クリーンで、読みやすいからです。
+
+もし単一継承だを使うのであれば、カスタムコンストラクタを作って、正しい順序で、コンストラクタを呼ぶことができます。また、カスタムデストラクタを作って、正しい順序で、デストラクタを呼ぶことができます。
+
+カスタムコンストラクタの作成は、とてもとても簡単で、難しいところは、ぜんぜんありません。
+
+<pre>
+  # カスタムコンストラクタ
+  sub new {
+    # 最初にスーパークラスのコンストラクタを読んで、次にしたいことをする
+    my $self = shift->SUPER::new(@_);
+    
+    # したいこと
+    
+    return $self;
+  }
+  
+  # カスタムデストラクタ
+  sub DESTROY {
+    my $self = shift;
+    
+    # したいこと
+
+    # 最初に、したいことを行って、次に、スーパークラスのデストラクタを呼ぶ
+    $selft->SUPER::DESTROY;
+    
+    return $self;
+  }
+</pre>
+
+<h4>Object::Simpleは、最も速いオブジェクト指向モジュールですか?</h4>
+
+いいえ、Object::Simpleは最も速いモジュールでは<b>ありません</b>が、十分に速いです。 もし本当にパフォーマンスが必要になったら、ハッシュの値に直接アクセスすることができます。
+
+<pre>
+  # ある部分で、パフォーマンスが必要だ。さぁ、直接、ハッシュの値にアクセスしよう
+  # Object::Simpleは、単純なハッシュベースのオブジェクトです。
+  $self->{x};
+</pre>
+
+<h4>Mojo::Baseと比較した場合の利点は何ですか。</h4>
+
+<ul>
+  <li>
+    Perl 5.8をサポートしています。
+  </li>
+  <li>
+    ほんの少しのファイルしかないので、インストールはとても高速です。
+  </li>
+  <li>
+    いくらかの人々は、Mojo::Baseを使うためだけに、Mojoliciousすべてに依存したくはないと考えています。Object::Simpleはその需要を満たします。
+  </li>
+</ul>
+
+<h4>なぜObject::Simpleはいくつかの点でMojo::Baseと異なるのですか。</h4>
+
+古い時代、Object::SimpleはMojo::Baseの移植ではありませんでした。異なることに挑戦していました。
+
+今は、Object::SimpleをPerl5.8をサポートする点を除いて、Mojo::Baseと完全に同じにしたいと思っています。
+
+<h3>後方互換性のポリシー</h3>
+
+もし機能が、廃止予定になった場合に、あなたは、DEPRECATED警告によって、それを知ることができます。すべての廃止予定の機能は、ドキュメントに記載されます。廃止予定の機能は、5年後に取り除かれます。けれども、少なくとも一人の人が、その機能を使っていて、そのことを私に伝えてくれれば、そのたびに、1年間、延長します。
+
+実験的な(EXPERIMENTAL)機能は、警告なしに変更されます。
+
+(このポリシーは2011/10/22に現在のものに変更されました。)
+
+<h3>廃止予定</h3>
+
+<pre>
+  「new」と「attr」をエクスポートする機能 # 2021/6/1に取り除かれます。
+  
+  # 複数のキーと値を受け取る文法
+    has x => 1, y => 2;      
+    __PACAKGE__->attr(x => 1, y => 2);
+  # 2021/6/1に取り除かれます。
+  
+  class_attrメソッド # 2017/1/1に取り除かれます。
+  dual_attrメソッド # 2017/1/1に取り除かれます
+</pre>
+
+<h3>バグ</h3>
+
+バグを発見したら教えてください。メール(kimoto.yuki@gmail.com)かGitHub([http://github.com/yuki-kimoto/Object-Simple])で。
+
+<h3>著者</h3>
+
+木本裕紀(kimoto.yuki@gmail.com)
+
+応援メッセージを送ってくれると喜びます。あなたのメッセージだけで、力がみなぎります。
+
+<h3>ユーザー</h3>
+
+Object::Simpleを使っているプロジェクト。
+
+<ul>
+  <li>
+    GitPrep - ポータブルなGitHubシステムをあなたのサーバーへ。 [https://github.com/yuki-kimoto/gitprep]
+  </li>
+  <li>
+    <a href="http://search.cpan.org/dist/DBIx-Custom/lib/DBIx/Custom.pm">DBIx::Custom</a> - insert, update, delete, selectを簡単に実行するためのDBIの拡張
+  </li>
+  <li>
+    <a href="http://search.cpan.org/dist/Validator-Custom/lib/Validator/Custom.pm">Validator::Custom</a> - HTMLフォームバリデーション。簡単で、とても柔軟。
+  </li>
+</ul>
+
+<h3>他のモジュール</h3>
+
+CPANはさまざまなクラスビルダーを持っています。ぜひObject::Simpleと比べてみてください。
+
+<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojo/Base.pm">Mojo::Base</a>, <a href="http://search.cpan.org/dist/Class-Accessor/lib/Class/Accessor/Fast.pm">Class::Accessor::Fast</a>, <a href="http://search.cpan.org/dist/Moose/lib/Moose.pm">Moose</a>, <a href="http://search.cpan.org/dist/Moo/lib/Moo.pm">Moo</a>, <a href="http://search.cpan.org/dist/Class-Tiny/lib/Class/Tiny.pm">Class::Tiny</a>.
+
+<h3>COPYRIGHT & LICENSE</h3>
+
+Copyright 2008-2016 Yuki Kimoto, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Artistic v2.
+
+これは<a href="http://search.cpan.org/dist/Mojolicious/lib/Mojolicious.pm">Mojolicious</a>のライセンスと同じです。
+
+([http://search.cpan.org/dist/Object-Simple/lib/Object/Simple.pm] 3.18を翻訳)
+

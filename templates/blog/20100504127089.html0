@@ -1,0 +1,291 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>CPAN - CPANからモジュールインストール</h2>
+
+
+
+<strong>CPAN</strong>モジュールを使用すれば<a href="http://search.cpan.org/">CPAN</a>からモジュールインストールすることができます。CPANは無料で利用できるモジュールがたくさん集められたサイトです。CPANモジュールはコマンドラインから利用することが想定されており、cpanコマンドから各種機能を利用することができます。
+
+コマンドラインでcpanコマンドを実行するとモジュールをインストールすることができます。
+
+<pre>
+# モジュールのインストール
+cpan モジュール名
+</pre>
+
+またcpanシェルと呼ばれる対話的にインストールを行う機能もあります。cpanコマンドに引数を指定しなければcpanシェルが起動します。(ActivePerlでYAMLエラーがでる場合がありますが対処ほうは<a href="/blog/20110520130853.html">こちら</a>にあります。)
+
+<pre>
+# cpanシェルの起動
+cpan
+
+# モジュールのインストール(cpanシェル)
+install モジュール名
+</pre>
+
+cpanシェルを終了するにはexitコマンドを使用します。
+
+<pre>
+# cpanシェルの終了(cpanシェル)
+exit
+</pre>
+
+もしcpanを実行するのが始めてであれば、初回起動時にcpanの設定を行う必要があります。たくさんの設定について聞かれるので驚いてしまうかもしれませんが、Enterを押してデフォルトの設定を進めていきましょう。後で設定を変更することもできます。
+
+最近のcpanはすべてを自動で設定してくれるようになっていますが、少し古いものであれば、一部手動で設定しなければならない項目があります。
+
+どのミラーサイトからインストールするかを決める項目です。CPANには世界中にミラーサイトがあるので一番近いミラーサイトを選択しましょう。
+
+<pre>
+# CPANミラーの選択
+
+First, pick a nearby continent and country (you can pick several of
+each, separated by spaces, or none if you just want to keep your
+existing selections). Then, you will be presented with a list of URLs
+of CPAN mirrors in the countries you selected, along with previously
+selected URLs. Select some of those URLs, or just keep the old list.
+Finally, you will be prompted for any extra URLs -- file:, ftp:, or
+http: -- that host a CPAN mirror.
+
+(1) Africa
+(2) Asia                     <---------これを選択
+(3) Australasia
+(4) Central America
+(5) Europe
+(6) North America
+(7) South America
+Select your continent (or several nearby continents) [] 2
+
+(1) China
+(2) Hong Kong
+(3) Indonesia
+(4) Israel
+(5) Japan                   <----------これを選択
+(6) Saudi-Arabia
+(7) Singapore
+(8) South Korea
+(9) Taiwan
+(10) Thailand
+Select your country (or several nearby countries) [] 5
+
+(1) ftp://ftp.dti.ad.jp/pub/lang/CPAN/
+(2) ftp://ftp.jaist.ac.jp/pub/lang/perl/CPAN/
+(3) ftp://ftp.lab.kdd.co.jp/lang/perl/CPAN/
+(4) ftp://ftp.meisei-u.ac.jp/pub/CPAN/
+(5) ftp://ftp.ring.gr.jp/pub/lang/perl/CPAN/   <----- どれでもよいが今回は5を選択
+(6) ftp://mirror.nucba.ac.jp/mirror/Perl/
+
+Select as many URLs as you like [] 5
+</pre>
+
+cpanの設定をやり直したい場合はcpanシェルで「o conf init」コマンドを使用します。
+<pre>
+# 設定をやり直す(cpanシェル)
+o conf init
+</pre>
+
+<h3>cpanの設定の変更</h3>
+
+cpanの設定を変更するにはcpanシェルを起動してから「o conf」コマンドを使用します。すべての設定値を見るには「o conf」とします。
+
+<pre>
+# すべての設定を見る(cpanシェル)
+o conf
+</pre>
+
+次のように設定の一覧が表示されます。
+
+<pre>
+# cpanの設定の一覧
+    applypatch         []
+    auto_commit        [0]
+    build_cache        [100]
+    build_dir          [/root/.cpan/build]
+    .
+    . (省略)
+    .
+    username           undef
+    wait_list          undef
+    wget               [/usr/bin/wget]
+    yaml_load_code     [0]
+    yaml_module        [YAML]    
+</pre>
+
+設定項目は変更することができます。
+
+<pre>
+# 設定の変更(cpanシェル)
+o conf build_cache 200
+</pre>
+
+設定した項目はcpanシェルが起動している間だけ有効です。設定を保存するためにはcommitを実行する必要があります。
+
+<pre>
+# 設定の保存(cpanシェル)
+o conf commit
+</pre>
+
+設定項目がリストの場合はunshift,push,pop,shiftコマンドを利用することもできます。
+
+<pre>
+# 先頭に追加
+o conf urllist unshift http://cpan.dev.local/CPAN
+
+# 末尾に追加
+o conf urllist push http://cpan.dev.local/CPAN
+
+# 末尾を削除
+o conf urllist pop
+
+# 先頭を削除
+o conf urllist shift
+</pre>
+
+<h3>CPANモジュールのインストールに失敗する場合</h3>
+
+CPANモジュールのインストールが失敗することはよくあります。これこれの原因を特定することは難しいですが考えられる状況をいくつか書いておきます。
+
+1. CPANミラーが落ちている
+-> urllistの先頭に利用できるCPANミラーを追加する
+
+2. モジュールが巨大なのでモジュールをビルドするために確保しておく領域が足りない
+-> build_cache の値を100Mくらいに増やしてみる
+
+3. モジュールがUnix環境しか想定していない。あるいは、Windowsで失敗する試験を含めている。
+-> 試験が失敗していることだけが原因であると思うならば、強制的にインストールしてみることもできるが、報告してあげるのが望ましい。
+
+4. XSを含んでいるのがgccコンパイラがないためにインストールできない。
+-> gccのパッケージをLinuxの場合であれば、yumやapt-getでgccをインストール、Windowsの場合は5.10.1以降のActivePerlであればMinGWが梱包されておりgcc環境がある。
+
+5. プロキシ接続でしか、インターネットを利用できない環境にある
+　->企業などのネットワークの場合はプロキシサーバを介してしてインターネットに接続できない場合があるでしょう。その場合にはプロキシを設定することができます。プロキシのドメイン名とポート番号は調べる必要があります。　
+
+<pre>
+# プロキシの設定
+o conf http_proxy ftp_proxy=http://proxy.you.com:8000/
+o conf ftp_proxy http_proxy=http://proxy.you.com:8000/
+</pre>
+
+また外部に対してHTTP接続しか許可されていないのに、urllistにftpのURLが含まれていると接続に失敗してしまいます。下記のURLのどれかをurllistの先頭に含めましょう。
+
+<pre>
+# HTTP接続でインストールする場合
+http://ftp.nara.wide.ad.jp/pub/CPAN/
+http://ftp.jaist.ac.jp/pub/CPAN/
+http://ftp.riken.jp/lang/CPAN/
+http://ftp.yz.yamagata-u.ac.jp/pub/lang/cpan/
+</pre>
+
+6. モジュールが他の(Perlではない)ライブラリに依存している
+-> たとえばXML::LibXMLはlibxml2というライブラリに依存しています。そのライブラリがインストールされていない場合はCPANでのインストールに失敗します。yumやapt-getなどのコマンドでlibxml2を含むパッケージをインストールする必要があります。
+
+<h3>CPANモジュールに関するFAQ</h3>
+
+Q. 依存するモジュールをインストールするときに自動的にyesと答えることはできますか。
+A. はい。できます。cpanシェルからprerequisites_policyをfollowに設定します。
+
+<pre>
+# 依存するモジュールを自動的にインストール
+o conf prerequisites_policy follow
+o conf commit
+</pre>
+
+askを指定するとインストールするかどうかを確認します。ignoreを指定すると依存するモジュールをインストールしません。
+
+Q. CPANミラーのURL一覧が掲載されているサイトはありますか。
+A. 下記のサイトになります。
+
+<a href="http://www.cpan.org/SITES.html">CPAN SITES</a>
+
+Q. Windowsでもcpanは利用できますか。
+A. はいできます。以前はWindowsでcpanを利用するにはmakeコマンドの変わりになるnmakeというコマンドが必要でした。現在では、ActivePerlが5.10.1以降であればMinGWという開発用のツールが梱包されています。これにはmakeコマンドの変わりになるものやCのコンパイラが含まれているので、Windowsでもcpanがうまく利用できるようになりました。
+
+Q. モジュールのインストール履歴を見ることができますか?
+A. perllocalというドキュメントにインストール履歴が記録されます。
+
+<pre>
+# インストール履歴を見る
+perldoc perllocal
+</pre>
+
+次のようにインストール履歴が表示されます。
+<pre>
+       Tue Jun  8 20:15:01 2010: "Module" Mail::Address::MobileJp
+
+       ・   "installed into: /usr/lib/perl5/site_perl/5.8.8"
+
+       ・   "LINKTYPE: dynamic"
+
+       ・   "VERSION: 0.09"
+
+       ・   "EXE_FILES: "
+
+       Tue Jun  8 20:24:46 2010: "Module" Business::CreditCard
+
+       ・   "installed into: /usr/lib/perl5/site_perl/5.8.8"
+
+       ・   "LINKTYPE: dynamic"
+
+       ・   "VERSION: 0.31"
+
+       ・   "EXE_FILES: "
+</pre>
+
+Q. インストールされているモジュールの一覧の名前だけが欲しいです。
+A. 次のスクリプトを使ってください。ExtUtils::Installedが利用できます。
+
+<pre>
+# インストールされているモジュール名の一覧
+use ExtUtils::Installed;
+print join "\n", ExtUtils::Installed->new->modules;
+</pre>
+
+Q. あたらしい環境にまとめてモジュールをインストールするにはどうすればよいでしょうか。
+A. 上記で作成したファイルをcpanに食べさせてください。xargsと組み合わせるとよいでしょう。
+
+<pre>
+# CPANモジュールをまとめてインストールする
+cat installed.txt | xargs cpan
+</pre>
+
+Q. インストールされているモジュールのディストリビューション名を知りたいです。
+
+A. ディストリビューション名は「ADAMK/DBD-SQLite-1.29.tar.gz」のような
+「作者名/モジュール名-バージョン.tar.gz」のような構成になります。
+
+これは「cpan -a」で知ることができます。
+
+<pre>
+# インストールされているモジュールとディストリビューション名の表示
+cpan -a
+</pre>
+
+でもこれはたくさんのモジュールの重複があるので、重複をなくすには次のようにします。少し時間がかかります。
+
+<pre>
+cpan -a | awk '{print $4;}' | sort -u
+</pre>
+
+Q. root権限を持っていないのですがcpanを利用したいです。ユーザ領域にインストールすることはできますか?
+
+A. cpanの代わりにcpanmというツールを使うのがよいでしょう。
+
+Q. 確実に他の環境にCPANモジュールをデプロイする方法はありませんか。実務で確実性を求められています。
+
+A. cpanfileというファイルに必要なモジュールを記述してcpanmを使ってインストールするのがよいでしょう。
+

@@ -1,0 +1,73 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>File::Copy - ファイルの移動とコピー</h2>
+
+
+
+<strong>File::Copy</strong>モジュールを使用すると、ファイルを移動したり、コピーしたりすることができます。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use File::Copy qw/copy move/;
+</pre>
+
+copy関数でファイルをコピー、move関数でファイルを移動することができます。rename関数というファイルを移動する標準関数がありますが、ファイルシステムを隔てた移動に対応していません。ファイルを移動する場合はFile::Copyのmoveを使用するのがよいでしょう。またmoveはディレクトリを移動するときも利用することができます。
+
+<pre>
+# ファイルのコピー
+copy($from, $to);
+
+# ファイルの移動
+move($from, $to)
+</pre>
+
+ファイルをコピーするサンプルです。ファイルのコピーに失敗(※1)したときのためにエラー処理を行います。エラーメッセージにはOSのエラーメッセージ「$!」を含めるようにします。
+
+<pre>
+# ファイルのコピー
+my $from = 'xxx';
+my $to   = 'yyy';
+
+copy($from, $to)
+  or die "Can't copy \"$from\" to \"$to\": $!";
+</pre>
+
+ファイルを移動するサンプルです。ファイルの移動に失敗したときのためにエラー処理を行います。エラーメッセージにはOSのエラーメッセージ「$!」を含めるようにします。
+
+<pre>
+# ファイルの移動
+my $from = 'xxx';
+my $to   = 'yyy';
+
+move($from, $to)
+  or die "Can't move \"$from\" to \"$to\": $!";
+</pre>
+
+ファイルが存在しなかった場合や、送り先のディレクトリにパーミッションの書き込み権限がない場合などにファイルコピーは失敗します。
+
+<h3>関連記事</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20080521121142.html">ファイルをコピーする</a>
+  </li>
+  <li>
+    <a href="/blog/20080522121142.html">ファイルを移動する(ファイル名を変更する)</a>
+  </li>
+</ul>
+

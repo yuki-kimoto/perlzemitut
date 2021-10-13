@@ -1,0 +1,249 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>Net::FTP - FTPを使ったファイル転送</h2>
+
+Net::FTPを使用すると、FTPでファイルのダウンロード・アップロードができます。
+
+IT関連の仕事ではサーバにアクセスしてファイルをダウンロード・アップロードすることが頻繁にあります。FFFTPなどのFTPのクライアントのソフトウェアなどを使用してこれを行うのは非常に手間がかかります。できれば自動化したいと思うことでしょう。
+
+PerlにはFTPを行うためのクライアントアプリケーションを作成するためのNet::FTPというモジュールが標準で添付されています。Net::FTPを使えばファイルのダウンロード・アップロード作業は自動化され業務の効率化を図ることができます。
+
+<h4>ascii</h4>
+
+ファイルの転送モードをアスキーモードに変更します。
+
+<pre>
+$ftp->ascii
+</pre>
+
+アスキーモードを指定すると改行コードの自動変換を行ってくれます。たとえばWindowsのデフォルトの改行コードは\r\nです。Unixのデフォルトの改行コードは\nです。Windowsのメモ帳などで作成したファイルをそのままUnixに転送すると正しく表示することができません。アスキーモードで転送するとこの変換を自動で行ってくれます。
+
+<h4>ls</h4>
+
+ファイル名の一覧を取得します。
+
+<pre>
+@files = $ftp->ls($dir)
+</pre>
+
+ディレクトリ名を省略した場合は接続先のカレントディレクトリに含まれるファイルの一覧を取得します。
+
+<h4>dir</h4>
+
+ファイル名の一覧を詳細な情報を含めて取得します。
+
+<pre>
+@file_infos = $ftp->dir($dir)
+</pre>
+
+dirコマンドはOS依存です。そのOSで「ls -l」を実行した出力結果が得られます。たとえば私の現在使用しているFedora7の場合は次のような出力になります。
+
+<pre>
+-rw-r--r--  1 someuser  somegroup   6618 Aug  8 17:22 button.html
+-rwxr-xr-x  3 someuser  somegroup    512 Apr  1  2009 a.pl
+-rwx------  1 someuser  somegroup     77 Apr  1  2009 mm.txt
+</pre>
+
+<h4>quit</h4>
+
+FTPサーバーとの接続を閉じます。
+
+<pre>
+$ftp->quit;
+</pre>
+
+<h4>ときどき使用するメソッド</h4>
+
+ときどき使用するメソッドです。
+
+<table>
+  <tr>
+    <td>
+      メソッド名
+    </td>
+    <td>
+      機能
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      pwd
+    </td>
+    <td>
+      接続先のカレントディレクトリの取得
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      rename
+    </td>
+    <td>
+      ファイル名の変更
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      mkdir
+    </td>
+    <td>
+      ディレクトリの作成
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      rmdir
+    </td>
+    <td>
+      ディレクトリの削除
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      size
+    </td>
+    <td>
+      ファイルサイズの取得
+    </td>
+  </tr>
+
+</table>
+
+<h4>すべてのメソッドの一覧</h4>
+
+メソッドのすべての一覧はNet::FTPのマニュアルを参照してください。
+
+<a href="http://perldoc.jp/docs/modules/libnet-1.12/Net/FTP.pod">Net::FTP(perldocjp)</a>
+
+<h3>Net::FTPのエラー処理</h3>
+
+実は最初のサンプルではNet::FTPの使い方を簡潔に説明するためにエラー処理を省いていました。Net::FTPはコマンドなどが失敗した場合に例外を投げてくれないので自前でエラー処理を行う必要があります。最初のサンプルにエラー処理を加えると次のようになります。
+
+<pre>
+# FTPサーバへの接続
+my $ftp = Net::FTP->new('somehost')
+  or die "Cannot connect to '$host': $!";
+
+# ログイン
+$ftp->login('user', 'password')
+  or die "Cannot login '$host:$user:$password': " . $ftp->message;
+
+# ダウンロード
+$ftp->get('/dir/somefile');
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->quit;
+</pre>
+
+エラー処理はなぜ行う必要があるのでしょうか?それはFTPサーバは外部にあるため確実に成功する保障はどこにもないからです。ネットワークのエラーやサーバのダウンなどで接続できないというときのことについて考える必要があります。
+
+またホスト名が間違っていた場合は接続に失敗します。このような場合に残りの処理を続けたとしても意味がありません。わかりやすいエラーメッセージを表示してプログラムは止まるべきです。
+
+ではNet::FTPのエラー処理について簡単に解説します。
+
+<h4>[A]接続のエラー処理</h4>
+
+newメソッドでFTPサーバへの接続に失敗した場合は戻り値はundefになりますのでor dieをしてプログラムを終了させます。OSのエラーメッセージである$!を含めておきましょう。
+
+<pre>
+my $ftp = Net::FTP->new('somehost')
+  or die "Cannot connect to '$host': $!";
+</pre>
+
+<h4>[B]それ以外のエラー処理</h4>
+
+接続した後にエラーが発生した場合は$ftp->messageでエラーの内容を取得することができます。このエラーメッセージをエラーメッセージに含めるようにします。
+
+<pre>
+# ログイン
+$ftp->login('user', 'password')
+  or die "Cannot login '$host:$user:$password: '" . $ftp->message;
+
+# ダウンロード
+$ftp->get('/dir/somefile');
+  or die "FTP command fail: " . $ftp->message;
+</pre>
+
+<h3>Net::FTPの実行できるサンプル</h3>
+
+ユーザとパスワードを指定するFTPサーバにはサンプルでは接続することができません。パスワードを指定しないでもよい匿名サーバからファイルをダウンロードしてみます。CPANのミラーサイトからCPANのトップページ(index.html)をダウンロードするサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+use Net::FTP;
+
+my $host = 'ftp.u-aizu.ac.jp';
+my $user = 'anonymous';
+
+my $ftp = Net::FTP->new($host)
+  or die "Cannot connect to '$host': $!";
+
+$ftp->login($user)
+  or die "Cannot login '$host:$user':" . $ftp->message;
+
+$ftp->cwd('/pub/CPAN')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->get('index.html')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->quit;
+</pre>
+
+<h3>FTPSによる接続 - FTP over SSL/TLS</h3>
+
+Net::FTPによるFTPSによる接続方法について解説します。FTPSは、SSL/TSL上でFTP接続するプロトコルです。SSH上でファイル転送を行うSFTPとは、異なるものなので注意してください。
+
+ここでは、FTPのポート番号(標準で21)でFTP接続した後に、AUTHコマンドでSSL接続要求を行う「明示的なTSL/SSL暗号化」を行う方法について解説します。
+
+Net::FTPは、IO::Socket::SSLがインストールされている場合、FTPSを使って通信を行うことができます。IO::Socket::SSLのバージョンが古い場合は、アップグレードしてください。
+
+「明示的なTSL/SSL暗号化」を行うには、newメソッドで接続した直後に、starttlsメソッドを呼び出すだけです。上記のサンプルを「明示的なTSL/SSL暗号化」で書き直してみましょう。
+
+<pre>
+use strict;
+use warnings;
+
+use Net::FTP;
+
+my $host = 'ftp.u-aizu.ac.jp';
+my $user = 'anonymous';
+
+my $ftp = Net::FTP->new($host)
+  or die "Cannot connect to '$host': $!";
+
+# 明示的なTSL/SSL暗号化を開始
+$ftp->starttls() or die "Can't upgrade start TLS:";
+
+$ftp->login($user)
+  or die "Cannot login '$host:$user':" . $ftp->message;
+
+$ftp->cwd('/pub/CPAN')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->get('index.html')
+  or die "FTP command fail: " . $ftp->message;
+
+$ftp->quit;
+</pre>

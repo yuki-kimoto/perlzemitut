@@ -1,0 +1,229 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>ランダムアクセスを使って読み書きする</h2>
+
+
+変更したい箇所だけをピンポイントで指定して、変更して書き戻すランダムアクセスのサンプルです。ランダムアクセスというのは一般的に固定長のバイナリファイルに対して使われますが、簡便のためここでは固定長テキストファイルを使います。
+
+<pre>
+use strict;
+use warnings;
+
+# seek の位置を指定するオプションを使用するために使用
+use Fcntl qw(:seek);
+
+# ランダムアクセスによってファイル内容を書き換える。
+my $file = "data_20080810.txt";
+
+# 読み書きモードでオープン(あまり安全でない)
+open(my $fh, "+<", $file)
+  or die "Cannot open $file";
+
+# 16バイト
+my $len_rec = 16;
+
+# レコードの先頭
+my $pos_name = 0;
+
+# 固定長8バイト
+my $len_name = 8; 
+
+# 先頭から8バイト目
+my $pos_age = 8;
+
+# 固定長8バイト
+my $len_age = 8; 
+
+# 今回はpekoの年齢に1を加えてみる。
+# pekoは2レコード目にあります。年齢は、レコードの先頭から8バイト目
+my $pos_peko_age = 1 * $len_rec + $pos_age;
+
+# ファイルポインタの位置を、ペコの年齢の位置まで移動
+seek($fh, $pos_peko_age, SEEK_SET)
+  or die "Cannnot seek: $file: $!";
+
+# $ageに、pekoの年齢を読み込み
+my $age;
+
+# 読み込んだバイト数
+my $len_read;
+$len_read = read($fh, $age, $len_age);
+
+if (!defined $len_read) {
+  die "Cannot read $file: $!";
+}
+elsif ($len_read != $len_age) {
+  die "Read only $len_read bytes";
+}
+
+
+# 年齢に1加える
+$age++;
+
+# readするとファイルポインタが読み込んだ分だけ進むので、元の位置に戻す。
+seek($fh, $pos_peko_age, SEEK_SET)
+  or die "Cannnot seek: $file: $!";
+
+# ファイルへ書き込み
+printf $fh  "%08s", $age
+  or die "Cannot print: $file: $!";
+
+# ファイルを閉じる
+close $fh
+  or die "Cannot close $file: $!";
+</pre>
+
+以下は読み込むデータです。(名前8バイト、年齢8バイト)というレコードが3つ並んでいるデータです。data_20080810.txtという名前で保存してください。
+<pre>
+taro    00000023peko    00000018akira   00000023
+</pre>
+
+<h3>コード解説</h3>
+
+<h4>(1) seek関数で使用するシンボルを使う準備</h4>
+
+<pre>
+use Fcntl qw(:seek);
+</pre>
+
+Fcntlモジュールから、seek関数に関連するシンボルをインポートします。SEEK_SET, SEEK_CUR, SEEK_END という3つの定数がインポートされます。
+
+<h4>(2) 固定長ファイルでの位置の指定方法</h4>
+
+<pre>
+# 16バイト
+my $len_rec = 16;
+
+# レコードの先頭
+my $pos_name = 0;
+
+# 固定長8バイト
+my $len_name = 8; 
+
+# 先頭から8バイト目
+my $pos_age = 8;
+
+# 固定長8バイト
+my $len_age = 8; 
+
+# 今回はpekoの年齢に1を加えてみる。
+# pekoは2レコード目にあります。年齢は、レコードの先頭から8バイト目
+my $pos_peko_age = 1 * $len_rec + $pos_age;
+</pre>
+
+固定長ファイルの場合は、直接バイト位置を指定できます。上記のように、1レコードの長さ、それぞれのデータの先頭からの位置とバイト数を定義しておくと、位置を指定するときに便利です。
+
+<h4>(3) seek関数で、読み込みたいバイト位置まで移動する。</h4>
+<pre>
+# ファイルポインタの位置を、ペコの年齢の位置まで移動
+
+seek($fh, $pos_peko_age, SEEK_SET)
+  or die "Cannnot seek: $file: $!";
+</pre>
+
+seek関数を使うとファイルポインタを、指定したバイト位置まで移動することができます。ファイルポインタというのは現在のファイルのバイト位置を覚えてくれている変数だと思ってください。
+
+第1引数はオープンしているファイルハンドル、第2引数は移動したいバイト位置、第3引数は基準とする位置(先頭、現在の位置、末尾)です。
+
+第3引数に指定できる定数は以下のとおりです。
+
+<table>
+  <tr>
+    <td>
+      定数
+    </td>
+    <td>
+      意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      SEEK_SET
+    </td>
+    <td>
+      ファイルの先頭を基準にする
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      SEEK_CUR
+    </td>
+    <td>
+      現在のファイルポインタが指す位置を基準にする
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      SEEK_END
+    </td>
+    <td>
+      ファイルの末端を基準にする
+    </td>
+  </tr>
+
+</table>
+
+上記の位置を基準にして、第2引数の値が加算されます。先頭からのバイト位置を指定する場合は、SEEK_SETです。SEEK_ENDの場合は、第2引数は負の値を指定することになります。
+
+seek関数は失敗するとundefを返して、$!にエラー内容を設定します。
+
+<h4>(4) read関数でデータを読み込む</h4>
+
+<pre>
+# $ageに、pekoの年齢を読み込み
+my $age;
+
+# 読み込んだバイト数
+my $len_read;
+$len_read = read($fh, $age, $len_age);
+
+if (!defined $len_read) {
+  die "Cannot read $file: $!";
+}
+elsif ($len_read != $len_age) {
+  die "Read only $len_read bytes";
+}
+</pre>
+
+read関数を使うことで、指定したバイト数だけをファイルから読み込むことができます。第1引数はオープンしたファイルハンドル、第2引数は、読み込んだデータを格納するスカラー変数、第3引数は読み込むバイト数です。
+
+read関数の戻り値は、実際に読み込んだバイト数になります。リードエラーの場合は、undefが返り$!にエラー内容が設定されます。
+
+読み込んだバイト数が足りなかった場合、読み込みエラーの場合それぞれでエラー処理を行います。
+
+<h4>(5)seek関数で書き込み位置に移動する</h4>
+
+<pre>
+# readするとファイルポインタが読み込んだ分だけ進むので、元の位置に戻す。
+seek($fh, $pos_peko_age, SEEK_SET)
+  or die "Cannnot seek: $file: $!";
+</pre>
+
+read関数は読み込んだ分だけファイルポインタの位置を進めます。再度同じ位置に書き込むためには、もう一度seek関数を呼び出します。
+
+<h4>(6)ファイルへの書き込みを行う</h4>
+
+<pre>
+printf $fh  "%08s", $age
+  or die "Cannot print: $file: $!";
+</pre>
+
+書き込みは<a href="/blog/20170326149148.html">printf関数</a>でフォーマットを指定して行います。%08sという指定で、「8桁の文字列で、8桁に満たない部分は0で埋める」ということを意味します。

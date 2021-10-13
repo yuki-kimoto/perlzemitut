@@ -1,0 +1,137 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+      <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>my - レキシカル変数の宣言</h2>
+
+
+
+<b>my</b>を使えばレキシカル変数を宣言することができます。
+
+<pre>
+# レキシカル変数の宣言
+my $num;
+my @nums;
+my %scores;
+</pre>
+
+レキシカル変数というのは、C言語でいうところの、ローカル変数のことです。
+
+Perlには<a href="/blog/20080309120507.html">local</a>というキーワードがあるのですが、こちらは実際には、ローカル変数を作成しません。localキーワードは、<a href="/blog/20080308120495.html">パッケージ変数</a>を一時的に保存して復元するという機能を持っています。
+
+myによる変数宣言は、<a href="/blog/20160225145640.html">Perl 5.6</a>で追加された機能です。これは他の言語におけるローカル変数そのものなのですが、localというキーワードがすでにあるので、紛らわしくならないようにレキシカル変数という名前になったのかもしれません。
+
+Perlでレキシカル変数といえば、他の言語におけるローカル変数のことだと考えてください。
+
+<h3>変数宣言とは</h3>
+
+変数宣言というのはこれから<a href="/blog/20161107147852.html">変数</a>を使うよということを宣言するものです。新しく使う変数は「my」を使って変数宣言しましょう。
+
+<pre>
+# スカラ変数の宣言
+my $num;
+</pre>
+
+スカラ変数のほかに、<a href="/blog/20161012147627.html">配列変数</a>、<a href="/blog/20161013147635.html">ハッシュ変数</a>を宣言することもできます。
+
+<pre>
+# 配列変数の宣言
+my @nums;
+
+# ハッシュ変数の宣言
+my %score;
+</pre>
+
+<h3>変数の初期化</h3>
+
+変数宣言と同時に「変数の初期化」を行うことができます。
+
+<pre>
+# スカラ変数の初期化
+my $num = 3;
+
+# 配列変数の初期化
+my @nums = (1, 2, 3);
+
+# ハッシュ変数の初期化
+my %score = (math => 80, english => 70);
+</pre>
+
+初期化を行わなかった場合はスカラ変数の場合は<a href="/blog/20100220126425.html">未定義値</a>が代入されます。配列変数とハッシュ変数の場合は<a href="/blog/20100308126967.html">空リスト</a>が代入されます。
+
+<h3>レキシカル変数とは</h3>
+
+myを使うと「レキシカル変数」を宣言できると書きましたが、レキシカル変数とは、いったいなんでしょうか。レキシカル変数とは、レキシカルなスコープを持つ変数のことです。
+
+レキシカル変数は、スコープの終わりになると、寿命がつきて、メモリから解放されます。
+
+<pre>
+# スコープの開始
+{
+  my $num = 2;
+}
+# ここでは「$num」を利用できない。
+</pre>
+
+レキシカルなスコープについての詳しい解説は以下をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20110128130016.html">Perlのスコープを理解する</a>
+  </li>
+</ul>
+
+<h3>strictモジュールとの連携</h3>
+
+strictモジュールとmyによる変数宣言を一緒に使うと、変数宣言がない場合に、変数を使おうとした場合に、コンパイルエラーになります。
+
+<pre>
+use strict;
+
+my $num = 1;
+
+# 変数名が間違っているのでコンパイルエラーになる
+print $nam;
+</pre>
+
+意図しない変数の利用をすぐに発見できるので、Perlのプログラムでは、必ずstrictモジュールを使うようにしましょう。
+
+strictモジュールについての詳しい解説は以下をご覧ください。
+<ul>
+  <li>
+    <a href="/blog/20130912137895.html">strict - 文法チェックを厳しくする</a>
+  </li>
+</ul>
+
+<h3>「my」と「our」と「local」による変数宣言の違い</h3>
+
+Perlの変数宣言には「my」と「our」と「local」の三つがあります。
+
+簡単に違いをいうと「my」は「レキシカル変数」の宣言、「our」は「パッケージ変数」の宣言、「local」は「パッケージ変数を宣言してスコープが終わるまで値を保存」という効果があります。
+
+Perlで変数を宣言するときは「our」や「local」の使用はできる限り避けてください。現代のPerlでは「my」による変数宣言だけで、完全なプログラミングを行うことができます。
+
+our、localに追加の解説は以下をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20080308120495.html">our - パッケージ変数の宣言</a>
+  </li>
+  <li>
+    <a href="/blog/20080309120507.html">local - パッケージ変数を一時的に退避して復元</a>
+  </li>
+</ul>

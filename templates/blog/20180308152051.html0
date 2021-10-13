@@ -1,0 +1,78 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100930127859.html">
+      <span itemprop="name">リファレンス</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>スカラ変数のリファレンス</h2>
+
+
+
+スカラ変数のリファレンスは、スカラ変数を指し示すものです。
+
+<h4>スカラ変数のリファレンスの作成</h4>
+
+スカラ変数のリファレンスを作成するには次のようにします。
+
+<pre>
+my $str = "Hello";
+my $str_ref = \$str;
+</pre>
+
+<h4>スカラ変数のリファレンスをデリファレンス</h4>
+
+スカラ変数のリファレンスをデリファレンスするには「${}」とします。
+
+<pre>
+my $str = ${$str_ref};
+</pre>
+
+単純な変数であれば先頭に「$」を付けるだけでデリファレンスできます。
+
+<pre>
+my $str = $$str_ref;
+</pre>
+
+<h3>スカラ変数のリファレンスを使う意義はありますか?</h3>
+
+大きなサイズの<a href="/blog/20161003147558.html">文字列</a>を<a href="/blog/20101130129876.html">サブルーチン</a>に渡す場合は、リファレンスを使ったほうが、速い気がしますね。
+
+でも、Perlでは、文字列はコピーオンライトと呼ばれる手法を使ってコピーされるので、実際に文字列に変更が加えられるまでは、コピーが行われません。
+
+ですから、大きなサイズの文字列でも、気にしないで、サブルーチンの引数に渡してください。
+
+<h4>Getopt::Long</h4>
+
+自分でプログラミングをするときは、スカラ変数のリファレンスを利用する機会はほぼありませんが、ライブラリが使っている場合は、使い方を覚えておく必要があります。
+
+よく利用するモジュールとしては<a href="/blog/20100514127696.html">Getopt::Long</a>があります。
+
+<pre>
+# GetOptionsによるコマンドライン引数のオプションの処理
+
+# デフォルト値の設定
+my $enable_cache;
+my $max_clients = 5;
+my $type = 'prefork';
+
+# オプションの処理
+GetOptions(
+  'enable_cache'  => \$enable_cache,
+  'max_clients=i' => \$max_clients,
+  'type=s'        => \$type
+);
+
+# オプション以外の引数を受け取る 
+my $conf_file = shift;
+</pre>

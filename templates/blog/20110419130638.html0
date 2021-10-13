@@ -1,0 +1,527 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Webアプリケーション作成のためのCSSの基礎</h2>
+
+
+
+PerlでWebアプリケーションを作成するための前提知識としてCSSの基本を解説します。これだけ知っていれば、CSSを自由に記述することができる程度のものを目指しました。
+
+<h3>CSS(カスケーディングスタイルシート)とは</h3>
+
+CSSはHTMLのデザインを行うためのものです。CSSを利用すると文字の色や背景の色を変えたりすることができます。また各要素の配置を指定することができます。HTMLでもある程度のデザインを行うことができますが、HTMLで文書の意味を、CSSでデザインを行うというのが主流です。
+
+<h3>style属性を使ったCSSの記述</h3>
+
+CSSをタグに適用する一番簡単な方法は、style属性を使用することです。
+
+<pre>
+<h1 style="color:red;font-size:200%;">見出し1</h1>
+<div style="background-color:blue;">ブロック要素</div>
+<p style="border:1px green solid;">段落</p>
+</pre>
+
+上記のように記述すると以下のように表示されます。フォントの色が赤くなったり、背景が青になったり、緑の枠線がついているのが確認できます。
+<hr>
+
+[f:id:perlcodesample:20110526135651p:image]
+
+<hr>
+
+CSSは「color:red」のように「プロパティ:値」という組み合わせで記述します。
+
+<pre>
+プロパティ:値
+</pre>
+
+セミコロン「;」で区切って複数の「プロパティ:値」を記述することができます。
+
+<h3>styleタグを利用したCSSの記述</h3>
+
+styleタグを利用するとHTMLのタグとスタイルを分離させることができます。上記のスタイルシートを、styleタグを利用して書き換えてみます。
+
+<pre>
+<style type="text/css">/*<![CDATA[*/
+
+h1 {
+  color:red;
+  font-size:200%;
+}
+
+div {
+  background-color:blue;
+}
+
+p {
+  border:1px green solid;
+}
+
+/*]]>*/</style>
+
+<h1>見出し1</h1>
+<div>ブロック要素</div>
+<p>段落</p>
+</pre>
+
+タグの中のstyle属性はなくなって、styleタグの中にスタイルシートを記述しています。「h1 { ... }」や「div { ... }のh1やdivはセレクタと呼ばれます。
+
+<pre>
+セレクタ {
+  プロパティ1:値1;
+  プロパティ1:値2;
+}
+</pre>
+
+セレクタはどの要素にCSSを適用するかを指定するものです。h1を指定した場合は、すべてのh1にCSSが適用されます。
+
+<h3>外部に定義されたCSSを読み込む</h3>
+
+CSSは外部ファイルにしておいて読み込むこともできます。記述方法はstyleタグを使用した方法と同じです。
+まず外部ファイルとしてCSSを準備します。comonn.cssという名前にして、ドキュメントルートに配置してください。
+
+<pre>
+/* common.css */
+h1 {
+  color:red;
+  font-size:200%;
+}
+
+div {
+  background-color:blue;
+}
+
+p {
+  border:1px green solid;
+}
+</pre>
+
+HTMLは以下のようになります。
+
+<pre>
+<html> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" > 
+    <link href="/common.css" media="screen" rel="stylesheet" type="text/css" /> 
+  </head> 
+  <body> 
+    <h1>見出し1</h1> 
+    <div>ブロック要素</div> 
+    <p>段落</p>
+  </body> 
+</html> 
+</pre>
+
+linkタグを利用して外部で定義したCSSを読み込んでいます。
+
+たくさんのページでCSSを共有したい場合は外部ファイルで定義するのがよいでしょう。ページの個別のCSSについてはstyleタグを用いるのがよいでしょう。
+
+<h4>コメント</h4>
+
+CSSでコメントを記述するには、コメントにしたい部分を「/*」と「*/」で囲みます。
+
+<pre>
+/* コメント */
+</pre>
+
+<h3>文字の装飾に関するプロパティ</h3>
+
+ここからは、よく使用されるプロパティについて分野別に紹介していきます。
+
+<h4>文字色 color</h4>
+
+<pre>
+<div style="color:red;">赤</div>
+<div style="color:#FF0000;">赤</div>
+</pre>
+
+文字色を指定するにはcolorを使用します。色の指定には、<a href="http://e-words.jp/p/r-colornames.html">カラーネーム</a>か、カラーコードを利用します。カラーコードは16進数で指定します。最初の2桁が「赤」の度合い、次の2桁が「緑」の度合い、最後の2桁が「青」の度合いです。各色の光の合成が行われ「#FFFFFF」が白に、「#000000」は黒になります。
+
+<h4>文字の大きさ font-size</h4>
+
+<pre>
+<div style="font-size:200%;">200%</div>
+<div style="font-size:50%;">50%</div>
+</pre>
+
+文字の大きさを指定するにはfont-sizeを使用します。サイズの指定方法にはさまざまなものがありますが、親要素からの相対サイズで指定する「%」で指定する方法が多く利用されているようです。
+
+<h4>文字の太さ font-weight</h4>
+
+<pre>
+<div style="font-weight: bold;">太字</div>
+</pre>
+
+文字を太くするにはfont-weightに「bold」を指定します。
+
+<h4>アンダーライン text-decoration</h4>
+
+<pre>
+<div style="text-decoration: underline;">アンダーライン</div>
+<div style="text-decoration: none;">アンダーラインの取消</div>
+<div style="text-decoration: line-through;">打消し線</div>
+</pre>
+
+アンダーラインをつけるにはtext-decorationに「underline」を指定します。アンダーラインを取り除きたい場合には「none」を指定します。「line-through」を指定すると打ち消し線をつけることができます。
+
+<h3>文字の位置や配置に関するプロパティ</h3>
+
+<h4>文字の左右の位置の指定 text-align</h4>
+
+<pre>
+<div style="text-align: left;">左寄せ</div>
+<div style="text-align: center;">中央</div>
+<div style="text-align: right;">右寄せ</div>
+</pre>
+
+文字の位置を指定するにはtext-alignを使用します。「left」で左寄せ、「center」で中央寄せ、「right」で右寄せになります。
+
+このプロパティはブロック要素に対してしか効果を持たないということをに注意しましょう。インライン要素に対しては効果がありません。spanはインライン要素ですので、下記のような記述は効果がありません。
+
+<pre>
+<span style="text-align: right;">右寄せ</span>
+</pre>
+
+<h4>行の高さ line-height</h4>
+
+<pre>
+<div style="line-height: 150%;">行の高さはline-heightで指定します。行の高さをある程度あけると、文章が読みやすくなる効果があります。見やすい行の高さを設定しましょう。これくらい長い文章を書くと2行にわたるはず。</div>
+</pre>
+
+行の高さを指定するにはline-heightを使用します。値の指定方法にはいくつかの方法がありますが、「%」を使う記述が多く利用されているようです。「%」は文字の高さに対して、行の高さをどれくらいにするかということを指定します。ですので、たとえば「150%」を指定すると、文字の高さを100とするとその半分の「50」文の行間になるということです。行間を適切に指定すると文章が読みやすくなる効果があります。
+
+<h4>文字間隔 letter-spacing</h4>
+
+<pre>
+<div style="letter-spacing: 1em;">文字間隔</div>
+<div style="letter-spacing: 0.1em;">読みやすい文字間隔</div>
+</pre>
+
+文字間隔を指定するにはletter-spacingを使用します。値の指定方法はいくつかの方法がありますが、1文字を基準とした「em」が多く利用されているようです。文字間隔をわずかに広くすると文章が読みやすくなる効果があるようです。
+
+<h3>背景に関するプロパティ</h3>
+
+<h4>背景色 background-color</h4>
+
+<pre>
+<div style="background-color: red;">背景色</div>
+<div style="background-color: #FFDDDD;">背景色(とても薄い赤色)</div>
+<div style="background-color: #DDFFDD;">背景色(とても薄い緑色)</div>
+<div style="background-color: #DDDDFF;">背景色(とても薄い青色)</div>
+</pre>
+
+背景色を指定するにはbackground-colorを使用します。薄い色の背景色はデザインするときによく利用されるようです。
+
+<h4>背景画像 background-image</h4>
+
+<pre>
+<div style="background-image: url('/image/sky.png');">背景画像</div>
+</pre>
+
+背景画像を指定するにはbackground-imageを使用します。画像のURLを指定します。URLはドキュメントルートからの絶対パスで指定するのがよいと思われます。背景画像はデフォルトで縦と横に繰り返して表示されます。
+
+<h4>背景画像の繰り返しの指定</h4>
+
+<pre>
+<div style="background-repeat:no-repeat;">繰り返しなし</div>
+</pre>
+
+背景画像はデフォルトで繰り返されますが、background-repeatに「no-repeat」を指定すると繰り返しが解除できます。
+
+<h3>枠線(ボーダー)に関するプロパティ</h3>
+
+<h4>枠線の指定border</h4>
+
+<pre>
+<div style="border: 1px solid blue;">1pxの青の1本線の枠線</div>
+<div style="border: 1px double blue;">1pxの青の2本線の枠線</div>
+<div style="border: 1px dashed blue;">1pxの青の破線の枠線</div>
+<div style="border: 1px dotted blue;">1pxの青の点線の枠線</div>
+</pre>
+
+枠線を指定するにはborderを使用します。「線の太さ」「線の種類」「線の色」の組み合わせを空白で区切って指定します。
+
+線の種類には以下のような種類があります。
+
+<ul>
+  <li>
+    1本線 solid
+  </li>
+  <li>
+    2本線 double
+  </li>
+  <li>
+    破線 dashed
+  </li>
+  <li>
+    点線 dotted
+  </li>
+</ul>
+
+また「border-top」「border-left」「border-right」「border-bottom」というプロパティを利用すると特定の位置の枠線だけを指定することもできます。
+
+<pre>
+<div style="border-top: 1px solid blue;">枠線(上側)</div>
+<div style="border-left: 1px solid blue;">枠線(左側)</div>
+<div style="border-right: 1px solid blue;">枠線(右側)</div>
+<div style="border-bottom: 1px solid blue;">枠線(下側)</div>
+</pre>
+
+<h3>要素の位置や表示に関するプロパティ</h3>
+
+<h4>ブロック要素の幅と高さ width, height</h4>
+
+<pre>
+<div style="width:200px; height:100px; background-color:green;">幅(200px), 高さ(100px)</div>
+</pre>
+
+ブロック要素の幅と高さを指定するにはwidthとheightを使用します。インライン要素にwidth,heightを指定しても効果がないので注意してください。
+
+また親要素の幅を基準にして、割合で指定することもできます。
+
+<pre>
+<div style="width:200px; height:100px; background-color:green;">
+  <div style="width:80%; height:70%; background-color:blue;">幅(80%), 高さ(70%)</div>
+</div>
+</pre>
+
+<h4>マージン margin</h4>
+
+<pre>
+<div style="background-color:#FFCCCC;">
+  <div style="background-color:#FF6666;">上側の要素</div>
+  <div style="margin:20px 30px 50px 30px;background-color:#FF6666;">「上 左 下 右」のマージンを指定</div>
+  <div style="margin:20px 30px;background-color:#FF6666;">「上左 下右」のマージンを指定</div>
+  <div style="margin:20px;background-color:#FF6666;">「上左下右」のマージンをまとめて指定</div>
+  <div style="background-color:#FF6666;">下側の要素</div>
+</div>
+</pre>
+
+マージンを指定するにはmarginを使用します。マージンとは要素間の間隔のことです。マージンは空白で区切って指定します。４つの値を空白で区切って指定した場合は「上 左 下 右」の指定になります。2つの値を空白で区切って指定した場合は「上下 左右」の指定になります。値をひとつだけ指定した場合は「上下左右」で同じ値になります。例ではマージンの意味がわかりやすいように、背景色をつけています。
+
+ひとつの注意として、要素が垂直方向に接し合う場合にはマージンの値は加算されるのではないということに注意してください。その場合は大きいほうの値が選択されます。たとえばAという要素の下側のマージンが20pxでBという要素の上側のマージンが50pxであった場合は、AとBの間の上下のマージンは加算し70pxになるのではなく、大きいほうの値の50pxになります。
+
+マージンは上下左右をそれぞれ個別に指定することもできます。
+
+<pre>
+<div style="background-color:#FFCCCC;">
+  <div style="background-color:#FF6666;">上側の要素</div>
+  <div style="margin-top:20px;background-color:#FF6666;">上のマージン</div>
+  <div style="margin-left:20px;background-color:#FF6666;">左のマージン</div>
+  <div style="margin-bottom:20px;background-color:#FF6666;">下のマージン</div>
+  <div style="margin-right:20px;background-color:#FF6666;">右のマージン</div>
+  <div style="background-color:#FF6666;">下側の要素</div>
+</div>
+</pre>
+
+またもうひとつの注意としてインライン要素に上下のマージンを指定しても無視されるということを覚えておきましょう。たとえば、以下のような指定については、左右は20pxのマージンがありますが、上下にはマージンが設定されません。
+
+<pre>
+<span style="margin:20px;">インライン要素では上下のマージンは無視される</span>
+</pre>
+
+<h4>パディング padding</h4>
+
+<pre>
+<div style="padding:20px 30px 50px 30px;background-color:#FFCCCC;">「上 左 下 右」のパディングを指定</div><br>
+<div style="padding:20px 30px;background-color:#FFCCCC;">「上左 下右」のパディングを指定</div><br>
+<div style="padding:20px;background-color:#FFCCCC;">「上左下右」のパディングをまとめて指定</div>
+</pre>
+
+パディングを指定するにはpaddingを使用します。パディングとは内側の要素との間隔のことです。パディングは空白で区切って指定します。４つの値を空白で区切って指定した場合は「上 左 下 右」の指定になります。2つの値を空白で区切って指定した場合は「上下 左右」の指定になります。値をひとつだけ指定した場合は「上下左右」で同じ値になります。
+
+パディングは上下左右をそれぞれ個別に指定することもできます。
+
+<pre>
+<div style="padding-top:20px;background-color:#FF6666;">上側のパディング</div>
+<div style="padding-left:20px;background-color:#FF6666;">左側のパディング</div>
+<div style="padding-bottom:20px;background-color:#FF6666;">下側のパディング</div>
+<div style="padding-right:20px;background-color:#FF6666;">右側のパディング</div>
+</pre>
+
+<h4>はみ出す部分の表示方法 overflow</h4>
+
+<pre>
+<div style="height:100px;width:100px;overflow:auto;">はみ出る部分をスクロールさせる。はみ出る部分をスクロールさせる。はみ出る部分をスクロールさせる。はみ出る部分をスクロールさせる。</div>
+</pre>
+
+はみ出る部分を縦にスクロールさせたい場合は、overflowに「auto」を指定します。
+
+<h3>要素の表示方法を変更 display</h3>
+
+<pre>
+<span style="display:block">spanをブロック要素に変更</span>
+<h1 style="display:inline">h1をインライン要素に変更</h1>あああ
+</pre>
+
+要素の表示方法を変更するにはdisplayを使用します。「block」を指定するとブロック要素に、「inline」を指定するとインライン要素になります。
+
+<h3>リストに関するプロパティ</h3>
+
+<h4>リストのスタイルのタイプ list-style-type</h4>
+
+<pre>
+<ul style="list-style-type:none">
+  <li>何もつけない</li>
+  <li>何もつけない</li>
+</ul>
+
+<ul style="list-style-type:circle">
+  <li>白丸</li>
+  <li>白丸</li>
+</ul>
+</pre>
+
+ulで作成したリストやolで作成したリストには数字や黒丸が先頭につきますが、これを変更することができます。なおnoneを指定した場合は、左側に余白ができるのが気になる場合は、左側のマージンとパディングを0pxに指定すれば、余白をなくすことができます。
+
+<pre>
+<ul style="list-style-type:none;margin-left:0px;padding:0px">
+  <li>何もつけない</li>
+  <li>何もつけない</li>
+</ul>
+</pre>
+
+<h3>CSSセレクタ</h3>
+
+ここまでで、デザインに関するプロパティを説明してきましたが、今度はどの要素に対してCSSを設定するかということを細かく指定するためのCSSセレクタについて学びましょう。CSSをstyleタグの中や、外部に記述する場合は以下のように記述しました。h1やdivやpの部分がセレクタです。
+
+<pre>
+h1 {
+  color:red;
+  font-size:200%;
+}
+
+div {
+  background-color:blue;
+}
+
+p {
+  border:1px green solid;
+}
+
+</pre>
+
+このように定義を行うとすべてのh1、div、pに対してCSSが適用されます。
+
+<h4>識別子による指定</h4>
+
+識別子を使うとある特定の要素にだけCSSを適用することができます。
+
+<pre>
+/* CSS */
+#discription {
+  color:red;
+}
+</pre>
+
+<pre>
+<!-- HTML -->
+<div id="discription">識別子による指定</div>
+</pre>
+
+識別子を利用するには、HTMLの側の要素にidを指定しておく必要があります。CSSの側では「#識別子」という指定を行います。
+
+<pre>
+#識別子 {
+  
+}
+</pre>
+
+<h4>クラスによる指定</h4>
+
+クラスを使うと特定のグループに対してのみCSSを適用することができます。
+
+<pre>
+/* CSS */
+.pretty {
+  color:red;
+}
+</pre>
+
+<pre>
+<!-- HTML -->
+<div class="pretty">クラスによる指定</div>
+<div class="pretty">クラスによる指定</div>
+</pre>
+
+クラスを利用するには、HTMLの側の要素にclassを指定しておく必要があります。CSSの側では「.識別子」という指定を行います。
+
+<pre>
+.クラス {
+  
+}
+</pre>
+
+<h4>タグ名とクラスの組み合わせ</h4>
+
+タグ名とクラスを組み合わせて利用することもできます。
+
+<pre>
+/* CSS */
+h1.pretty {
+  color:red;
+}
+</pre>
+
+<pre>
+<!-- HTML -->
+<h1 class="pretty">タグ名とクラスによる指定</h1>
+<div class="pretty">こちらには適用されない</div>
+</pre>
+
+タグ名とクラス名を組み合わせて利用するには「タグ名.クラス」という指定を行います。
+
+<pre>
+タグ名.クラス
+</pre>
+
+<h4>入れ子になった構造</h4>
+
+入れ子になった要素に対してCSSを適用することもできます。
+
+<pre>
+/* CSS */
+#description p.pretty {
+  color:red;
+}
+</pre>
+
+<pre>
+<!-- HTML -->
+<div id="description">
+  <p class="pretty">入れ子になった要素に適用</p>
+</div>
+
+<div>
+  <p class="pretty">こちらには適用されない</p>
+</div>
+</pre>
+
+上記の指定は、idが「description」であるタグの内側に存在し、クラスが「pretty」であるpタグに適用という意味になります。
+
+入れ子になった構造に対してCSSを適用するにはセレクタを空白で区切って適用します。
+
+<pre>
+セレクタ1 セレクタ2 {
+
+}
+</pre>
+
+<hr>
+
+<img border="0" width="1" height="1" src="http://www17.a8.net/0.gif?a8mat=25TFA7+74LUIA+D8Y+BWVTE" alt="">
+<a href="http://px.a8.net/svt/ejp?a8mat=25TFA7+74LUIA+D8Y+C5VW1" target="_blank">
+<img border="0" width="250" height="250" alt="" src="http://www21.a8.net/svt/bgt?aid=130703263431&wid=001&eno=01&mid=s00000001717002043000&mc=1"></a>
+<img border="0" width="1" height="1" src="http://www18.a8.net/0.gif?a8mat=25TFA7+74LUIA+D8Y+C5VW1" alt="">
+

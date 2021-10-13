@@ -1,0 +1,20 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li>
+    <span itemprop="name">here</span></a>
+  </li>
+</ol>
+<h2>if文による条件分岐</h2>
+
+
+
+プログラミングを書いていると条件によって処理を変えたり、同じ処理を繰り返したくなる場合があります。
+
+そのような場合はif文やfor文を使うことによって条件分岐と繰り返しを実現できます。
+
+

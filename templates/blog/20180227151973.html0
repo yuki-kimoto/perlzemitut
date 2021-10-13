@@ -1,0 +1,46 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>繰り返し演算子「x」</h2>
+
+
+
+<b>繰り返し演算子「x」</b>を使用すると、<a href="/blog/20161003147558.html">文字列</a>あるいは<a href="/blog/20161012147627.html">配列</a>を繰り返し回数だけ、連結することができます。
+
+<pre>
+# 文字列を繰り返し連結
+my $str2 = $str1 x 3;
+
+# 配列を繰り返し連結
+my @array2 = @array1 x 3;
+</pre>
+
+文字列を繰り返し連結するサンプルプログラムです。
+
+<pre>
+my $str = 'abc' x 3;
+</pre>
+
+$strは「abcabcabc」になります。
+
+配列を繰り返し連結するサンプルです。
+
+<pre>
+my @nums = (1, 2, 3) x 3;
+</pre>
+
+@numsは(1, 2, 3, 1, 2, 3, 1, 2, 3)になります。

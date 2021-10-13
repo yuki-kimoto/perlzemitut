@@ -1,0 +1,108 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>List::Util - リストに関するユーティリティ</h2>
+
+List::Utilは<a href="/blog/20100308126967.html">リスト</a>あるいは<a href="/blog/20161012147627.html">配列</a>に対するさまざまな操作を提供するモジュールです。
+
+<pre>
+# List::Utilの読み込み
+use List::Util;
+
+# 関数をインポートする場合
+use List::Util 'max', 'min';
+</pre>
+
+<h4>max関数 - 最大値</h4>
+
+配列の要素の最大値を求めるにはmaxを使用します。
+
+<pre>
+# 最大値を求める
+my @nums = (5, 3, 4);
+my $max = List::Util::max(@nums);
+
+# 5
+print "$max\n";
+</pre>
+
+<h4>min関数 - 最小値</h4>
+
+配列の要素の最小値を求めるにはminを使用します。
+
+<pre>
+# 最小値を求める
+my @nums = (5, 3, 4);
+my $min = List::Util::min(@nums);
+
+# 3
+print "$min\n";
+</pre>
+
+<h4>sum関数 - 合計</h4>
+
+配列の要素の合計を求めるにはsumを使用します。
+
+<pre>
+# 合計を求める
+my @nums = (5, 3, 4);
+my $min = List::Util::sum(@nums);
+
+# 12
+print "$min\n";
+</pre>
+
+<h4>shuffle関数 - 要素の順番をランダムに入れ替え</h4>
+
+配列の要素の順番をランダムに入れ替えるにはshuffleを使用します。
+
+<pre>
+# 要素の順番をランダムに入れ替える
+my @nums = (5, 3, 4, 7, 2, 9);
+my @nums_shuffle = List::Util::shuffle(@nums);
+
+# 2 5 7 3 9 4 (毎回変わる)
+print "@nums_shuffle\n";
+</pre>
+
+<h4>first関数 - 条件にマッチした最初の要素を取得</h4>
+
+条件にマッチした最初の要素を取得するにはfirstを使用します。配列のそれぞれの要素は<a href="/blog/20180118151628.html">デフォルト変数「$_」</a>に渡されてきます。
+
+<pre>
+# マッチした最初のものを取得
+my @nums = (5, 3, 4, 9, 2, 7);
+my $match_first = List::Util::first { $_ > 5  } @nums;
+
+# 9
+print "$match_first\n";
+</pre>
+
+map関数と構文が似ているので<a href="/blog/20100118126425.html">map関数</a>についても参考にしてください。
+
+<h4>uniq関数 - 重複のない集合を取得する</h4>
+
+重複のない集合を取得するには、uniq関数を使用します。
+
+<pre>
+# 重複のない集合を取得する
+my @nums = (5, 5, 5, 1, 3, 3);
+my @no_dup_nums = List::Util::uniq(@nums);
+
+# 5 1 3
+print "@no_dup_nums\n";
+</pre>

@@ -1,0 +1,179 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110130130016.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBIx::Customの「update」メソッドで行を「更新」する</h2>
+
+
+
+テーブルの行を更新するには<strong>update</strong>メソッドを使用します。
+
+<pre>
+$dbi->update(
+  {title => 'Perl', author => 'Ken'},
+  table => 'book',
+  where => {id => 1},
+);
+</pre>
+
+第一引数には更新のためのデータをハッシュリファレンスで指定します。対象のテーブルを<strong>table</strong>で指定します。更新する行の条件を<strong>where</strong>で指定します。whereにはハッシュリファレンスか、DBIx::Custom::Whereオブジェクトを指定することができます。次のようなSQLが発行されます。
+
+<pre>
+update book set title = ?, author = ? where id = ?;
+</pre>
+
+対応する値がプレースホルダに埋め込まれます。
+
+またスカラリファレンスを値として渡すと、SQLの中にそのまま埋め込むことができます。
+
+<pre>
+{date => \"NOW()"}
+</pre>
+
+<h3>updateメソッドのオプション</h3>
+
+updateメソッドは「execute」メソッドのすべてのオプション]を使用することができ、新しく以下のオプションが利用できます。executeのオプションについては「<a href="/blog/20110708131364.html">executeメソッド</a>」のオプションの項目を参考にしてください。
+
+<h4>IDによる条件指定 id</h4>
+
+IDによる条件指定を行うにはidオプションを使用します。primary_keyオプションが指定されている必要があります。
+
+<pre>
+id => 4
+id => [4, 5]
+</pre>
+
+たとえば以下のupdate文を実行するとします。
+
+<pre>
+$dbi->update(
+  {title => 'Perl', author => 'Ken'}
+  primary_key => ['id1', 'id2'],
+  id => [4, 5],
+  table => 'book'
+);
+</pre>
+
+これは以下のupdate文と同じ意味になります。
+
+<pre>
+$dbi->update(
+  {title => 'Perl', author => 'Ken'}
+  where => {id1 => 4, id2 => 5},
+  table => 'book'
+);
+</pre>
+
+<h4>プレフィックス prefix</h4>
+
+updateとテーブル名の間に文字列を追加することができます。
+
+<pre>
+prefix => 'or replace'
+</pre>
+
+たとえば以下のようなSQL文を実行することができます。
+
+<pre>
+update or replace book
+</pre>
+
+<h4>テーブル名 table</h4>
+
+tableオプションでテーブル名を指定します。
+
+<pre>
+table => 'book'
+</pre>
+
+<h4>更新時に現在時刻を設定 mtime</h4>
+
+更新時に更新時刻を更新するには、mtimeオプションで更新時を格納する列名を指定します。
+
+<pre>
+mtime => 'modified_time'
+</pre>
+
+デフォルトのフォーマットは「YYYY-mm-dd HH:MM:SS」です。これはnow属性によって変更することができます。
+
+<h4>Where句 where</h4>
+
+Where句を記述するにはwhereオプションを使用します。
+
+<pre>
+where => {author => 'Ken', 'title' => 'Perl'}
+where => [
+  ['and', ':author{=}', ':title{like}'],
+  {author => 'Ken', title => '%Perl%'}
+]
+</pre>
+
+whereオプションの指定方法については「<a href="/blog/20110210130016.html">selectメソッド</a>」のwhereオプションを見てください。Where句の生成の詳細については<a href="/blog/20110924132031.html">動的なWhere句の生成</a>を見てください。
+
+<h4>プレースホルダーのラッピング wrap</h4>
+
+update文のsetの部分のプレースホルダーの部分を編集したい場合はwrapオプションを使用します。
+
+<pre>
+wrap => {price => sub { "max($_[0])" }}
+</pre>
+
+たとえば次のようなupdateを実行したとします。
+
+<pre>
+$dbi->update(
+  {price => 100},
+  table => 'book',
+  where => {id => 1}
+  wrap => {price => sub { "$_[0] + 5" }}
+);
+</pre>
+
+以下のようなSQLが実行されます。
+
+<pre>
+update book set price = ? + 5 where id = 1
+</pre>
+
+<h3>すべての行の更新 update_all</h3>
+
+テーブルのすべての行を更新するには<strong>update_all</strong>メソッドを使用します。安全のためにupdateメソッドでは、行のすべての更新を許可してないので、代わりにupdate_allメソッドを使用します。
+
+<pre>
+$dbi->update_all({title => 'Perl', author => 'Ken'}, table => 'book');
+</pre>
+
+第一引数に更新のためのデータをハッシュリファレンスで指定します。対象のテーブルを<strong>table</strong>で指定します。次のようなSQLが発行されます。
+
+<pre>
+update book set title = ?, author = ?;
+</pre>
+
+対応する値がプレースホルダに埋め込まれます。
+

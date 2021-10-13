@@ -1,0 +1,97 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>File::Basename - ファイルのベース名を取得</h2>
+
+<strong>File::Basename</strong>はファイル名からベース名やディレクトリ名を取得するためのモジュールです。次の3つの関数を使用することができます。
+
+<ul>
+  <li>
+    <strong>basename</strong> - ファイルのベース名の取得
+  </li>
+  <li>
+    <strong>dirname</strong> - ディレクトリ名の取得
+  </li>
+  <li>
+    <strong>fileparse</strong> - もう少し細かな操作
+  </li>
+</ul>
+
+これらの関数を使用するには関数を明示的にインポートするのがよいでしょう。
+
+<pre>
+# 関数のインポート
+use File::Basename 'basename', 'dirname';
+</pre>
+
+<h3>basename関数</h3>
+
+ファイルのベース名を取得するにはbasename関数を使用します。ベース名というのはファイル名の中の末尾の部分です。
+
+<pre>
+# ベース名の取得
+$basename = basename $file;
+</pre>
+
+<h3>dirname関数</h3>
+
+ディレクトリ名を取得するにはdirname関数を使用します。
+
+<pre>
+# ディレクトリ名の取得
+$dirname = dirname $file;
+</pre>
+
+basenameとdirnameのサンプルです。ファイル名が「dir/a.txt」の場合はbasenameで「a.txt」を、dirnameで「dir」を取得することができます。
+
+<pre>
+# ベース名とディレクトリ名を取得
+use File::Basename qw/basename dirname/;
+my $file = 'dir/a.txt';
+my $basename = basename $file;
+my $dirname = dirname $file;
+</pre>
+
+<h3>ファイル名に対するもう少し細かな操作</h3>
+
+fileparseを使用するとベース名とディレクトリ名を一度に取得することができます。
+
+<pre>
+# ベース名とディレクトリ名の取得
+($basename, $dirname) = fileparse $file;
+</pre>
+
+またfileparseの第二引数に拡張子を<a href="/blog/20100827127859.html">正規表現</a>で指定すると拡張子とベース名を分けて取り出すことができます。
+
+<pre>
+# ベース名、ディレクトリ名、拡張子を取得
+($basename, $dirname, $ext) = fileparse($file, $regex);
+</pre>
+
+拡張子を取り出すサンプルです。第二引数には正規表現を指定します。正規表現「\..*$」は「.がきて何でもよい文字が0個以上続いて終わる」という意味になります。$fileが「dir/a.txt」の場合は$basenameは「a」に、$extは「.txt」になります。
+
+<pre>
+# 拡張子を取り出す
+use File::Basename 'fileparse';
+my $file = 'dir/a.txt';
+my ($basename, $dirname, $ext) = fileparse($file, qr/\..*$/);
+</pre>
+
+上記は拡張子を取り出す例ですが、拡張子がふたつ続いた場合は先頭の拡張子以降が取り出されます。たとえばファイル名が「dir/a.txt.gz」であった場合は、$extは「.txt.gz」になります。
+
+「.gz」を取り出したい場合は正規表現を「\.[^\.]*$」に変更します。この正規表現の意味は「.がきて.以外の文字が0個以上続いて終わる」という意味になります。
+

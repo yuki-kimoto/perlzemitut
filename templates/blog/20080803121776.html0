@@ -1,0 +1,188 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>オプションを指定できるフィルタプログラムを書く</h2>
+
+
+
+コマンドライン引数で、オプションを指定できるフィルタプログラムを書いてみます。オプションに指定できるのは、切り出す列の位置と区切り文字です。
+
+<a href="/blog/20100123126425.html">while文</a>と行入力演算子を使って、行を読み込んでいきます。
+
+<pre>
+use strict;
+use warnings;
+
+# コマンドラインオプションを扱うためのモジュール
+use Getopt::Long 'GetOptions';
+
+# Unix風のフィルタプログラミングを記述する。
+# 今回はカンマ区切りの文字列の一列目を取り出すフィルタプログラムです。
+
+# コマンドラインオプションが指定されなかった場合のデフォルト値
+my $col = 1;
+my $sep = ',';
+
+# コマンドラインオプションを受け取る
+GetOptions(
+  'col=i' => \$col,
+  'sep=s' => \$sep,
+);
+
+# . など正規表現で特別な意味を持つ文字が指定された
+# 場合でも正しく動くように文字列をエスケープ
+$sep = quotemeta($sep); 
+
+# 特殊な行入力演算子
+while (<>) { 
+  # chomp関数は引数を省略したときは、$_が対象とされる。
+  chomp;
+  
+  # splitの第３引数の-1は、最終列が空文字であった場合に
+  # も正しく動くようにするために指定
+  # split関数がリストを返すので、必要な部分だけ
+  # 配列スライスで取得
+  my $item = (split( /$sep/, $_, -1))[$col - 1];
+  print $item . "\n";
+}
+</pre>
+
+(参考)<a href="/blog/20100827127859.html">正規表現</a>
+
+以下は、読み込み用のファイルです。
+
+<pre>
+masao:10:Japan
+taro:20:USA
+rika:38:France
+</pre>
+
+<h3>コード解説</h3>
+
+<h4>(1)コマンドラインオプションの指定方法</h4>
+
+<pre>
+use Getopt::Long;
+</pre>
+
+<a href="/blog/20100514127696.html">Getopt::Long</a>を使うと、コマンドラインオプションを簡単に指定できます。コマンドラインオプションを指定する場合は以下のようにします。
+
+コマンドライン引数についてわからない場合は、先に次の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20080108132865.html">コマンドライン引数を処理する</a>
+  </li>
+</ul>
+
+<pre>
+# 指定方法1( --name val 形式)
+perl スクリプト名 --col 1 --sep : ファイル名
+
+# 指定方法2( --name=val 形式)
+perl スクリプト名 --col=1 --sep=: ファイル名
+
+# 指定方法3( 省略形式 )
+perl スクリプト名 -c1 -s: ファイル名
+</pre>
+
+<h3>(2)GetOptions関数</h3>
+
+GetOption関数は、コマンドラインオプションの受け取りを簡単にするための関数です。use Getopt::Long したときに、インポートされます。
+
+以下は書き方のサンプルです。
+
+<pre>
+# コマンドラインオプションが指定されなかった場合のデフォルト値
+my $col = 1;
+my $sep = ',';
+
+# コマンドラインオプションを受け取る
+GetOptions(
+  'col=i' => \$col,
+  'sep=s' => \$sep,
+);
+</pre>
+
+まず、コマンドラインオプションのデフォルト値を設定します。
+次にGetOption関数を呼び出して指定したいオプションの数だけ
+
+<pre>
+'オプション名=値の種類' => 変数へのリファレンス
+</pre>
+
+という記述を並べます。値の種類には、文字列を表す s 数値を表す i などを指定できます。
+
+<h4>(3) whileループでの行読み込みの改良</h4>
+
+<pre>
+while (<>) {
+  chomp;
+  my $item = (split(/$sep/, $_, -1))[$col - 1];
+  print $item,"\n";
+}
+</pre>
+
+whileでのループ処理については、次の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20170521149524.html">for文、while文を使った繰り返し処理</a>
+  </li>
+</ul>
+
+<h4>(3)-1 $_の省略</h4>
+
+<pre>
+chomp;
+</pre>
+
+<a href="/blog/20080226120403.html">chomp関数</a>で引数を省略すると作用する対象は<a href="/blog/20161102147817.html">特殊変数</a>「$_」になります。Perlには、引数を省略すると$_に作用する関数が他にもたくさんあります。
+
+<h4>(3)-2 split関数の第３引数に-1を指定</h4>
+
+<pre>
+split(/$sep/, $_, -1)
+</pre>
+
+<a href="/blog/20080301120434.html">split関数</a>の第３引数を省略すると要素の最後が空白の場合は、最後の空文字が無視されてしまいます。(hutaさんに指摘されました。)
+
+<pre>
+taro,10,
+</pre>
+
+を読み込んだ場合、ほしいのは
+
+<pre>
+('taro', 10, '')
+</pre>
+
+というリストであるのに
+
+<pre>
+('taro', 10)
+</pre>
+
+を取得してしまいます。これを解決するために、splitの第３引数に、-1を与えることで最後の空文字を認識させることができます。
+
+<h4>(3)-3 配列スライスで指定した要素だけを取得</h4>
+
+<pre>
+my $item = (split(/$sep/, $_, -1))[$col - 1];
+</pre>
+
+splitは、リストを返すので<a href="/blog/20080216120316.html">配列スライス</a>で、指定した要素だけを取得しています。

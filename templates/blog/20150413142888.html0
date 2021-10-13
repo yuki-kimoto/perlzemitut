@@ -1,0 +1,22 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20150413142888.html";</script>
+
+<h2>Mojoliciousドキュメント日本語訳がMojolicious 8.12に対応しました</h2>
+
+Mojoliciousドキュメント日本語訳がMojolicious 8.12に対応しました。
+
+<blockquote>
+<a href="https://mojodoc.perlzemi.com">Mojoliciousドキュメント 日本語訳</a>
+</blockquote>
+
+Mojoliciousは、2008年に開発が開始され、日々改善されており、2019年 8のリリースを迎えました。
+
+一番小さなWebアプリケーションは3行で書けます。
+
+<pre>
+use Mojolicious::Lite;
+get '/' => {text => 'Hello World'};
+app->start;
+</pre>
+
+初級者にも優しく、応用範囲も広いWebフレームワークですので、ぜひお試しください。
+

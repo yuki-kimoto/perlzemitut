@@ -1,0 +1,105 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>読み物</h2>
+
+
+
+Perlというプログラミング言語について考えたことなどを記事にしています。
+
+<h3>変数名</h3>
+
+変数名についての考察です。
+
+<ul>
+  <li>
+    <a href="/blog/20081103122562.html">変数に適切な名前をつけるようにしよう</a>
+  </li>
+  <li>
+    <a href="/blog/20140530140140.html">ハッシュの変数名は、単数形か複数形か</a>
+  </li>
+</ul>
+
+<h3>Perlの言語的特長</h3>
+
+Perlの言語的特長について書いた記事です。
+
+<ul>
+  <li>
+    <a href="/blog/20120516133712.html">Perlは構文がC言語、Java、PHP、JavaScriptに似ていて親しみやすいスクリプト言語</a>
+  </li>
+  <li>
+    <a href="/blog/20120429133570.html">Perlは後方互換性を維持するスクリプト言語</a>
+  </li>
+  <li>
+    <a href="/blog/20100531127859.html">なぜPerlで例外処理のfinallyが特に必要と感じないかを考えてみた</a>
+  </li>
+  <li>
+    <a href="/blog/20130227136192.html">変数に型がないということの利点について考える</a>
+  </li>
+  <li>
+    <a href="/blog/20131010138141.html">Perlのガーベッジコレクション(GC)の特性について</a>
+  </li>
+  <li>
+    <a href="/blog/20150210142353.html">言語的な特徴</a>
+  </li>
+  <li>
+    <a href="/blog/20100228126944.html">優れている分野</a>
+  </li>
+</ul>
+
+<h3>FAQ</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20101201129876.html">FAQ</a>
+  </li>
+</ul>
+
+<h3>Perl開発</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20120904134671.html">Perlコアの開発状況を知るにはperl.perl5.portersのgoogleグループで見れる</a>
+  </li>
+</ul>
+
+<h3>オブジェクト指向</h3>
+
+ハッシュベースのオブジェクト指向は、シンプルで高速で省メモリ。
+
+<ul>
+  <li>
+    <a href="/blog/20130707137319.html">ハッシュベースのオブジェクト指向を見直そう</a>
+  </li>
+</ul>
+
+<h3>Perl5とPerl6</h3>
+
+Perl5とPerl6の関係について書いたものです。
+
+<ul>
+  <li>
+    <a href="/blog/20091122125879.html">Perl6がリリースされてもPerl5は衰退していかないということを伝えたい</a>
+  </li>
+</ul>
+
+<h3>時事</h3>
+
+時事的な話題で、反応した記事です。
+
+<ul>
+  <li>
+    <a href="/blog/20130307136263.html">「なぜ国内でPerlが急速に萎んだのか」という記事を読んで</a>
+  </li>
+</ul>
+

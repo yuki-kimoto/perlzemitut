@@ -1,0 +1,34 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20131123138521.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>hypnotoadが立ち上がらないときのチェック方法 / Mojolicious</h2>
+
+
+
+Mojoliciousの本番用のサーバーであるhypnotoadが立ち上がらないという事象が起こって、何がエラーなのかをチェックするのが大変だったので、対処方法を書いておきます。
+
+原因は、単に設定ファイルが間違っていたというだけなのですが、hypnotoad自体が起動しなければ、それをログファイルで確認することすらできません。
+
+またhypnotoadはバックグラウンドで実行されるので、エラーの内容は、コマンドラインに出力されません。
+
+それで、こういう場合は、hypnotoadをフォアグランドで実行して、エラーのチェックするのがよいです。hypnotoadをフォアグランドで実行するには<string>-f</strong>オプションを使用します。
+
+<pre>
+hypnotoad -f script/myapp
+</pre>
+
+これで、エラーがコマンドラインに表示されます。
+

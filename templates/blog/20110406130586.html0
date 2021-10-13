@@ -1,0 +1,55 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20110406130586.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>署名つきクッキーのためのパスフレーズを設定する / Mojolicious</h2>
+
+
+
+署名つきクッキーのためのパスフレーズを設定する設定するにはMojoliciousクラスの<strong>secrets</strong>メソッドを使用します。引数には、配列のリファレンスを渡してください。
+
+<pre>
+$app->secrets(['lkjsdf%$#']);
+</pre>
+
+この設定を行わない場合は警告が発生しますので、試験環境以外では設定するようにしましょう。
+
+Mojolicious::LiteとMojoliciousでの使用例です。
+
+<pre>
+# Mojolicious::Lite
+app->secrets(['lkjsdf%$#']);
+
+# Mojolicious
+sub starup {
+  my $self = shift;
+  $self->secrets(['lkjsdf%$#']);
+}
+</pre>
+
+<h3>新しいパスフレーズを、セッションを途切れさせないで、設定する。</h3>
+
+新しいパスフレーズを、セッションを途切れさせないで、設定することができます。
+
+<pre>
+$app->secrets(['new_passw0rd', 'old_passw0rd']);
+</pre>
+
+先頭に新しいパスフレーズを設定してください。
+
+<h3>Mojolicious 5での変更</h3>
+
+secretメソッドは廃止され、secretsメソッドに変更されています。これは、新しいパスフレーズを、セッションの破棄を避けて、設定するためです。
+

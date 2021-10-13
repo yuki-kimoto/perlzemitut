@@ -1,0 +1,112 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+      <span itemprop="name">構文</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>package - パッケージの宣言</h2>
+
+
+
+他の言語では名前空間と呼ばれている機能はPerlでは<strong>パッケージ</strong>と呼ばれます(※1)。名前空間とは実際の世界の住所のようなものです。日本に「田中達也」さんは何人かいると思いますが、「東京都新宿区3-○-△」の「田中達也」さんはひとりしかいません。住所を指定すればどの田中達也なのかを決定することができます。実際の世界の住所にあたるものが名前空間です。
+
+<h3>パッケージの宣言</h3>
+
+パッケージを宣言するには<strong>package</strong>を使用します。
+
+<pre>
+# パッケージの宣言
+package パッケージ名;
+</pre>
+
+パッケージ名には裸の文字列を指定します。クォートやダブルクォートで囲った文字列を渡すことはできません。
+
+<pre>
+# 裸の文字列で指定
+package SomeModule;
+</pre>
+
+パッケージ名は複数階層にすることができます。「::」で個々のパーツを連結します。
+
+<pre>
+# 複数階層のパッケージ名
+package File::Basename;
+package Class::Accessor::Fast;
+</pre>
+
+現在属するパッケージは__PACKAGE__で取得できます。
+
+<pre>
+# 現在属しているパッケージ名
+__PACKAGE__
+</pre>
+
+<h3>デフォルトの名前空間main</h3>
+
+Perlではパッケージに属さないという状態はありません。パッケージ宣言を行っていない間はmainというパッケージに属します。デフォルトの名前空間に戻したいときはパッケージ名にmainを指定します。
+
+<pre>
+# デフォルトの名前空間に戻る
+package main;
+</pre>
+
+<h3>パッケージ変数とサブルーチンは特定のパッケージに属する</h3>
+
+パッケージ変数とサブルーチンは必ず特定のパッケージに属します。これは最初に解説した「山田達也」さん(名前の部分)に該当します。
+
+<pre>
+# パッケージ変数とサブルーチンはパッケージに属する
+package SomeModule;
+
+# パッケージSomeModuleに属する$VARという変数
+our $VAR;
+
+# パッケージSomeModuleに属するfuncというサブルーチン
+sub func {
+  ...
+}
+</pre>
+
+パッケージ名までを含めた変数名やサブルーチン名のことを完全修飾名と呼びます。完全修飾名はパッケージ名と変数名(あるいはサブルーチン名)を「::」で連結したものになります。別のパッケージに属していても完全修飾名を使えば、その変数やサブルーチンにアクセスすることができます。
+
+<pre>
+# 完全修飾名
+$SomeModule::VAR;
+SomeModule::func();
+</pre>
+
+関数を完全修飾名を使って呼び出すサンプルです。
+
+<pre>
+# 完全修飾名で関数を呼び出す
+use File::Basename;
+File::Basename::basename('xxx/yyy.txt');
+</pre>
+
+<h3>パッケージ名とモジュールのファイルの構成</h3>
+
+パッケージ名はモジュールのファイル構成と密接な関連があります。たとえば、「Foo::Bar::Baz」というモジュール名であれば、それに対応するファイル構成は「Foo/Bar/Baz.pm」になります。「Foo」というディレクトリの中に「Bar」というディレクトリを作り、その中に「Baz.pm」というファイルを作成します。「Baz.pm」の先頭でパッケージ宣言を行います。
+
+<pre>
+# Baz.pm
+package Foo::Bar::Baz;
+</pre>
+
+このような構成にしておくことで、useやrequireでモジュールを検索して読み込むことが可能になります。
+
+一般的な言語感覚としてはパッケージという名前でライブラリやモジュールの集まりを連想してしまうと思います。ですがPerlでパッケージといった場合は単に名前空間を意味するだけなので注意しましょう。
+

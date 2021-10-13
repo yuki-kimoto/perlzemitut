@@ -1,0 +1,287 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110812131778.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBIx::Customで「SQLを生成」するためのメソッドの紹介</h2>
+
+
+
+
+DBIx::Customで「SQLを生成」するためのメソッドを紹介します。
+
+<h3>select文で利用する列名を簡単に生成する - column</h3>
+
+select文で利用する列名の部分を簡単に生成するには<strong>column</strong>メソッドを使用します。
+
+<pre>
+my $column = $dbi->column(book => [qw/author title/]);
+</pre>
+
+次のような列名が生成されます。
+
+<pre>
+"book"."author" as "book.author", "book"."title" as "book.title"
+</pre>
+
+columnメソッドは重複を少なく記述するのに役立ちます。
+
+列名のエイリアスに利用されている区切り文字を変更することもできます。
+
+<pre>
+$dbi->separator('-');
+</pre>
+
+区切り文字を「-」に変更した場合は次のような列名が生成されます。
+
+<pre>
+"book"."author" as "book-author", "book"."title" as "book-title"
+</pre>
+
+<h3>selectメソッドでcolumnを利用する</h3>
+
+selectメソッドのcolumnオプションの中でもcolumnメソッドを利用することができます。
+
+<pre>
+my $result = $dbi->select(
+  table => 'book',
+  column => [
+    $dbi->column(book => [qw/title author/])
+  ]
+);
+</pre>
+
+でもcolumnを記述するのはわずらわしいので、ハッシュリファレンスを利用するとcolumnメソッドを使ったのと同じ意味になるので、こちらを使うのが良いでしょう。
+
+<pre>
+my $result = $dbi->select(
+  table => 'book',
+  column => [
+    {book => [qw/title author/]}
+  ]
+);
+</pre>
+
+<h3>テーブル名の修飾のない列名を生成する - mycolumn</h3>
+
+<strong>mycolumn</strong>メソッドを利用すると、テーブル名の修飾のない列名を簡単に生成することができます。
+
+<pre>
+my $mycolumn = $dbi->mycolumn(book => ['author', 'title']);
+</pre>
+
+次のような列名が生成されます。
+
+<pre>
+book.author as author,
+book.title as title
+</pre>
+
+これはselectメソッドのcolumnオプションで使用することが想定されています。
+
+<pre>
+$dbi->select(column => [
+  $dbi->mycolumn(book => ['author', 'title'])
+]);
+</pre>
+
+<h3>insert文の中のvaluesの部分を動的に生成する - values_clause</h3>
+
+insert分の中のvaluesの部分を動的に生成するには<strong>values_clause</strong>メソッドを使用します。
+
+<pre>
+my $values_clause = $dbi->values_clause({title => 'a', age => 2});
+</pre>
+
+これは次のような文字列になります。
+
+<pre>
+(title, author) values (title = :title, age = :age);
+</pre>
+
+insert文を作るのに利用することができます。
+
+<pre>
+my $insert_sql = "insert into book $values_clause";
+</pre>
+
+<h3>update文で値を代入する部分を動的に生成する - assign_clause</h3>
+
+update文で値を代入する部分を動的に生成するには<strong>assign_clause</strong>メソッドを使用します。
+
+<pre>
+my $param = {id => 1, title => 'Perl'};
+my $assign_clause = $dbi->assign_clause($param);
+</pre>
+
+以下のように展開されます。
+
+<pre>
+id = :id, title = :title
+</pre>
+
+次のようにしてupdate文を作成することができます。
+
+<pre>
+my $update_sql = "update book set $assign_clause";
+</pre>
+
+このように作成したSQLはexecuteメソッドで実行することができます。
+
+<pre>
+$dbi->execute($update_sql, $param);
+</pre>
+
+<h3>予約語のためのクォートを変更する - quote</h3>
+
+予約語のためのクォートを変更するには<strong>quote</strong>メソッドを使用します。
+
+<pre>
+$dbi->quote('"');
+$dbi->quote('[]');
+</pre>
+
+クォートを1文字で設定することもできますし、ペアで設定することもできます。
+
+quoteのデフォルト値はデータベースに応じて、自動的に設定されますので、通常は設定する必要はありません。
+
+<pre>
+[データベース]                        [quoteの値]
+MySQL                                 `
+
+ODBC経由の接続
+(Microsoft SQL ServerとAccessを想定)  []
+
+それ以外                              "
+</pre>
+
+テーブル名や列名は自動的にquoteの値を利用してクォートされます。
+
+たとえばMySQLで以下のようなselect
+
+<pre>
+$dbi->select(
+  table => 'book',
+  column => [
+    {book => ['author']}
+  ]
+);
+</pre>
+
+を実行すると、次のようなSQLが実行されます。
+
+<pre>
+select book.author as `book.author` from `book`;
+</pre>
+
+<h3>テーブル名と列名の区切り文字を変更する - separator / DBIx::Custom</h3>
+
+テーブル名と列名の区切り文字を変更するには<strong>separator</strong>メソッドを使用します。
+
+<pre>
+$dbi->separator('-');
+</pre>
+
+デフォルトの区切り文字は「.」です。
+
+<h4>columnメソッドに与える影響</h4>
+
+separatorに指定された文字は、columnメソッドが返す文字列の中で列名のエイリアスとして利用されます。
+
+columnメソッドの場合は以下のようになります。
+
+<pre>
+my $column = $dbi->column(book => [qw/title author/]);
+</pre>
+
+戻り値の文字列に含まれる列名のエイリアスは「テーブル名-列名」のようになります。
+
+<pre>
+"book"."title" as "book-title", "book"."author" as "book-author"
+</pre>
+
+<h4>selectメソッドのcolumnオプションに与える影響</h4>
+
+selectメソッドのcolumnオプションで、ハッシュリファレンスを利用した場合にもテーブル名と列名の区切り文字としてseparatorに指定した文字が利用されます。
+
+<pre>
+my $result = $dbi->select(
+  table => 'book',
+  column => [
+    {book => [qw/title author/]}
+  ]
+);
+</pre>
+
+次のようなSQLが実行されます。
+
+<pre>
+select "book"."title" as "book-title", "book"."author" as "book-author" from "book"
+</pre>
+
+<h4>separatorが役立つ場合</h4>
+
+たとえば、データベースから取得したデータをHTMLに埋め込む場合にとても役に立ちます。DOMを操作する場合にはjQueryがデファクトスタンダードになっています。ですが、デフォルトの「.」の区切り文字だとjQueryはドットをエスケープしない限りは正しくその文字列を扱うことができません。
+
+区切り文字を「-」に変更すれば、そのまま扱うことができるので、HTMLと親和させて使うことができます。
+
+<h3>like演算子のための値を生成する like_value</h3>
+
+like演算子を使ったときの値は大抵「%Perl%」のように左右を「%」ではさむと思います。like_valueは%を左右につけるための変換を行う関数(コードリファレンス)です。
+
+<pre>
+my $like_value = $dbi->like_value->("Perl");
+</pre>
+
+この例では「%Perl%」という文字列を取得することができます。
+
+<h3>現在時刻を生成するサブルーチンの登録</h3>
+
+現在時刻を生成するサブルーチンは<strong>now</strong>属性で設定することができます。
+
+<pre>
+$dbi->now(
+  sub {
+    my ($sec, $min, $hour, $mday, $mon, $year) = localtime;
+    $mon++;
+    $year += 1900;
+    return sprintf("%04d/%02d/%02d %02d:%02d:%02d");
+  }
+);
+</pre>
+
+デフォルトでは現在時刻を「2011-10-14 05:05:27」という形式で返却するサブルーチンが登録されています。
+
+また現在時刻の取得にデータベースの関数を利用することもでき、その場合はスカラのリファレンスで指定します。
+
+<pre>
+$dbi->now(\"now()");
+</pre>
+
+この現在時刻はinsertメソッドのctimeオプションとmtimeオプション, updateメソッドのmtimeオプションで利用されます。
+

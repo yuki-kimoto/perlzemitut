@@ -1,0 +1,78 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161126148016.html">
+      <span itemprop="name">ファイル操作</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>絶対パスと相対パス</h2>
+
+
+
+プログラムの中で、ファイル名を表現する方法に、絶対パスと相対パスという2通りの表現の仕方があります。絶対パスとは、ファイル名をルートから省略せずに記述したファイル名のことです。相対パスとは、カレントディレクトリから相対的に記述したファイル名のことです。
+
+<h3>絶対パスと相対パスの例</h3>
+
+<table>
+  <tr>
+    <td>
+      　
+    </td>
+    <td>
+      Unix系OSの場合
+    </td>
+    <td>
+      Windowsの場合
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      絶対パスの例
+    </td>
+    <td>
+      /home/yk/sample1 
+    </td>
+    <td>
+       c:\home\yk\sample1.txt 
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      相対パスの例( *1 )
+    </td>
+    <td>
+       sample1
+    </td>
+    <td>
+      sample1.txt
+    </td>
+  </tr>
+
+</table>
+　　*1 <small>カレントディレクトリが、それぞれ 「/home/yk」「c:\home\yk」の場合</small>
+
+<h3>絶対パスと相対パスの解釈のされ方。</h3>
+
+ファイル名は、/　で始まっていれば、絶対パスであると解釈され、/　で始まっていなければ、相対パスであると解釈されます。Windowsの場合も似たようなもので、 c:\ ( ドライブ名\ ) で始まっていれば、絶対パスであると解釈され、そうでなければ、相対パスであると解釈されます。
+
+<h3>カレントディレクトリとは</h3>
+
+カレントディレクトリとは、相対パス名の基点となるディレクトリのことです。コマンドプロンプトやシェルから実行する場合は、スクリプトを実行したディレクトリが、カレントディレクトリになります。
+
+<h3>ファイル名とディレクトリ名は名前からは区別できない。</h3>
+
+/home/yk/sample1 は、ディレクトリである場合もありますし、ファイルである場合もあります。/home/yk/sample1/ と表現すれば、それは、必ずディレクトリ名になります。( Windowsの場合は、c:\home\yk\sample1\ )

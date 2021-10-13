@@ -1,0 +1,118 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>File::Temp - 一時ファイルを作成する</h2>
+
+
+
+<strong>File::Temp</strong>を使用すると、<b>一時ファイル</b>や<b>一時ディレクトリ</b>を作成することができます。OSに依存せず安全な方法で一時ファイル(あるいは一時ディレクトリ)を作成することができます。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use File::Temp qw/tempfile tempdir/;
+</pre>
+
+一時ファイルを作成するには<strong>tempfile</strong>関数を使用します。戻り値はスカラコンテキストの場合は一時ファイルのファイルハンドル、リストコンテキストの場合は一時ファイルのファイルハンドルとファイル名になります。
+
+<pre>
+# 一時ファイルの作成
+$fh              = tempfile;
+($fh, $filename) = tempfile;
+</pre>
+
+一時ディレクトリを作成するには<strong>tempdir</strong>関数を使用します。
+
+<pre>
+# 一時ディレクトリの作成
+$dir = tempdir;
+</pre>
+
+一時ファイルを利用してファイルを安全に上書きするサンプルです。(※1)
+
+<pre>
+# ファイルの安全な上書き
+use File::Temp 'tempfile';
+use File::Copy 'move';
+
+my $file = shift;
+
+# ファイルの内容の取得
+my $old = get_content($file);
+
+# テキストを追加
+my $new = $old . "Add new text";
+
+# 新しい内容をファイルに書き込み
+my ($tempfh, $tempfile) = tempfile;
+print $tempfh $new;
+close $tempfh;
+
+# 新しいファイルを古いファイルに上書き
+move $tempfile, $file
+  or die "Can't move \"$tempfile\" to \"$file\": $!";
+
+sub get_content {
+  my $file = shift;
+  
+  open my $fh, '<', $file
+    or die "Can't open file \"$file\": $!";
+  
+  my $content = join('', <$fh>);
+  
+  close $fh;
+  
+  return $content;
+}
+</pre>
+
+(参考)<a href="/blog/20100408127089.html">File::Copy</a>
+
+<h3>tempfileのオプション</h3>
+
+tempfileの引数としてオプションを指定することができます。
+
+<pre>
+# tempfileのオプション
+tempfile(DIR => 'somedir', SUFFIX => '.dat');
+</pre>
+
+<table>
+  <tr>
+    <td>
+      DIR
+    </td>
+    <td>
+      一時ファイルが作成されるディレクトリ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      SUFFIX
+    </td>
+    <td>
+      一時ファイルの末尾に付加する拡張子
+    </td>
+  </tr>
+
+</table>
+
+DIRが省略された場合は一時ファイルを作成するディレクトリは自動的に決められます。Unixの場合は/tmpになります。
+
+<h3>注</h3>
+※1 ファイルを読み書きモードでオープンして、読み込んだファイルに書き込むのは安全性に欠けます。書き込み途中でコンピュータがクラッシュした場合、読み込む前のデータが破損してしまうからです。読み込んだファイルとは別のファイルに書き込んでから、そのファイルで上書きするのが安全です。
+

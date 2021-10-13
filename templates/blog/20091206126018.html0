@@ -1,0 +1,165 @@
+
+<h2>SQLiteを使用して学ぶSQLの基礎</h2>
+
+SQLはデータベースにデータを挿入したり、データを取得するための問い合わせ言語です。SQLの基本的な書き方については標準化されているのでSQLiteでもMySQLでもOracleでもPostgreSQLでも同じ記述でデータベースに問い合わせを発行することができます。
+
+<h3>SQLを実行するための準備作業</h3>
+
+WindowsでSQLiteを実行するための環境を構築する方法については以下で解説しています。
+
+<blockquote>
+<a href="/blog/20091203126018.html">WindowsへSQLiteをインストールする</a>
+</blockquote>
+
+この作業を終えましたら
+
+<blockquote>
+sqlite3 test.db
+</blockquote>
+
+とデータベース名を指定してsqlite3を起動してみましょう。データベースがない場合は自動的に作成されます。
+
+<h3>select以外の構文</h3>
+
+SQLで難しいのはselect文です。その他の構文は比較的簡単です。select文を実行する準備もかねてselect文以外で頻繁に使用するSQLを最初に解説します。
+
+<h4>create table - テーブルを作成する</h4>
+
+テーブルを作成するには「create table」文を使用します。ここでは一番簡単な「create table」文の書式ついてだけ解説します。(「create table」については「create tableでテーブルを定義する(未稿)」を参照してください。)
+
+<pre>
+create table テーブル名 (
+  フィールド名1,
+  フィールド名2,
+  ...
+);
+</pre>
+ titleとauthorというふたつのフィールドを持つbooksという名前のテーブルを作成するSQLです。
+<pre>
+create table books (
+  title,
+  author,
+  price
+);
+</pre>
+
+実際に実行してみてください。SQLの最後のセミコロンは必須です。わすれやすいので忘れないようにしましょう。
+
+SQLiteでは作成されたテーブル一覧を表示するためのコマンドが用意されています。次のコマンドを実行して「books」というテーブルが表示されることを確認してください。(先頭にドット(.)があることに注意してください。)
+
+<pre>
+.table
+</pre>
+
+<h3>drop table - テーブルを削除する</h3>
+
+テーブルを削除するには「drop table」を使用します。
+
+<pre>
+drop table テーブル名;
+</pre>
+
+では先ほど作成した「books」というテーブルを削除してみましょう。
+
+<pre>
+drop table books;
+</pre>
+
+「.table」と打ってテーブルが削除されていることを確認しましょう。この後「books」テーブルを使用しますのでもう一度「create table」を使用して作成してください。
+
+<h3>insert - レコードの追加</h3>
+
+テーブルにレコードを挿入するにはinsert文を使用します。
+
+<pre>
+insert into テーブル名 (フィールド名1, フィールド名2, ..) values (値1, 値2, 値3);
+</pre>
+
+「title」が「Good life」、「author」が「Saki」、「price」が「1900」のレコードをテーブルに追加するには次のようなSQLを実行します。データが文字列の場合はシングルクォートで囲むことに注意してください。
+
+<pre>
+insert into books (title, author, price) values ('Good life', 'Saki', 1900);
+</pre>
+
+これで以下のようなレコードがテーブルに追加されます。
+
+<pre>
++-------------+----------+--------+
+|title        |author    |price   | # これはフィールド名
++=============+==========+========+
+|Good life    |Saju      |1900    | 
++-------------+----------+--------+
+</pre>
+
+select文については詳しくこの後に解説しますがレコードが1行挿入されたことを確かめるためのselect文を実行してみます。
+
+<pre>
+select * from books;
+</pre>
+
+上記のような内容が表示されればinsertは成功しています。(出力されるフォーマットが少し異なります。見やすいフォーマットで表示させる方法についてはselect文のところで解説します)
+
+この後のためにもう少しレコードを挿入してみましょう。
+
+<pre>
+insert into books (title, author, price) values ('Simple is good', 'Mai', 2000);
+insert into books (title, author, price) values ('Good morning', 'Kenta', 3000);
+</pre>
+
+<h3>レコードの更新 update</h3>
+
+テーブルにあるデータを更新するにはupdate文を使用します。一般的にはwhere区で検索条件を指定して更新対象を絞ります。select文のところで解説しますが、where区には複数の条件を指定することもできます。
+
+<pre>
+update テーブル名 set フィールド名1 = 値1, フィール名2 = 値2, .. where 検索するフィールド名 = 値
+</pre>
+
+「author」が「taro」であるレコードのtitleの値をRubyに変更するSQLは次のようになります。
+
+<pre>
+update books set title = 'Ruby' where author = 'taro'
+</pre>
+
+doを使ってupdate文を実行してみましょう。
+
+<pre>
+my $update = "update books set title = 'Ruby' where author = 'taro'";
+$dbh->do($update);
+</pre>
+
+先ほどのレコードは更新され次のようになります。
+
+<pre>
++--------+----------+
+|title   |author    | # ヘッダ(これはテーブルを作成したときにできる)
++--------+----------+
+|Ruby    |taro      | # レコード(update文で更新されたレコード)
++--------+----------+
+</pre>
+
+<h3>レコードの削除 delete</h3>
+
+レコードを削除するにはdelete文を使用します。一般的にはwhere区で検索条件を指定して削除対象を絞ります。
+
+<pre>
+delete from テーブル名 where 検索するフィールド名 = 値
+</pre>
+
+「author」が「taro」であるレコードを削除するSQLは次のようになります。
+
+<pre>
+delete from books where author = 'taro';
+</pre>
+
+doを使ってdelete文を実行してみましょう。
+
+<pre>
+my $delete = "delete from books where author = 'taro';";
+$dbh->do($delete);
+</pre>
+
+レコードが削除されます。
+
+<hr>
+<a href="/blog/20091205126018.html">SQLiteで学ぶデータベースの基礎へ</a>
+

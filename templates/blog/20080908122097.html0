@@ -1,0 +1,69 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>srand関数 - 再現性のある乱数を生成する</h2>
+
+
+<b>srand関数</b>を使用すると再現性のある乱数を生成することができます。<a href="/blog/20080906122079.html">rand関数</a>を呼び出す前に適当な数値をsrand関数に与えます。
+
+<pre>
+# 乱数発生アルゴリズムを初期化
+srand $seed;
+rand $num;
+</pre>
+
+<h4>コンピュータにおける乱数の生成とは</h4>
+
+コンピュータは演算によって乱数を発生させます。ということはこれは乱数ではありません。コンピュータは人間がさいころを投げるようには、ランダムな分布を発生させることはできません。
+
+コンピュータができることは、「なるべく均等な分布を発生させるアルゴリズム」を使って数値列を作ることだけです。このアルゴリズムは初期値の違いによって分布を変えます。これを擬似乱数といいます。
+
+初期値の違いによって分布を変えるということは、言い換えれば初期値が同じであれば分布を変えないということです。
+
+rand関数が毎回異なる乱数列を発生させるように見えるのは、rand関数が最初に使われるときに、暗黙的にsrand関数で初期化されるからです。プログラムを動かすたびに異なる初期値が使われます。
+
+srandに与える初期を固定することで、再現性のある乱数を発生させることができます。
+
+<h3>サンプルプログラム</h3>
+
+<pre>
+use strict;
+use warnings;
+
+print "(1)再現性のある乱数を発生させる。\n";
+print"乱数列の生成(1回目)\n";
+
+# 乱数発生アルゴリズムの初期化に利用される(seedは種という意味)
+my $seed = 12314; 
+
+# 乱数発生アルゴリズムを初期化
+srand $seed; 
+for my $i (1 .. 10) {
+  print "$i回目: " . int(rand 100) . "\n";
+}
+print "\n";
+
+
+print "乱数列の生成(2回目)\n";
+
+# 乱数発生アルゴリズムを初期化
+srand $seed;
+for my $i (1 .. 10) {
+  print "$i回目: " . int(rand 100) . "\n";
+}
+print "\n";
+</pre>

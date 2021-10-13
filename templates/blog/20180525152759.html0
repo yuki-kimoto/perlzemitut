@@ -1,0 +1,122 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161102147817.html">
+        <span itemprop="name">特殊変数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>子プロセスの終了ステータス $?</h2>
+
+
+
+子プロセスの終了ステータスを取得するには特殊変数「$?」を使用します。
+
+waitで子プロセスの終了を待った]場合は、$?に子プロセスの終了ステータスを含めた複数の値が格納されます。また<a href="/blog/20180124151680.html">system関数</a>を使って子プロセスを実行した場合にも$?が設定されます。
+
+$?の解釈の方法はやや複雑です。$?には16ビットの値が設定されます。<b>上位8ビット</b>に子プロセスの終了ステータス</b>が設定されます。<b>下位8ビットの8ビット目</b>には、コアダンプが生成されたかどうか</b>を表します。<b>下位8ビットの7ビット目</b>までは、もしあれば<b>プロセスを終了させたシグナルの番号</b>を表します。
+
+<pre>
+|----------------------+----+------------------|
+|           8          |  1 |       7          |
+|----------------------+----+------------------|
+             |           |          |
+  終了ステータス    コアダンプの  子プロセスを終了させたシグナル
+　　　　　　　　発生
+</pre>
+
+ですので、終了ステータスを取得するためには、$?を8ビット右にシフトさせる必要があります。
+
+<pre>
+# 終了ステータスの取得
+my $exit_value = $? >> 8;
+</pre>
+
+コアダンプが発生したかどうかを見るには
+
+<pre>
+# コアダンプが発生したかどうか
+my $dumped_core = $? & 128;
+</pre>
+
+とします。128は2進数になおすと 10000000 ですので、ビット積をとると8ビット目以外が0になります。子プロセスを終了させたシグナル番号を見るには
+
+<pre>
+# 子プロセスを終了させたシグナル番号
+my $signal_num = $? & 127;
+</pre>
+
+とします。127は2進数で、01111111 ですので、ビット積をとると下位7ビットが取得できます。
+
+<h4>子プロセスが終了したかどうかを調べる</h4>
+
+wait関数はCHLDシグナルが発生すると制御を戻します。つまり、子プロセスが終了したときだけではなく、子プロセスが停止したり、再開したりした場合にも制御が戻るということです。
+
+子プロセスが確実に終了したかどうかを調べるには、<b>WIFEXITED</b> 関数を使用します。
+
+<pre>
+use POSIX q(:sys_wait_h);
+my $is_finished = WIFEXITED($?);
+</pre>
+
+<h4>子プロセスの終了ステータスを見るサンプル</h4>
+
+子プロセスの中でdieを呼んだので終了ステータスは255になります。親プロセスがこのステータスを取得できているのがわかると思います。
+
+<pre>
+use strict;
+use warnings;
+
+use POSIX qw(:sys_wait_h);
+
+my $pid = fork;
+
+die "Cannot fork: $!" unless defined $pid;
+
+if ($pid) {
+  # 子プロセスの終了を待機する。
+  wait;
+  print "親プロセス( 子プロセスID: $pid )\n\n";
+  my $exit_value = $? >> 8;
+  my $dumped_core = $? & 128;
+  my $signal_num = $? & 127;
+  
+  my $is_finished = WIFEXITED( $? );
+ 
+  print "子プロセスの終了コード: $exit_value\n";
+  print "コアダンプが発生したかどうか : $dumped_core\n";
+  print "子プロセスを終了させたシグナル : $signal_num\n";
+  print "子プロセスが終了したかどうか : $is_finished\n";
+}
+else {
+  # 子プロセスで2秒待つ
+  sleep 2;
+  print "子プロセス\n";
+  die;
+}
+</pre>
+
+実行結果は
+
+<pre>
+子プロセス
+Died at c.pl line 29.
+親プロセス(子プロセスID: 13830)
+
+子プロセスの終了コード: 255
+コアダンプが発生したかどうか : 0
+子プロセスを終了させたシグナル : 0
+子プロセスが終了したかどうか : 1
+</pre>
+
+のようになります。

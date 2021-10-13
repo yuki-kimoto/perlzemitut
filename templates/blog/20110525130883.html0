@@ -1,0 +1,237 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20110525130883.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Mojolicious::Liteでさまざまなルートを記述する</h2>
+
+
+
+
+Mojolicious::Liteでさまざまなルートを記述してみましょう。
+
+<h3>GETメソッドとPOSTメソッド</h3>
+
+GETメソッドによる「/」へのルートです。GETメソッドはページを取得するときや検索を行うときに利用されることが多いです。
+
+<pre>
+# Via get method
+use Mojolicious::Lite;
+get '/' => sub { shift->render(text => 'Hello') };
+app->start;
+</pre>
+
+次はPOSTメソッドによる「/create」へのルートです。POSTメソッドは新しい記事の投稿や更新、削除などサーバーに存在するデータに対して変更を行う場合に利用されることが多いです。一般的にフォームの送信処理で利用すると考えるとよいでしょう。
+
+<pre>
+# Via post method
+use Mojolicious::Lite;
+get '/' => 'index';
+post '/create' => sub {
+  my $self = shift;
+  
+  my $title = $self->param('title');
+  
+  $self->render(text => $title);
+};
+app->start;
+
+__DATA__
+
+@@ index.html.ep
+<html>
+  <head><title>Top Page</title></head>
+  <body>
+    <form method="post" action="<%= url_for '/create' %>" >
+      <div>Title: <input type="text" name="title"></div>
+      <div><input type="submit" value="Send"></div>
+    </form>
+  </body>
+</html>
+</pre>
+
+<h3>プレースホルダーの利用</h3>
+
+URLの中にはプレースホルダを含めることができます。「:名前」のようにコロンで始めます。プレースホルダは変数のようなものだと考えればよいでしょう。
+
+<pre>
+# Place holder
+get '/entry/:date' => sub {
+  my $self = shift;
+  
+  my $date = $self->param('date');
+  
+  $self->render(text => $date);
+};
+</pre>
+
+プレースホルダに指定した値はparamメソッドで取得することができます。
+
+次のURLでアクセスしてみましょう。20111212と表示されます。
+
+<pre>
+/entry/20111212
+</pre>
+
+<h4>リラックスプレースホルダー</h4>
+
+ところがこのプレースホルダーには.(ドット)を含めることができません。.もキャプチャしたい場合はリラックスプレースホルダを利用します。リラックスプレースホルダーは「#名前」のようにシャープで始めます。リラックスプレースホルダーについては常に括弧「()」で囲む必要があることに注意してください。(注:Mojolicious3.0くらいからはリラックスプレースホルダーの記法は「.名前」から「#名前」に変更されました。)
+
+<pre>
+# Relax place holder
+get '/entry/(.datetime)' => sub {
+  my $self = shift;
+  
+  my $datetime = $self->param('datetime');
+  
+  $self->render(text => $datetime);
+};
+</pre>
+
+次のURLでアクセスしてみましょう。20111212.102232と表示されます。
+
+<pre>
+/entry/20111212.102232
+</pre>
+
+<h4>ワイルドカードプレースホルダー</h4>
+
+/(スラッシュ)も含めてマッチさせたい場合はワイルドカードプレースホルダーを使用します。
+
+<pre>
+# Wildcard place holder
+get '/entry/*datetime' => sub {
+  my $self = shift;
+  
+  my $datetime = $self->param('datetime');
+  
+  $self->render(text => $datetime);
+};
+</pre>
+
+次のURLでアクセスしてみましょう。20111212/102232と表示されます。
+
+<pre>
+/entry/20111212/102232
+</pre>
+
+<h3>ルートのテクニック</h3>
+
+<h4>ふたつのルート</h4>
+
+次のふたつのURLで同じロジックを実行したい場合はどうしたらよいでしょうか。
+
+<pre>
+/entry
+/entry/20101111
+</pre>
+
+このような場合はデフォルト値をundefに設定してあげるのがよいでしょう。そうすると上の二つのルートで同じロジックを利用できます。
+
+<pre>
+# Match above two URL
+get '/entry/:date' => {date => undef} => sub {
+  my $self = shift;
+  
+  my $date = $self->param('date') || 'undefined';
+  
+  $self->render(text => $date);
+};
+</pre>
+
+<h4>静的なルートと動的なルートの混合</h4>
+
+静的なルートと動的なルートを混ぜたい場合はどうすればよいでしょうか。
+
+<pre>
+# Static route
+/description
+
+# User name
+/kimoto
+/kraih
+/taro
+</pre>
+
+その場合は静的なルートを上部に記述すればよいだけです。
+
+<pre>
+# Static route
+get '/description' => sub { shift->render(text => 'description') };
+
+# Dinamic route
+get '/:user' => sub {
+  my $self = shift;
+  
+  my $user = $self->param('user');
+  
+  $self->render(text => $user);
+};
+</pre>
+
+もう少し難しいルートも記述してみましょう。GithubなどのURLなんかもこのような仕組みになっていますね。
+
+<pre>
+# Description(Static)
+/description
+
+# User name(Dinamic)
+/kimoto
+/kraih
+/taro
+
+# User name and profile (Dinamic and Static)
+/kimoto/profile
+/kraih/profile
+/taro/profile
+
+# User name and project (Dinamic and Dinamic)
+/kimoto/dbix-custom
+/kraih/mojo
+/taro/foobar
+</pre>
+
+<pre>
+# Description(Static)
+get '/description' => sub { shift->render(text => 'description') };
+
+# User name(Dinamic)
+get '/:user' => sub {
+  my $self = shift;
+  
+  my $user = $self->param('user');
+  
+  $self->render(text => "User $user");
+};
+
+# User name and profile (Dinamic and Static)
+get '/:user/profile' => sub {
+  my $self = shift;
+  
+  my $user = $self->param('user');
+  
+  $self->render(text => "$user Profile");
+};
+
+# User name and project (Dinamic and Dinamic)
+get '/:user/:project' => sub {
+  my $self = shift;
+  
+  my $user = $self->param('user');
+  my $project = $self->param('project');
+  
+  $self->render(text => "$user $project Project");
+};
+</pre>
+

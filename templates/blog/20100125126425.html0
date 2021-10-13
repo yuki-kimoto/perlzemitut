@@ -1,0 +1,56 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>unless文</h2>
+
+
+
+条件が満たされなかった場合の処理を記述するには<strong>unless</strong>を使用します。
+
+<pre>
+# unless
+unless (条件) {
+  # 条件が満たされなかった場合の処理
+}
+</pre>
+
+unlessのサンプルです。条件を満たさなかった場合にプログラムを終了する処理です。
+
+<pre>
+# 条件を満たさなかった場合にプログラムを終了
+my $num;
+unless (defined $num) {
+  die "The number must be defined";
+}
+</pre>
+
+これはif文と否定演算子を使用して書くこともできます。Perlではunlessが好んで使用される傾向があります。
+
+<pre>
+# if文と否定演算を使って表現
+if (! defined $num) {
+  die "The number must be defined";
+}
+</pre>
+
+unlessを後置することもできます。
+
+<pre>
+# 後置のunless
+die "The number must be defined" unless defined $num;
+</pre>
+

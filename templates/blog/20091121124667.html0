@@ -1,0 +1,420 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>SQLiteで学ぶデータベース操作の基礎</h2>
+
+
+
+Perlを使ってデータベースは初級者が学ぶには今までは少し敷居の高いものでした。まずSQLの実行環境を構築する必要がありすぐに勉強したいという需要を満たすことはできていませんでした。
+
+ですが現在はこの状況は変わりました。現在ではActivePerlをダウンロードするとDBD::SQLiteと呼ばれるSQLiteを利用するためのモジュールがパッケージングされています。
+
+またデータベースに接続するためのユーザから見たインターフェイス部分にあたるDBIというモジュールもパッケージングされています。
+
+ですのでActivePerlの最新版をダウンロードするだけで何の環境構築も行わないでデータベースを学習し始めることができます。
+
+<h3>DBD::SQLiteとDBIがインストールされていることを確認する</h3>
+
+まずDBD::SQLiteとDBIがインストールされているかどうかを最初に確認してください。コマンドプロンプトからPerlのドキュメントを見るためのコマンド「perldoc」でこれらのモジュールがインストールされているかどうかを確認することができます。
+
+<pre>
+perldoc DBD::SQLite
+</pre>
+
+<pre>
+perldoc DBI
+</pre>
+
+もしこれらのモジュールがインストールされていなかった場合はppmと呼ばれるWindows用のパッケージマネージャを使用してDBD::SQLiteをインストールすることができます。また最新版のActivePerlをインストールするのも良いかもしれません。
+
+新しくActivePerlをインストールする場合の手順はこちらになります。
+
+<a href="/blog/20080602121231.html">ActivePerlのインストール</a>
+
+古いActivePerlがインストールされている場合は「コントロールパネル」→「プログラムの追加と削除」から古いActivePerlをアンインストールしてからインストールするか、Perlをインストールするディレクトリの名前を変更する必要があります。
+
+最新のActivePerlをインストールできたら「DBD::SQLite」と「DBI」がインストールされていることを確認しましょう。
+
+ppmでインストールする手順はこちらになります。
+<pre>
+ppm install DBD-SQLite
+</pre>
+<pre>
+ppm install DBI
+</pre>
+
+UnixやLinuxを使用している人cpanコマンドでDBD::SQLiteとDBIをインストールするだけです。(Windowsでもcpanコマンドを使用してインストールできるかもしれませんがDBD::SQLiteのコンパイルに失敗する可能性があります。)
+
+<pre>
+cpan DBD::SQLite
+</pre>
+<pre>
+cpan DBI
+</pre>
+
+これでデータベースを学習する準備は整いました。
+
+<h3>データベースに接続する</h3>
+
+では早速データベースに接続してみましょう。データベースに接続するにはDBIモジュールのconnectメソッドを使用します。connectの第1引数はデータソースと呼ばれるデータベースに接続するための情報を指定します。フォーマットは少し特殊ですが覚えてしまいましょう。
+
+ データソースの中で接続するデータベース名を指定することができます。SQLiteではデータベースは単純にファイルとして作成されるのでデータベース名として好きな名前を指定します。戻り値にはデータベースハンドルと呼ばれるデータベースと通信するためのオブジェクトが返されます。
+
+<pre>
+use DBI;
+my $database = 'test.db';
+my $data_source = "dbi:SQLite:dbname=$database";
+my $dbh = DBI->connect($data_source);
+</pre>
+
+これでカレントディレクトリにtest.dbというファイルができているはずです。
+
+<h3>データベースを切断する</h3>
+
+データベースの接続と対になるデータベースの切断の処理をここで覚えておきましょう。データベースを切断するにはdisconnectを使用します。
+
+<pre>
+$dbh->disconnect;
+</pre>
+
+データベースへ接続する必要がなくなった場合は切断しておくのが賢明です。
+
+<h3>SQLを実行する</h3>
+
+SQLとはテーブルを作成したり、データベースにデータを登録したり、データを取り出したりするために使用する問い合わせ言語のことです。基本的なSQLについてはこれから解説します。ここではまずSQLを実行する方法を解説します。
+
+SQLを実行する方法には2通りの方法があります。
+
+<ol>
+  <li>
+    doメソッドを使用して直接実行する方法
+  </li>
+  <li>
+    prepareメソッドでSQL文を準備してからexecuteメソッドで実行する方法
+  </li>
+</ol>
+
+ふたつめの方法はSQLでselect文と呼ばれるものを実行する場合に使用します。ひとつめの方法はselect文以外のSQLを実行するために使用します。「selectはprepareとexecute」で「それ以外はdo」と覚えます。
+
+<h3>テーブルを作成する</h3>
+
+ではテーブルを作成するための一番簡単なSQLを作成してみましょう。テーブルを作成するには「create table」文を使用します。「create table」文では作成するテーブルの名前、テーブルに含むフィールド名を指定します。「SQLiteではフィールドのデータ型を必ずしも指定する必要はないのでここでは簡単のために型を省略します。
+
+ bookというテーブル名で、titleとauthorというフィールドを持つテーブルを作成するSQLです。
+
+<pre>
+create table book (
+  title,
+  author
+);
+</pre>
+
+ではdoメソッドを使用して実際にテーブルを作成してみましょう。
+
+<pre>
+my $create_table = <<'EOS';
+create table book (
+  title,
+  author
+)
+EOS
+
+$dbh->do($create_table);
+</pre>
+
+これでbookという名前のテーブルが作成されました。
+
+<h3>テーブルを削除する</h3>
+
+テーブルを作成する方法を覚えたので反対の操作であるテーブルを削除する方法も覚えて起きましょう。テーブルを削除するには「drop table」文を使用します。
+
+<pre>
+drop table テーブル名
+</pre>
+
+doを使用してテーブルを削除してみましょう。
+
+<pre>
+my $drop_table = "drop table book";
+$dbh->do($drop_table);
+</pre>
+
+<h3>レコードの追加 insert</h3>
+
+テーブルにレコードを挿入するにはinsert文を使用します。
+
+<pre>
+insert into テーブル名 (フィールド名1, フィールド名2, ..) values (値1, 値2, 値3);
+</pre>
+
+「title」が「Perl」で、「author」が「taro」のレコードをテーブルに追加するには次のようなSQLになります。データが文字列の場合はシングルクォートで囲みます(ですがこれはセキュリティ的にとても危険な方法なので回避策は後で解説します)。
+
+<pre>
+insert into book (title, author) values ('Perl', 'taro');
+</pre>
+
+doを使ってinsert文を実行してみましょう。insertされたかどうかの確認はもう少し先のselect文を解説するまで待ってください。
+
+<pre>
+my $insert = "insert into book (title, author) values ('Perl', 'taro');";
+$dbh->do($insert);
+</pre>
+
+これで以下のようなレコードがテーブルに追加されます。
+
+<pre>
++--------+----------+
+|title   |author    | # ヘッダ(これはテーブルを作成したときにできる)
++--------+----------+
+|Perl    |taro      | # レコード(insert文で追加されたレコード)
++--------+----------+
+</pre>
+
+<h3>レコードの更新 update</h3>
+
+テーブルにあるデータを更新するにはupdate文を使用します。一般的にはwhere区で検索条件を指定して更新対象を絞ります。select文のところで解説しますが、where区には複数の条件を指定することもできます。
+
+<pre>
+update テーブル名 set フィールド名1 = 値1, フィール名2 = 値2, .. where 検索するフィールド名 = 値
+</pre>
+
+「author」が「taro」であるレコードのtitleの値をRubyに変更するSQLは次のようになります。
+
+<pre>
+update book set title = 'Ruby' where author = 'taro'
+</pre>
+
+doを使ってupdate文を実行してみましょう。
+
+<pre>
+my $update = "update book set title = 'Ruby' where author = 'taro'";
+$dbh->do($update);
+</pre>
+
+先ほどのレコードは更新され次のようになります。
+
+<pre>
++--------+----------+
+|title   |author    | # ヘッダ(これはテーブルを作成したときにできる)
++--------+----------+
+|Ruby    |taro      | # レコード(update文で更新されたレコード)
++--------+----------+
+</pre>
+
+<h3>レコードの削除 delete</h3>
+
+レコードを削除するにはdelete文を使用します。一般的にはwhere区で検索条件を指定して削除対象を絞ります。
+
+<pre>
+delete from テーブル名 where 検索するフィールド名 = 値
+</pre>
+
+「author」が「taro」であるレコードを削除するSQLは次のようになります。
+
+<pre>
+delete from book where author = 'taro';
+</pre>
+
+doを使ってdelete文を実行してみましょう。
+
+<pre>
+my $delete = "delete from book where author = 'taro';";
+$dbh->do($delete);
+</pre>
+
+レコードが削除されます。
+
+<h3>レコードの取得 select</h3>
+
+いよいよselect文です。ここまでは追加したレコードや削除したレコードの確認ができていませんでしたがselect文を覚えれば確認できるようになります。それでは一番簡単なselect文を書いてみましょう。指定したテーブルのすべての列を取得するには次のようにします。*はすべてのフィールドという意味です。
+
+<pre>
+select * from テーブル名;
+</pre>
+
+bookのすべてレコードを取得するには次のようなSQLになります。
+
+<pre>
+select * from book;
+</pre>
+
+select文の実行はdoではできません。select文を実行するにはSQL文をprepareというメソッドで準備してからexecuteで実行する必要があります。prepareメソッドは準備されたSQLを含んでいるステートメントハンドルと呼ばれるものを返します。このステートメントハンドルからexecuteを実行します。
+
+では実際にselect文を実行してみましょう。
+
+<pre>
+my $select = "select * from book;";
+my $sth = $dbh->prepare($select);
+$sth->execute;
+</pre>
+
+これでselect文を実行することができました。次の行う必要のあることはフェッチという操作によって実際に各行を取得することです。行をフェッチして配列に代入するにはステートメントハンドルからfetchrow_arrayというメソッドを使用します。
+
+<pre>
+$sth->fetchrow_array;
+</pre>
+
+通常これは<a href="/blog/20100123126425.html">while文</a>を使って、すべての行を取得するまで繰り返します。
+
+<pre>
+while (my @row = $sth->fetchrow_array) {
+  ...
+}
+</pre>
+
+<h3>SQLiteではメモリ上にデータベースを作成することがで便利</h3>
+
+SQLiteではメモリ上にデータべースを作成することができます。ファイル名を指定する必要はなく、データベースを切断するとテーブルは自動的に削除されますので、ちょっとした動作を確認したい場合にとても便利です。ここでの解説の大部分ではメモリ上にデータベースを作成して解説しようと思います。
+
+メモリ上にデータベースを作成するにはデータソースのデータベース名に「:memory:」を指定します。
+
+<pre>
+my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:");
+</pre>
+
+これでメモリ上のデータベースに接続することができます。
+
+<h3>実際に動かせるinsert,update,delete,selectのサンプルコード</h3>
+
+ここまでは解説ばかりでしたのでイメージをつかみにくかったのではないかと思います。ここでいくつかサンプルを記述します。実際にソースコードを実行してみてデータベースでのレコード操作になれてください。これが理解できればデータベースの基礎の基礎をマスターしたことになります。
+
+<pre>
+use strict;
+use warnings;
+
+use DBI;
+
+# メモリ上のデータベースへ接続
+my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:");
+
+# テーブルの作成
+my $create_table = <<'EOS';
+create table book (
+  title,
+  author
+)
+EOS
+
+$dbh->do($create_table);
+
+# insert文の実行
+$dbh->do("insert into book (title, author) values ('Perl', 'taro');");
+$dbh->do("insert into book (title, author) values ('C++', 'taro');");
+$dbh->do("insert into book (title, author) values ('Python', 'ken');");
+$dbh->do("insert into book (title, author) values ('Java', 'mamoru');");
+
+# update文の実行
+$dbh->do("update book set title = 'Ruby' where author = 'mamoru'");
+
+# delete文の実行
+$dbh->do("delete from book where author = 'ken';");
+
+# select文の実行
+my $sth = $dbh->prepare("select * from book;");
+$sth->execute;
+
+# 各行のフェッチ
+while (my @row = $sth->fetchrow_array) {
+  # 各行を出力
+  print join(', ', @row), "\n";
+}
+
+# データベースの切断
+$dbh->disconnect;
+</pre>
+
+次のような出力が得られます。
+
+<pre>
+Perl, taro
+C++, taro
+Ruby, mamoru
+</pre>
+
+<h3>ユーザ名とパスワードを指定して接続する</h3>
+
+SQLiteで作成したデータベースへの接続にはユーザ名やパスワードは必要ありません。ですがMySQLやPostgreSQLやOracleなどの標準的なデータベースではユーザ名とパスワードを接続のときに指定する必要があります。
+
+DBIを使用してユーザ名とパスワードを指定して接続するには次のようにします。第2引数にユーザ名、第3引数にパスワードを指定します。
+
+<pre>
+my $dbh = DBI->connect($data_source, $user, $password);
+</pre>
+
+<h3>DBIのオプションの標準的な設定</h3>
+
+DBIではconnectメソッドの第4引数にDBIのオプションを指定することができます。
+
+<pre>
+DBI->connect($data_source, $user, $password, {opt1 => $val1, opt2 => $val2, ..});
+</pre>
+
+DBIのデフォルトの動作はエラーが発生した場合に警告を標準エラー出力に出力するようになっています。
+
+ですが警告ではなく、エラーメッセージを出力してプログラムを終了するほうがよりよいように思います。
+
+警告を出力しないようにするには次のようにします。
+
+<pre>
+PrintError => 0
+</pre>
+
+またエラーメッセージを出力してプログラムを終了するようにするには次のようにします。
+
+<pre>
+RaiseError => 1
+</pre>
+
+またDBIにはAutoCommitと呼ばれるオプションがあります。これはコミットと呼ばれる処理を自動的に行うか行わないかを決めるオプションです。データベースのドライバによってデフォルトの値が異なる可能性がありますので明示的に指定しておいたほうが良いと思います。わたしの場合は自動的にコミットするようにしておいてトランザクションが必要になった場合にAutoCommitを0に設定します。
+
+ですのでこのようなことを踏まえてデータベースに接続する場合は次のような記述にしておくのがよいかもしれません。
+<pre>
+my $dbh = DBI->connect(
+  $data_source,
+  $user,
+  $password,
+  {
+    RaiseError => 1,
+    PrintError => 0,
+    AutoCommit => 1,
+  }
+);
+</pre>
+
+ユーザ名もパスワードも必要なくオプションだけを指定したい場合は次のようにします。
+
+<pre>
+my $dbh = DBI->connect(
+  $data_source,
+  undef,
+  undef,
+  {
+    RaiseError => 1,
+    PrintError => 0,
+    AutoCommit => 1,
+  }
+);
+</pre>
+
+<h3>SQLiteのクライアントsqlite3のインストール</h3>
+
+SQLiteをWindowsにインストールすれば、コマンドプロンプトから直接SQLを実行することができるようになります。プログラムからでもSQLはDBIを使用して実行できますが対話的に実行できる環境があったほうがSQLの学習には適しています。
+
+WindowsにSQLiteをインストールする方法こちらで解説しています。
+
+<a href="/blog/20091203126018.html">WindowsにSQLiteをインストールする</a>
+

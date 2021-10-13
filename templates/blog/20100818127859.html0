@@ -1,0 +1,749 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20100809127859.html">
+      <span itemprop="name">XS</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>perlapi - XSにおけるデータ操作関数</h2>
+
+
+
+<b>perlapi</b>とはXSでPerlのデータを操作するための公式APIで、C言語で書かれたマクロや関数のことです。
+
+<h3>出力、スカラ、標準入出力</h3>
+
+PerlとXS(C言語)のAPIの対応がわかるとXSがわかりやすそうだ。
+
+<h4>標準出力への出力</h4>
+
+<pre>
+#Perl
+print "Hello";
+
+# XS
+PerlIO_printf(PerlIO_stdout(), "Hello");
+</pre>
+
+PerlIO_printfはC標準ライブラリのprintfにあたる関数。第一引数はPerlIO*型の変数、第二引数はchar*型の変数。標準出力はPerlIO_stdout関数で取得できる。XSでは標準入出力Cの標準ライブラリは使わずに、Perlで用意されている関数を使う。これはperlapioというドキュメントに詳しく乗せられている。
+
+<h4>文字列</h4>
+
+<pre>
+#Perl
+my $str = "Hello";
+
+# XS
+SV* sv_str = newSVpv("Hello", 0);
+</pre>
+
+PerlのスカラはXSではSV*に対応します。newSVpv関数で<a href="/blog/20161003147558.html">文字列</a>を表現するSV*を作成することができます。第一引数は、文字列です。第二引数はSTRLEN型の引数で、文字列の長さを指定します。0を指定すると自動的に文字列の長さを決定してくれます。
+
+この他のものとして、効率を重視した、newSVpvn関数やnewSVpvs関数もあります。
+
+C言語のAPIは省略が多いので覚えるのが大変ですが、慣れるまでがんばるしかないです。SVのSはスカラという意味、Vは値(value)という意味です。newSVpvのpはポインタ(pointer)という意味です。これは実質的には文字列を表します。ですからpは文字列と覚えます。
+
+<h4>数値</h4>
+
+<pre>
+# 符号なし整数
+# Perl
+my $num = 1;
+
+#XS
+SV* sv_num = newSVuv(5);
+</pre>
+
+<pre>
+# 整数
+# Perl
+my $num = -1;
+
+#XS
+SV* sv_num = newSViv(-1);
+</pre>
+
+<pre>
+# 数値
+# Perl
+my $num = 1.14;
+
+#XS
+SV* sv_num = newSVnv(1.14);
+</pre>
+
+Perlでは<a href="/blog/20161026147748.html">数値</a>はすべてどのようなものでも浮動小数点として扱われますが、内部的に見ると符号なし整数(UV型)、整数(IV型)、数値型(NV型)の三種類がある。数値型が最も汎用性があるが、効率は符号なし整数や整数のほうがよい。これらはSV*の内部的な値として保持されます。UVのUは「unsigned int」のuです。IVのIはintのiです。NVのNはnumberのnです。
+
+<h4>未定義値(undefに対応)</h4>
+
+XSではPerlの<a href="/blog/20100220126425.html">undef</a>は、&PL_sv_undefで表現します。
+
+<pre>
+# Perl
+my $val = undef;
+
+# XS
+SV* sv_val = &PL_sv_undef;
+</pre>
+
+<h4>値が定義されているかどうかのチェック(defined関数に対応)</h4>
+
+SV*型の値が定義されているかどうかを確認するには、<b>SvOK</b>関数を使用します。これはPerlの<a href="/blog/20100219126425.html">defined関数</a>相当のことをします。
+
+<pre>
+# Perl
+if (defined $val) { ... }
+
+# XS
+if (SvOK(sv_val)) { ... }
+</pre>
+
+<h4>SV*からchar*型への変換</h4>
+
+SV*に文字列や数値が含まれている場合はそれを他の関数などで使う場合に、char*型にする必要があります。
+
+<pre>
+char* str = SvPV_nolen(sv_some);
+</pre>
+
+SvPV_nolen関数の第一引数はSV*型の変数です。長さについては自動的に計算してくれます。
+
+<h4>ファイル入出力</h4>
+
+<pre>
+#Perl
+sub print_line {
+  my $file = shift;
+  
+  open my $fh, '<', $file
+    or die $!;
+  
+  while (my $line = <$fh>) {
+    print $line;
+  }
+  
+  close $fh;
+}
+
+#XS
+SV*
+print_line(...)
+  PPCODE:
+{
+    char* file = SvPV_nolen(ST(0));
+    PerlIO* infh = PerlIO_open(file, "r");
+    SV* line = sv_2mortal(newSVpv("", 0));
+    
+    if (!infh) {
+      croak(strerror(errno));
+    }
+    
+    while(sv_gets(line, infh, 0)) {
+      PerlIO_printf(PerlIO_stdout(), SvPV_nolen(line));
+    }
+    PerlIO_close(infh);
+}
+</pre>
+
+難しい。ファイル入出力ってこれであっているのかなぁ。
+
+<h4>SV*は揮発性にしておく</h4>
+
+SV*を作成したときは必ずsv_2mortalして揮発性にしておく。そうするとスコープを抜けた位置で自動的に解放される。
+
+XSでメモリリークをしないようにする記述方法は以下で解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20141220141904.html">XSでメモリリークを起こさずプログラムを書く方法</a>
+  </li>
+</ul>
+
+<h4>Perlでの操作に対応するAPIを発見する</h4>
+
+XSを書くためにはいつもはPerlで行っている操作をC言語のAPIで行う必要がある。これはなかなか大変だが、perlapiとperlapioに公開されているAPIがすべて載っているのでここから探す。Perlの内部を解説したperlgutsも参考になる。
+
+<h3>配列操作</h3>
+
+<a href="/blog/20161012147627.html">配列</a>の操作に対応するXSでの書き方。
+
+変数宣言。
+
+<pre>
+# Perl
+my @nums;
+
+# XS
+AV* av_nums = newAV();
+</pre>
+
+代入。
+<pre>
+# Perl
+$nums[0] = 1;
+
+# XS
+av_store(av_nums, 0, newSVuv(1));
+</pre>
+
+要素の取得。av_fetchはSV*へのポインタを返すので*でポインタはずしを行う必要があります。第三引数は要素が存在しなかった場合に作成するかどうかを指定します。av_fetchは要素がなかった場合にNULLを返すので確認してから参照はずしを行う必要があります。
+
+<pre>
+# Perl
+my $num = $nums[0];
+
+# XS
+SV** const sv_num_ptr = av_fetch(nums, 0, FALSE);
+SV* const sv_num = num_ptr ? *sv_num_ptr : &PL_sv_undef;
+</pre>
+
+配列のサイズ。
+
+<pre>
+# Perl
+my $count = @nums;
+
+# XS(歴史的事情で長さより1小さい値が返ってくるので注意)
+int count = av_len(nums) + 1;
+</pre>
+
+push関数。
+
+<pre>
+# Perl
+push @nums, 1;
+
+# XS
+av_push(av_nums, newSVuv(1));
+</pre>
+
+pop関数。
+
+<pre>
+# Perl
+my $num = pop @nums;
+
+# XS
+SV* sv_num = av_pop(av_nums);
+</pre>
+
+shift関数。
+
+<pre>
+# Perl
+my $num = shift @nums;
+
+# XS
+SV* sv_num = av_shift(av_nums);
+</pre>
+
+unshift関数。av_unshiftは値を先頭につけ加えるのではなく、先頭に空の領域を追加するだけなので、av_storeで値を設定する必要があります。
+
+<pre>
+# Perl
+unshift @nums, 1;
+
+# XS
+av_unshift(av_nums, 1);
+av_store(av_nums, 0, newSVuv(1));
+</pre>
+
+配列を空に。
+
+<pre>
+# Perl
+@nums = ();
+
+# XS
+av_clear(av_nums);
+</pre>
+
+<h3>ハッシュ操作</h3>
+
+<a href="/blog/20161013147635.html">ハッシュ</a>の操作に対応するXSでの書き方。
+
+<h4>キーの存在確認</h4>
+
+<pre>
+# Perl
+exists $hash{"key"};
+
+# XS
+hv_exists(hash, "key", strlen("key"));
+</pre>
+
+<h3>ハッシュの配列の作成</h3>
+
+XSを最近練習していて、とりあえず次の方針で作成しているが、あっているかはよくわからない。
+
+<ol>
+  <li>
+    戻り値と引数は一行で書いてしまう
+  </li>
+  <li>
+    PPCODEセクションのみを使う。
+  </li>
+  <li>
+    ソースコードは先頭で変数宣言ができるように {} で囲む
+  </li>
+  <li>
+    戻り値はSV*ひとつだけにする。ST(0)に代入してから、XSRETURN(1)。RETVALを使っていないという警告は無視する。
+  </li>
+  <li>
+    SV*、AV*、HV*は作成した直後にsv_2mortalを実行する。これを行わないとメモリリークが発生します。SV*を作成してsv_2mortalしなくてよいのはハッシュや配列の要素にする場合のみ。
+  </li>
+</ol>
+
+XSを書くときにしばらくこういう書き方をしてみることにする。XSの文法はかなり複雑なのでできるだけシンプルかつ一貫性のある書き方をしたい。これでどれくらいの場合にうまくいくかをしばらく試してみる。
+
+<h4>ハッシュの配列の作成</h4>
+
+ハッシュの配列の作成です。
+
+<pre>
+# 最もシンプルなPerl記法
+sub return_array_of_hash {
+    
+  my $persons = [
+      {name => 'Ken',  age => 19},
+      {name => 'Taro', age => 16}
+  ];
+  
+  return $persons;
+}
+
+# XSの書き方対応させたPerl記法
+sub return_array_of_hash {
+    
+  my @persons;
+ 
+  my %person1;
+  $person1{name} = 'Ken';
+  $person1{age}  = 19;
+  push @persons, \%person1;
+  
+  my %person2;
+  $person2{name} = 'Taro';
+  $person2{age}  = 26;
+  push @persons, \%person2;
+  
+  return \@persons;
+}
+
+# XS
+SV* return_array_of_hash()
+    PPCODE:
+{
+  AV* av_persons;
+  HV* hv_person1;
+  HV* hv_person2;
+  
+  av_persons = (AV*)sv_2mortal((SV*)newAV());
+  
+  hv_person1 = (HV*)sv_2mortal((SV*)newHV());
+  hv_store(hv_person1, "name", 4, newSVpv("Ken", 3), 0);
+  hv_store(hv_person1, "age", 3, newSVuv(19), 0);
+  av_push(av_persons, newRV_inc((SV*)hv_person1));
+  
+  hv_person2 = (HV*)sv_2mortal((SV*)newHV());
+  hv_store(hv_person2, "name", 4, newSVpv("Taro", 4), 0);
+  hv_store(hv_person2, "age", 3, newSVuv(26), 0);
+  av_push(av_persons, newRV_inc((SV*)hv_person2));
+  
+  SV* sv_ret = sv_2mortal(newRV_inc(av_persons));
+  xPUSHs(sv_ret);
+  XSRETURN(1);
+}
+</pre>
+
+AV*は配列、HV*はハッシュ。newAVは空の配列の作成。newHVは空のハッシュの作成。hv_storeはハッシュの値の設定、第三引数はキーの長さ、第5引数は0を指定するとハッシュ値を自動で計算される。newRV_incはリファレンスを作成する関数。XSRETURNの引数は戻り値の個数。戻り値はXPUSHsマクロでスタックに積む。
+
+<h3>ハッシュの配列の作成その2</h3>
+
+gfxさんのアドバイスを元にしてハッシュの配列の作成を書き直してみました。SV*,AV*,HV*を作った直後に必ずmortalにするという原則、文字列を作成するとき、ハッシュの要素を設定するときに文字数を指定しないようにすること、配列やハッシュの要素にするときはリファレンスカウントをひとつ増やさないといけないこと。あとはできるだけ一貫してシンプルに書くことができるようなマクロを定義してみました。どうかなぁ。
+
+<pre>
+#define new_mAV() (AV*)sv_2mortal((SV*)newAV())
+#define new_mHV() (HV*)sv_2mortal((SV*)newHV())
+#define new_mSVpvs(s) sv_2mortal(newSVpvs(s))
+#define new_mSVuv(u) sv_2mortal(newSVuv(u))
+#define new_mSViv(i) sv_2mortal(newSViv(i))
+#define new_mSVnv(n) sv_2mortal(newSVnv(n))
+#define new_mRV(sv) sv_2mortal(newRV_inc((SV*)sv))
+#define set(e) SvREFCNT_inc(e)
+
+MODULE = ExtModule		PACKAGE = ExtModule		
+
+SV* return_array_of_hash()
+  PPCODE:
+{
+  AV* persons;
+  HV* person1;
+  HV* person2;
+  
+  persons = new_mAV();
+  
+  person1 =new_mHV();
+  hv_stores(person1, "name", set(new_mSVpvs("Ken")));
+  hv_stores(person1, "age", set(new_mSVuv(19)));
+  hv_stores(person1, "height", set(new_mSViv(170)));
+  hv_stores(person1, "weight", set(new_mSVnv(45.3)));
+  av_push(persons, set(new_mRV(person1)));
+  
+  person2 = new_mHV();
+  hv_stores(person2, "name", set(new_mSVpvs("Taro")));
+  hv_stores(person2, "age", set(new_mSVuv(26)));
+  hv_stores(person2, "height", set(new_mSViv(180)));
+  hv_stores(person2, "weight", set(new_mSVnv(39.3)));
+  av_push(persons, set(new_mRV(person2)));
+  
+  ST(0) = new_mRV(persons);
+  XSRETURN(1);
+}
+</pre>
+
+<h3>文字列操作</h3>
+
+XSにおける<a href="/blog/20161003147558.html">文字列</a>操作です。
+
+<h4>文字列の作成</h4>
+
+<pre>
+# Perl
+my $str = "abc";
+
+# XS
+SV* sv_str = newSVpv("abc", 0);
+</pre>
+
+<h4>文字列のコピー</h4>
+
+<pre>
+# Perl
+my $str2 = $str1;
+
+# XS
+SV* sv_str2 = newSV(sv_str1);
+</pre>
+
+<h4>文字列の長さ</h4>
+
+<pre>
+# Perl
+my $length = length $str;
+
+# XS
+STRLEN sv_length = sv_len(sv_str);
+</pre>
+
+<h4>文字列の連結</h4>
+
+<pre>
+# Perl
+my $str = "abc";
+$str .= "de";
+
+# XS
+SV* sv_str = newSVpv("abc", 0);
+sv_catpv(sv_str, "de");
+</pre>
+
+<h4>変数展開(あるいはsprintf)</h4>
+
+<pre>
+# Perl
+my $num1 = 1;
+my $num2 = 2;
+my $str  = "$num1 and $num2";
+
+# XS
+int num1 = 1;
+int num2 = 2;
+SV* sv_str = newSVpvf("%d and %d", num1, num2);
+</pre>
+
+<h4>文字列の連結+変数展開</h4>
+
+<pre>
+# Perl
+my $num1 = 1;
+my $num2 = 2;
+my $str = "abc";
+$str .= "$num1 and $num2";
+
+# XS
+int num1 = 1;
+int num2 = 2;
+SV* sv_str = newSVpv("abc", 0);
+sv_catpvf(sv_str, "%d and %d", num1, num2);
+</pre>
+
+<h4>文字列の比較</h4>
+
+SVである文字列を比較したい場合は<strong>sv_cmp</strong>を使用します。
+
+<pre>
+# perl
+if ($str1 lt $str2) { ... }
+if ($str1 eq $str2) { ... }
+if ($str1 gt $str2) { ... }
+
+# XS
+if (sv_cmp(sv_str1, sv_str2) < 0) { ... }
+if (sv_cmp(sv_str1, sv_str2) == 0) { ... }
+if (sv_cmp(sv_str1, sv_str2) > 0) { ... }
+</pre>
+
+またchar*型として比較できる関数strEQ, strEQ, strGE, strGT, strLE, strLT, strNEも用意されています。
+
+<pre>
+if (strEQ("foo", "bar")) { ... }
+if (strGE("foo", "bar")) { ... }
+if (strGT("foo", "bar")) { ... }
+if (strLE("foo", "bar")) { ... }
+if (strLT("foo", "bar")) { ... }
+if (strNE("foo", "bar")) { ... }
+</pre>
+
+<h3>パッケージ変数</h3>
+
+XSにおけるパッケージ変数の操作のための関数を紹介します。
+
+<h4>パッケージ変数の取得</h4>
+
+パッケージ変数を取得するには次のように書きます。
+
+<pre>
+# Perl
+$Foo::bar;
+@Foo::bar;
+%Foo::bar;
+
+# XS
+SV* sv_var = get_sv("Foo::bar", 0);
+AV* av_var = get_av("Foo::bar", 0);
+HV* hv_var = get_hv("Foo::bar", 0);
+</pre>
+
+第二引数の0は新しく変数を作成しないことを意味します。
+
+<h4>パッケージ変数の作成]</h4>
+
+XSでパッケージ変数を作成する関数を紹介します。get_sv, get_av, get_hvの第二引数で「GV_ADD」を指定します。
+
+<pre>
+# Perl
+our $Foo::bar;
+our @Foo::bar;
+our %Foo::bar;
+
+# XS
+SV* sv_var = get_sv("Foo::bar", GV_ADD);
+AV* av_var = get_av("Foo::bar", GV_ADD);
+HV* hv_var = get_hv("Foo::bar", GV_ADD);
+</pre>
+
+<h3>正規表現を利用する</h3>
+
+<b>XS</b>で<a href="/blog/20100827127859.html">正規表現</a>を使う方法を解説します。ただし、現在、Perlのドキュメントに使用方法が解説されていないので、試し試しでやっているので、間違っていたら教えてください。
+
+<h4>正規表現のコンパイル</h4>
+
+XSで<a href="/blog/20100827127859.html">正規表現</a>を使用するにはまず<b>pregcomp</b>関数を使って、正規表現をコンパイルする必要があります。これは、正規表現のリファレンスを作成する操作に対応すると考えてください。
+
+<pre>
+# Perl
+my $re = qr/[0-9]+/;
+
+# XS (pregcompの第二引数は正規表現のフラグ)
+SV* sv_re_str = newSVpv("[0-9]+", 0);
+REGEXP* sv_re = pregcomp(sv_re_str, 0);
+</pre>
+
+REGEXP*型は、SV*型の一種ですので、実際にコードを利用するときはsv_2mortalを使って、自動的にメモリが解放されるようにしましょう。実際のコードで利用するのを想定して書くと次のようになります。
+
+<pre>
+SV* sv_re_str = sv_2mortal(newSVpv("[0-9]+", 0));
+REGEXP* sv_re = (REGEXP*)sv_2mortal((SV*)pregcomp(sv_re_str, 0));
+</pre>
+
+<h4>正規表現のフラグ</h4>
+
+正規表現のフラグを、pregcompの第二引数に指定することができます。
+
+<pre>
+# Perl
+my $re = qr/abc/im;
+
+# XS
+SV* sv_re_str = newSVpv("[0-9]+", 0);
+REGEXP* sv_re = pregcomp(sv_re_str, RXf_PMf_FOLD | RXf_PMf_MULTILINE);
+</pre>
+
+フラグの対応は以下です。複数指定する場合はビット演算子の論理和「|」で、フラグをつなぎます。
+
+<table>
+  <tr>
+    <td>
+      /m
+    </td>
+    <td>
+      RXf_PMf_MULTILINE
+    </td>
+  </tr>
+ 
+  <tr>
+    <td>
+      /s
+    </td>
+    <td>
+      RXf_PMf_SINGLELINE
+    </td>
+  </tr>
+ 
+  <tr>
+    <td>
+      /i
+    </td>
+    <td>
+      RXf_PMf_FOLD
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      /x
+    </td>
+    <td>
+      RXf_PMf_EXTENDED
+    </td>
+  </tr>
+
+</table>
+
+<h4>正規表現の実行</h4>
+
+正規表現を実行するには<b>pregexec</b>関数を使用します。pregexec関数の引数は、とても複雑です。
+
+<pre>
+/* pregexec - 文字列に対して正規表現をマッチさせる。 */
+I32
+pregexec(
+  REGEXP * const prog, /* コンパイルされた正規表現 */
+  char* stringarg,     /* 文字列のマッチを開始する位置 */
+  char *strend,        /* 文字列の終端(NULLポインタの位置) */
+  char *strbeg,   /* 文字列の開始位置 */
+  SSize_t minend, /* stringarg後のマッチの終端がminend以上でなければならないバイト数 */
+  SV *screamer,   /* 文字列をあらわすSV: utf8フラグのためだけに利用される */
+  U32 nosave      /* キャプチャしない場合は1を設定 */
+)
+</pre>
+
+マッチが成功した場合は戻り値に真が返ります。サンプルを記述しておきます。
+
+<pre>
+SV* sv_value = sv_2mortal(newSVpv("  12", 0));
+char* value = SvPV_nolen(sv_value);
+
+SV* sv_re_str = sv_2mortal(newSVpv("^ *([-+]?[0-9]+) *$", 0));
+REGEXP* sv_re = (REGEXP*)sv_2mortal((SV*)pregcomp(sv_re_str, 0));
+
+IV ret = pregexec(
+  sv_re, // コンパイルされた正規表現
+  value, // 検索開始位置
+  value + strlen(value), // 文字列の終端(NULLポインタ)
+  value, // 文字列の頭
+  0, // 0でOK
+  sv_value, // SV*型の文字列
+  0 // 0でOK
+);
+</pre>
+
+<h4>マッチした文字列の取得</h4>
+
+マッチした文字列を取得するには<b>Perl_reg_numbered_buff_fetch</b>関数を使用します。(非公開のAPIしかないのかな)
+
+<pre>
+# Perl
+my $match1 = $1;
+my $match2 = $2;
+
+# XS
+SV* sv_match1 = newSVpv("", 0);
+Perl_reg_numbered_buff_fetch(aTHX_ sv_re, 1, match1); 
+
+SV* sv_match2 = newSVpv("", 0);
+Perl_reg_numbered_buff_fetch(aTHX_ sv_re, 2, match2); 
+</pre>
+
+<h3>オブジェクト指向関連のAPI</h3>
+
+<a href="/blog/20130305136248.html">オブジェクト指向</a>に関連したXSのAPIを紹介します。
+
+<h4>オブジェクトを生成する</h4>
+
+オブジェクトを生成します。必ずモータルにしておきましょう。
+
+<pre>
+# Perl
+my $self = {};
+bless $self, "MyClass";
+
+# XS
+SV* sv_self = sv_2mortal(new_RV_inc(sv_2mortal((SV*)newHV()));
+sv_bless(sv_self, gv_stashpv("MyClass", 1));
+</pre>
+
+<h4>オブジェクトであるかどうかを確認する</h4>
+
+値がオブジェクトであるかどうかを確認するには、<strong>sv_isobject関数</strong>を使用します。
+
+<pre>
+sv_isobject(sv_obj);
+</pre>
+
+<h4>あるクラスを継承しているかどうかを確認する</h4>
+
+あるクラスを継承しているかどうかを確認するには<strong>sv_derived_from関数</strong>を使用します。指定したクラスを継承している場合は、真が返ってきます。
+
+<pre>
+sv_derived_from(sv_obj, "MyClass");
+</pre>
+
+この関数は、配列のリファレンスであることや、ハッシュのリファレンスであることを確認するのに利用することも可能です。
+
+<pre>
+/* 配列のリファレンス */
+sv_derived_from(sv_obj, "ARRAY");
+
+/* ハッシュのリファレンス */
+sv_derived_from(sv_obj, "HASH");
+</pre>
+
+ですので、オブジェクトであり、特定のクラスを継承していることを確認するには、sv_isobject関数とsv_derived_from関数を組み合わせて利用します。
+
+<pre>
+sv_isobject(sv_obj) && sv_derived_from(sv_obj, "MyClass")
+</pre>
+
+<h3>Perl APIの公式ドキュメント</h3>
+
+<ul>
+  <li>
+    <a href="http://perldoc.jp/docs/perl/5.20.1/perlguts.pod">perlguts - Perl API の紹介</a> - Perlの内部データ構造とAPIの紹介について書かれています。
+  </li>
+  <li>
+    <a href="http://perldoc.jp/docs/perl/5.12.1/perlapi.pod">perlapi - perl public API の自動生成ドキュメント</a> - PerlのAPIの一覧が掲載されています。
+  </li>
+</ul>
+

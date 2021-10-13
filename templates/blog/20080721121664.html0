@@ -1,0 +1,81 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a href="/blog/20110212130370.html"><span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>ファイルハンドルの概念を理解する</h2>
+
+
+
+Perlにおけるファイルハンドルの概念はややこしいので、解説しておきます。
+
+<h3>ファイルハンドルは実体ではなくて概念的なもの</h3>
+
+Perlでファイルハンドルといった場合は、Perlがファイルハンドルとして認識する複数の実体のことをいっています。ファイルハンドルという実体があるわけではないのです。
+
+<h3>Perlが、ファイルハンドルとして認識するもの</h3>
+
+<ol>
+  <li>
+    シンボル( FH )
+  </li>
+  <li>
+    型グロブ( *FH )
+  </li>
+  <li>
+    型グロブへのリファレンス( \*FH )
+  </li>
+  <li>
+    IO::Handleクラスのオブジェクト
+  </li>
+  <li>
+    IO::Handleオブジェクトを継承したクラスのオブジェクト( IO::File など )
+  </li>
+</ol>
+
+Perlが、ファイルハンドルとして認識するものは、上記の5つです。以下の記述はすべて有効です。
+
+<pre>
+# 1. シンボル FH
+open(FH, "<", $file) or die "$!";
+
+# 2. 型グロブ *FH
+open(*FH, "<", $file) or die "$!";
+
+# 3. 型グロブへのリファレンス \*FH
+my $fh = \*FH;
+open($fh, "<", $file) or die "$!";
+
+# 4. IO::Handleオブジェクト
+use IO::Handle;
+my $fh = IO::Handle->new;
+open( $fh, "<", $file ) or die "$!";
+
+# 5. IO::Fileオブジェクト( IO::Handleを継承 )
+use IO::File;
+my $fh = IO::File->new;
+open($fh, "<", $file) or die "$!";
+</pre>
+
+<h3>現代的なファイルオープンの書き方</h3>
+
+現代的なファイルオープンの書き方は、
+<pre>
+open(my $fh, "<", $file) 
+  or die "Can't open file $file:$!";
+</pre>
+
+です。
+
+未定義のスカラー変数がopen関数の第一引数に渡されると、無名型グロブへのリファレンスが自動的に生成されます。「3.型グロブへのリファレンス( \*FH )」と同じ記述で、my $fh = \*FH; の部分を自動的に行っているだけです。(これは、Perlの現代の実装で、将来的にはIO::Handleへのオブジェクトを自動生成するようになるかもしれません。)

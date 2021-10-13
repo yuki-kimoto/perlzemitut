@@ -1,0 +1,98 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161003147558.html">
+        <span itemprop="name">文字列</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<h2>ダブルクォート文字列のエスケープシーケンス</h2>
+
+ダブルクォート文字列の中で使えるエスケープシーケンスを紹介します。
+
+<h3>ASCIIコードに対応するエスケープシーケンス</h3>
+
+利用頻度が高いものは改行「\n」、タブ「\t」です。
+
+<table>
+  <tr><th>エスケープ<br>シーケンス</th><th>コード<br>ポイント<br>10進数</th><th>コード<br>ポイント<br>16進数</th><th>ASCII</th><th>意味</th></tr>
+  <tr><td>\a</td><td>7</td><td>07</td><td>BEL</td><td>アラームかベル</td></tr>
+  <tr><td>\b</td><td>8</td><td>08</td><td>BS</td><td>バックスペース</td></tr>
+  <tr><td>\e</td><td>27</td><td>1B</td><td>ESC</td><td>エスケープシーケンス</td></tr>
+  <tr><td>\f</td><td>12</td><td>0C</td><td>FF</td><td>フォームフィード</td></tr>
+  <tr><td>\n</td><td>10</td><td>0A</td><td>LF</td><td>ラインフィード</td></tr>
+  <tr><td>\r</td><td>13</td><td>0D</td><td>CR</td><td>キャリッジリターン</td></tr>
+  <tr><td>\t</td><td>9</td><td>09</td><td>TAB</td><td>タブ</td></tr>
+</table>
+
+タブと改行のエスケープシーケンスを使ったサンプルです。
+
+<pre>
+# タブと改行を使う
+my $line = "ID\tName\tPrice\n";
+</pre>
+
+<h3>ときどき使うエスケープシーケンス</h3>
+
+ダブルクォート「\"」、バックスラッシュ自体「\\」を表すエスケープシーケンスも時々使います。
+
+<table>
+  <tr><th>エスケープ<br>シーケンス</th><th>意味</th></tr>
+  <tr><td>\"</td><td>"</td></tr>
+  <tr><td>\\</td><td>\</td></tr>
+</table>
+
+<h3>改行「\n」に関する注意点</h3>
+
+改行「\n」に関する注意点が一つあります。
+
+プログラムのソースコード上では「\n」は、一文字でありASCIIコードの「LF」、16進数で「0A」を表現します。これは、Linx/Unixの改行コードと一致します。
+
+ひとつ注意しなければならないことは、PerlのI/Oレイヤーによって、標準出力やファイルに出力する場合に、自動的にOSの改行コードに変換されることです。
+
+「\n」はWindowsでは「0D 0A」という二文字の改行コードに変換されます。Unix/Linux/macOSでは、変換されずに「0A」です。
+
+<pre>
+# Windowsでは「0D 0A」、Unix/Linux/Macでは「0A」になる
+print "Hello\n";
+</pre>
+
+この変換を行わないようにするには、直接ASCIIコードを指定するエスケープシーケンスを使用します。ASCIIコードを直接指定する方法は、以下で解説しています。
+
+<h3>ASCIIコードを直接記述するエスケープシーケンス</h3>
+ 
+「\x」で始めることによって、ASCIIコード自体を16進数で記述できるエスケープシーケンスもあります。
+
+<pre>
+# ASCIIコードを16進数で直接指定してHTTPプロトコルの改行を表現
+my $message = "Hello\x0D\x0A";
+print $message;
+</pre>
+
+上記の例はHTTPプロトコルにおける改行コードがASCIIの16進数で「D」「A」の並びなので、それを表現したサンプルです。「\x」の後ろの0は、必須ではありませんが、ASCIIコードを2桁の16進数で表現する慣習に従って、0を入れています。
+
+<h3>すべてのエスケープシーケンスが掲載されたドキュメント</h3>
+
+すべてのエスケープシーケンスが掲載されたPerlのドキュメントは以下です。
+
+<ul>
+  <li><a href="https://perldoc.jp/docs/perl/5.10.1/perlrebackslash.pod">perlrebackslash - Perl 正規表現逆スラッシュシーケンスとエスケープ - perldoc.jp</a></li>
+</ul>
+
+正規表現のエスケープシーケンスのすべての解説になっていますが、ダブルクォート文字列のエスケープシーケンスは、正規表現のエスケープシーケンスに含まれますので、ダブルクォート文字列に関する部分のエスケープシーケンスだけを参照しましょう。

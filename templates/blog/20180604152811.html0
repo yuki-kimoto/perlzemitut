@@ -1,0 +1,33 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20161012147627.html">配列</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>配列の要素数を取得する</h2>
+
+
+
+<b>配列の要素数</b>を取得するには、<a href="/blog/20161012147627.html">配列</a>を<a href="/blog/20180531152777.html">スカラコンテキスト</a>で評価します。
+
+<pre>
+my $length = @nums;
+</pre>
+
+配列の要素数というのは、配列の長さ、配列の要素の個数とも呼ばれます。
+
+Perlにおいては、長さを取得する関数のようなものはなく、配列をスカラコンテキストで評価することで、配列の要素数を取得することができます。
+
+一番簡単な方法は、上記のように、スカラ変数に代入することです。こうすれば、@numsはスカラコンテキストで評価されて、$lengthに配列の要素数が代入されます。
+

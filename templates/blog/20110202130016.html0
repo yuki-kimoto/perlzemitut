@@ -1,0 +1,134 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110202130016.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBIx::Customの「delete」メソッドで行を「削除」する</h2>
+
+
+
+テーブルの行を削除するには<strong>delete</strong>メソッドを使用します。
+
+<pre>
+$dbi->delete(
+  table => 'book',
+  where => {id => 1},
+);
+</pre>
+
+対象のテーブルを<strong>table</strong>で指定します。削除する行の条件を<strong>where</strong>で指定します。whereにはハッシュリファレンスか、DBIx::Custom::Whereオブジェクトを指定することができます。
+
+次のようなSQLが発行されます。
+
+<pre>
+delete from book where id = ?;
+</pre>
+
+対応する値がプレースホルダに埋め込まれます。
+
+<h3>deleteメソッドのオプション</h3>
+
+deleteメソッドは「<a href="/blog/20110708131364.html">executeメソッド</a>」のすべてのオプションを使用することができます。また以下のオプションを実装しています。
+
+<h4>IDによる条件の指定 id</h4>
+
+idオプションを使用すれば、IDによって条件を指定することができます。primary_keyが設定されている必要があります。
+
+<pre>
+id => 4
+id => [4, 5]
+</pre>
+
+以下のようなdeleteを実行するとします。
+<pre>
+
+$dbi->delete(
+  primary_key => ['id1', 'id2'],
+  id => [4, 5],
+  table => 'book',
+);
+</pre>
+
+これは以下のdeleteと同じになります。
+
+<pre>
+$dbi->delete(where => {id1 => 4, id2 => 5}, table => 'book');
+</pre>
+
+<h4>プレフィックス prefix</h4>
+
+deleteとfrom tableの間に文字列を設定するにはprefixオプションを使用します。
+
+<pre>
+prefix => 'some'
+</pre>
+
+たとえば以下のようなSQLが実行されます。
+
+<pre>
+delete some from book
+</pre>
+
+<h4>テーブル名 table</h4>
+
+tableオプションでテーブル名を指定します。
+
+<pre>
+table => 'book'
+</pre>
+
+<h4>Where句 where</h4>
+
+Where句を記述するにはwhereオプションを使用します。
+
+<pre>
+where => {author => 'Ken', 'title' => 'Perl'}
+where => [
+  ['and', ':author{=}', ':title{like}'],
+  {author => 'Ken', title => '%Perl%'}
+]
+</pre>
+
+whereオプションの指定方法については「<a href="/blog/20110210130016.html">selectメソッド</a>」の「whereオプション」を見てください。Where句の生成の詳細については<a href="/blog/20110924132031.html">動的なWhere句の生成</a>を見てください。
+
+<h3>すべての行の削除 delete_all</h3>
+
+テーブルのすべての行を削除するには<strong>delete_all</strong>メソッドを使用します。deleteメソッドでは安全のためすべての行を削除することができないので、delete_allメソッドを使用します。
+
+<pre>
+$dbi->delete_all(table => 'book');
+</pre>
+
+対象のテーブルを<strong>table</strong>で指定します。
+
+次のようなSQLが発行されます。
+
+<pre>
+delete from book;
+</pre>
+

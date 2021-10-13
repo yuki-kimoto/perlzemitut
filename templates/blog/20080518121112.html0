@@ -1,0 +1,86 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/"><span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161126148016.html"><span itemprop="name">ファイル操作</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>ファイル名から拡張子を取り出す</h2>
+
+
+
+ファイル名から、拡張子を取り出すには<a href="/blog/20100225126425.html">File::Basename</a>モジュールの<strong>fileparse</strong>の第二引数で拡張子を指定します。戻り値の三つ目で、拡張子が得られます。
+
+<pre>
+use File::Basename;
+my ($base_name, $dir, $suffix) = fileparse($file_txt, '.txt');
+</pre>
+
+File::Basename モジュールの fileparse 関数の第2引数に、拡張子名を指定することで、拡張子を取り出すことができます。
+
+<a href="/blog/20100827127859.html">正規表現</a>を使って、拡張子のパターンを指定することもできます。
+
+<pre>
+use File::Basename;
+my $regex_suffix = qr/\.[^\.]+$/;
+my $suffix_txt = ( fileparse( $file_txt, $regex_suffix ) )[2];
+</pre>
+
+この正規表現は一番最後に出現する . より後ろの拡張子を取り出すものです。一番最初に現れる . より後ろの拡張子でをマッチさせたい場合は、「 qw(\..+$) 」という正規表現を使います。
+
+<h3>サンプル</h3>
+
+ファイル名から拡張子を取り出すサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use File::Basename 'fileparse';
+
+# ファイル名から、拡張子を取り出す。
+my $file_txt = 'dir1/dir2/base_name.txt';
+my $file_log = 'dir1/dir2/base_name.log';
+my $file_bak = 'dir1/dir2/base_name.log.bak';
+
+print "1: ファイル名から、拡張子を取り出す。( 拡張子名を指定 )\n";
+my ($base_name, $dir, $suffix) = fileparse($file_txt, '.txt');
+print "\$dir = $dir\n",
+  "\$base_name = $base_name\n",
+  "\$suffix = $suffix\n\n";
+
+print "2: ファイル名から、拡張子を取り出す。( 拡張子名のパターンを指定 )\n";
+my $regex_suffix = qr/\.[^\.]+$/;
+
+my $suffix_txt = (fileparse $file_txt, $regex_suffix)[2];
+my $suffix_log = (fileparse $file_log, $regex_suffix)[2];
+my $suffix_bak = (fileparse $file_bak, $regex_suffix)[2];
+
+print "\$suffix_txt = $suffix_txt\n",
+  "\$suffix_log = $suffix_log\n",
+  "\$suffix_bak = $suffix_bak\n";
+</pre>
+
+実行結果
+
+<pre>
+1: ファイルを作成する。
+C:\Users\kimoto\labo>perl a.pl
+1: ファイル名から、拡張子を取り出す。( 拡張子名を指定 )
+$dir = dir1/dir2/
+$base_name = base_name
+$suffix = .txt
+
+2: ファイル名から、拡張子を取り出す。( 拡張子名のパターンを指定 )
+$suffix_txt = .txt
+$suffix_log = .log
+$suffix_bak = .bak
+</pre>

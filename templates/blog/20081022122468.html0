@@ -1,0 +1,79 @@
+
+<h2>n日後の日付を求める</h2>
+
+n日後の日付を求めるには、n日を秒に変換してtime関数で取得した現在の時刻(エポックからの秒数秒)に加算します。加算した秒をlocaltime関数を使って、日付と時刻の表記に変換します。
+
+<pre>
+use strict;
+use warnings;
+use Time::Local 'timelocal';
+
+print "(1)n日後の日付を求める\n";
+
+# 2日後
+my $n = 2;
+
+# 日付を秒に直して加える。
+my $sec_from_epoch = time + (60 * 60 * 24 * $n);
+
+# 秒を日付と時刻に変換
+my ($sec, $min, $hour, $mday, $month, $year)
+  = localtime( $sec_from_epoch );
+
+$month++;
+$year += 1900;
+
+print "$n日後は、$year年$month月$mday日$hour時$min分$sec秒です。\n";
+</pre>
+
+実行結果
+
+<pre>
+(1)n日後の日付を求める
+2日後は、2008年10月24日23時2分43秒です。
+</pre>
+
+<h3>解説</h3>
+
+<h4>日付を秒に直して加算</h4>
+
+時刻を扱うときは秒に変換してから扱います。time関数でエポックからの秒数を取得できるので、それに n日後の秒数を加算します。
+
+<pre>
+# 2日後
+my $n = 2;
+
+# 日付を秒に直して加える。
+my $sec_from_epoch = time + (60 * 60 * 24 * $n); 
+</pre>
+
+特定の日付から2日後を取得したい場合は、まずTime::Localモジュールのtimelocal関数を使って、特定の日付のエポックからの秒数を求めます。
+
+その後は上の手順と同じです。
+
+<pre>
+use Time::Local 'timelocal';
+
+# 2000年3月31日
+my $year = 2000 - 1900;
+my $mon = 3 -1;
+my $mday = 31;
+my $sec_from_epoch = timelocal(0, 0, 0, $mday, $mon, $year);
+</pre>
+
+<h4>秒を日付と時刻に変換する</h4>
+
+localtime関数を使って秒を日付と時刻に変換します。
+
+<pre>
+# 秒を日付と時刻に変換
+my ($sec, $min, $hour, $mday, $month, $year)
+  = localtime( $sec_from_epoch );
+
+$month++;
+$year += 1900;
+</pre>
+
+<hr>
+<a href="/blog/20080229122347.html">Perl逆引き辞典/日付と時刻へ</a>
+

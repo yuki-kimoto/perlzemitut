@@ -1,0 +1,136 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/"><span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html"><span itemprop="name">Mojolicious</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>さくらのレンタルサーバーライトプランでCPANモジュールをインストールするためのスクリプト</h2>
+
+
+
+さくらのレンタルサーバーライトプラン(月額125円)でCPANモジュールをインストールするためのWebアプリケーション(CGIスクリプト)を書きました。さくらのレンタルサーバーライトプランでは、SSHやTelnetを使えないために、CPANモジュールのインストールは障壁の高いものになってはいますが、このツールを使うとあら簡単に、Webブラウザ上からモジュールをインストールすることができます。　 
+
+[f:id:perlcodesample:20110323012954p:image]
+
+<a href="/blog/20101221130016.html">Windows上でMojoliciousの開発を始めて、さくらのレンタルサーバーで公開するまでの手順</a>と同じ手順でさくらのレンタルサーバー上にFTPでアップロードしてください。app.cgiのパーミッションは755にする必要があります。
+
+ディレクトリ構成は以下のようにします。
+
+<pre>
+sakuracpanm - app.cgi
+</pre>
+
+モジュールのインストールはテキストボックスにモジュール名を入力して、インストールボタンを押すだけです。初回のCPANモジュールのインストールはcpanmの依存モジュールをインストールする必要があるため時間がかかります(5～10分)。気長に待ってください。だれでも利用できるので、インストールが終わったらすぐにこのツールを削除するか、パーミッションを000などにするなどしてください。
+
+<pre>
+#!/usr/bin/perl
+
+use FindBin;
+use lib "$FindBin::Bin/lib";
+
+use Mojolicious::Lite;
+use File::Copy 'move';
+use LWP::UserAgent;
+use utf8;
+
+# トップページ
+get '/' => sub {
+    my $self = shift;
+    
+    my $module = $self->req->param('module');
+    
+    $self->stash(error => '');
+    $self->stash(output => '');
+    
+    if ($module && $module =~ /^[:\w]+$/) {
+        my $home = $ENV{DOCUMENT_ROOT};
+        $home =~ s#/www$##;
+        
+        my @output;
+        my @cpanm;
+        eval {
+            chdir $home
+              or die qq{Can't change directory "$home": $!};
+            
+            my $ua = LWP::UserAgent->new;
+            my $res = $ua->get('http://xrl.us/cpanm/');
+            my $cpanm_content;
+            if ($res->is_success) {
+                $cpanm_content = $res->content;
+            }
+            else {
+                die qq{Can't donwlaod "cpanm"};
+            }
+            
+            push @cpanm, '#!/usr/bin/perl';
+            push @cpanm, "BEGIN {" .
+                             "\$ENV{HOME} = '$home';" .
+                             "use lib '$home/perl5/lib/perl5';" . 
+                         "}";
+            push @cpanm, $cpanm_content;
+            
+            open my $write_fh, '>', 'cpanm'
+              or die qq{Can't open "cpanm" for write: $!};
+            
+            print $write_fh join("\n", @cpanm);
+            
+            close $write_fh;
+            
+            my $output = `perl cpanm --local-lib=$home/perl5 $module 2>&1`;
+            push @output, split /\n/, $output;
+        };
+        
+        return $self->render(error => $@) if $@;
+        
+        $self->render(output => \@output);
+    }
+    elsif ($module) {
+        $self->stash(error => 'モジュール名を正しく入力してください');
+        $self->render;
+    }
+    else {
+        $self->render;
+    }
+} => 'index';
+
+app->start;
+
+__DATA__
+
+@@ index.html.ep
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <title>さくらのレンタルサーバーライト CPANモジュールインストール</title>
+  </head>
+  <body>
+    <h1>さくらのレンタルサーバーライト CPANモジュールインストール</h1>
+    <pre>
+    # インストールしたモジュールを利用したい場合はスクリプト(app.cgi)に以下のように記述します。
+    use FindBin;
+    use lib "$FindBin::Bin/../../perl5/lib/perl5";
+    
+    # このスクリプトはだれもが利用可能なのでインストールが終了したらすぐに削除してください。
+    </pre>
+    <form method="get" action="<%= url_for '/' %>" >
+      <div>モジュール <input type="text" name="module"><input type="submit" value="インストール" ></div>
+      <div style="color:red"><%= $error %></div>
+      <div>
+        % if ($output) {
+          % foreach my $line (@$output) {
+            <p style="margin:0; padding:0"><%= $line %></p>
+          % }
+        % }
+      </div>
+    </form>
+  </body>
+</html>
+</pre>
+
+(参考)<a href="/blog/20100408127089.html">File::Copy</a>、<a href="/blog/20100524127696.html">FindBin</a>
+

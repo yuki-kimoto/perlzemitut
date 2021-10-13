@@ -1,0 +1,161 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20140623140351.html";</script>
+
+<h2>掲示板の作成 | Mojolicious入門</h2>
+
+(書きかけ)
+
+ここまで急ぎ足で解説してきました。では、今回は実際にWebサイトを作成してみましょう。簡単な掲示板を作成してみます。Webサイトにおいて、ユーザーからのデータを登録、登録したデータを読み出して表示します。
+
+掲示板でも、コメントを登録して、登録されたコメントを読み出します。つまり、掲示板を作成できるようになれば、どんなサイトも作成可能ということですね。
+
+<h3>データベースの作成</h3>
+
+まず最初にデータベースのテーブルを作成します。テーブルの名前は「message」です。タイトルと書き込み内容を保存するために「title」と「content」という列を作成します。
+
+<pre>
+create table message (
+  id primary key,
+  title not null default '',
+  content not null default ''
+);
+</pre>
+
+<h3>掲示板のソースコード</h3>
+
+では早速ソースコードを書いてみます。
+
+<pre>
+use Mojolicious::Lite;
+use DBIx::Connector;
+
+# データベースファイル
+my $db_file = app->home->rel_file('bbs.db');
+
+# コネクションマネージャー
+my $conn = DBIx::Connector->new(
+  # データソース名
+  "dbi:SQLite:dbname=$db_file",
+  # ユーザー名
+  undef,
+  # パスワード
+  undef,
+  # DBIのオプション
+  {
+    RaiseError => 1,
+    PrintError => 0,
+    AutoCommit => 1,
+    sqlite_unicode => 1
+  }
+);
+
+get '/' => sub {
+  my $self = shift;
+  
+  # データベースハンドルを取得
+  my $dbh = $conn->dbh;
+  
+  # メッセージを取得
+my $sth = $dbi->prepare('select * from message');
+  $sth->execute;
+  my $messages = [];
+  while (my $row = $sth->fetchrow_hashref) {
+    push @$messages, $row;
+  }
+
+  # 描画
+  $self->render('index', messages => $messages);
+
+};
+
+# Create entry
+post '/' => sub {
+  my $self = shift;
+  
+  # フォームのデータ
+  my $title   = $self->param('title');
+  my $message = $self->param('message');
+  
+  # タイトルが存在しなければエラー
+  my $errors = [];
+  unless (length $title) {
+    push @$errors, 'タイトルを入力してください。';
+  }
+  # メッセージが存在しなければエラー
+  unless (length $message) {
+    push @$errors, 'メッセージを入力してください。;
+  }
+  
+  # エラーが存在すれば登録をせずに戻る
+  if (@$errors) {
+    $self->render('index', errors => $errors);
+    return;
+  }
+  
+  # データベースハンドル
+  my $dbh = $conn->dbh;
+  
+  # データの登録
+  my $sth = $dbh->prepare('insert into message (title, content) values (?, ?)');  $dbh->execute($title, $message);
+  
+  # リダイレクト
+  $self->redirect_to('index');
+};
+
+get '/update' => sub {
+  ...
+};
+
+post '/update' => sub {
+  ...
+};
+
+app->start;
+
+__DATA__
+
+@@ layouts/common.html.ep
+% my $title = stash('title');
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
+    <title><%= $title %></title>
+  </head>
+  <body>
+    %= content
+  </body>
+</html>
+
+@@ index.html.ep
+<%
+  my $messages = stash('messages');
+  my $errors = stash('errors');
+%>
+% layout 'common';
+
+  <h1>掲示板</h1>
+  <form action="<%= url_for('/') method="post" %>">
+    <div>
+      タイトル
+      <input type="text" name="title" >
+    </div>
+    <div>Message</div>
+    <div>
+      <textarea name="message" cols="50" rows="10" ></textarea>
+    </div>
+    <div>
+      <input type="submit" value="Post" >
+    </div>
+  </form>
+  <div>
+    % for my $message (@$messages) {
+      <div>
+        <hr>
+        <div>Title: <%= $message->{title} %></div>
+        <div>Message</div>
+        <div><%= $message->{content} %></div>
+      <div>
+    % }
+  </div>
+</pre>
+
+<a href="/blog/20100123126425.html">while文</a>を使ってデータベースのテーブルの行を、順番に読み込んでいます。

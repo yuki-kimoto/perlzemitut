@@ -1,0 +1,51 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Perlリンク集</h2>
+
+
+
+Perlに関するサイトへのリンク集です。
+
+      <ul>
+        <li>
+          <a href="http://japan.perlassociation.org/">JPA(Japan Perl Association)</a>
+        </li>
+        <li>
+          <a href="http://perltweet.yukikimoto.com/">Perlニュース</a>
+        </li>
+        <li>
+          <a href="http://www.kent-web.com/">KENT WEB</a>
+        </li>
+        <li>
+          <a href="https://mojodoc.perlzemi.com">Mojoliciousドキュメント日本語訳</a>
+        </li>
+        <li>
+          <a href="http://perldoc.jp/">perldoc.jp</a>
+        </li>
+        <li>
+          <a href="/blog/20100808127859.html">Perl公式ドキュメント一覧</a>
+        </li>
+        <li>
+          <a href="http://blogs.perl.org/">blogs.perl.org(英語)</a>
+        </li>
+        <li>
+          <a href="http://perl5.git.perl.org/perl.git">perl5.git.perl.org(英語)</a>
+        </li>
+        <li>
+          <a href="http://lists.perl.org/list/perl5-porters.html">perl5-porters(英語)</a>
+        </li>
+        <li>
+          <a href="http://mojolicious.org/">mojolicious.org(英語)</a>
+        </li>
+      </ul>
+

@@ -1,0 +1,66 @@
+
+<h2>morboをWindowsで動かすツール - winmorbo</h2>
+
+Mojolicious開発サーバー「morbo」をWindowsでうまく動作させるツール<b>winmorbo</b>をリリースしました。
+
+<blockquote>
+<a href="https://github.com/yuki-kimoto/winmorbo">winmorbo</a>
+</blockquote>
+
+Windowsでは、Mojolicious開発サーバーmorboはうまく動きません。なぜなら、ワーカープロセスは親TERMシグナルをうまく受信できないからです。
+
+このため、Windows上では、Web開発は、とても面倒なものになります。
+
+Windowsでmorboをうまく動作させるため、Mojo::Server::Morboを簡単な方法でハックしました。
+
+<h3>winmorboのインストール方法</h3>
+
+<h4>winmorbo.batのダウンロード</h4>
+
+まず、Mojoliciousプロジェクトディレクトリにwinmorb.batをダウンロードします。
+
+<blockquote>
+<a href="https://github.com/yuki-kimoto/winmorbo">winmorbo - Github</a>
+</blockquote>
+
+GitHubでwinmorbo.batをクリックし、Rawボタンをクリックしてwinmorbo.batをダウンロードします。
+
+<h4>winmorbo.batを実行</h4>
+
+Mojoliciousアプリケーションを実行するには以下のコマンドを実行します。
+
+Windowsバッチファイルなので、.bat拡張子は指定する必要はありません。
+
+このサンプルでは、Mojoliciousアプリケーションはapp.plです。
+
+<pre>
+    winmorbo app.pl
+</pre>
+
+ウィンドウが開いて次の画面がでれば成功です。
+
+<pre>
+    C:\Users\kimot\labo>cmd /C perl -x -S winmorbo app.pl
+    Server available at http://127.0.0.1:3000
+</pre>
+
+これでファイルを変更するたびに、自動的にmorboサーバーが再起動するようになります。
+
+<h3>よくある質問</h3>
+
+<h4>"Can't opendir(templates)"エラーが表示されます</h4>
+
+これは、Windowsのユーザーディレクトリに「Templates」ディレクトリがあるためです。
+
+Mojoliciousもは「templates」ディレクトリも使用します。
+
+この問題を解決するには、ひとつディレクトリを作成します（例：labo）。
+
+<pre>
+    cd C:\Users\kimot
+    mkdir labo
+    cd labo
+</pre>
+
+そして、laboディレクトリの中にapp.plを作成しましょう。
+

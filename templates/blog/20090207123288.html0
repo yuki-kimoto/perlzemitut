@@ -1,0 +1,77 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+      <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>require - モジュールを実行時に読み込む</h2>
+
+
+
+<strong>実行時にモジュールを読み込む</strong>には<strong>require</strong>を使用します。useがコンパイル時にモジュールを読み込むのに対して、requireは実行時に読み込みます。
+
+<pre>
+# モジュールの読み込み
+require モジュール名
+</pre>
+
+モジュール名は裸の文字列で指定する必要があります。クォートやダブルクォートで囲んだ文字列は受け付けません。また変数も受け付けません。
+
+<pre>
+# 裸の文字列でモジュール名を指定
+require CGI;
+</pre>
+
+モジュールを読み込むと、完全修飾名を使って、読み込んだモジュールに記述されている関数を使用することができるようになります。
+
+<pre>
+require Carp;
+
+# 完全修飾名でCarpモジュールのcroak関数を使用できる。
+Carp::croak("croak 関数");
+</pre>
+
+モジュールを読み込む場合はuseを使用するのが標準的な方法ですが、requireを使いたい場面が時にはあります。useを使うとコンパイル時にすべてのモジュールが読み込まれてしまいます。そのためモジュールが巨大な場合はコンパイル時に余分な時間がかかってしまいます。
+
+あるモジュールが必須のものでなくて、かつ大きなモジュールの場合は必要に応じてrequireを使って実行時に読み込むことでパフォーマンスへの影響を緩和することができる場合があります。
+
+<h3>サンプル</h3>
+
+requireを使ったサンプルです。
+
+<pre>
+# Carpモジュールを読み込む。
+require Carp;
+</pre>
+
+requireは、実行時にモジュールをインポートしてくれます。これが有効なのは、選択的にモジュールをインポートしたい場合です。
+
+たとえば、拡張子に応じて処理したい場合に、csvファイルを解析するモジュールとxmlを解析するモジュールのどちらか一方しか必要ないとします。
+
+このようなとき、以下ののように記述すると、読み込むモジュールが少なくてすみます。
+
+<pre>
+if ($ext eq '.csv') {
+  require Text::CSV;
+  # ...
+}
+elsif ($ext eq '.xml') {
+  require XML::Simple;
+  # ...
+}
+</pre>
+
+モジュールの読み込みが少ないということは、起動時間が短縮され、メモリの使用が抑えられるということです。useではif文などの条件分岐の中に書かれたとしても、すべてのモジュールがコンパイル時に読み込まれることになります。
+

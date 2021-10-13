@@ -1,0 +1,58 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161115147930.html">
+        <span itemprop="name">CPAN</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>日本のCPANミラーサイト</h2>
+
+
+
+<strong>CPAN</strong>の日本のミラーサイトを紹介しています。CPANはPerlのモジュールが配布されているサイトですべてのモジュールを無料で利用することができます。(<a href="http://www.cpan.org/">CPAN</a>)
+
+<pre>
+ftp://ftp.u-aizu.ac.jp/pub/CPAN
+ftp://ftp.kddilabs.jp/CPAN/
+http://ftp.nara.wide.ad.jp/pub/CPAN/
+ftp://ftp.nara.wide.ad.jp/pub/CPAN/
+http://ftp.jaist.ac.jp/pub/CPAN/
+ftp://ftp.jaist.ac.jp/pub/CPAN/
+ftp://ftp.dti.ad.jp/pub/lang/CPAN/
+ftp://ftp.ring.gr.jp/pub/lang/perl/CPAN/
+http://ftp.riken.jp/lang/CPAN/
+ftp://ftp.riken.jp/lang/CPAN/
+http://ftp.yz.yamagata-u.ac.jp/pub/lang/cpan/
+ftp://ftp.yz.yamagata-u.ac.jp/pub/lang/cpan/
+</pre>
+
+ftp://ftp.riken.jp/lang/CPAN/ がなんとなくいつも良い気がします。FTPとHTTPの違いはダウンロードするときにプロトコルが異なるだけで、ユーザから見た違いはあんまりないです。PerlはコアモジュールにHTTPクライアントがないですが、FTPクライアントはあるので、FTPのほうが若干良いかもしれません。
+
+<h3>CPANでのURLリストの追加方法</h3>
+
+CPANでURLリストを追加する方法です。
+<pre>
+# cpanシェル起動
+cpan
+
+# URLの確認
+o conf urllist
+
+# URLの追加
+o conf urllist unshift ftp://ftp.riken.jp/lang/CPAN/
+
+# 変更を有効にする
+o conf commit
+
+# cpanシェル終了
+q
+</pre>
+
+接続先のミラーに接続できない場合は、このように他のミラーを追加するとダウンロードがうまくいきます。
+

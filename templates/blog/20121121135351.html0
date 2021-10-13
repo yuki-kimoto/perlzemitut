@@ -1,0 +1,47 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20121121135351.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>rootユーザーからMojoliciousアプリケーションを管理する方法</h2>
+
+
+
+一般的にはMojoliciousのアプリケーションは、一般ユーザーで作成して、hypnotoadコマンドを使ってデプロイすると思います。
+
+つまりhypnotoadコマンドは、通常は、一般ユーザーで実行する必要があるということですね。でもrootから管理したいという要望はでてくるものです。一般ユーザーになってから実行するのだと、自動化ができないということも多いと思います。
+
+またperlbrewを使っている場合などは、rootから実行するとデフォルトのPerlを使ってしまうということも起こりますし、root権限で実行されるという問題も起こります。
+
+<h3>設定ファイルでuserとgroupを設定する</h3>
+
+root権限で実行したくはないので、hypnotoadの設定ファイルに、userとgroupを設定しましょう。こうすると、hypnotoadで実行される子プロセスが、ユーザー権限で動くことができます。
+
+<blockquote>
+[hypnotoad]
+user=kimoto
+group=kimoto
+</blockquote>
+
+<h3>perlbrewを使っている場合はPATHを設定する</h3>
+
+perlbrewを使っている場合は、ユーザーのperlがrootからは見えませんのでPATH環境変数を設定する必要があります。ですので、アプリケーションをシェルスクリプトでくるんで実行する必要があります。
+
+<pre>
+#!/bin/sh
+
+PATH="perlのパス:$PATH"
+hypnotoad アプリケーションのパス
+</pre>
+

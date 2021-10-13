@@ -1,0 +1,141 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161123147990.html">
+        <span itemprop="name">日付・時刻</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>存在する日付かどうかを判定する</h2>
+
+
+
+存在する日付かどうかを簡単に判定するには、Time::Localモジュールを利用します。
+Time::Localのtimelocal関数は指定した日付をエポックからの経過秒に変換する関数ですが、存在しない日付を指定すると例外を投げます。
+
+このことを利用すると存在する日付の判定を行うことができます。
+
+<pre>
+use strict;
+use warnings;
+
+use Time::Local 'timelocal';
+
+print "(1)存在する日付かどうかを確認する。\n";
+# Perlでは時刻は1900年からの経過年数で扱うので
+# 1900を引く。
+my $year = 2008 -1900;
+
+# 月は0から始まるので、求めたい月から1を引く。
+my $mon = 10 - 1;
+
+# そんな日はないはず。
+my $mday = 32;
+
+# 存在しない日を指定すると例外を投げるのでevalでキャッチ
+eval {
+  timelocal(0, 0, 0, $mday, $mon, $year);
+};
+
+# 復元
+$year += 1900;
+$mon++;
+
+# 例外が起こると$@がセットされる。
+if ($@) {
+  print "$year年$mon月$mday日は存在しません。\n\n";    
+}
+else {
+  print "$year年$mon月$mday日は存在します。\n\n";
+}
+
+
+print "(2)日付判定を関数にする。\n";
+if (day_exist($year, $mon, $mday)) {
+  print "$year年$mon月$mday日は存在します。\n";    
+}
+else {
+  print "$year年$mon月$mday日は存在しません。\n";
+}
+
+# 日付が存在するかを判定する関数
+sub day_exist {
+  my ($year, $mon, $mday) = @_;
+  $year -= 1900;
+  $mon--;
+    
+  require Time::Local;
+  eval {
+    Time::Local::timelocal(0, 0, 0, $mday, $mon, $year);
+  };
+  return $@ ? 0 : 1;
+}
+</pre>
+
+(参考)<a href="/blog/20100312126967.html">eval</a>
+
+<h3>存在する日付かどうかを確認する。</h3>
+
+<h4>日付を扱うときの注意</h4>
+
+Perlの標準関数では、年は1900年からの経過年数で扱います。月は1月は0、2月は1のように0からスタートします。
+
+Time::Localモジュールの timelocal関数に引数を渡すときはこのことを考慮する必要があります。
+
+<pre>
+# Perlでは時刻は1900年からの経過年数で扱うので
+# 1900を引く。
+my $year = 2008 -1900; 
+
+# 月は0から始まるので、求めたい月から1を引く。
+my $mon = 10 - 1;
+
+# そんな日はないはず。
+my $mday = 32; 
+</pre>
+
+<h4>日付が存在するかの判定を行う</h4>
+
+Time::Localモジュールのtimelocal関数を使用して日付の判定を行います。
+
+timelocal関数の引数は、「秒分時日月年」の順で指定する必要があるので、ダミーとして秒分時には0を渡しています。
+
+存在しない日付の場合はtimelocal関数は例外を投げますので、evalでキャッチします。例外がおきた場合は$@に内容がセットされるので、これで判定を行います。
+
+<pre>
+use Time::Local 'timelocal';
+eval {
+  timelocal(0, 0, 0, $mday, $mon, $year);
+};
+
+if ($@) {
+  print "$year年$mon月$mday日は存在しません。\n\n";    
+}
+else {
+  print "$year年$mon月$mday日は存在します。\n\n";
+}
+</pre>
+
+<h4>日付が存在するかを判定する関数を作成する。</h4>
+
+判定方法が上記のようにかなり煩雑なので、引数を「年月日」で指定できる日付判定関数を作っておくと便利です。
+
+<pre>
+sub day_exist {
+  my ($year, $mon, $mday) = @_;
+  $year -= 1900;
+  $mon--;
+    
+  require Time::Local;
+  eval {
+    Time::Local::timelocal(0, 0, 0, $mday, $mon, $year);
+  };
+  return $@ ? 0 : 1;
+}
+</pre>
+

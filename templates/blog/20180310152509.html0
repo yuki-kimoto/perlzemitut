@@ -1,0 +1,180 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>Fcntl - flock/seek/sysopen関数の定数をインポート</h2>
+
+
+
+<b>Fcntl関数</b>を使用すると、flock関数やseek関数で利用する定数をインポートすることができます。
+
+<pre>
+# flock関数の定数
+use Fcntl ':flock';
+
+# seek関数の定数
+use Fcntl ':seek';
+
+# sysopen関数の定数
+use Fcntl ':DEFAULT';
+</pre>
+
+<h4>flock関数で使う定数</h4>
+
+インポートされる<a href="/blog/20080814121872.html">flock関数</a>で使う定数です。
+
+<table>
+  <tr>
+    <td>
+      LOCK_SH
+    </td>
+    <td>
+      読み込みロック
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      LOCK_EX
+    </td>
+    <td>
+      書き込みロック
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      LOCK_NB
+    </td>
+    <td>
+      ノンブロッキングモード
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      LOCK_UN
+    </td>
+    <td>
+      ロック解除
+    </td>
+  </tr>
+
+</table>
+
+<h4>seek関数で使う定数</h4>
+
+インポートされるseek関数で使う定数です。
+
+<table>
+  <tr>
+    <td>
+      SEEK_SET
+    </td>
+    <td>
+      ファイルの先頭
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      SEEK_CUR
+    </td>
+    <td>
+      現在位置
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      SEEK_END
+    </td>
+    <td>
+      ファイルの最後
+    </td>
+  </tr>
+
+</table>
+
+<h4>sysopen関数で使う定数</h4>
+
+インポートされる<a href="/blog/20080804121794.html">sysopen関数</a>で使うファイルモードに関する定数です。
+
+<table>
+  <tr>
+    <td>
+      O_RDONLY	
+    </td>
+    <td>
+      読み込み
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      O_WRONLY	
+    </td>
+    <td>
+      書き込み
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      O_RDWR
+    </td>
+    <td>
+      読み書き両用
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      O_CREAT	
+    </td>
+    <td>
+      ファイルが存在しなければ作成する。
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      O_EXCL
+    </td>
+    <td>
+      ファイルが存在すればopenを失敗させる
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      O_APPEND	
+    </td>
+    <td>
+      追加書き込み
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      O_TRUNC	
+    </td>
+    <td>
+      ファイルを0バイトに切り詰める
+    </td>
+  </tr>
+
+</table>

@@ -1,0 +1,122 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>IO::Capture - 標準出力・標準エラー出力をキャプチャ</h2>
+
+標準出力を試験した場合がときどきあります。対話的なプログラミングを作成したり、print をソースコードの中で使用している関数を試験したい場合などです。
+
+標準出力を取得するには、<a href="http://search.cpan.org/dist/IO-Capture/lib/IO/Capture.pm">IO::Capture</a>というモジュール使用します。標準出力が取得できれば、いつもどおりの自動試験を行うだけです。
+
+IO::Captureは標準モジュールではないので、
+
+<pre>
+cpan IO::Capture
+</pre>
+
+でインストールします。
+
+<h3>1. 標準出力をキャプチャする</h3>
+
+標準出力を取得するには、IO::Capture::Stdoutモジュールを使用します。IO::Captureモジュールをインストールすると一緒についてきます。
+
+startメソッドでキャプチャ開始、stopメソッドでキャプチャ終了です。そのあとに、readメソッドを呼び出すと、キャプチャした標準出力を取得できます。
+
+<pre>
+use IO::Capture::Stdout;
+
+my $capture = IO::Capture::Stdout->new;
+$capture->start;
+print "aaa";
+$capture->stop;
+my $stdout = $capture->read;
+</pre>
+
+複数回の標準出力を取得したい場合は以下のように記述できます。
+
+<pre>
+$capture->start;
+print "aaa";
+print "bbb";
+$capture->stop;
+my @stdout = $capture->read;
+</pre>
+
+リストコンテキストで、readを呼び出すと、("aaa", "bbb") が取得できます。
+
+<h4>標準の機能だけを使って標準出力をキャプチャする方法</h4>
+
+モジュールを使わないで、標準の機能だけを使って標準出力をキャプチャする方法も存在したので、記述しておきます。
+
+open関数で、STDOUTの出力先を切り替える方法です。
+
+<pre>
+my $stdout;
+
+# STDOUTのキャプチャを開始
+open my $temp, '>&', STDOUT;
+close STDOUT;
+open STDOUT, '>', \$stdout;
+
+print "hoge";
+
+# STDOUTのキャプチャを終了
+close STDOUT;
+open STDOUT, '>&', $temp;
+close $temp;
+
+print $stdout; # "hoge"が出力
+</pre>
+
+
+<h3>2. 標準エラー出力をキャプチャする</h3>
+
+IO::Capture::Stderr を使って同じようにできます。
+
+<pre>
+use IO::Capture::Stderr;
+
+my $capture = IO::Capture::Stderr->new;
+$capture->start;
+print STDERR "aaa";
+$capture->stop;
+my $stderr = $capture->read;
+</pre>
+
+<h4>標準の機能だけを使って標準エラー出力をキャプチャする方法</h4>
+
+モジュールを使わないで、標準の機能だけを使って標準エラー出力をキャプチャする方法も存在したので、記述しておきます。
+
+open関数で、STDERRの出力先を切り替える方法です。
+
+<pre>
+my $stderr;
+
+# Start capture STDERR
+open my $temp, '>&', STDERR;
+close STDERR;
+open STDERR, '>', \$stderr;
+
+print STDERR "hoge";
+
+# End capture STDERR
+close STDERR;
+open STDERR, '>&', $temp;
+close $temp;
+
+
+print $stderr; # "hoge" が出力
+</pre>

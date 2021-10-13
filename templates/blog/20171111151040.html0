@@ -1,0 +1,85 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>return関数 - 戻り値の返却</h2>
+
+
+
+<b>return関数</b>を使うとサブルーチンの戻り値を返却することができます。
+
+<pre>
+return 戻り値
+</pre>
+
+実際に使用する場合は、returnをサブルーチンの中で記述します。
+
+<pre>
+sub sum {
+  my ($num1, $num2) = @_;
+
+  my $total = $num1 + $num2;
+  
+  # 戻り値の返却
+  return $total;
+}
+</pre>
+
+戻り値は、サブルーチンを呼びだして取得できます。
+
+<pre>
+my $return_value = sum(2, 4);
+</pre>
+
+<h4>空のreturn</h4>
+
+空のreturnは、特殊な構文で、<a href="/blog/20080608121292.html">リストコンテキスト</a>の場合は、空リストを、<a href="[/blog/20080608121292.html">スカラコンテキスト</a>の場合は、undefを返却します。
+
+<pre>
+# 空のリターン
+return
+</pre>
+
+Perlでは空のリターンは頻繁に使われる構文です。
+
+<h4>複数の戻り値</h4>
+
+Perlでは、<a href="/blog/20100308126967.html">リスト</a>や<a href="/blog/20161012147627.html">配列</a>を使用すると複数の値を返却することができます。
+
+<pre>
+# リストを返却
+return (3, 5);
+
+# 配列を返却
+my @nums = (3, 5);
+return @nums;
+</pre>
+
+この方法で複数の値を返すことができるのですが、個人的には、配列を返すよりも、配列のリファレンスを返すことをお勧めします。
+
+<h4>returnとexitの違いは?</h4>
+
+returnはサブルーチンの中から呼び出し元に戻るときに利用するのに対して、exitはプログラムそのものを終了させてしまいます。サブルーチンを終えるときは、必ずreturnを使うようにしましょう。exitを明示的に記述することは、ほぼないです。
+
+<h3>returnの使い方についてさらに詳しく</h3>
+
+サブルーチンの具体的な作成方法については、以下の記事をご覧ください。returnの使い方についても詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20101130129876.html">サブルーチンの作成方法 - 引数、戻り値</a>
+  </li>
+</ul>

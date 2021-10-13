@@ -1,0 +1,141 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20140402139642.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>パラメーターの受け取り方 | Mojolicious入門</h2>
+
+
+
+では基本のアプリケーションに機能を追加していきましょう。今回はMojoliciousにおける<strong>パラメーターの受け取り方</strong>を解説したいと思います。ここで、パラメーターとは、ユーザーから送信されるデータのことだと考えてください。パラメーターの受け取り方には、三つの方法があります。
+
+<ol>
+  <li>
+    URLの一部
+  </li>
+  <li>
+    クエリ文字列
+  </li>
+  <li>
+    POSTデータ
+  </li>
+</ol>
+
+今回はこのうち「URLの一部」として受け取る方法と、「クエリ文字列」として受け取る方法の二つを解説したいと思いま。POSTデータとしてデータを送信する方法は、フォームの利用を解説するときに、改めて解説したいと思います。今のところは、みっつの方法があることを頭に入れておいてください。
+
+<h3>URLの一部としてパラメーターを受け取る</h3>
+
+最初に、URLの一部としてパラメーターを受け取る方法を解説します。たとえば次のようなURLを考えてみてください。
+
+<pre>
+/date/20131016
+/date/20140203
+</pre>
+
+これは、URLの一部に日付が含まれています。このようなURLでアクセスしてきたときに、日付の値の部分を取得する方法を見てみましょう。コードを書いてみます。
+
+<pre>
+use Mojolicious::Lite;
+
+# ルーティングのパターンの指定
+get '/date/:date' => sub {
+  my $self = shift;
+  
+  # パラメーターの受け取り
+  my $date = $self->param('date');
+
+  $self->render(text => "Data: $date");
+};
+
+app->start;
+</pre>
+
+このアプリケーションを実行して「/date/20131016」のようにアクセスすると、日付の値が表示されると思います。
+
+<h4>ルーティングのパターンの指定</h4>
+
+パラメーターを受け取るためには、ルーティングのパターンを定義する必要があります。
+
+<pre>
+# ルーティングのパターンの指定
+get '/date/:date' => sub { ... };
+</pre>
+
+「:date」という部分に注目してください。URLの一部をパラメーターにしたい場合は、その部分を「:名前」と書きます。このように記述すると<strong>param</strong>メソッドを使って、その値をパラメーターとして受け取ることができます。
+
+<pre>
+# パラメーターの受け取り
+my $date = $self->param('date');
+</pre>
+
+<h4>paramメソッドの注意点</h4>
+
+paramメソッドを使うときは、注意がひとつ必要です。それはparamメソッドは、スカラコンテキストとリストコンテキストで、異なる結果を返却するからです。スカラコンテキストでは、ひとつのパラメーターの値が返却されます。パラメーターに複数の値がある場合は、最初の値が返却されます。パラメーターが複数になるのは、フォームのチェックボックスなどで、複数の値が選択されている場合などです。
+
+一方リストコンテキストで受け取ると、パラメーターの値が複数あった場合には、複数の値を取得します。
+
+<pre>
+# スカラコンテキスト
+my $value = $self->param('foo');
+
+# リストコンテキスト
+my @values = $self->param('foo');
+</pre>
+
+このような理由で、paramメソッドを直接呼び出して値を利用しようとすると、思わぬ結果になってしまうことがあります。ミスをあらかじめ防ぐには、変数に代入してから利用するのが安心です。
+
+<h3>クエリ文字列としてパラメーターを受け取る</h3>
+
+次は<strong>クエリ文字列</strong>としてパラメーターを受け取る方法を解説します。クエリ文字列とは、URLの後ろに続く、パラメーターを指定する部分のことです。次のURLを見てください。
+
+<pre>
+/diary/?date=20131016&user=kimoto
+/diary/?date=20121013&user=kimoto
+</pre>
+
+「?」の後ろからクエリ文字列は始まります。パラメーター名と値は「=」で区切られます。「&」を使うことで、複数のパラメーターを連結することができます。ひとつの目のURLでは、パラメーター名は二つあり「date」と「user」です。それぞれに対応する値は「20131016」と「kimoto」になっています。
+
+ではパラメーターの値を取得してみましょう。
+
+<pre>
+use Mojolicious::Lite;
+
+# ルーティングのパターンの指定
+get '/diary' => sub {
+  my $self = shift;
+  
+  # パラメーターの受け取り
+  my $date = $self->param('date');
+  my $user = $self->param('user');
+
+  $self->render(text => "Date: $date, User: $user");
+};
+
+app->start;
+</pre>
+
+このアプリケーションを起動して「/diary/?date=20131016&user=kimoto」というURLでアクセスすると「Date: 20131016, User: kimoto」と表示され、パラメーターを取得できていることがわかります。
+
+<h4>パラメーターの取得</h4>
+
+パラメーターの取得は<strong>param</strong>を使います。paramメソッドは汎用的に設計されていて、パラメーターは、URLの一部としても受け取ることができますし、クエリ文字列から受け取ることもできます。
+
+<pre>
+# パラメーターの受け取り
+my $date = $self->param('date');
+my $user = $self->param('user');
+</pre>
+
+このようにパラメーターを使うと、ユーザーから送信されたデータを、プログラムの中で利用することができます。
+

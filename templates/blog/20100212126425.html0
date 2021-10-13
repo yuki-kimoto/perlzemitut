@@ -1,0 +1,94 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>die関数 - エラーメッセージを表示してプログラムを終了</h2>
+
+
+<strong>エラーメッセージを表示してプログラムを終了</strong>するには<strong>die関数</strong>を使用します。メッセージの末尾にはプログラムが終了した行番号が自動的に追加されます。行番号を表示させないようにするには末尾を改行で終えます。
+
+<pre>
+# エラーメッセージを表示してプログラムを終了
+
+# 行番号あり
+die $message;
+
+# 行番号なし
+die "$message\n";
+</pre>
+
+引数が存在しなかった場合に使用方法を表示してプログラムを終了させるサンプルです。$0はスクリプト名です。
+
+<pre>
+# 引数が存在しなかった場合にプログラムを終了
+my $file = shift;
+die "Usage: $0 [file]" unless $file;
+</pre>
+
+ファイルオープンに失敗した場合にプログラムを終了させるサンプルです。
+
+<pre>
+# ファイルオープンに失敗した場合にプログラムを終了
+my $file = 'a.txt';
+open my $fh, '<', $file
+  or die "Can't open file \"$file\": $!";
+</pre>
+
+プログラムが正常に終了した場合の終了ステータスは0です。dieでプログラムを終了した場合の終了ステータスは0以外の値になります。dieの終了ステータスは次のような規則で決まります。
+
+<pre>
+1. $! を数値で評価した値。(OSから通知されたエラー)
+2. $!が0だった場合は($? >> 8)。(子プロセスの終了ステータス)
+3. ($? >> 8)が0だった場合は255
+</pre>
+
+<h3>例外処理</h3>
+
+Javaなどの言語では例外と呼ばれる仕組みが用意されています。Perlではdieと<a href="/blog/20100312126967.html">eval</a>ブロックを使用する簡潔な例外処理機構が用意されています。
+
+例外を投げるにはdieを使用します。例外をキャッチするには「eval {}」を使用します。例外が発生したかどうかの判定には$@を使用します。例外が発生した場合は$@にエラーメッセージが設定されます。
+
+<pre>
+# 例外処理の流れ
+eval {
+  # dieを使うプログラムを終了させるような処理
+};
+
+if ($@) {
+  # 例外処理
+}
+</pre>
+
+例外処理の簡単なサンプルです。
+<pre>
+# 例外処理
+my $num;
+eval {
+  die "Number is undefined." unless defined $num;
+};
+
+if ($@) {
+  die "Catch and throw again $@";
+}
+</pre>
+
+Perlの例外処理についての詳しい解説は以下を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20100411127089.html">Perlの例外処理の仕組みを理解しよう</a>
+  </li>
+</ul>

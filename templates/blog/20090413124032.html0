@@ -1,0 +1,98 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>fork関数 - プロセスを分岐する</h2>
+
+
+<b>fork</b>関数を使用すると<b>プロセスをふたつに分岐</b>することができます。分岐したひとつのプロセスは親プロセス、もうひとつのプロセスは子プロセスになります。
+
+<h3>fork関数</h3>
+
+fork関数は引数をとりません。戻り値は分岐したプロセスが親プロセスの場合は、分岐した子プロセスのプロセスIDになります。子プロセスの場合は、0になります。forkが失敗した場合はundefが返ります。
+
+<pre>
+my $pid = fork;
+</pre>
+
+<h3>forkの戻り値を考慮する</h3>
+
+親プロセスの場合、子プロセスの場合、forkが失敗した場合の3通りについて考える必要があります。
+
+<pre>
+my $pid = fork;
+
+# forkが失敗した場合
+die "Cannot fork: $!" unless defined $pid;
+
+if ($pid) {
+  # 親プロセスの場合($pid に子プロセスのプロセスIDが代入されている)
+}
+else {
+  # 子プロセスの場合$pid に0が代入されている
+}
+</pre>
+
+<h3>forkが行っていること</h3>
+
+forkが行うことは自分のプロセスのコピーです。自分自身のプロセスのコピーですから、それまでに使用していた変数は親プロセスでも子プロセスでも使用することができます。forkした後に変数に変更を加えた場合は、それぞれのプロセスだけで反映され、互いに影響を与えることはありません。
+
+プロセス間通信については「<a href="/blog/20161103147817.html">Perlで「プロセス間通信」を行う</a>」をご覧ください。
+
+<h3>forkの使い道</h3>
+
+<h4>1. 並列で処理を行う</h4>
+
+forkを行えば並列で処理を行うことができます。シングルタスクでは性能が満たせない場合に利用することがあります。
+
+<h4>2. 役割を分担する</h4>
+
+ある手の場面においてひとつのプロセスがすべてを担当するよりも、プロセスを分岐させてそれぞれのプロセスが専門に行ったほうが記述が簡潔になることがあります。
+
+<h4>3. 複数のプロセスを管理する</h4>
+
+fork-execというテクニックを使用すると、分岐させた子プロセスをまったく異なるプロセスに置き換えることができます。たとえば、CPUやメモリの使用状況をみるvmstatというプロセスに置き換えることができます。親プロセスは子プロセスのプロセスIDを知っているので、親プロセスを制御を通じて、子プロセスを制御することができます。
+
+<h3>forkのサンプルコード</h3>
+
+<pre>
+use strict;
+use warnings;
+
+my $pid = fork;
+
+die "Cannot fork: $!" unless defined $pid;
+
+if ($pid) {
+  print "親プロセス(子プロセスID: $pid)\n";
+}
+else {
+  print "子プロセス\n";
+}
+</pre>
+
+<h3>実行結果</h3>
+
+分岐してそれぞれがprint文を実行していることがわかります。(Fedora7確認)
+
+<pre>
+親プロセス( 子プロセスID: 25229 )
+子プロセス
+</pre>
+
+<h3>Windowsでの注意</h3>
+
+fork関数はWindowsでも実行することができますが、Windowsのfork関数はスレッドを使って擬似的に実現しているため本当のforkとは異なります。

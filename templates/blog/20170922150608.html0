@@ -1,0 +1,70 @@
+
+<h2>Perlモジュール紹介 - CPANの豊富なジュールの紹介</h2>
+
+<a href="/blog/20091116124667.html:title">Perlモジュール徹底解説</a>では、Perlのモジュールについて詳しく解説していますが、最近は時間が取れずに、解説を書きたいモジュールがあっても、詳しい解説が書けないことが多くなっています。
+
+そこで、モジュール紹介という形で、簡単に紹介して、リンクを張りたいと思います。「リンクに掲載してほしい」というモジュールがあれば、コメント欄にモジュール名と一行解説をどうぞ。自推、他推問いません。すべて紹介します。
+
+<h4>FFI - Perlから共有ライブラリ(.so, .dll)を直接呼び出す</h4>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20121207135484.html">FFI::Raw</a>
+    </td>
+    <td>
+      シンプルなFFIモジュール
+    </td>
+    <td>
+      <a href="http://search.cpan.org/dist/FFI-Raw/lib/FFI/Raw.pm">cpan</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="https://qiita.com/yukikimoto/items/8e595d8b890294b45912">FFI::Platypus</a>
+    </td>
+    <td>
+      機能豊富なFFIモジュール
+    </td>
+    <td>
+      <a href="http://search.cpan.org/dist/FFI-Platypus/lib/FFI/Platypus.pm">cpan</a>
+    </td>
+  </tr>
+
+</table>
+
+<h4>日付・時刻</h4>
+
+<table>
+  <tr>
+    <td>
+      <a href="http://www.moongift.jp/2014/10/time-moment-%E3%81%95%E3%81%BE%E3%81%96%E3%81%BE%E3%81%AA%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%92%E6%84%8F%E8%AD%98%E3%81%97%E3%81%9F/">Time::Moment</a>
+    </td>
+    <td>
+      日付・時刻の高速な処理
+    </td>
+    <td>
+      <a href="http://search.cpan.org/dist/Time-Moment/lib/Time/Moment.pod">cpan</a>
+    </td>
+  </tr>
+
+</table>
+
+<h4>人工知能</h4>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20170713149995.html">AI::MXNet</a>
+    </td>
+    <td>
+      MXNet機械学習ライブラリのPerlインターフェース
+    </td>
+    <td>
+      <a href="http://search.cpan.org/dist/AI-MXNet/lib/AI/MXNet.pm">cpan</a>
+    </td>
+  </tr>
+
+</table>
+

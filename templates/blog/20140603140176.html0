@@ -1,0 +1,69 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20140603140176.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Mojolicious 5.0がリリースされました</h2>
+
+
+
+Mojolicious 5.0がリリースされました。Mojoliciousのリリース報告によるとコミュニティも広がっているようですね。Mojoliciousは、Ruby on Railsに比べると、Webフレームワークの部分に特化しているので、コンパクトで、癖がなく、非常に扱いやすい印象を受けます。
+
+<h3>Mojolicious 5.0で追加された機能</h3>
+
+<ul>
+  <li>
+    例外ページとNot Foundページが新しくデザインされました。
+  </li>
+  <li>
+    簡単で拡張可能なフォームバリデーション機能の追加。
+  </li>
+  <li>
+    CSRFプロテクション
+  </li>
+  <li>
+    テンプレートバリアント。スマートフォン用のデザインとPCのデザインで切り替えが簡単にできます。
+  </li>
+  <li>
+    Mojo::DOMの機能の強化
+  </li>
+  <li>
+    新しいフック: 「around_action」と「before_render」
+  </li>
+  <li>
+    SO_REUSEPORT: ゼロダウンタイムリスタートと高いパフォーマンスのための新しい方法
+  </li>
+  <li>
+    ローテーティングシークレット: 無効なセッションを作らずに、シークレットを変更可能。
+  </li>
+  <li>
+    ノンブロッキングブリッジ
+  </li>
+  <li>
+    チープヘルパー
+  </li>
+  <li>
+    オプショナルなプレースホルダーがどこでも有効になった
+  </li>
+  <li>
+    新しいJSONのためのRFC 7159のサポート
+  </li>
+  <li>
+    permessage-deflate: WebSocket圧縮
+  </li>
+  <li>
+    Minion: ジョブキューのための新しい別のプロジェクト。
+  </li>
+</ul>
+

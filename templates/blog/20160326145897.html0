@@ -1,0 +1,60 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20130416136637.html">
+      <span itemprop="name">言語実装</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>opnames.h</h2>
+
+
+
+<strong>opnames.h</strong>には、オペレーションコードが記述されています。
+
+<pre>
+/* opname.h */
+typedef enum opcode {
+  OP_NULL    = 0,
+  OP_STUB    = 1,
+  OP_SCALAR  = 2,
+  OP_PUSHMARK  = 3,
+  OP_WANTARRAY   = 4,
+  OP_CONST   = 5,
+  OP_GVSV    = 6,
+  ...
+};
+</pre>
+
+Perlは、構文解析が行われた後に、コードが、構文木として表現されるのですが、構文木のひとつひとつのノードは、オペレーションと呼ばれます。これは「OP型」として表現されます。たとえば「pushする」とか「ハッシュのキーの存在を確かめる」とか「サブルーチンを実行する」とか「スカラを表現する」とか、そういうPerlのプログラミング上での操作が、オペレーションによって表現されます。
+
+オペレーションの種類を表すのが、オペレーションコードです。これは、列挙型です。
+
+「opnames.h」には、オペレーションコードが書かれていますが、それが、何を表すのかという解説がありません。解説を見たい場合は、「opcode.h」の「PL_op_desc」を参照するのがよいでしょう。
+
+<pre>
+/* opcode.h */
+EXTCONST char* const PL_op_desc[] = {
+  "null operation",
+  "stub",
+  "scalar",
+  "pushmark",
+  "wantarray",
+  "constant item",
+  "glob value",
+  ...
+};
+</pre>
+
+<hr>
+<a href="/blog/20130416136637.html">Perl言語研究</a>
+

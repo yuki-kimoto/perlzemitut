@@ -1,0 +1,83 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+
+<h2>Selenium::Chrome - Chromeを使ったJavaScript対応のWebスクレイピング</h2>
+
+Selenium::Chromeを使うと、Chromeを使ったJavaScript対応のWebスクレイピングができます。Selenium::Chromeは<a href="/blog/20210105145700.html">Selenium::Remote::Driver</a>をChrome用に拡張したものです。Selenium::Remote::Driverをインストールすると利用できるようになります。
+
+<h4>Windows, Macで実行する場合</h4>
+
+<pre>
+# Windows, Macで実行する場合
+use Selenium::Chrome;
+my $driver = Selenium::Chrome->new;
+$driver->get('http://www.google.com');
+print $driver->get_title();
+$driver->shutdown_binary();
+</pre>
+
+<h4>Unix/LinuxなどGUI画面がない場合に、ヘッドレス実行する場合</h4>
+
+GUI環境がない場合にCUI画面で実行する場合は以下のようにヘッドレス実行します。
+
+<pre>
+# Unix/LinuxなどGUI画面がない場合に、ヘッドレス実行する場合
+use Selenium::Chrome;
+my $driver = Selenium::Chrome->new(
+  extra_capabilities => {
+    'goog:chromeOptions' => {
+      args => ['headless', 'disable-gpu', 'window-size=1920,1080', 'no-sandbox' ]
+    }
+  }
+);
+$driver->get('http://www.google.com');
+print $driver->get_title();
+$driver->shutdown_binary();
+</pre>
+
+以下のようなエラーが発生した場合は、上記のオプションをつけてヘッドレス実行してください。
+
+<blockquote>
+Could not create new session: unknown error: Chrome failed to start: exited abnormally.
+  (unknown error: DevToolsActivePort file doesn't exist)
+  (The process started from chrome location /usr/bin/google-chrome is no longer running, so ChromeDriver is assuming that Chrome has crashed.) at access.pl line 79.
+</blockquote>
+
+<h3>実行環境の準備</h3>
+
+Selenium::Chromeを使ったJavaScript対応のWebスクレイピングの実行環境として、Chromeブラウザ本体とChromeDriverが必要になります。ChromeDriverはChrome本体を操作するためのソフトウェアです。環境構築手順はOSによって異なります、以下を参考にしてください。
+
+バイナリ互換性の問題が発生しないように、Chromeブラウザ本体とChromeDriverのバージョンはできる限り合わせるのが良いです。
+
+<h4>Unix/Linuxの場合</h4>
+
+<a href="https://centos.perlclub.net/blog/20210103090837.html">ChromeDriverをインストールする - Cent OS 7</a>
+
+<a href="https://centos.perlclub.net/blog/20210104090837.html">Google Chromeをインストールする - CentOS 7</a>
+
+Ubuntu、Debian、FreeBSDなどの他の<a href="https://linux.perlclub.net/">UNIX/Linux</a>の場合は、Chromeブラウザ本体とChromeDriverのインストール方法を検索してみましょう。
+
+<h4>Windows</h4>
+
+<a href="https://qiita.com/omokawa_yasu/items/2d985efb346dd889fe27">SPAサイトにおいて、Selenium::Remote::DriverでGUIテストを行う</a>の環境構築手順が参考になります。
+
+<a href="https://perlzemi.com/blog/20080602121231.html">Active Perl</a>でも<a href="https://perlzemi.com/blog/20180808153368.html">Strawberry Perl</a>でも大丈夫かと思います。
+
+<h4>Macの場合</h4>
+
+<a href="https://sironekotoro.hateblo.jp/entry/2020/06/06/185455">Perl から Selenium を使う</a>の環境構築手順が参考になります。

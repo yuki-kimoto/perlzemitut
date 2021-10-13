@@ -1,0 +1,91 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">誤差</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>数値と誤差</h2>
+
+
+
+小数をコンピュータで表現するには誤差が問題になります。2進数で表現できない小数は誤差が発生します。
+
+コンピュータは数値を内部的には2進数としてしか表現できません。整数についてはどんな数でも2進数として表現できます。
+
+問題になるのは小数です。２進数で表現できる少数は、0.5, 0.25, 0.125, 0.0625 ( 順に、1/2, 1/4, 1/8, 1/16 ) などの1/2のn乗で表現される数と、これらの和で表現される数( たとえば 0.75 )だけです。
+
+0.3 というのはいくら2を乗算しても整数になりませんから、2進数で正確に表現することができません。コンピュータはこのような数を近似することによって何とか扱います。0.3は、2進数を使って以下のように近似されます。
+
+<pre>
+0.3　 =　1/4 + 1/32 + 1/64 + 1/512
+　　=　0.25 + 0.03125 + 0.015625 + 0.001953125
+　　=　0.298828125
+</pre>
+
+このようにより小さな2進数を加算していくことで近似値をさらに実際の値に近づけることができます。それでも実際の値である0.3には決して等しくなりません。( 0.3と等しくなるのは、極限を扱う数学の世界だけです。 現実世界の有限の足し算では、0.3と等しくなりません。)
+
+このようにコンピュータでは、2進数の和で表現できる数以外を扱うときは必ず誤差が発生しています。
+
+<h3>1と0.1を10回加算したものは異なる</h3>
+
+1は2進数として表現できます。一方0.1は2進数では表現できません。コンピュータの世界では0.1は本当の0.1ではなくて0.1の近似値だからです。だから、0.1を10回加算しても1にはなりません。
+
+小数を扱う場合の数値の比較は気をつける必要があります。小数を比較する方法については、後に記述します。
+
+<h3>サンプル</h3>
+
+誤差の発生を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 1/4   2進数で表現ができる。
+my $num1 = 0.25;
+
+# 1/2 + 1/4  2進数で表現できる。
+my $num2 = 0.625;
+
+# 2進数では、近似値としてしか表現できない。
+my $num3 = 0.3;
+
+print "(1)2進数で表\現できない数値は近似値になる。\n";
+printf("\$num1 = %.60f\n", $num1);
+printf("\$num2 = %.60f\n", $num2);
+
+# 0.3にはならない。
+printf("\$num3 = %.60f\n", $num3); 
+print "\n";
+
+my $num4 = 1;
+my $num5;
+
+# 0.1 を10回加算すると、1になるはずだがそうはならない。
+for my $i (1 .. 10) {
+  $num5 += 0.1;
+}
+
+print "(2)1 と 0.1 を10回加算した数値は異なる。\n";
+if ($num4 == $num5) {
+  print "\$num4と\$num5は等しい。\n";
+}
+else {
+  print "\$num4と\$num5は等しくない。\n";
+  printf("\$num4 = %.60f\n", $num4);
+  printf("\$num5 = %.60f\n", $num5);
+}
+</pre>
+
+(参考)<a href="/blog/20170326149148.html">printf関数</a>

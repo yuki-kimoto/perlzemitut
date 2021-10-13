@@ -1,0 +1,225 @@
+<h2>PerlでWebブラウザ自動操作ロボット作成方法のまとめ - 実用的なRPAをPerlで作ってみよう(書き始め)</h2>
+
+PerlでWebブラウザ自動操作ロボット作成方法をここにまとめていきます。Windowsのユーザーが対象です。
+
+<h3>Strawberry PerlをWindowsにインストールする</h3>
+
+Webブラウザ自動操作ロボットを作成するためには、Windows用にセッティングされたPerlが必要です。
+
+Active PerlとStrawberry Perlという選択枝がありますが、ここでは、Strawberry Perlを使います。
+
+Strawberry Perlには、Webブラウザ自動操作ロボットを作成するための、GUI操作のモジュールがインストールされています。マウス位置指定、クリック、キーボード操作、クリップボード操作などです。
+
+<a href="https://perlzemi.com/blog/20180808153368.html">Strawberry Perlのインストール</a>
+
+<h3>Webブラウザ自動操作ロボット作成に使うPerlモジュール</h3>
+
+Webブラウザ自動操作ロボット作成に使うPerlモジュールは、以下が中心です。
+
+<ul>
+  <li>Win32::GuiTest - マウス位置指定、キーボード操作</li>
+  <li>Win32::Clipboard - クリップボード操作</li>
+</ul>
+
+<h3>ウィンドウ操作</h3>
+
+Windowsで、ウィンドウの取得、マウス位置指定、クリック、キーボード操作を行うにはWin32::GuiTestを使います。必要な関数を読み込んでいます。
+
+<pre>
+use Win32::GuiTest (
+  'UnicodeSemantics',
+  'GetDesktopWindow',
+  'GetParent',
+  'GetWindowText',
+  'GetClassName',
+  'GetChildWindows',
+  'GetChildDepth',
+  'MouseMoveAbsPix',
+  'SendLButtonUp',
+  'SendLButtonDown',
+  'SendKeys',
+);
+</pre>
+
+<h4>ユニコードセマンティクスを有効にする</h4>
+
+まず最初に、PerlはPerl 5.8以降で、ユニコード対応されていますので、Win32::GuiTestの方も、ユニコードに対応したセマンティクスが使えるようにします。Perlのソースコードは、UTF-8で記述し「use utf8;」を記述していることが前提です。
+
+<pre>
+# ユニコードセマンティクスを有効にする
+UnicodeSemantics(1);
+</pre>
+
+<h4>デスクトップウィンドウの取得</h4>
+
+デスクトップウィンドウを取得するには、GetDesktopWindow関数を使用します。デスクトップウィンドウとは、デスクトップ全体を示すウィンドウのことです。
+
+<pre>
+# デスクトップウィンドウの取得
+my $desktop_win = GetDesktopWindow();
+</pre>
+
+<h4>子ウィンドウの一覧を取得</h4>
+
+Webブラウザ自動操作を行うためには、ブラウザのウィンドウを取得する必要がありますが、そのためには、まずデスクトップウィンドウの下で管理されている子ウィンドウの一覧を取得する必要があります。子ウィンドウの一覧を取得するには、GetChildWindowsを使用します。
+
+<pre>
+# 子ウィンドウの一覧を取得
+my @windows = GetChildWindows($desktop_win);
+
+# 子ウィンドウをループ
+for my $window (@windows) {
+  
+}
+</pre>
+
+<h4>ウィンドウのテキストを取得</h4>
+
+ウィンドウのテキストを取得するにはGetWindowText関数を使います。
+
+<pre>
+# ウィンドウのテキストを取得
+my $win_text = GetWindowText($win);
+</pre>
+
+ウィンドウのテキストは、ブラウザの種類によって、異なる可能性があります。Google Chromeで確認したものでは、以下のように「ウィンドウのタイトル - アプリケーション名」になっていました。
+
+<pre>
+Perlクラブ - Google Chrome
+</pre>
+
+<h4>対象ウィンドウの取得</h4>
+
+Webブラウザ自動操作ロボットを作る場合は、子ウィンドウの一覧から、対象のウィンドウを取得する必要があります。対象のウィンドウを取得するサンプルを記述します。確実に、対象のWebブラウザの対象のページが、一つ立ち上がっていることをチェックします。
+
+<pre>
+# 対象のウィンドウを取得(Perlクラブ - Google Chrome)
+my $win;
+{
+  my $desktop_win = GetDesktopWindow();
+  die "Oops!" if GetParent($desktop_win) != 0;
+
+  my @browser_wins;
+  my $browser_name = 'Chrome';
+  for my $win (GetChildWindows($desktop_win)) {
+
+    # ウィンドウの名前
+    my $win_text    = GetWindowText($win);
+
+    # ブラウザ名
+    if ($win_text =~ /\b$browser_name\b/) {
+      if ($win_text =~ /Perlクラブ/) {
+        push @browser_wins, $win;
+      }
+    }
+  }
+
+  my $browser_wins_count = @browser_wins;
+  unless ($browser_wins_count == 1) {
+    die "Must be open one window");
+  }
+  $win = $browser_wins[0];
+}
+</pre>
+
+<!--
+
+<h4>キーボード入力</h4>
+    # Consoleタブへ移動
+    SendKeys('^]');
+
+    # Elementsタブへ移動
+    SendKeys('^[');
+    
+    # 下のタグに移動
+    SendKeys('{DOWN}');
+
+    # 上のタグに移動(bodyを選択できる
+    SendKeys('{UP}');
+
+SendKeys('^c');
+  SendKeys('^l');
+  SendKeys('^v');
+  SendKeys('{ENTER}');
+  SendKeys('{TAB}' x $baibai_bukken_search_button_tab_press_count);
+  SendKeys('^v');
+    SendKeys('{LEFT}');
+  SendKeys('{RIGHT}' x $bukken_search_results_pagenation_forword_right_count_max);
+  SendKeys('{F12}');
+    SendKeys('^]');
+    SendKeys('^[');
+    SendKeys('{DOWN}');
+    SendKeys('{UP}');
+  SendKeys('^c');
+  SendKeys('{F12}');
+-->
+
+
+<h3>クリップボード</h3>
+
+Windowsのクリップボードを扱うには、Win32::Clipboardモジュールを使用します。
+
+<pre>
+use Win32::Clipboard;
+</pre>
+
+<h4>クリップボードオブジェクトの生成</h4>
+
+クリップボードオブジェクトをまず作成します。
+
+<pre>
+# クリップボードオブジェクトの作成
+my $clip = Win32::Clipboard->new;
+</pre>
+
+<h4>クリップボードにPerl文字列を保存する</h4>
+
+Setメソッドで、Perlの文字列を保存します。Perlのソースコードは、UTF-8で記述し「use utf8;」を記述していることが前提です。Windowsのクリップボードに、Perl側から文字列を保存するときは、cp932にエンコードして渡します。Windowsのクリップボードのテキストの文字コードが、cp932だからです。
+
+<pre>
+# 文字列をクリップボードに保存
+$clip->Set(encode('cp932', $string));
+</pre>
+
+<h4>クリップボードからPerl文字列を取り出す</h4>
+
+GetAsメソッドの引数に「CF_UNICODETEXT」を指定することで、「UTF16-LE」というユニコードのひとつの符号化形式で取得することができます。これを、PerlのEncode関数のdecode関数を使って、Perlの文字列に変換します。Windowsのクリップボードの内容をPerlの文字列として取得することができます。たんなるGetText関数では、正しく取得できないので、注意しましょう。
+
+<pre>
+# クリップボードからPerl文字列を取り出す
+my $string = $CLIP->GetAs(CF_UNICODETEXT);
+$text = Encode::decode("UTF16-LE",  $string);
+</pre>
+
+<h4>クリップボードの内容をフォーム部品に貼り付ける</h4>
+
+クリップボードの内容を、テキストフィールドや、テキストエリアなどのフォーム部品に貼り付けるには「Ctrl + c」を送信します。「^」は「Ctrl」という意味です。
+
+<pre>
+# クリップボードの内容をフォーム部品に貼り付ける
+SendKeys('^c');
+</pre>
+
+<h3>RPAロボット作成のポイント</h3>
+
+<h4>ブラウザの応答を待つ</h4>
+
+ブラウザの応答を待ちたい場合は、sleep関数を使います。ブラウザの応答が返ってくるなるべく安心な秒を設定しましょう。といっても、ネットワークの状況などに依存しますから、返ってこなくて、次の操作が始まって、動作が変になるということが、発生します。
+
+<pre>
+# 3秒待つ
+sleep 3;
+</pre>
+
+<h3>RPAロボットの注意点</h3>
+
+処理自動化・業務効率化において、RPAは、課題点が多い手法です。RPAロボットは、見た瞬間に、その動きに感銘を受けますが、処理速度、プログラムのメンテナンス性、自動化の信頼性が低いということに注意しましょう。
+
+「WindowsのアップグレードでGUI画面が変わってしまったら?」「Webの利用サービスの更新でボタンの位置やテキストの表示が変わってしまったら?」「Webの応答が5秒間返ってこなかったら?」「毎日だれが、そのプログラムをスタートさせるの? 忘れたらどうなるの?」「Linux上などで動いている他のプログラムとの連携はどうするの?」
+
+処理自動化・作業効率化の最初に取りうる基本的で、実際に効果が高い手法は、テキスト化、コマンド化、Web化、バッチ化、RDBMS化です。
+
+この五つの基本的な手段も含めて、まずは検討してみませんか? 限られた部分に対して、RPAは効果を発揮するでしょう。
+
+
+(まだ続く)

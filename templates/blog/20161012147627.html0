@@ -1,0 +1,19 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Perlの配列を理解しよう</h2>
+
+
+
+配列は複数の値を保存することのできる変数です。同じ種類のデータを複数扱う必要がある場合に配列を使用します。Perlの配列は動的配列と呼ばれるものでサイズを自動的に拡張してくれるので便利です。
+
+

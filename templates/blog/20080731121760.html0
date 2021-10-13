@@ -1,0 +1,123 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>標準入出力とリダイレクト</h2>
+
+
+リダイレクトとは、標準入力の入力元、標準出力、標準エラー出力の出力先を切り替えるOSの機能のことです。現代的なOSは基本的なリダイレクトの機能を備えています。
+
+リダイレクトの中でも覚えておかなければならないのは、標準入力の入力元をファイルに切り替えるリダイレクト、標準出力の出力先をファイルに切り替えるリダイレクト、標準エラー出力の出力先をファイルに切り替えるリダイレクトの3つです。
+
+<h3>1.準備</h3>
+
+リダイレクトの動きを見るためのサンプルを作っておきます。
+標準入力から1行読みこんで、標準出力に書き込みます。また標準エラー出力に"error\n"という文字列を出力します。
+このスクリプトを好きな名前で保存してください。ここでは、sample_20080731.plという名前とします。
+
+リダイレクトでファイルに出力する場合は、ファイルの上書き確認がされませんので、十分注意してください。
+
+<pre>
+use strict;
+use warnings;
+
+my $line = <STDIN>; # 標準入力から1行読み込む
+
+print $line; # 標準出力に出力
+print STDERR "error\n"; # 標準エラー出力に出力
+</pre>
+
+<h3>2.通常の動きを確認する</h3>
+
+<pre>
+perl sample_20080731.pl
+</pre>
+
+上記を実行して
+
+<pre>
+aaa
+</pre>
+
+とキーボードから打つと
+
+<pre>
+aaa
+error
+</pre>
+
+と出力されます。標準入力はキーボード、標準出力と標準エラー出力はディスプレイになっています。
+
+<h3>3.標準入力の入力元をファイルに切り替える</h3>
+
+入力元をキーボードからファイルに切り替えるので、準備としてinput_20080731.txt というファイルを作って、内容を
+
+<pre>
+line
+</pre>
+
+とします。
+
+<pre>
+perl sample_20080731.pl < input_20080731.txt
+</pre>
+
+とコマンドラインで打つと
+
+<pre>
+line
+error
+</pre>
+
+とディスプレイに表示されます。< 記号が、標準入力の入力元をファイルに切り替えるリダイレクト記号です。読み込む内容を標準入力から受け取るようにプログラムを作成すれば、リダイレクトを利用して入力元をユーザが選択することができます。
+
+<h3>4.標準出力の出力先をファイルに切り替える</h3>
+
+<pre>
+perl sample_20080731.pl > output_20080731.txt
+</pre>
+
+とコマンドラインで入力して
+
+<pre>
+aaa
+</pre>
+
+と打ち込むとoutput_20080731.txtには、aaaという内容が書き込まれ、ディスプレイには、errorと表示されます。> という記号は、標準出力の出力先をファイルに切り替えるリダイレクト記号です。出力内容を標準出力に出力するようにプログラムを作成していれば、リダイレクトを利用して出力先をユーザが選択することができます。
+
+<h3>5.標準エラー出力の出力先をファイルに切り替える</h3>
+
+<pre>
+perl sample_20080731.pl 2> error_20080731.txt
+</pre>
+
+とコマンドラインで入力して
+
+<pre>
+aaa
+</pre>
+
+と打つと、error_20080731.txt にerror、ディスプレイにaaaと表示されます。2> という記号は、標準エラー出力の出力先をファイルに切り替えるリダイレクト記号です。この切り替えを使うのは、エラーをファイルに出力したい場合です。
+
+<h3>6.リダイレクトを組み合わせて使う</h3>
+
+リダイレクトは組み合わせて使うことができます。
+
+<pre>
+perl sample_20080731.pl < input_20080731.txt > output_20080731.txt 2> error_20080731.txt
+</pre>
+
+と打ち込むと、output_20080731.txtにはlineと書き込まれ、error_20080731.txtには、errorと書き込まれます。output_20080731.txtに書き込まれたlineは、input_20080731.txtの1行目に書かれていたものです。このように、リダイレクト記号は組み合わせて使うことができます。

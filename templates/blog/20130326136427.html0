@@ -1,0 +1,67 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>perltidy - Perlのソースコードを整形</h2>
+
+
+
+perltidyはPerlのソースコードを成形するためのツールです。読みやすいPerlのソースコードに整形してくれます。
+
+<pre>
+perltidy ソースファイル
+</pre>
+
+<h3>perltidyをディレクトリに含まれる複数のファイルに実行する手順</h3>
+
+<strong>perltidy</strong>を使ってディレクトリに含まれるすべてのファイルを再帰的に処理する手順を書いておきます。現時点では、perltidy本体には、ディレクトリを再帰的に処理する方法が実装されていないようです。
+
+<h4>まずはバックアップを取っておく</h4>
+
+最初にディレクトリのバックアップをとっておきましょう。間違っても戻すためです。ディレクトリごと違うところにバックアップしておいてください。
+
+<h4>目的のファイルを探す</h4>
+
+まず目的のファイルを<b>find2perl</b>コマンドを使って探します。.pmで終わるファイルと.plで終わるファイルが整形の対象になると思います。対象のディレクトリ名はdirです。
+
+<pre>
+find2perl perl_lib/ -name "*.p[ml]" | perl
+</pre>
+
+対象のファイルが正しい場合は次の手順に進みましょう。
+
+<h4>perltidyの実行</h4>
+
+さて出力されたファイルに対してperltidyを実行しましょう。
+
+<pre>
+find2perl perl_lib/ -name "*.p[ml]" | perl | perl -ne "system('perltidy', $_)"
+</pre>
+
+拡張子が<b>.tdy</b>となっているファイルができています。これが整形後のソースファイルです。出力が正しいかどうかを確認しましょう。
+
+<h4>拡張子が.tdyのファイルで元のファイルを上書き</h4>
+
+拡張子が.tdyのファイルで元のファイルを上書きします。これで完了です。
+
+<pre>
+find2perl perl_lib/ -name "*.p[ml]" | perl | perl -MFile::Copy -ne "chomp $_;move($_ . '.tdy', $_)"
+</pre>
+
+ディレクトリの中の複数のファイルを簡単に整形する機能がperltidyにほしいですね。
+
+(参考)<a href="/blog/20100408127089.html">File::Copy</a>
+

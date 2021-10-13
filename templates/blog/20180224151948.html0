@@ -1,0 +1,102 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20080910122105.html">
+      <span itemprop="name">算術演算子</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>インクリメント演算子「++」</h2>
+
+
+
+<b>インクリメント演算子</b>を使用すると、<a href="/blog/20161107147852.html">変数</a>に代入されている<a href="/blog/20161026147748.html">数値</a>に1を加算することができます。インクリメント演算子は、変数の前か後につけることができます。
+
+<pre>
+# インクリメント(後置)
+$num++;
+
+# インクリメント(前置)
+++$num;
+</pre>
+
+インクリメント演算子は<a href="/blog/20180219151904.html">加算演算子</a>を使った次の記述と同じ意味になります。
+
+<pre>
+$num = $num + 1;
+</pre>
+
+インクリメント演算子は<a href="/blog/20161022147731.html">for文</a>の中で頻繁に利用されます。
+
+<pre>
+for (my $i = 0; $i < 10; $i++) {
+  print "$i\n";
+}
+</pre>
+
+このサンプルプログラムでは、0から10が出力されます。
+
+<h3>前置のインクリメントと後置のインクリメントの違い</h3>
+
+前置のインクリメントと後置のインクリメントは単独で利用される場合は、意味が同じですが、代入されるなど戻り値が利用される場合は、意味が異なります。
+
+<h4>前置のインクリメント</h4>
+
+前置のインクリメントの場合は、インクリメントされた値が返されます。
+
+<pre>
+my $num1 = 0;
+my $num2 = ++$num;
+</pre>
+
+「$num1」がインクリメントされて1になります。この1という値が返されて「$num2」に代入されます。
+
+代入の場合で解説しましたが、<a href="/blog/20101130129876.html">サブルーチン</a>に値を渡す場合の例も挙げておきます。funには<b>インクリメントされた値</b>が渡されます。
+
+<pre>
+func(++$i);
+</pre>
+
+<h4>後置のインクリメント</h4>
+
+前置のインクリメントの場合は、インクリメントされる前の値が返されます。
+
+<pre>
+my $num1 = 0;
+my $num2 = $i++;
+</pre>
+
+「$num1」がインクリメントされ1になりますが、インクリメントされる前の値である0が$num2に代入されます。
+
+上記の二つは$kに入る値が異なります。最初の場合は、$kには、1が入ります。二つ目の場合は、$kには0が入ります。
+
+代入の場合で解説しましたが、サブルーチンに値を渡す場合の例も挙げておきます。funには<b>インクリメントされる前の値</b>が渡されます。
+
+<pre>
+func($i++);
+</pre>
+
+<h3>デクリメント演算子</h3>
+
+デクリメント演算子は、インクリメント演算子の反対で、1を減算することができる演算子です。デクリメント演算子については以下で詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20180226151973.html">デクリメント演算子</a>
+  </li>
+</ul>

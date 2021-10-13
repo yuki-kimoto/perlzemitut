@@ -1,0 +1,95 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>Imager - 画像の編集を簡単に行う</h2>
+
+
+
+「Imager」モジュールを使用すると「画像の編集」が簡単にできます。Tipsを紹介します。
+
+<h3>「日本語」を描画する</h3>
+
+Imagerで日本語を描画するには次のようにします。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+use Imager;
+
+my $img = Imager->new;
+
+# 画像の読み込み
+$img->read(file => 'example.jpg')
+  or die $img->errstr;
+
+# フォント
+my $font = Imager::Font->new(
+  file => '/usr/share/fonts/ja/TrueType/kochi-gothic-subst.ttf'
+);
+
+# 文字列の描画
+$img->string(
+  x => 50,
+  y => 50,
+  string => 'やったー',
+  font => $font,
+  size => 15,
+  aa => 1,
+  color => '#000000',
+) or die $img->errstr;
+
+# 画像の保存
+$img->write(file => 'new_example.jpg')
+  or die $img->errstr;
+</pre>
+
+Imager::Fontでフォントオブジェクトを作成しています、フォントが実際に存在するパスを指定します。上記の例はCentOSの場合です。
+
+stringメソッドを使って、画像の上に文字列を描画しています。aaはアンチエイリアスをかけるオプションです。
+
+スクリプトはUTF-8で保存して、utf8プラグマを有効にしましょう。
+
+<h3>バイナリデータを読み込む</h3>
+
+PerlのImagerモジュールでバイナリデータを読み込むにはreadメソッドのdataオプションを使用します。
+
+<pre>
+$img->read(data => $data, type => 'jpeg')
+  or die $img->errstr;
+</pre>
+
+画像のタイプも合わせて指定する必要があるので注意してください。
+
+<h3>CentOSでImagerを使うための準備</h3>
+
+Imagerは画像を加工するためのPerlのモジュールです。jpeg, png, gifという画像形式とフォントを扱うためにあらかじめ以下のライブラリをCentOSにインストールしておきましょう。
+
+<pre>
+yum -y install libjpeg-devel
+yum -y install libpng-devel
+yum -y install giflib-devel
+yum -y install freetype-devel
+</pre>
+
+それからImagerをインストールします。
+
+<pre>
+cpan Imager
+</pre>
+

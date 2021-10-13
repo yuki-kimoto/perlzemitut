@@ -1,0 +1,177 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>三角関数を利用する</h2>
+
+
+
+三角関数を利用するための関数やモジュールを紹介します。
+
+<h4>サイン</h4>
+
+<strong>サイン</strong>を求めるには、<a href="/blog/20180514122166.html">sin関数</a>を角度はπ(pi関数)を使って、弧度法で指定するのが簡単です。
+
+<pre>
+use Math::Trig 'pi';
+
+sin(pi/2);
+cos(pi/3);
+</pre>
+
+(参考)<a href="/blog/20080918122175.html">Math::Trig</a>
+
+<h4>コサイン</h4>
+
+<strong>コサイン</strong>を求めるには<a href="/blog/20180513122166.html">cos関数</a>を使います。
+
+<pre>
+use Math::Trig 'pi';
+
+cos(pi/3);
+</pre>
+
+<h3>さまざまな三角関数</h3>
+
+三角関数関連の関数は標準関数としては、cos関数とsin関数しかありませんが、標準モジュールに<a href="/blog/20080918122175.html">Math::Trig</a>という三角関数関連のモジュールがあります。簡単に内容を紹介します。
+
+<h4>タンジェント</h4>
+
+<strong>タンジェント</strong>を求めるには<strong>Math::Trig</strong>モジュールの<strong>tan関数</strong>を使います。
+
+<pre>
+use Math::Trig qw/tan pi/;
+tan(pi/4);
+</pre>
+
+<h4>三角関数の逆数</h4>
+
+逆数とは、分母と分子を入れ替えた数のことです。逆関数とは意味がことなるので注意しましょう。sin,cos,tanの逆数をそれぞれ、cosec( コセカント ), sec( セカント ), cot( コタンジェント )と呼びます。
+
+Math::Trigモジュールで、cosec関数、sec関数、cot関数を使用することができます。
+
+<table>
+  <tr>
+    <td>
+      　
+    </td>
+    <td>
+      意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cosec
+    </td>
+    <td>
+      1/sin
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      sec
+    </td>
+    <td>
+      1/cos
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cot
+    </td>
+    <td>
+      1/tan
+    </td>
+  </tr>
+
+</table>
+
+<h4>三角関数の逆関数</h4>
+
+逆関数とは、y = f( x ) という関係が成り立つときに、x = g( y ) を満たすような g のことです。y = f( x ) は、x に対して f を作用させると yになると読みます。 x = g( y ) は、y に g を作用させると x になると読みます。
+
+つまり、 x にfを作用させて、さらにgを作用させたときに x に戻るような g を f の逆関数と呼びます。記号で書くと
+
+<blockquote>
+x = g( f( x ) ) 
+</blockquote>
+
+を満たすような g が存在するとき g を f の逆関数と呼びます。
+
+sin,cos,tanの逆関数をそれぞれ、asin(アークサイン), acos(アークコサイン), atan(アークタンジェント)と呼びます。
+
+Math::Trigモジュールの、asin関数、acos関数、atan関数を使用することができます。
+
+<table>
+  <tr>
+    <td>
+      　
+    </td>
+    <td>
+      意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      asin
+    </td>
+    <td>
+      sinの逆関数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      acos
+    </td>
+    <td>
+      cosの逆関数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      atan
+    </td>
+    <td>
+      tanの逆関数
+    </td>
+  </tr>
+
+</table>
+
+<h3>サンプル</h3>
+
+sin,cos,tanを求めるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use Math::Trig qw/tan pi/;
+
+# sin(90°) = 1;
+print "sin(π/2) = " . sin(pi/2) . "\n";
+
+# cos(60°) = 1/2;
+print "cos(π/3) = " . cos(pi/3) . "\n";
+
+# tan(45°) = 1;
+print "tan(π/4) = " . tan(pi/4) . "\n";
+</pre>

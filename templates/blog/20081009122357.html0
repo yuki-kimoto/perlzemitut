@@ -1,0 +1,137 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>localtime関数 - 現在の日付・時刻を取得する</h2>
+
+
+<strong>localtime関数</strong>を使用すると、現在の日付と時刻を取得することができます。各地域にあわせたローカル時間を取得できます。
+
+<pre>
+#    秒   分    時     日     月    年     曜日   年初か 夏時間を
+#                                                 らの   適用して
+#                                                 経過日 いるか
+my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
+
+# 時刻文字列
+my $localtime = localtime;
+</pre>
+
+<a href="/blog/20180530152777.html">リストコンテキスト</a>で使用した場合は日付・時刻の要素情報、<a href="/blog/20180531152777.html">スカラコンテキスト</a>で使用した場合は、日付・時刻を表す文字列を取得できます。
+
+協定世界時を取得したい場合は、<a href="/blog/20081010122376.html">gmtime関数</a>を使用してください。
+
+エポックからの経過時間だけを知るだけでよい場合は<a href="/blog/20081008122347.html">time関数</a>を使用してください。
+
+より便利に日付・時刻を扱いたい場合は<a href="/blog/20091105124627.html">Time::Piece</a>もお勧めです。
+
+日付・時刻に関する一般的な情報については、以下を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20161123147990.html">Perlで日付・時刻を扱う</a>
+  </li>
+</ul>
+
+<h4>ローカル時間と協定世界時</h4>
+
+「太陽が一番高くなる時刻が正午(12:00)です」というふうに時刻を決めたとすると、各国では時刻が一致しないことになります。たとえば、日本が正午(12:00)のときは、地球の裏側は真夜中の12時です。
+
+このような時刻をローカル時間といいます。OSの時計はローカル時間を表示するように設定されています。
+
+また協定世界時という全世界で一致する時刻があります。この時刻は世界のどこから見ても同じです。
+
+日本の場合はこの協定世界時から9時間進んだ自国をローカル時間としています。
+
+<h3>localtime関数のサンプル</h3>
+
+localtime関数を使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+print "(1)現在の日付と時刻(ローカル時間)を取得する。\n";
+
+#    秒   分    時     日     月    年     曜日   年初か 夏時間を
+#                                                 らの   適用して
+#                                                 経過日 いるか
+my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
+
+# localtime関数からは1900年から数えた年が返却される。
+$year += 1900;
+
+# 月は0から始まるので、表示するときは1を加える。
+$mon++;
+
+# 日曜日は0になります。
+my @day_of_week = qw/日 月 火 水 木 金 土/;
+
+print "現在は、$year年$mon月$mday日 $hour時$min分$sec秒です。";
+print "曜日は" . $day_of_week[$wday] . "曜日です。\n\n";
+print "1年で数えると$yday日が経過しました。\n\n";
+
+if ($isdst) {
+  print "現在夏時間が適用されいます。\n\n";
+}
+else {
+  print "現在夏時間は適用されていません。\n\n";
+}
+
+print "(2)文字列として現在の日付(ローカル時間)を取得する。\n";
+my $date_str = localtime;
+print $date_str . "\n";
+</pre>
+
+<h4>現在の日付と時刻(ローカル時間)を取得する</h4>
+
+<pre>
+my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
+</pre>
+
+現在の日付と時刻を取得するには<a href="http://perldoc.perl.org/functions/localtime.html">localtime関数</a>を使用します。localtime関数は、日本人が時刻を取得したいと思ったときの順序と逆になっています。先頭から「秒分時日月年」の順です。
+
+年は1900年からの経過年ですので、取得した$yearに1900を加える必要があります。
+
+<pre>
+$year += 1900;
+</pre>
+
+月は0から始まります。たとえば1月は0、2月は1のようになっていますので、1を加算する必要があります。
+
+<pre>
+$mon++;
+</pre>
+
+曜日は0から始まり0は日曜日です。月曜日は1、火曜日は2というふうになります。曜日を表示するには、配列の添え字と曜日を対応づけた配列を作っておきます。
+
+<pre>
+my @day_of_week = qw/日 月 火 水 木 金 土/;
+</pre>
+
+$ydayは、年の開始からの日数です。$isdstは夏時間(サマータイム)を適用しているかどうかです。
+
+<h4>文字列として現在の日付(ローカル時間)を取得する</h4>
+
+<pre>
+my $date_str = localtime;
+</pre>
+
+時刻の文字列表現を取得するにはlocaltime関数の戻り値をスカラーコンテキストで評価します。
+
+<h4>localtime関数のデフォルトの引数</h4>
+
+localtime関数に引数を与えないと<a href="/blog/20081008122347.html">time関数</a>の値(エポックからの経過秒数)が使用されます。エポックからの秒数を引数を明示的に与えることもできます。

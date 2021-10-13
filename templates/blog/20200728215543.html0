@@ -1,0 +1,136 @@
+<style>
+  .bottom { display:none; }
+  .content img { width:200px; padding:0; margin:0; display:block;margin:0 auto; margin-bottom:5px; border:1px solid #ddd;}
+  .content ul { display:flex; flex-wrap:wrap; }
+  .content li { list-style:none; margin-bottom:30px; text-align:center;width:50%; }
+
+  @media only screen and (max-width:880px) {
+    .content li { width:100%; }
+  }
+</style>
+
+<h2>Perlの書籍</h2>
+
+Perlの書籍紹介。初級者からはじめてプロのWeb開発者になるための本を探していますか? Perlテキスト処理プログラミングの入門書、正規表現の入門書などをご紹介しています。
+
+<h3>Perlプログラミング入門書</h3>
+
+<ul>
+  <li>
+    <a href="https://www.amazon.co.jp/Perl%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E5%87%A6%E7%90%86%E3%81%AE%E3%82%A8%E3%83%83%E3%82%BB%E3%83%B3%E3%82%B9-Perl%E7%B7%8F%E5%90%88%E7%A0%94%E7%A9%B6%E6%89%80-ebook/dp/B097T6CBR6/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1629243986&sr=8-1">
+      <img src="/images/book/perl_text_essence.jpg">
+      Perlテキスト処理のエッセンス
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20120326133275.html">
+      <img src="https://images-na.ssl-images-amazon.com/images/I/51d4T7m8NzL._SX347_BO1,204,203,200_.jpg">
+      業務に役立つPerl
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200502174033.html">
+      <img src="https://images-na.ssl-images-amazon.com/images/I/51t%2B7ZTGW6L._SX388_BO1,204,203,200_.jpg">
+      初めてのPerl 第7版
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200502174033.html">
+      <img src="https://images-na.ssl-images-amazon.com/images/I/51t%2B7ZTGW6L._SX388_BO1,204,203,200_.jpg">
+      初めてのPerl 第7版
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200722215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47973/4797336803.jpg">
+      Perl言語プログラミングレッスン 入門編 (新版)
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200726215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47741/4774177911.jpg">
+      かんたんＰｅｒｌ プログラミングの教科書
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200724215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47741/4774192635.jpg">
+      Perlではじめるプログラミング超入門
+    </a>
+  </li>
+</ul>
+
+<h3>正規表現</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20200727215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48731/4873113598.jpg">
+      詳説　正規表現　第３版 （第３版）
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200725215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47741/4774177407.jpg">
+      正規表現ポケットリファレンス
+    </a>
+  </li>
+</ul>
+
+<h3>複雑なデータ構造・オブジェクト指向</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20200723215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/large/48731/4873116287.jpg">
+      続・初めてのＰｅｒｌ （改訂第２版）
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200718215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47741/4774135046.jpg">
+      すぐわかるオブジェクト指向Perl
+    </a>
+  </li>
+</ul>
+
+<h3>Perl発展</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20200719215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/large/48731/4873113008.jpg">
+      Perlベストプラクティス
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200720215543.html">
+      <img src="https://www.oreilly.co.jp/books/images/picture4-87311-096-3.gif">
+      プログラミングPerl〈VOLUME1〉 (第3版)
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200801095047.html">
+      <img src="https://images-na.ssl-images-amazon.com/images/I/51EHNQ64V6L.jpg">
+      プログラミングPerl〈VOLUME2〉 (第3版)
+    </a>
+  </li>
+  <li>
+    <a href="/blog/20200717215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47981/4798139815.jpg">
+      Effective Perl―上級Perlプログラマへと成長できる120の階段 (第2版)
+    </a>
+  </li>
+</ul>
+
+<h3>バイオインフォマティクス</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20200721215543.html">
+      <img src="https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/46278/4627845014.jpg">
+      生物系のためのＰｅｒｌプログラミング
+    </a>
+  </li>
+</ul>
+

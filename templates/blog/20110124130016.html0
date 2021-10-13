@@ -1,0 +1,30 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20110124130016.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Test::Mojoで実行できない試験を行う / Mojolicious</h2>
+
+
+
+Test::Mojoは便利ですが、Test::Mojoのメソッドでは実行できない試験もあります。たとえばある文字列が含まれていないという試験を書きたいとしましょう。この場合はTest::Mojoのメソッドでは試験ができません。
+このような場合は、直接コンテンツを取得して、Test::Moreのメソッドを使って試験を行います。コンテンツは「$t->tx->res->body」のようにして取得することができます。
+
+<pre>
+# コンテンツにpppが含まれないことを見る試験
+$t->get_ok('/foo');
+my $content = $t->tx->res->body;
+is(index($content, 'ppp'), -1);
+</pre>
+

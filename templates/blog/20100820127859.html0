@@ -1,0 +1,298 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161005147566.html">
+      <span itemprop="name">演算子</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>ファイルテスト演算子</h2>
+
+
+
+<strong>ファイルテスト演算子</strong>を使ってファイルのさまざまな情報を調べることができます。
+
+<table>
+  <tr>
+    <td>
+      *ファイルテスト演算子
+    </td>
+    <td>
+      *機能
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      -e
+    </td>
+    <td>
+      <a href="/blog/20180518152707.html">ファイルが存在するかどうかの確認</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      -f
+    </td>
+    <td>
+      <a href="/blog/20180518152707.html">通常ファイルが存在するかどうかの確認</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      -d
+    </td>
+    <td>
+      <a href="/blog/20180517152707.html">ディレクトリが存在するかどうかの確認</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      -s
+    </td>
+    <td>
+      <a href="/blog/20180516152707.html">ファイルのサイズの取得</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      -M
+    </td>
+    <td>
+      <a href="/blog/20180512152707.html">最終更新から経過した日数の取得</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      -A
+    </td>
+    <td>
+      <a href="/blog/20180511152707.html">最終アクセスから経過した日数の取得</a>
+    </td>
+  </tr>
+
+</table>
+
+<h4>-e ファイルが存在するかどうかの確認</h4>
+
+「-e」でファイルが存在するかどうかを確認することができます。
+
+<pre>
+-e $file
+</pre>
+
+ファイルが存在すると真値を、存在しないと偽値を返します。ディレクトリやシンボリックリンクなどもファイルとして扱われます。Unixではディレクトリも特別なファイルとみなしファイルという概念でとらえるからです。
+
+用語の解説のページにリンクを張っておきました。
+
+<h4>-f 通常ファイルが存在するかどうかの確認</h4>
+
+「-f」で通常ファイルが存在するかどうかを確認することができます。
+
+<pre>
+-f $file
+</pre>
+
+通常ファイルが存在すると真値を、存在しないと偽値を返します。通常ファイルとはテキストファイルやバイナリファイルなどのデータを格納しているファイルのことです。
+
+<h4>-d ディレクトリが存在するかどうか確認</h4>
+
+「-d」でディレクトリが存在するかどうかを確認することができます。
+
+<pre>
+-d $file
+</pre>
+
+ディレクトリが存在すると真値を、存在しないと偽値を返します。
+
+<h4>-s ファイルサイズの取得</h4>
+
+「-s」でファイルサイズを取得できます。
+
+<pre>
+-s $file
+</pre>
+
+単位はバイトです。
+
+<h4>-M 最終更新から経過した日数の取得</h4>
+
+「-M」で最終更新から経過した日数を取得することができます。
+
+<pre>
+-M $file
+</pre>
+
+<h4>-A 最終アクセスから経過した日数の取得</h4>
+
+「-A」で最終アクセスから経過した日数を取得することができます。
+
+<pre>
+-A $file
+</pre>
+
+<h3>サンプルプログラム</h3>
+
+ファイルテスト演算子のサンプルです。
+
+<h4>通常ファイルの存在確認</h4>
+
+ファイル演算子 -f を使って通常ファイルの存在を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 通常ファイルの存在を確認する。
+# -f ファイル名
+
+print "1: 通常ファイルの存在を確認する。 -f \n";
+my $file = 'a.txt';
+if (-f $file) {
+  print "'$file' は、存在します。\n";
+}
+else { print "'$file' は、存在しません。\n" }
+</pre>
+
+<h4>ディレクトリの存在確認</h4>
+
+ファイル演算子 -d を使ってディレクトリの存在を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ディレクトリの存在を確認する。
+# -d ディレクトリ名
+
+print "1: ディレクトリの存在を確認する。 -d \n";
+my $dir = 'd';
+if (-d $dir) { 
+  print "'$dir' は、存在します。\n";
+}
+else { print "'$dir' は、存在しません。\n" }
+</pre>
+
+<h4>ファイルの存在確認</h4>
+
+ファイルテスト演算子「-e」を使ってファイルの存在を確認するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルの存在を確認する。
+# -e ファイル名
+# -e を使えば、ディレクトリやファイルやシンボリックリンクなど
+# を区別せずに、それが、存在するかどうかを確認できます。
+
+print "1: ファイルの存在を確認する。 -e \n";
+my $file_all_type = 'a';
+
+if (-e $file_all_type) {
+  print "'$file_all_type' は、存在します。\n";
+}
+else { print "'$file_all_type' は、存在しません。\n" }
+</pre>
+
+<h4>ファイルサイズの取得</h4>
+
+ファイル演算子 -s を使ってファイルサイズを取得するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# ファイルのサイズを取得する。
+# -s ファイル名
+# 単位は、バイトです。
+
+print "1: ファイルのサイズを取得する。 -s\n";
+my $file = "a.txt";
+if (-f $file) {
+  my $file_size = -s $file;
+  print "$file のファイルサイズは、$file_size バイトです。\n\n";
+}
+else { print "$file は、存在しませんでした。\n\n" }
+</pre>
+
+<pre>
+use strict;
+use warnings;
+
+print "2: ファイルサイズがあるバイトを超えたら出力をとめる。\n";
+
+my $file = "output_$$.txt";
+if (-e $file) {
+  die "$file は存在します。\n";
+}
+
+open my $fh, ">", $file
+  or die "File open error : $!";
+
+while (-s $file < 1_000_000) {
+  my $string = ('a' x 99) . "\n";
+  print $fh $string;
+}
+
+print "出力後の $file のファイルサイズは、" . -s $file . "バイトです。\n";
+
+close $fh;
+</pre>
+
+<a href="/blog/20100123126425.html">while文</a>を使って、ファイルのサイズが1,000,000バイトになるまで出力しています。
+
+<h4>最終更新から経過した日数を取得</h4>
+
+ファイル演算子 -M を使って最終更新から経過した日数を取得するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 最終更新から経過した日数を取得する。
+# -M $file
+
+print "1: 最終更新から経過した日数を取得する。\n";
+my $file = "a.txt";
+if (-e $file) {
+  my $from_last_modify = -M $file;
+  print "最終更新から $from_last_modify 日経過しています。\n";
+}
+else { print "$file は存在しません。\n" }
+</pre>
+
+<h4>最終アクセスから経過した日数を取得</h4>
+
+ファイル演算子 -A を使って最終アクセスから経過した日数を取得するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 最終アクセス(読み取り)から経過した日数を取得する。
+# -A $file
+
+print "1: 最終アクセスから経過した日数を取得する。\n";
+my $file = "a.txt";
+if (-e $file) {
+  my $from_last_access = -A $file;
+  print "最終アクセスから $from_last_access 日経過しています。\n";
+}
+else { print "$file は存在しません。\n" }
+</pre>
+

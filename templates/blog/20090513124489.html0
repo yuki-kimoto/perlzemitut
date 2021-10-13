@@ -1,0 +1,94 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>Module::Starter - 配布形式のモジュールを作成</h2>
+
+
+
+モジュールを配布したい場合には、配布形式を自動で作成してくれるモジュールがあると便利です。たとえばCPANに作成したモジュールをアップロードしたい場合は、定められた配布形式にしなければなりません。その雛形を作成してくれるモジュールのひとつが<strong>Module::Starter</strong>です。
+
+<h3>module-starterコマンドで雛形を作成する</h3>
+
+Module::Starterをインストールすると<strong>module-starter</strong>コマンドも一緒にインストールされます。このコマンドを使用してモジュールを作成します。　実行するとSomo-Moduleというディレクトリが作成されているのを確認することができます。
+
+<pre>
+module-starter --module=Some::Module --author="Yuki Kimoto" --email=kimoto.yuki@gmail.com
+</pre>
+
+<h4>モジュール名の指定</h4>
+
+<strong>--module</strong>でモジュール名を指定します。
+
+<h4>ビルド方法の指定</h4>
+
+--builderでビルド方法を指定します。Unix系OSでの標準的なビルド方式であるmakeを使用する「ExtUtils::MakeMaker」と純正Perlで書かれたBuildを使用する「Module::Build」のどちらかを指定することができます。デフォルトで「ExtUtils::MakeMaker」が使用されます。ここでは「Module::Build」を使用しています。
+
+特に必要がなければ、古いバージョンのPerlでも対応しているExtUtils::MakeMakerを使うのが無難です。
+
+<h4>あなたの名前</h4>
+
+<strong>--author</strong>であなたの名前を指定します。
+
+<h4>あなたのメールアドレス</h4>
+
+<strong>--email</strong>であなたのメールアドレスを指定します。
+
+<h3>ディレクトリ構成</h3>
+
+雛形を作成した直後は以下のようなディレクトリ構成になっています。
+
+<pre>
+-rw-r--r-- 1 root root  457 2009-06-14 12:40 Makefile.PL
+-rw-r--r-- 1 root root  111 2009-06-14 12:40 Changes
+drwxr-xr-x 3 root root 4096 2009-06-14 12:40 lib
+-rw-r--r-- 1 root root   89 2009-06-14 12:40 MANIFEST
+-rw-r--r-- 1 root root 1398 2009-06-14 12:40 README
+drwxr-xr-x 2 root root 4096 2009-06-14 12:40 t
+</pre>
+
+役割を簡単にひとつづつ解説します。
+
+<h4>Makefile.PL</h4>
+
+Makefile.PLはMakefileというスクリプトを作成するためのPerlで書かれたスクリプトです。Makefileというスクリプトは、モジュールを構築して、試験をして、インストールするためのスクリプトです。
+
+なぜ最初からMakefileというスクリプトを用意していないかといえば、OSの違いなどの環境によってMakefileスクリプトの内容が異なってくるからです。
+
+環境の差異を吸収して、モジュールの構築からインストールまでの処理を行うために、Makefile.PLを実行してMakefileスクリプトを作成します。
+
+<pre>
+perl Makefile.PL
+</pre>
+
+とするとMakefileというスクリプトが作成されます。
+
+<h4>Changes</h4>
+
+Changesはモジュールをバージョンアップをしたときの履歴を書くためのものです。モジュールをバージョンアップした場合に書き忘れることが多いので注意しましょう。
+
+<h3>lib</h3>
+
+libはモジュールが格納されるディレクトリです。この中にモジュールの本体であるスクリプトが格納されます。
+
+<h3>MANIFEST</h3>
+
+MANIFESTには、モジュールを配布するときに格納するファイルを記述します。MANIFESTファイルは直接編集することもできますが、自動で作成することもできます。
+
+<h4>t</h4>
+
+モジュールの自動試験を格納するディレクトリです。
+

@@ -1,0 +1,382 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110926132031.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBIx::Customで「フィルタリング」を利用する</h2>
+
+
+
+
+DBIx::Customで「フィルタリング」を利用する方法を解説します。
+
+<h3>列名によるフィルタリング</h3>
+
+DBIx::Customでは列名を指定して値をフィルタリングすることができます。データベースにデータを送信するときにも、データベースからデータを取り出すときにもフィルタリングをかけることができます。
+
+<h4>フィルタの登録</h4>
+
+フィルタを実際に利用する前に、フィルタを登録しておくと便利です。フィルタの登録をしておけば、フィルタ名でフィルタを指定することができます。
+ここでは画像を印字可能な文字列に変換するBase64という変換を行うフィルタを作成してみましょう。
+
+<pre>
+use MIME::Base64 qw/encode_base64 decode_base64/;
+
+$dbi->register_filter(
+  encode_base64 => sub { encode_base64($_[0]) },
+  decode_base64 => sub { decode_base64($_[0]) }
+);
+</pre>
+
+encode_base64というフィルタはデータベースにデータを挿入するときはバイナリのデータをBase64形式のフォーマットに変換するために利用します。decode_base64というフィルタはデータをデータベースから取り出すときはBase64形式からバイナリにデータを変換するために利用します。
+
+register_filterに登録しただけではフィルタは有効にはなりません。register_filterはフィルタを名前で呼び出すための便利な仕組みを提供するだけです。
+
+<h4>データベースにデータを送信するときのフィルタを指定する filterオプション</h4>
+
+データベースにデータを送信するときのフィルタを指定してみましょう。
+
+bookというテーブルにidとimageという列があるとします。imageは本来はバイナリの画像のデータですが、Base64形式で保存します。次のようにfilterオプションを利用すると、簡単にこの変換を記述することができます。
+
+<pre>
+$dbi->insert(
+  {id => 1, image => $image},
+  table => 'book',
+  filter => {image => 'encode_base64'}
+);
+</pre>
+
+これでデータベースにはBase64形式で画像が保存されます。filterオプションはinsert, update, delete, select, executeメソッドで利用することができます。
+
+filterオプションにはフィルタ名のほかに、変換のためのサブルーチンを直接指定することもできます。
+
+<pre>
+filter => {image => sub { encode_base64($_[0]) }}
+</pre>
+
+また複数の列名に同一のフィルタが必要な場合は、次のようにハッシュのリファレンスの変わりに配列のリファレンスを使うことができます。外側も配列のリファレンスで、列名の部分も配列のリファレンスになっていることに注意してください。
+
+<pre>
+filter => [['image1', 'image2'] => 'encode_base64'}]
+</pre>
+
+内部的にはこれをハッシュのリファレンスに変換しますので、必要がない場合はハッシュのリファレンスを利用するのがよいでしょう。
+
+<h4>idオプションとfilterオプションを併用する場合の注意点</h4>
+
+idオプションを利用する場合は、ほとんどが単なる数値や文字列であって、フィルタリングの必要はないと思いますが、仕様の上での注意点を書いておきます。
+
+insertメソッドでidオプションを使用する場合はprimary_keyオプションで指定した列名をフィルタリングに利用することができます。
+
+<pre>
+$dbi->insert(
+  table => 'book',
+  id => 1,
+  primary_key => 'book_id',
+  filter => {book_id => sub { ... }}
+);
+</pre>
+
+update, delete, selectメソッドでidオプションを利用する場合は少し注意が必要です。これらのメソッドでは、列名を完全に区別するために、テーブル名がつけられた列名が内部的に利用されます。ですのでフィルタを設定するときも、primary_keyで指定した列名にテーブル名を修飾した名前を使う必要があります。
+
+<pre>
+$dbi->delete(
+  table => 'book',
+  id => 1,
+  primary_key => 'book_id',
+  filter => {'book.book_id' => sub { ... }}
+);
+</pre>
+
+<h4>データベースからデータを取得するときのフィルタリング</h4>
+
+selectを実行したときに戻り値はDBIx::Custom::Resultオブジェクトが返ってきますが、このオブジェクトはfilter属性を持っています。
+
+filter属性にフィルタを設定すれば、フェッチしたときにフィルタリングが行われます。
+
+<pre>
+my $result = $dbi->select(...);
+$result->filter({image => 'decode_base64'});
+my $rows = $result->all;
+</pre>
+
+ここではallメソッドを使っていますが、fetchなどのフェッチを行うすべてのメソッドでフィルタリングが行われます。
+
+filterオプションと同じように、フィルタとして直接サブルーチンを指定したり、配列のリファレンスを指定することもできます。
+
+<pre>
+$result->filter({image => sub { decode_base64($_[0]) }});
+$resul->filter([['image1', 'image2'] => 'decode_base64']);
+</pre>
+
+
+<h3>型によるフィルタリング</h3>
+
+DBIx::Customでは型を指定してフィルタリングを行うことができます。たとえば日付型のフィールドであれば、自動的に日付オブジェクトから、データベースの日付に変換するということが可能です。
+
+RDBMSとDBIの実装の制約から、型によるフィルタリングの実現はそれほど簡単ではありませんが、少しの制約を受け入れると実用的に利用することができると思います。
+
+<h4>フィルタの登録</h4>
+
+フィルタを実際に利用する前に、フィルタを登録しておくと便利です。フィルタの登録をしておけば、フィルタ名でフィルタを指定することができます。
+ここではデータベースに日付を送信するときはTime::Pieceオブジェクトからデータベースの日付に変換して、反対に取り出すときは、データベースの日付をTime::Pieceオブジェクトに変換するということを行ってみましょう。
+
+<pre>
+use Time::Piece;
+
+$dbi->register_filter(
+  tp_to_datetime => sub {
+    my $tp = shift;
+    
+    return '' unless defined $tp;
+    return $tp unless ref $tp;
+    return $tp->strftime('%Y-%m-%d %H:%M:%S');
+  },
+  datetime_to_tp => sub {
+    my $datetime = shift;
+    
+    return unless $datetime;
+    return localtime(
+        Time::Piece->strptime($datetime, '%Y-%m-%d %H:%M:%S')
+    )
+  }
+);
+</pre>
+
+tp_to_datetimeというフィルタはTime::Pieceオブジェクトをデータベースの日付・時刻のフォーマットに変換するものです。処理内容としては、undefが渡された場合は空文字列に変換、Time::Pieceオブジェクトではない文字列を渡された場合は変換しない、Time::Pieceオブジェクトの場合は、データベースの日付・時刻のフォーマットに変換という処理を行っています。
+
+datetime_to_tpというフィルタはデータベースの日付・時刻のフォーマットをTime::Pieceオブジェクトに変換するものです。処理内容としては、データがなければundefを、存在すればTime::Pieceオブジェクトに変換(ローカル時刻)にして返すという処理を行っています。
+
+<h4>型によるフィルタの設定 type_rule</h4>
+
+型によるフィルタの設定を行うにはtype_ruleメソッドを使用します。
+
+<pre>
+$dbi->type_rule(
+  into1 => {
+    タイプ名 => フィルタ
+  },
+  into2 => {
+    タイプ名 => フィルタ
+  },
+  from1 => {
+    データタイプ => フィルタ
+  },
+  from2 => {
+    データタイプ => フィルタ
+  }
+);
+</pre>
+
+into1とinto2はデータベースにデータを送信するときに実行されるフィルタを指定します。二つまでフィルタを指定することができます。実行される順番は「into1 → into2」の順番です。executeメソッドのfilterオプションが存在するときは「filterオプション → into1 → into2」の順番に実行されます。
+
+from1とfrom2はデータベースからデータを取り出すときに実行されるフィルタを指定します。二つまでフィルタを指定することができます。実行される順番は「from1 → from2」の順番です。BIx::Custom::Resultのfilter属性が存在するときは「from1 → from2 -> filter属性」の順に実行されます。
+
+<h4>into1とinto2に指定するタイプ名</h4>
+
+タイプ名とデータタイプという用語を区別していることに注意してください。into1とinto2ではタイプ名を指定する必要があります。
+
+タイプ名とは一般的には、データベースのテーブル定義をするときに指定した名前です。タイプ名は小文字で指定する必要があります。
+
+実際に各列のタイプ名を知るためには、show_typenameメソッドを使用します。
+
+<pre>
+$dbi->show_typename('book');
+</pre>
+
+そこで表示されたタイプ名を利用してください。
+
+<h4>from1とfrom2に指定するデータタイプ</h4>
+
+from1とfrom2にはデータタイプを指定する必要があります。データタイプとは、データベースの内部的なデータの型のことであって一般的には数値になります。一般的には数値ですが、文字列であった場合には、指定するときはデータタイプは小文字で指定する必要があります。
+
+実際にデータタイプを知るためには、show_datatypeメソッドを使用します。
+
+<pre>
+$dbi->show_datatype('book');
+</pre>
+
+<h4>型によるフィルタリングのサンプル</h4>
+
+ではSQLiteを使った型によるフィルタリングのサンプルを書いてみたいと思います。
+
+<pre>
+use strict;
+use warnings;
+
+use DBIx::Custom;
+use Time::Piece;
+
+my $dbi = DBIx::Custom->connect(dsn => "dbi:SQLite:dbname=:memory:");
+$dbi->do("create table book (id, issue_datetime DATETIME)");
+$dbi->register_filter(
+  tp_to_datetime => sub {
+    my $tp = shift;
+    
+    return '' unless defined $tp;
+    return $tp unless ref $tp;
+    return $tp->strftime('%Y-%m-%d %H:%M:%S');
+  },
+  datetime_to_tp => sub {
+    my $datetime = shift;
+    
+    return unless $datetime;
+    return localtime(
+      Time::Piece->strptime($datetime, '%Y-%m-%d %H:%M:%S')
+    )
+  }
+);
+
+$dbi->type_rule(
+  into1 => {
+    datetime => 'tp_to_datetime'
+  },
+  from1 => {
+    datetime => 'datetime_to_tp'
+  }
+);
+
+# Time::Piece object
+my $now = localtime;
+
+$dbi->insert({id => 1, issue_datetime => $now}, table => 'book');
+
+my $result = $dbi->select(where => {id => 1}, table => 'book');
+my $issue_datetime = $result->one->{issue_datetime};
+
+print ref $issue_datetime;
+</pre>
+
+このサンプルを見ると、insertを行うときは、Time::Pieceオブジェクトがデータベースの日付のフォーマットに変換されて、行をフェッチして取得するときにデータベースの日付のフォーマットからTime::Pieceオブジェクトに変換されていることが確認できます。
+
+<h4>type_ruleを無効にする</h4>
+
+into1のフィルタはtype_rule1_offオプションで、into2のフィルタはtype_rule2_offオプションで無効にすることができます。両方を無効にするには、type_rule_offオプションを利用します。
+
+<pre>
+type_rule1_off => 1
+type_rule2_off => 1
+type_rule_off => 1
+</pre>
+
+insertメソッドでは次のように記述できます。
+
+<pre>
+$dbi->insert({id => 1, issue_datetime => $now},
+  type_rule_off => 1, table => 'book');
+</pre>
+
+from1のフィルタはDBIx::Custom::Resultオブジェクトのtype_rule1_offメソッドで、from2のフィルタはtype_rule2_offメソッドで無効にできます。両方を無効にするには、type_rule_offメソッドを使用します。
+
+<pre>
+$result->type_rule1_off
+$result->type_rule2_off
+$result->type_rule_off
+</pre>
+
+反対にフィルタを有効にするにはtype_rule1_on, type_rule2_on, type_rule_onメソッドを使用してください。
+
+<h4>type_ruleの実装について</h4>
+
+<b>into1とinto2の実装</b>
+
+type_ruleの実装は次のようになっています。into1とinto2によるフィルタは、データベースにデータを送信するときに指定できるフィルタです。
+
+実際はパラメータがバインドされる前にフィルタリングが実行されますが、毎回列名がどのようなタイプ名を持つのかを調べたりはしません。それはおそらくとても重い処理になりますし、テーブル名が省略された場合にはうまく機能しないでしょう。
+
+type_ruleメソッドが実行された時に、データベースにあるテーブルの列がどのようなタイプ名を持っているかをまず調べて、その情報が保存されます。
+
+そしてexecuteメソッドの実行時にどのフィルタを適用するかを決定します。insertなどのメソッドは内部的にはexecuteを呼び出しています。
+
+どのような場合にフィルタリングがかかるかinsertとexecuteの例で説明します。次のinsertを見てください。
+
+<pre>
+$dbi->insert({issue_datetime => '2010-11-10 11:34:56'}, table => 'book'});
+</pre>
+
+type_ruleメソッドが呼ばれた時点で、bookテーブルのissue_datetimeはDATETIME型であるということをDBIx::Customは覚えます。
+
+そして上記のinsertではテーブル名としてbook、列名としてissue_datetimeが指定されていますので、フィルタリングが実行されることになります。
+
+次はexecuteメソッドです。次のような場合はフィルタリングがかかりません。
+
+<pre>
+$dbi->execute(
+  "select * from book where :issue_datetime{=}",
+  {issue_datetime => '2010-11-10 11:34:56'}
+);
+</pre>
+
+なぜならテーブル名が指定されていないので、どのテーブルのissue_datetimeという列なのかを知ることができないからです。
+
+ですので、テーブル名を先頭に付加するか、tableオプションでテーブル名を指定するとフィルタリングが行われるようになります。
+
+<pre>
+# テーブル名を付加
+$dbi->execute(
+  "select * from book where :book.issue_datetime{=}",
+  {issue_datetime => '2010-11-10 11:34:56'}
+);
+
+# tableオプション
+$dbi->execute(
+  "select * from book where :issue_datetime{=}",
+  {issue_datetime => '2010-11-10 11:34:56'}, table => 'book'
+);
+</pre>
+
+<b>from1とfrom2の実装</b>
+
+from1とfrom2は難しいことを考える必要はありません。フェッチしたときにデータタイプを簡単に知ることができるので、その情報を元にフィルタリングを行います。columnオプションで、columnを指定するときに難しいことを考える必要はありません。
+
+
+<h3>フィルタ関数を登録する - register_filter</h3>
+
+フィルタ関数を登録するには<strong>register_filter</strong>メソッドを使用します。
+
+<pre>
+$dbi->register_filter(
+  # Time::Piece object to database DATE format
+  tp_to_date => sub {
+    my $tp = shift;
+    return $tp->strftime('%Y-%m-%d');
+  },
+  # database DATE format to Time::Piece object
+  date_to_tp => sub {
+    my $date = shift;
+     return Time::Piece->strptime($date, '%Y-%m-%d');
+  }
+);
+</pre>
+
+ここで登録したフィルタは、executeメソッドなどのfilterオプションで利用することができます。
+
+<pre>
+$dbi->execute($sql, $param, filter => {issue_date => 'tp_to_date'});
+</pre>
+

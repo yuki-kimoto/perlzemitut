@@ -1,0 +1,80 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>wantarray関数 - スカラかリストをコンテキストに応じて返却 </h2>
+
+
+
+Perlでは<a href="/blog/20080608121292.html">コンテキスト</a>という概念があるので、スカラあるいは<a href="/blog/20100308126967.html">リスト</a>をコンテキストに応じて返却することができます。
+
+<pre>
+sub func_name{
+  # 処理 ...
+  return wantarray ? リスト : スカラ;
+}
+</pre>
+
+wantarrayを使えば、リストコンテキストの場合とスカラコンテキストの場合を区別して、戻り値を返却することができます。
+
+wantarrayが使われている標準関数には<a href="/blog/20081009122357.html">localtime関数</a>があります。
+
+<h4>wantarray関数は使わないほうがよい</h4>
+
+wantarray関数は、非常に発見しにくバグを生み出しだしがちなので、使用することはお勧めしません。たとえば、スカラが返ってくると思って、関数の引数に指定したら、リストが返っていたということが、起こりうるからです。
+
+<pre>
+# スカラが返ってくると思っていたが、実際はリストが返ってきてしまう
+func(localtime());
+</pre>
+
+このようなバグを避けるためには、wantarray関数は使わずに、戻り値は<a href="/blog/20161107147852.html">スカラ変数</a>を返すか、リストを返すようにしましょう。
+
+<h3>サンプル</h3>
+
+wantarrayのサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# スカラかリストをコンテキストに応じて返却する
+# wantarray ? return リスト : return スカラ
+
+print "1: スカラかリストをコンテキストに応じて返却する\n";
+my @nums = (1, 2, 3, 4, 5);
+my @odd_nums = grep_odd_nums(@nums);
+my $odd_nums_cnt = grep_odd_nums(@nums); 
+
+print "1～5 の中で、奇数は、", join(',', @odd_nums) . "です。\n";
+print "奇数の個数は、$odd_nums_cnt です。\n\n";
+
+# 奇数のリストを返却するサブルーチン
+sub grep_odd_nums {
+  my @nums = @_;
+  my @odd_nums;
+  
+  for my $num (@nums) {
+    if($num % 2 == 1) {
+      push @odd_nums, $num;
+    }
+  }
+
+  # リストコンテキストならば、 @odd_nums を返却
+  # スカラコンテキストならば、 @odd_nums の個数を返却
+  return wantarray ? @odd_nums : scalar @odd_nums;
+}
+</pre>

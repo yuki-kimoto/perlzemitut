@@ -1,0 +1,1181 @@
+<h2>過去の新着情報のページ</h2>
+
+Perlゼミ新着情報は以下に移転しました。
+
+<blockquote>
+  <a href="/list.html">Perlゼミ新着情報</a>
+</blockquote>
+
+<blockquote>
+<b>2018年8月21日(火)</b>
+<a href="/blog/20180820153471.html">Perlのインストール方法 - Windws、macOS、Linux対応</a>を公開しました。
+
+
+昨日は天津飯を作っていたのだけれど、妻に、フライパンの中で焼いている卵を見ておいてといわれたから、本当にただ見ていたら、めっちゃ焦げた。裏返さんとアカンかったらしい。
+</blockquote>
+
+<blockquote>
+<b>2018年8月16日(木)</b>
+<a href="/blog/20180816153437.html">plenv - ユーザー環境にPerlをインストールする</a>を公開しました。
+
+
+3日くらい前に、超簡単な味噌汁の作り方を思いついて、実践している。
+
+電気ポットでお湯をわかす。味噌汁用の茶碗に、だしの素を入れる、味噌入れる、ねぎをハサミで切って入れる、フエールワカメ入れる、お湯注ぐ、味噌かき混ぜて、5分待つ。これはリーズナブルで、超楽、ほうちょうと鍋いらず。
+</blockquote>
+
+<blockquote>
+<b>2018年8月14日(火)</b>
+<a href="/blog/20180814153419.html">macOSへのPerlのインストール</a>を公開しました。
+
+
+盆休みが明ける前に、散髪にいってきた。ひげもはやしっぱなしだったので、きれいに整えた。職場で仕事を始めると、きりっとするね。
+</blockquote>
+
+<blockquote>
+<b>2018年8月13日(月)</b>
+<a href="/blog/20180813153411.html">Unix/LinuxへのPerlのインストール</a>を公開しました。
+
+
+昨日は、麻婆豆腐を作って食べた。麻婆豆腐の元を使って作るんだけど、隠し味に少し醤油をいれて、ねぎとしめじを炒める。なかなかうまい。
+</blockquote>
+
+<blockquote>
+<a href="/blog/20180808153368.html">Strawberry Perl(ストロベリーパール)をWindowsにインストールする</a>を公開。
+
+
+昨日の夕飯は、オムライスを作った。玉ねぎと人参をみじん切りにして、塩コショウ、固形鶏がらスープを入れて炒める。少し厚めのベーコンを小さく切って入れ、ケッチャプを入れて、ご飯と混ぜる。最後に、卵焼いて、ポンとのせる。今回は、成功だったといえるだろう。
+</blockquote>
+
+<blockquote>
+<b>2018年8月6日(月)</b>
+<a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>を公開しました。
+
+
+シャインマスカットをヨーグルトに入れて食べた。豪華! 季節外れなので、少し当たりはずれがあったけどね。
+</blockquote>
+
+<blockquote>
+<b>2018年8月3日(土)</b>
+<a href="/blog/20180528152751.html">イベント情報</a>にPerl入学式 in札幌 第2回を追加
+
+
+<table>
+  <tr>
+    <td>
+      *9月15日(土)
+    </td>
+    <td>
+      <a href="https://perl-entrance-sapporo.connpass.com/event/90548"><span style="color:red">Perl入学式 in札幌 第2回 &#12316;構文基礎編&#12316;</span></a>
+    </td>
+  </tr>
+
+</table>
+
+
+7月30日に子供が生まれました。2930gの女の子です。なかなか力が強くって、指を握るのと、足をバタバタさせるのがすごい力。
+</blockquote>
+
+<blockquote>
+<b>2018年7月24日(火)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20180724153238.html">雅なPerl入門 - 雅ちゃんが大学生クロウにPerlを学ぶ物語</a>
+  </li>
+</ul>
+
+<a href="/blog/20180724153238.html"><img src="https://pbs.twimg.com/media/Di0q6UgUwAAXV7F.jpg" style="width:90%"></a>
+
+
+Perl入学式で雅なPerlをゲット。紹介記事を書いた。
+</blockquote>
+
+<blockquote>
+<b>2018年7月21日(土)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20091116124667.html">モジュール徹底解説</a>の各モジュールの見出しをわかりやすくする作業が終わりました。
+  </li>
+</ul>
+
+今日はPerl入学式東京。五反田のガイアックスさんの会社の会議室。Perl入学式の前は、コンビニでオランジーナを買って飲んで、気合を入れる。
+</blockquote>
+
+<blockquote>
+<b>2018年7月14日(土)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20091116124667.html">モジュール徹底解説</a>の各モジュールの見出しをわかりやすくしました。Getopt::Long, Archive::Tar, Cwd, File::Basename, File::Copy, File::Path, File::Spec, File::Temp, File::Find, FindBin, Encode, utf8, Carp
+  </li>
+</ul>
+
+
+僕の目覚ましは、5:30と6:30と7:30にセットして、二度寝を防いでいるが、それでも、たまに、遅刻することがある。
+</blockquote>
+
+<blockquote>
+<b>2018年7月13日(金)</b>
+最近の<a href="http://perlcodesample.hateblo.jp/">Perlテックブログ</a>の更新情報。
+
+
+<ul>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/07/12/082756">数学関数のインライン展開 - SPVM開発日記</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/07/11/083115">SPVMの例外の実装</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/07/05/192318">渋谷.pmがリアルタイムで配信されています。</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/07/04/215306">TwitterやGitHubでときどきやりとりしている「ながやすしんや」さんのブログを発見した</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/07/04/213809">「Perlってプログラミング言語あるじゃん」 「うん」「Perlがあるならダイヤモンドがあってもいいじゃん」</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/07/02/215247">ハイテクではなくローテク起業家が日々のパンを生む</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/06/28/222125">2018年版 Twitter活用法のまとめ</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/06/28/081619">values型を実装して複素数を扱えるようにする</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/06/27/080849">CレベルAPIにおける関数の安全な呼び出しにはシグニチャが必要になりそうだ</a>
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/06/26/222916">Perlツイートニュースに、Perlに関する話題を投稿しよう</a>
+  </li>
+</ul>
+
+
+僕は、ここ数年くらい、坊主に、ひげというファッションなんだけど、坊主は単純に楽だからだね。僕がめんどくさがりだから。ひげは、ないとなんか顔が物足りないのよね。
+</blockquote>
+
+<blockquote>
+<b>2018年7月12日(木)</b>
+<ul>
+  <li>
+    <a href="/blog/20180528152751.html">Perlのイベント情報</a>に「Perl入学式 in 沖縄 第3回」「Perl入学式 in 沖縄 第4回」「六本木.pm (株式会社メルカリ 六本木ヒルズ森タワー18F）」「YAPC 東京 2018」「吉祥寺.pm15」を追加しました。
+  </li>
+</ul>
+
+<ul>
+  <li>
+    「Perl入学式 in 札幌」と「Perl入学式 in 福岡」は今週土曜日の開催です。
+  </li>
+</ul>
+
+
+昨日の夕ご飯はサバでした。油がのっていて、大根おろしと一緒に食べると、口の中で、サバの油と大根おろしの甘味がマッチして、うま～い。<a href="https://www.google.co.jp/search?safe=active&ei=PoRGW_jnCMTC0gTtn6XgBA&q=%E3%83%84%E3%83%AB%E3%83%A0%E3%83%A9%E3%82%B5%E3%82%AD&oq=%E3%83%84%E3%83%AB%E3%83%A0%E3%83%A9%E3%82%B5%E3%82%AD&gs_l=psy-ab.3..0i131i67k1j0i131k1j0i67k1j0i4k1l5.1392.2497.0.5620.4.3.1.0.0.0.99.244.3.3.0....0...1c.1j4.64.psy-ab..0.4.249...0.0.9nQ5FwiQgD8">ツルムラサキ</a>もおひたしにして、かつおぶしと、しょうゆをかけて食べて、これもコリコリとした触感がうま～い。
+
+
+<b style="color:red">↓ イベント情報更新</b>
+</blockquote>
+
+<table>
+  <tr>
+    <td>
+      *7月14日(土)
+    </td>
+    <td>
+      <a href="https://perl-entrance-sapporo.connpass.com/event/90548"><span style="color:red">Perl入学式 in札幌 第1回 環境構築編</span></a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      *7月14日(土)
+    </td>
+    <td>
+      <a href="https://perl-entrance-fukuoka.connpass.com/event/90570">Perl入学式 in福岡 第2回 &#12316;構文基礎編&#12316;</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      *7月21日(土)
+    </td>
+    <td>
+      <a href="https://perl-entrance-okinawa.connpass.com/event/90507/">Perl入学式 in 沖縄 第3回 &#12316;配列/ハッシュ/リファレンス編&#12316;</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      *7月27日(金)
+    </td>
+    <td>
+      <a href="https://kichijojipm.connpass.com/event/92971/">吉祥寺.pm15</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      *8月25日(土)
+    </td>
+    <td>
+      <a href="https://perl-entrance-okinawa.connpass.com/event/94299/">Perl入学式 in 沖縄 第4回 &#12316;サブルーチン/正規表現編&#12316;</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      *9月28日(金)
+    </td>
+    <td>
+      六本木.pm (株式会社メルカリ 六本木ヒルズ森タワー18F）
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      *2019年の年始
+    </td>
+    <td>
+      <a href="http://yapcjapan.org/2018tokyo/">YAPC 東京 2018</a>
+    </td>
+  </tr>
+
+</table>
+
+<blockquote>
+<b>2018年7月4日(水)</b>
+<ul>
+  <li>
+    Perlゼミのすべてのコンテンツにサイドバーから行けるようになりました。
+  </li>
+  <li>
+    <a href="https://shibuyapm.connpass.com/event/89357/">明日の渋谷.pm</a>に参加します。
+  </li>
+</ul>
+
+
+最近はさらに猫と仲良くなってきた。体を撫でてあげると、ゴロゴロニャーという甘えた声を出す。猫の鳴き声の意味は、飼い主しかわからないんだってね!
+</blockquote>
+
+<blockquote>
+<b>2018年7月2日(月)</b>
+<ul>
+  <li>
+    <a href="/blog/20080229120427.html">Perl逆引き辞典</a>の内容をトップページの発展的な話題の位置に持ってきました。
+  </li>
+  <li>
+    <a href="https://shibuyapm.connpass.com/event/89357/">3日後の渋谷.pm</a>に参加します。
+  </li>
+</ul>
+
+
+今日は、僕が会社で飲んでいるお勧めのお茶を紹介! <a href="https://www.itoen.co.jp/products/detail.php?id=340">おーいお茶、玄米茶、プレミアム</a>。玄米茶に抹茶が入っていて、風味がとってもよい。ティーパックなんだけど、3杯目までおいしく飲めるので、お得感がある。これは、きっと冬に紹介したほうがよかったね。
+</blockquote>
+
+<blockquote>
+<b>2018年6月29日(金)</b>
+
+<ul>
+  <li>
+    <a href="http://www.perl-entrance.org">Perl入学式のロゴ</a>を[http://d.hatena.ne.jp/perlcodesample/:トップページに追加]
+  </li>
+  <li>
+    <a href="https://shibuyapm.connpass.com/event/89357/">渋谷.pm</a>に一般参加します。リーダー引継ぎ式がある。
+  </li>
+</ul>
+
+
+梅雨が明けて、暑さも増してきたね。夜は扇風機をかけっぱなしで寝てる。扇風機の風を浴びると、どこか懐かしい気持ちがよみがえるね!
+</blockquote>
+
+<blockquote>
+<b>2018年6月26日(火)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20180626152996.html">Perl 5.28リリース - Unicode 10.0サポート、文字列連結の高速化、ref関数、keys関数、forループの高速化</a>
+  </li>
+  <li>
+    <a href="http://perltweet.yukikimoto.com/">「Perlツイートタイムラインニュース」を「Perlニュースピックアップ」に名称を変更しました。</a>
+  </li>
+</ul>
+
+
+年に一度のPerlリリース。Perl 5.28のリリース記事を書きました。これで、今年の任務完了。
+</blockquote>
+
+<blockquote>
+<b>2018年6月25日(月)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20180528152751.html">イベント情報</a>に<a href="https://perl-entrance-okinawa.connpass.com/event/92688">7月7日(土) Perl入学式 in沖縄 第2.5回 &#12316;いままでの復習会&#12316;</a>を追加。
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2018/06/25/220443">SPVMのメモリ管理 - モータルオブジェクトの実装 | Perlテックブログ</a>を追加。
+  </li>
+</ul>
+
+
+会社の女性の後輩にこの日記を見せたら「木本さん。バラエティが少ないですね」と言われた(泣)。それでも、めげずに書いていくぞ。おー。
+</blockquote>
+
+
+
+<blockquote>
+<b>2018年6月18日(月)</b>
+<ul>
+  <li>
+    <a href="/blog/20161123147990.html">日付・時刻</a>をまとめました。
+  </li>
+</ul>
+
+
+Perl入学式東京にサポーターとして参加した。リファレンスがなんとかみんな書けていた。Perl入学式のテキストはとてもわかりやすく感じる。門松さんの書いた、配列とハッシュのリファレンスの対比がいい感じね。
+</blockquote>
+
+<blockquote>
+<b>2018年6月13日(水)</b>
+<ul>
+  <li>
+    <a href="https://perl-entrance-fukuoka.connpass.com/event/90570">Perl入学式 in福岡 第2回 &#12316;構文基礎編&#12316;</a>を<a href="/blog/20180528152751.html">イベント情報</a>に追加
+  </li>
+</ul>
+
+
+<a href="http://www.otsuka.co.jp/cmt/index.php">カロリーメイト</a>はうまいね! カロリーメイトというと、僕の小学校の同級生に初めて存在を教えてもらったんだけど、そのころは、まだパサパサな感じがしたんだけれど、最近はおいしく感じる。
+</blockquote>
+
+<blockquote>
+<b>2018年6月11日(月)</b>
+<ul>
+  <li>
+    <a href="/blog/20180611152872.html">scalar関数</a>の記事を追加。
+  </li>
+  <li>
+    <a href="https://shibuyapm.connpass.com/event/89357">7月3日(火) Shibuya Perl Mongersテクニカルトーク#18</a>を<a href="/blog/20180528152751.html">イベント情報</a>に追加
+  </li>
+  <li>
+    <a href="https://perl-entrance-sapporo.connpass.com/event/90548">7月14日(土) Perl入学式 in札幌 第1回 環境構築編</a>を<a href="/blog/20180528152751.html">イベント情報</a>に追加
+  </li>
+</ul>
+
+
+家庭の諸事情で、数か月くらい、更新が少なくなるかもしれません。かもかも。
+
+
+Perlゼミ主催の木本裕紀は、Perl入学式東京の正式サポートとして今後、参加することになりました。よろしくです!
+
+
+今年は、渋谷.pmが大復活。あのメンバーが見れるぞ! 僕もその昔、竹迫さんに呼んでもらって、トークした記憶があるのよね。
+
+
+北海道Perl入学式第一回もハジマルヨー!
+</blockquote>
+
+<blockquote>
+<b>2018年6月4日(月)</b>
+<a href="/blog/20180604152811.html">配列の要素数を取得</a>を追加
+
+
+日曜日に、三島.pmで、Perlのスライドの発表をして、ウナギを食べて、温泉に入ってきた。一日日帰り旅行って感じになった。
+</blockquote>
+
+/blog/20180604152811.html
+
+<blockquote>
+<b>2018年5月31日(木)</b>
+<a href="/blog/20180530152777.html">リストコンテキスト</a>、<a href="/blog/20180531152777.html">スカラコンテキスト</a>の個別ページを追加。
+
+
+最近は、妻が買ってきた、ごぼう茶というのを飲んでいる。味は、そのー、なんというかー、ゴボウだね!!!
+</blockquote>
+
+<blockquote>
+<b>2018年5月29日(火)</b>
+<a href="/blog/20161102147817.html">特殊変数</a>のページの整理が終了。
+
+
+僕は、一戸建て、土地、マンションの売買専門の不動産会社のシステムエンジニアなんだけど、最近は売り上げが上がってきているようで、社内の雰囲気がよい。
+
+
+僕のチームは、Web集客とユーザーインターフェースの部分を集中的にやっているけど、契約まで結びついてきているのはうれしいね。
+</blockquote>
+
+<blockquote>
+<b>2018年5月28日(月)</b>
+新着情報、Perl入学式、イベント情報を<a href="http://d.hatena.ne.jp/perlcodesample/">ヘッダ</a>に移動。
+
+
+Perl入学式でサポーターをやってきました。Javaの現場で、試験データをごにょごにょするのに、Perlを使ってみたい方や、沖縄Perl入学式の生徒さんの紹介で、東京のPerl入学式に来ているという女性の学生の方などがおられました。びっくりですね。
+
+
+スクリプト言語を初めてやる方は、型がないというのがなんとなく不思議みたいね。
+
+次回は<a href="https://perl-entrance-tokyo.connpass.com/event/89771/">6月16日 Perl入学式 in東京 第3回 &#12316;配列/ハッシュ編&#12316;</a>
+</blockquote>
+
+<blockquote>
+<b>2018年5月24日(木)</b>
+<a href="/blog/20161102147817.html">Perlの特殊変数</a>の個別の記事を作成中。
+
+
+明日は、19:30から<a href="https://twitter.com/search?f=tweets&vertical=default&q=%23kichijojipm&src=typd">吉祥寺.pm</a>に参加。明後日は、<a href="https://perl-entrance-tokyo.connpass.com/event/86154/">Perl入学式東京</a>にサポーターとして参加。
+</blockquote>
+
+<blockquote>
+<b>2018年5月23日(水)</b>
+<a href="/blog/20100820127859.html">ファイルテスト演算子</a>のそれぞれの演算子を個別の記事にしました。
+
+
+今日のお昼のランチは、とんトロ定食で、なんとかとろろというのが、ついてきてうまかった。
+</blockquote>
+
+<blockquote>
+<b>2018年5月22日(火)</b>
+<a href="/blog/20180520152690.html">プロセスIDを取得する</a>を単独の記事にしました。
+
+
+今日の夕飯は、シャケと天津飯だった。実家から送られてきた<a href="https://www.lotte.co.jp/products/catalogue/biscuit/01.html">チョコパイ</a>を二人で全部食べてしまった。チョコパイは癖になるよ!
+</blockquote>
+
+<blockquote>
+<b>2018年5月21日(月)</b>
+<a href="/blog/20180519152690.html">処理にかかっている時間を調べる</a>方法を記事にしました。
+
+
+1週間後は、吉祥寺.pmとPerl入学式東京に参加。<a href="https://twitter.com/search?q=%23kichijojipm&src=typd">吉祥寺.pmのツイッタータグ</a>で実況するよ。<a href="https://perl-entrance-tokyo.connpass.com/event/86154/">Perl入学式東京</a>は、あと8枠空いているので、第二回目からなんだけど、サポーターでフォローするので、よかったら参加してみてくださいね!
+</blockquote>
+
+<blockquote>
+<b>2018年5月19日(土)</b>
+Perl生産性ブログは、<a href="http://perlcodesample.hateblo.jp">お気楽Perlブログ</a>に名前が変わりました。新着記事は↓
+
+●予約語を変数名と関数名で使えるようにするコンパイラの実装について
+●SPVMのJITの単位をサブルーチンからモジュールへ
+●【海外記事】Perlのイベントのインスタグラム
+●【海外記事】Perlツールチェーンサミット2018でのCPANテスター
+●【海外記事紹介】スイスのPerlワークショップ - Ovid + Call for Papersを発表
+●SPVMロードマップ - OSサポート、64bit命令、多次元配列、C99数学関数
+●【イベント紹介】Hokkaido.pmの#14を開催します！
+●5月25日(金) 19:30からの吉祥寺.pm14に参加します。
+●【ブログ紹介】Perl Toolchain Summit 2018まとめレポート
+●【ブログ紹介】Pull Request Challengeの後には何がありますか？
+●Perl XSポータビリティノート
+
+
+食事に気をつけているのと、ストレッチを1年くらい続けているせいか。38才にして、体が強くなってきた。疲れやすいと感じているときは、食事を改善するのと、ストレッチと、スマフォ・タブレットの時間を減らすのが、お勧め。
+</blockquote>
+
+<blockquote>
+<b>2018年5月14日(月)</b>
+<a href="/blog/20080916122166.html">三角関数</a>についてまとめました。
+
+
+1週間ぶりの更新。先週は実家に帰っていて、日曜日の朝に帰ってきた。弟とスーパー銭湯、家族で、<a href="http://da-inn.com/katuragisantutuji-28025-2/">葛城山に上ってつつじ</a>を見て、友達と会って、いとこと会ってと、盛りだくさんの帰省でした。
+</blockquote>
+
+<blockquote>
+<a href="/blog/20100312126967.html">evalブロック</a>について解説を追加。
+
+
+<a href="http://perlcodesample.hateblo.jp/entry/2018/05/08/080610">5月25日(金) 19:30からの吉祥寺.pm14に参加します</a>
+
+
+<a href="https://perl-entrance-tokyo.connpass.com/event/86154/">5月25日(土)のPerl入学式 東京 第二回</a>にサポーターとして参加します。
+
+
+今日の夕飯はマーボー豆腐とミニトマト。明日は、夜行バスに乗って、奈良の実家に帰る。ゴールデンウィークの振り替え休日が平日なので、バスが安くとれる。夜行バスは、首が痛いのだけが、ネックだな。
+</blockquote>
+
+<blockquote>
+<b>2018年5月3日(火)</b>
+<a href="/blog/20080822121950.html">パーミッション</a>の解説をひとつのページにまとめた。
+
+
+ここ2週間は朝早起きブーム。6時ごろに目が覚める。カーテン閉まってないから、朝日が、窓から入ってくる。
+</blockquote>
+
+<blockquote>
+<b>2018年5月2日(水)</b>
+<a href="/blog/20080816121885.html">ファイルパーミッション</a>の解説にchmodのリンクを追加。
+
+
+今日の夕飯はグラタンだった。肉は入っていない。エビが入った、エビグラタン。ブロッコリーとスライスされたジャガイモが入ったグラタン。塩気の少ないグラタタタン。
+</blockquote>
+
+<blockquote>
+<b>2018年5月1日(月)</b>
+<a href="/blog/20180430152504.html">morboをWindowsで動かすツール - winmorbo</a>がstartコマンドなしで動くようになったよ!
+
+
+「winmorbo app.pl」で動くようになった。
+
+
+会社で風邪が流行っているみたい。僕は、先週に少し風邪っぽくなったが、なんとか持ちこたえた感じ。みんなも気をつけてね!
+</blockquote>
+
+<blockquote>
+<b>2018年4月30日(月)</b>
+<a href="/blog/20180310152509.html">Fcntl</a>、<a href="/blog/20180309152509.html">Time::HiRes</a>の記事を追加
+
+
+最近はあったかくなってきているんだけど、季節の変化に弱いので、まだヒートテック着てる。ぎょへぇ。
+</blockquote>
+
+<blockquote>
+<b>2018年4月30日(月)</b>
+<a href="/blog/20180430152504.html">MojoliciousのmorboをWindowsで動かすツールをリリースしました</a>
+
+
+ここ一週間は、朝は早起きしていて、6時30分ころに目が覚める。
+</blockquote>
+
+<blockquote>
+<b>2018年4月25日(火)</b>
+<a href="/blog/20100524127696.html">FindBin</a>の解説にモジュールのパスを追加するサンプルを追加。
+
+
+今日の夕飯はお稲荷さんだった。大きなお稲荷さんが3つ。なかなか食べごたえがあった。それと、昨日の残ったギョーザーを使った、ギョーザ卵スープ。うまい。
+</blockquote>
+
+<blockquote>
+<b>2018年4月24日(火)</b>
+<a href="/blog/20080802121768.html">Unix風のフィルタプログラミングを書く</a>に関数のリンク追加。
+
+
+Perl入学式東京にサポーターとして行ってきました。初めての参加なので、最初は緊張したけど、すぐに慣れた。テツジさんのPerlとPerl入学式の解説は、とてもよかった。
+
+
+緊張するときは、炭酸飲料などをコンビニで買って、心をチャージ。今回は、オランジーナを飲んだ。
+
+
+<a href="https://perl-entrance-tokyo.connpass.com/event/86154/">第二回は5月26日(土)</a>に決定。参加枠に少し余裕があるみたいなので、一回目参加を逃した方も、二回目からならなんとかなる。
+</blockquote>
+
+<blockquote>
+<b>2018年4月20日(金)</b>
+<a href="http://perlcodesample.hateblo.jp/entry/2018/04/20/213717">SPVM 0.0326リリース - メソッド定義、無名パッケージ、インターフェース、JIT</a>を書いた
+
+
+明日は<a href="https://perl-entrance-tokyo.connpass.com/event/83636/">Perl入学式</a>のサポーターとして参加する。でも、Windowsの上に環境設定をするところだから、僕も生徒して設定だね。
+
+
+五反田.pmは次は次は6月に六本木で行われるようだ。さらにパワーアップする予感がするね。
+</blockquote>
+
+<blockquote>
+<b>2018年4月12日(木)</b>
+<a href="http://perlcodesample.hateblo.jp/">Perl生産性向上ブログ</a>のここ1週間の記事の紹介。
+<ul>
+  <li>
+    ブログ紹介「Gotanda.pm #16 で 「XS で作るクロージャ」というタイトルで LT しました」
+  </li>
+  <li>
+    ブログ紹介「YAPC::Okinawaで「Perlコーディングテクニック2018」という話をしました」
+  </li>
+  <li>
+    CGIで動作するPerl製のPyukiWikiの最新版が2018年4月8日にリリース
+  </li>
+  <li>
+    ブログ紹介「春のPerl入学式リレーブログリレー５日目の記事です。」
+  </li>
+  <li>
+    ブログ紹介「Perl入学式というきっかけ」
+  </li>
+  <li>
+    ブログ紹介「｢春のPerl入学式リレーブログ｣をはじめます!」
+  </li>
+  <li>
+    ブログ紹介「Perl入学式で出来るXXなこと」
+  </li>
+  <li>
+    SPVMでインターフェースの実装が完了し、クロージャーの実装へ移る
+  </li>
+</ul>
+
+Perl入学式リレーブログというのが開催されているみたいね。
+
+
+明日は妻の実家に一緒に帰る。天気が悪くて少し寒いみたい。おいっこに会えるのが楽しみだね。<a href="http://kumonshuppan.com/yodo/yodo-syousai/?code=24828">KUMONの迷路の本</a>をプレゼントするよ。
+</blockquote>
+
+<blockquote>
+<b>2018年4月11日(水)</b>
+<a href="/blog/20110212130370.html">ファイル入出力基礎</a>に日本語ファイル名の扱いを追記
+
+
+今日は昼休みに、会社の近くの公園に行ってたんだけど、風がビュービューすごかった。ストレッチしてたら、落ち葉が、顔面に刺さりそうだった。
+</blockquote>
+
+<blockquote>
+<b>2018年4月10日(火)</b>
+<a href="/blog/20110212130370.html">ファイル入出力の基礎</a>を整理
+
+
+昨日は会社の花見だった。バーベキューで、すしと肉を食べた。関連会社の人も来て30人くらいで、楽しかった。もうサクラはなかったけどねぇ。
+</blockquote>
+
+<blockquote>
+<b>2018年4月5日(木)</b>
+<a href="/blog/20100312126967.html">eval</a>に例外処理へのリンクを追加
+
+
+我が家の猫ジョー君なのですが、保護されたときの写真らしいものを<a href="https://ameblo.jp/nyandollars/entry-12002163503.html">にゃんダラーズのサイト</a>で発見した。速攻保存。
+<img src="https://stat.ameba.jp/user_images/20150316/10/nyandollars/d1/b6/j/o0540096013246317097.jpg?caw=800" width="300">
+</blockquote>
+
+<blockquote>
+<b>2018年4月4日(水)</b>
+<a href="/blog/20080619121405.html">ヒアドキュメント</a>を加筆。
+
+
+今日はほんとにあったかかったですね。ヒートテックに、セーターまできてたので、あっちー、あっちー。会社では、扇風機が動き出した。
+</blockquote>
+
+<blockquote>
+<b>2018年4月3日(火)</b>
+<a href="/blog/20080610121319.html">wantarray関数</a>を加筆。
+
+
+今日の夕飯はカレーだった。うちのカレーは、<a href="https://www.sbfoods.co.jp/products/catalog/products.php?CGLCODE=00300&CGMCODE=00100&CGSCODE=00200">ゴールデンカレー</a>辛口、結婚当初からゴールデンカレー辛口。なんだか辛さにもなれてきた。
+</blockquote>
+
+<blockquote>
+<b>2018年4月2日(月)</b>
+
+<a href="/blog/20180402152267.html">2018年度のPerl入学式</a> のスケジュールを紹介します。
+
+
+<b>Perl入学式 in東京 第1回</b>
+2018年4月21日（土）
+<a href="https://perl-entrance-tokyo.connpass.com/event/83636/">申し込みはこちら!</a>
+
+
+<b>Perl入学式 in大阪 第1回</b>
+2018年5月12日（土）
+<a href="https://perl-entrance-osaka.connpass.com/event/83293/">申し込みはこちら!</a>
+
+
+<b>Perl入学式 in沖縄 第1回</b>
+第1回は5月19日(土)
+<a href="https://perl-entrance-okinawa.connpass.com/event/83653/">申し込みはこちら</a>
+
+
+4月21日(土)のPerl入学式 東京には、僕もサポーターで参加します。
+
+
+勉強会こわいなという方も、Perl入学式は、初心者に親切な勉強会なので、勇気をふるって参加してみてはいかがでしょうか。春に始まる第一回が開催されますよ!
+</blockquote>
+
+<blockquote>
+<b>2018年3月28日(木)</b>
+<a href="/blog/20080608121292.html">コンテキスト</a>の記事を更新。
+
+
+明日は<a href="http://www.mobilefactory.jp/">モバイルファクトリー</a>さんで<a href="https://twitter.com/search?f=tweets&vertical=default&q=%23gotandapm">gotanda.pm</a>に参加だ。
+</blockquote>
+
+<blockquote>
+<b>2018年3月27日(水)</b>
+<a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>のコンテンツを整理。
+
+
+<a href="https://www.google.co.jp/search?q=%E3%81%AB%E3%82%89%E3%81%BE%E3%82%93%E3%81%98%E3%82%85%E3%81%86&safe=active&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjp8_valo_aAhXClpQKHTd8BdcQ_AUICigB&biw=1255&bih=577">にらまんじゅう</a>って知ってる? 妻の仙台の実家に行ったときに初めて食べたのだけれど、かなりうまい。
+</blockquote>
+
+<blockquote>
+<b>2018年3月28日(水)</b>
+<a href="/blog/20161126148016.html">ファイル・ディレクトリ操作</a>をトップページとサイドバーに移動。
+
+
+今日の夕飯はカレー。やっぱりカレーは何度食べても飽きない。なんでだろーう。
+</blockquote>
+
+<blockquote>
+<b>2018年3月26日(月)</b>
+左サイドバーのコミュニティに<a href="https://twitter.com/kichijojipm">吉祥寺.pm</a>、<a href="https://gotanda-pm.connpass.com/">五反田.pm</a>、<a href="https://naniwaperl.connpass.com/">なにわPerl</a>、<a href="https://okinawapm.connpass.com/">沖縄.pm</a>を追加。
+
+
+<a href="https://gotanda-pm.connpass.com/event/82791/">3月30日(金)の五反田.pm</a>にLT「cpanmによるインストール可能アプリの作成方法」で参加します。
+
+
+今日は、会社の勉強会で二進数と十進数の変換についてデザイナーの女性に教えた。これは、月に1回くらい開催していて、デザイナーさんの担当の時は、デザイン関連のことを教えてもらったりする。
+</blockquote>
+
+<blockquote>
+<b>2018年3月22日(木)</b>
+<a href="/blog/20080324120637.html">if修飾子</a>、<a href="/blog/20180322152172.html">unless修飾子</a>を更新。
+
+
+卵焼きに醤油をいれて焼いているのだけど、今日は醤油を入れるのを忘れてしまった。ショッッック!
+</blockquote>
+
+
+<blockquote>
+<b>2018年3月21日(水)</b>
+<a href="/blog/20140319139520.html">Mojolicious入門</a>へのリンクをトップページとサイドバーに追加。
+
+
+今日は休日、お家で楽しくプログラミング。お昼は近所の<a href="http://chatnoir-company.com/chatnoir/html/brands/brands_veloce.html">ベローチェ</a>で、ホットドッグを食べる。ケッチャプとマスタードのコンビネーションがうまい!
+</blockquote>
+
+<blockquote>
+<b>2018年3月20日(火)</b>
+<a href="/blog/20080323120628.html">Perlの真偽値</a>に真の値の例を追加。<a href="/blog/20160225145640.html">Perlのバージョン情報</a>に「ドキドキPerl調査団 Part1」のリンクを追加。
+
+
+今日の夕飯はギョーザ。家で作る餃子は、ニンニクじゃなくって、ショウガを入れるのので、とてもあっさりとして、おいしい。ギョーザなのにとってもヘルシー!
+</blockquote>
+
+<blockquote>
+<b>2018年3月19日(月)</b>
+<a href="/blog/20080318120585.html">Perlの比較演算子</a>を更新
+
+
+昨日の休日は、妻と埼玉県の川越に行ってきた。<a href="https://www.google.co.jp/search?safe=active&biw=1303&bih=573&tbm=isch&sa=1&ei=wLuvWtCtKoKD8wXT-a9A&q=%E5%B7%9D%E8%B6%8A+%E6%9C%AC%E4%B8%B8%E5%BE%A1%E6%AE%BF&oq=%E5%B7%9D%E8%B6%8A+%E6%9C%AC%E4%B8%B8%E5%BE%A1%E6%AE%BF&gs_l=psy-ab.3..0j0i24k1l4.4467.5953.0.6256.3.3.0.0.0.0.140.237.1j1.2.0....0...1c.1.64.psy-ab..1.2.236...0i30k1.0.GRF2nK9nq_A">本丸御殿</a>というところは中が、畳でいい雰囲気。<a href="http://www.koedo.or.jp/miru-asobu/115/">菓子屋横丁</a>では、お団子とにぼしのような魚といもの天ぷらを食べた。
+</blockquote>
+
+
+
+<blockquote>
+<b>2018年3月15日(木)</b>
+<a href="/blog/20080308120495.html">our - パッケージ変数の宣言</a>、<a href="/blog/20080309120507.html">local</a>を更新。
+
+
+ITエンジニアは、目と肩と首に負担がかかりやすい職業なので、毎日のストレッチは欠かせない。最初はストレッチのやり方を教えてもらったのだけど、徐々に、自己流ストレッチを生み出して、毎日やっている。毎日100回はジャンプ。
+</blockquote>
+
+<blockquote>
+<b>2018年3月14日(水)</b>
+<a href="/blog/20080307120491.html">my</a>、<a href="/blog/20080301120434.html">split関数</a>を更新。
+
+
+最近は暖かくなってきたので、とっても散歩がしやすい。うちの家の近くは、市民農園なんかが、こないだの日曜なんかは、散歩をしていると、畑を耕していたので見学していた。冬が終わって、春になったーという感じで、作業をしている人が、いっぱいいた。それと、近くの畑で、おいしそうな小松菜が100円で売っていたので、買った。
+</blockquote>
+
+<blockquote>
+<b>2018年3月13日(火)</b>
+<a href="/blog/20080224120386.html">substr関数</a>、<a href="/blog/20080225120395.html">index関数</a>、<a href="/blog/20080226120403.html">chomp関数</a>、<a href="/blog/20080227120413.html">reverse関数</a>を更新。
+
+
+最近はよくおなかがすく。そうして、ちょうしにのって、炭水化物を食べすぎると、ちょっと体の調子が悪くなって、早寝をしてしまう。昨日は、お昼にピザ食べて、オーナーのピザも、もらったのが原因か。
+</blockquote>
+
+<blockquote>
+<b>2018年3月9日(金)</b>
+サイドバーの目次に、Perl発展を追加しました。
+
+
+今日の木本家の夕飯は、定番の肉みそうどん。ひき肉と玉ねぎと何かを炒めて、きゅうりの千切りともやしをうどんに混ぜて食べる。酢とラー油を少しかけるとさらにうまい! 
+</blockquote>
+
+<blockquote>
+<b>2018年3月8日(木)</b>
+<a href="/blog/20180308152051.html">スカラ変数のリファレンス</a>を追記。
+
+
+今日は、妻のお姉ちゃんから仙台のお土産、<a href="http://www.fujiya-senshu.co.jp/">支倉焼</a>が送られてきた。これは、僕の好きなお菓子なのでありがたい。白あんが入ってうまい!
+</blockquote>
+
+<blockquote>
+<b>2018年3月1日(水)</b>
+<a href="/blog/20180301151991.html">デリファレンス</a>を単独の記事にしました。配列、ハッシュ、スカラ変数のリファレンスについて書きました。
+
+
+今日は、結婚記念日。ケーキを食べた。明日はYAPC::Okinawaに出発。
+</blockquote>
+
+<blockquote>
+<b>2018年2月28日(水)</b>
+<a href="/blog/20180228151982.html">変数展開</a>を単独の記事にしました。変数展開の注意点、配列やヒアドキュメントでの利用についても解説しています。
+
+
+明後日は、YAPC::Okinawaに出発だ。
+</blockquote>
+
+<blockquote>
+<b>2018年2月27日(火)</b>
+<a href="/blog/20180227151973.html">繰り返し演算子</a>と<a href="/blog/20180226151973.html">デクリメント演算子</a>を単独の記事にしました。
+
+
+今日の夕飯は、妻の作ったシャケ梅チャーハンだった。梅は意外とチャーハンと合う。うまい!
+</blockquote>
+
+<blockquote>
+<b>2018年2月24日(土)</b>
+<a href="/blog/20180224151948.html">インクリメント演算子</a>を単独の記事にしました。
+
+
+今日は税務署に行ったのだけれど、勘違いしてしまって、閉まっていた。ガビーン。ちなみに月曜日にいったときは、工事中で仮移転して、渡せなかった。明日、再度行くことにする。三度目の正直ってやつだね。
+</blockquote>
+
+<blockquote>
+<b>2018年2月23日(金)</b>
+<a href="/blog/20180223151939.html">剰余演算子「%」 - 余りを求める</a>の項目を独立した記事にしました。
+
+
+毎週金曜日の夜は、週に一度のおやつの日。紅茶と甘いものを食べる。今日は、チョコどら焼きを食べた。甘くておいしかったー。
+</blockquote>
+
+<blockquote>
+<b>2018年2月22日(木)</b>
+<a href="/blog/20180222151930.html">除算演算子「/」 - 数値の掛け算</a>の項目を独立した記事にしました。
+
+
+今日は2月22日。猫の日みたいです。にゃーにゃーにゃー。
+</blockquote>
+
+<blockquote>
+<b>2018年2月21日(水)</b>
+<a href="/blog/20180221151922.html">乗算演算子「*」 - 数値の掛け算</a>の項目を独立した記事にしました。
+
+
+もう少しでYAPC::Okinawaだ。向こうはあったかいかなぁ。
+</blockquote>
+
+<blockquote>
+<b>2018年2月20日(火)</b>
+<a href="/blog/20180219151904.html">減算演算子「-」 - 数値の引き算</a>の項目を独立した記事にしました。
+
+
+最近は、電気回路についても少し勉強している。目標は、加算回路を理解できるところまでいくこと。数学と物理が手ごわい。
+</blockquote>
+
+<blockquote>
+<b>2018年2月19日(月)</b>
+<a href="/blog/20180219151904.html">加算演算子「+」 - 数値の足し算</a>の項目を独立した記事にしました。数値の自動変換、自動拡張についても触れています。
+
+今日は、妻の作ったホッケと豚汁を食べた。ホッケは、脂がのっていておいしかった。ホッケは、肉の厚みがあるので食べ応えがある。
+</blockquote>
+
+<blockquote>
+<b>2018年2月15日(木)</b>
+<a href="/blog/20080221120361.html">文字列連結演算子</a>の解説を加筆しました。変数展開との使い分けについても触れました。
+
+
+ちょうど梅がきれいな時期です。今日は会社のシステム部で、梅を見に行ってきました。白と赤の小さな花がかわいかったですね。
+</blockquote>
+
+<blockquote>
+<b>2018年2月14日(水)</b>
+<a href="/blog/20180214151861.html">配列のリファレンス</a>の記事を追加しました。配列のリファレンスは頻繁に使うので、個別記事として作成しました。
+
+
+マリオオデッセイを最後までクリアした。なかなか難易度が高くてやりごたえがあった。後は、コンプリートを目指す。
+</blockquote>
+
+<blockquote>
+<b>2018年2月13日(火)</b>
+<a href="/blog/20080216120316.html">配列スライス</a>と<a href="/blog/20080215120307.html">ハッシュスライス</a>の記事を更新しました。
+
+
+まだもう少し寒いみたい。ヒートテックを日曜日にユニクロで買った。
+</blockquote>
+
+<blockquote>
+<b>2018年2月10日(土)</b>
+
+
+最近の<a href="http://perlcodesample.hateblo.jp/">Perl生産性向上ブログ</a>のタイトルです。こちらは自由に書いていくスタイルです。
+
+<ul>
+  <li>
+    吉祥寺.pmで発表したスライド「こんな変数名は嫌だ」をアップしました
+  </li>
+  <li>
+    SPVMの数値計算の仕様はJavaとまったく同じにする
+  </li>
+  <li>
+    コンパイルキャッシュの実装にまだ取り組む
+  </li>
+  <li>
+    SPVMで試験時のgccのコンパイルが遅いのでコンパイルキャッシュを実装中
+  </li>
+  <li>
+    オンスタックリプレイスメント(on-stack replacement)の実装を進めなくちゃ
+  </li>
+  <li>
+    ExtUtils::CBuilderのコードを純粋なC言語の世界から呼び出したい
+  </li>
+</ul>
+
+
+金曜日に吉祥寺.pmに参加してきた。kajiさんの<a href="http://ks0608.hatenablog.com/entry/2015/01/11/000426">App::RemoteCommand</a>が便利そうだったので、自社でgit pullとデプロイをリモートコマンドで実行してみようかしら。
+</blockquote>
+
+
+
+<blockquote>
+<b>2018年2月7日(水)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20080212120283.html">each関数</a>
+  </li>
+  <li>
+    <a href="/blog/20080213120291.html">exists関数</a>
+  </li>
+</ul>
+
+を加筆しました。
+
+
+<a href="/blog/20180208151809.html">ハッシュのリファレンス</a>というデータ構造が、Perlプログラムで頻繁に登場するので、特別にページを設けました。
+
+
+今日の夕飯は妻が作った豚しょうが焼き定食を食べた。うまかった。インフルの後遺症からだんだんと回復しつつある。
+</blockquote>
+
+<blockquote>
+<b>2018年2月7日(水)</b>
+
+<ul>
+  <li>
+    <a href="/blog/20080114120030.html">List::Util - リストに関するユーティリティ</a>
+  </li>
+  <li>
+    <a href="/blog/20080127120141.html">splice関数 - 配列の要素の複雑な操作</a>
+  </li>
+  <li>
+    <a href="/blog/20080208120248.html">Data::Dumper - データを見やすい形式で出力</a>
+  </li>
+  <li>
+    <a href="/blog/20080210120265.html">keys関数 - ハッシュのすべてのキーを取得</a>
+  </li>
+</ul>
+
+を加筆しました。
+
+
+今日の夕飯は妻が作ったドライカレーとメンチカツ。うまかった。イチゴがデザートにあった。今週の金曜日の吉祥寺.pmのスライドを作る。
+</blockquote>
+
+<blockquote>
+<b>2018年2月5日(月)</b>
+
+
+<a href="/blog/20080108132865.html">コマンドライン引数</a>を加筆しました。これから、半年間くらいは、既存記事の強化に力を入れていきます。リンクをどんどんつなげるので、お楽しみに。
+
+
+旧暦で2月の初旬といえば旧正月で、春の始まりといえば、2月の初旬のことを言います。<a href="http://www6.airnet.ne.jp/manyo/main/">万葉集</a>では、春には、雪、ウグイス、梅などが、好んで詠まれました。雪と梅の両方が読まれた歌が、けっこうあります。
+
+
+<a href="http://www6.airnet.ne.jp/manyo/main/five/m0822.html">我が園に梅の花散るひさかたの天より雪の流れ来るかも</a>
+</blockquote>
+
+<blockquote>
+<b>2018年2月1日(木)</b>
+
+
+<a href="/blog/20180201151749.html">バッククォート演算子</a>を追記しました。
+
+
+先週末からインフルエンザにかかってしまいました。インフルB型で、症状は重くもないが、軽くもない。やっぱり、インフルはしんどい。生涯で数えると、15回以上はインフルエンザにかかっている気がする。ほぼ治ったので、今日から復帰。
+</blockquote>
+
+<blockquote>
+<b>2018年1月25日(木)</b>
+or演算子はPerlでは頻繁に目にするので、<a href="/blog/20180124151680.html">or演算子</a>の単独の記事を追加しました。
+
+
+ここ最近寒かったせいか、少し咳がでそうになる。風邪の引き始めで、とどまってくれればよいのだが。今日の夕飯は、妻の作ったカレーと、玉こんにゃく、とお惣菜のイカフライだった。やっぱりカレーはいつ食べてもうまい。
+</blockquote>
+
+<blockquote>
+<b>2018年1月24日(水)</b>
+<a href="/blog/20180124151680.html">system関数</a>を追加しました。セキュリティについても触れています。
+
+
+今日は、会社の女性たちに、お菓子の差し入れをした。マカロンとチョコクッキー。マカロンは、イチゴクリームをつけて食べるもので、ひとつ僕も食べた。
+
+
+マリオオデッセイは、ムーンが499個集まった。コンプリートまでは、まだもうちょっとかかりそう。
+</blockquote>
+
+<blockquote>
+<b>2018年1月23日(火)</b>
+<a href="/blog/20100123126425.html">while文</a>の解説を加筆しました。よく使う無限ループのサンプルを追加しています。
+
+
+今日は快晴で、会社の近くはもう雪がとけてなくなりかけていた。家の近くはまだ積もっているところがある。
+
+
+今日の夕飯は、妻の豚生姜焼き定食。うまい。最近はスーパーマリオオデッセイをやっている。これは面白い。
+</blockquote>
+
+<blockquote>
+<b>2018年1月22日(月)</b>
+<a href="http://perlcodesample.hateblo.jp/entry/2018/01/22/220137">2月9日(金) 吉祥寺.pm13でLTをします</a>
+
+
+東京は大雪警報がでています。雪が20cmも積もっているみたい。猫のジョー君は、エアコンの下でぬくもっています。インフルも流行っているのでお気を付けを。
+</blockquote>
+
+<blockquote>
+<b>2018年1月22日(月)</b>
+<a href="/blog/20180122151662.html">デストラクタ - DESTROY</a>を追加しました。
+
+
+<a href="http://perlcodesample.hateblo.jp/entry/2018/01/22/220137">2月9日(金) 吉祥寺.pm13でLTをします</a>
+
+
+東京は大雪警報がでています。雪が20cmも積もっているみたい。猫のジョー君は、エアコンの下でぬくもっています。インフルも流行っているのでお気を付けを。
+</blockquote>
+
+<blockquote>
+<b>2018年1月20日(土)</b>
+<a href="/blog/20180120151645.html">m - 正規表現の囲み文字の表現</a>を追加しました。
+
+
+今日はサーバーサイドエンジニアの体験授業を、とあるところで講師として、してきました。うまくいってよかった。ほっ。
+</blockquote>
+
+<blockquote>
+<b>2018年1月18日(木)</b>
+<a href="/blog/20180118151628.html">デフォルト変数 $_</a>を追加しました。
+
+
+今日は、鳥団子と豚肉と豆腐の入った鍋を作って食べました。冬といえば鍋ですね。猫のジョー君も元気です。
+</blockquote>
+
+
+<blockquote>
+<b>2018年1月15日(月)</b>
+サイトデザインを調整して見やすくしました。
+
+
+ここ数日、ずいぶんと寒くなりましたね。今、僕は、会社でストレッチをして、体の芯を鍛えています。おじいちゃんになったときに体が動くように。それと、猫背解消です。
+</blockquote>
+
+<blockquote>
+<b>2018年1月13日(土)</b>
+少し日付が空きましたね。あけましておめでとうございます。正月は、お餅をお腹いっぱい食べました。トップページに、<a href="/blog/20150210142353.html">Perlの特徴</a>と<a href="/blog/20160225145640.html">Perlのバージョン情報</a>のリンクを追加したので、ご覧ください。
+
+
+Perlってどんな特徴があるの? そういう疑問に答える内容になっています。
+</blockquote>
+
+<blockquote>
+<b>2018年1月5日(金)</b>
+<a href="/blog/20170521149524.html">繰り返し構文の解説</a>の中で、後置のforについて取り上げました。この構文はちょっと普通のforより速い。その理由は...。
+</blockquote>
+
+<blockquote>
+<b>2018年1月4日(木) 新着情報</b>
+<a href="/blog/20170521149524.html">繰り返し構文の解説</a>の中で、grep関数とmap関数を取り上げました。僕の好きな関数で、うまく使えるとPerlらしいシャレオツなコードになる。
+</blockquote>
+
+<blockquote>
+<b>2017年12月30日(土) 新着情報</b>
+<ul>
+  <li>
+    サイト名が「サンプルコードによるPerl入門」から「Perl入門ゼミ」に変わりました。
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月26日(火) 新着情報</b>
+<ul>
+  <li>
+    <a href="/blog/20171226151430.html">kill関数</a>のページを追加。
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月25日(月) 新着情報</b>
+<ul>
+  <li>
+    <a href="/blog/20171225151420.html">do～while文の解説ページ</a>を追加。
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月23日(土) 新着情報</b>
+<ul>
+  <li>
+    トップページの構成を整理したよ。「覚えておきたいテクニック」を入門の後ろに、「逆引き辞典」をリファレンスの後ろに移動。
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月22日(金) 新着情報</b>
+<ul>
+  <li>
+    <a href="/blog/20171222151394.html">unpack関数 - パックされたデータを復元する</a>を書いた。バイナリデータを扱いたい場合に便利。
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/22/215217">12月22日の記事紹介</a>「Perl入学式in東京」「第46回　Perl 5.26で変わること（2）」「第46回　Perl 5.26で変わること（3）」「今年Perlで困ったこと」
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月21日(木) 新着情報</b>
+<ul>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/21/221435">「日本におけるPerlコミュニティを脈々と続くものとして盛り上げていく」というJPAの理念に賛同する</a>を書いた。Perlの持続的な成長に期待したい。
+  </li>
+  <li>
+    <a href="/blog/20171218151360.html">pack関数</a>を加筆。「浮動小数点を符号付doubleのバイナリ形式にパック」「バイナリデータを書き込むには」「エンディアンを変更するには」
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月20日(水) 新着情報</b>
+<ul>
+  <li>
+    <a href="/blog/20171220151377.html">YAPC::Okinawa 2018のトークの応募の締め切りは12/28(木)までのようです。お忘れなく。</a>を書いた。僕もYAPCのトークに今日申し込んだ。危なかった～。
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月19日(火) 新着情報</b> 
+
+<ul>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/19/221326">コマンドラインツールとしてのPerl【記事紹介】</a>を書いた。こういう使い方あるよね!
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/19/220620">Perl入学式卒業後の進路【記事紹介】</a>を書いた。製作メモが非常に興味深い。
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/19/220414">Perl生誕30周年【記事紹介】</a>を書いた。12月18日がPerlの誕生日よ。
+  </li>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/19/220102">Perl 5.26で変わること Perl Hackers Hub【記事紹介】</a>を書いた。Perl 5.26へのアップデートは、ちょっと注意。
+  </li>
+</blockquote>
+</ul>
+
+<blockquote>
+<b>2017年12月18日(月) 新着情報</b>
+
+<ul>
+  <li>
+    <a href="/blog/20171218151360.html">pack関数</a>を追加。今日は久しぶりに記事を書けてよかった。もう少し追記が必要。
+  </li>
+</ul>
+
+<ul>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/18/210803">若い人たちにPerlを使ってもらえるようにメッセージを送る</a>を書いた。
+  </li>
+</ul>
+
+<ul>
+  <li>
+    <a href="http://perlcodesample.hateblo.jp/entry/2017/12/18/214547">YAPC沖縄の飛行機とホテルをとらなくっちゃな</a>を書いた。
+  </li>
+</blockquote>
+</ul>
+

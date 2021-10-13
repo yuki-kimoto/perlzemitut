@@ -1,0 +1,249 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20100115126494.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>簡易検索アプリケーション(Mojolicious::Liteバージョン)</h2>
+
+
+
+簡易な検索アプリケーションです。これは<a href="/blog/20120414133435.html">かんたんプログラミング CGI/Perl</a>の第5章の3節の「簡易検索アプリケーション」をMojolicious::Liteを使って書き直したものになっています。
+
+<h3>簡易検索アプリケーション</h3>
+簡易検索アプリケーションです。
+
+<h4>検索ページ</h4>
+[f:id:yukikimoto:20100219230809p:image]
+
+<h4>検索結果ページ</h4>
+[f:id:yukikimoto:20100219230811p:image]
+
+<h4>登録ページ</h4>
+[f:id:yukikimoto:20100219231044p:image]　
+
+<h3>ソースコード</h3>
+
+検索アプリケーションのソースコードです。
+
+<pre>
+use Mojolicious::Lite;
+use utf8;
+use Scalar::Util 'looks_like_number';
+use Encode qw/encode decode/;
+use File::Path 'mkpath';
+use File::Basename 'dirname';
+
+
+# Data file(absolute path)
+my $data_file = app->home->rel_file('search-person/data.txt');
+
+unless (-f $data_file) {
+  
+  # Create data directory
+  my $data_dir = dirname($data_file);
+  unless (-d $data_dir) {
+    mkpath($data_dir)
+      or die "Cannot create directory '$data_dir'";
+  }
+  
+  # Create file
+  open my $fh, '>', $data_file
+    or die "Cannot create file '$data_file': $!";
+  close $fh;
+}
+
+# Search page(This is top page)
+get '/' => sub {
+  shift->render(title => 'Search page');
+} => 'index';
+
+# Data registering page
+get '/register' => sub {
+  shift->render(title => 'Resist page');
+} => 'register';
+
+# Search result
+get '/search-result' => sub {
+  my $self = shift;
+  
+  my $height_min = $self->param('height-min');
+  my $height_max = $self->param('height-max');
+  
+  # Parameter error
+  my $error =
+      !looks_like_number($height_min) ? 'Height min must be a number'
+    : !looks_like_number($height_max) ? 'Height max must be a number'
+    : undef;
+  
+  # Render error page
+  return $self->render(
+    template => 'error',
+    title => 'Error page',
+    message => $error
+  ) if $error;
+  
+  # Open
+  open my $fh, '<', $data_file
+    or die "Cannot open file '$data_file': $!";
+  
+  # Search
+  my $persons = [];
+  while (my $line = <$fh>) {
+    # Decode
+    $line = decode('UTF-8', $line);
+    
+    # Remove line break
+    chomp $line;
+    
+    # Split line
+    my @record = split("\t", $line);
+    
+    # Person
+    my $person = {};
+    $person->{name}   = $record[0];
+    $person->{height} = $record[1];
+    
+    # Match
+    if ($person->{height} >= $height_min &&
+        $person->{height} <= $height_max)
+    {
+      push @$persons, $person;
+    }
+  }
+  
+  $self->render(title => 'Search result', persons => $persons);
+  
+} => 'search-result';
+
+# Post data
+post '/post' => sub {
+  my $self = shift;
+  
+  # Parameter
+  my $name   = $self->param('name');
+  my $height = $self->param('height');
+  
+  # Parameter error
+  my $error = !$name
+    ? 'You must be specify name'
+    
+    : ! looks_like_number($height)
+    ? 'Height must be a number'
+    
+    : undef;
+  
+  # Render error page
+  return $self->render(template => 'error', title => 'Error page',
+                message => $error)
+    if $error;
+  
+  # Open
+  open my $fh, '>>', $data_file
+    or die "Cannot open file '$data_file': $!";
+  
+  # Line
+  my $line = join "\t", $name, $height;
+  
+  # Print
+  print $fh encode('UTF-8', $line) . "\n";
+  
+  close $fh;
+  
+  # Redirect
+  $self->redirect_to('register');
+  
+} => 'post';
+
+app->start;
+
+__DATA__
+
+@@ layouts/default.html.ep
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
+    <title>Simple Search - <%= $title %></title>
+  </head>
+  <body>
+    <%= content %>
+  </body>
+</html>
+
+@@ index.html.ep
+% layout 'default';
+  <h1>Simple Search - <%= $title %></h1>
+  <form method="get" action="<%= url_for('search-result') %>">
+    <div>
+    Search person informations.
+    </div>
+    <div>
+      Height
+      <input type="text" name="height-min"> -
+      <input type="text" name="height-max">
+    </div>
+    <div>
+      <input type="submit" value="Search" >
+    </div>
+  </form>
+  <div>
+    <a href="<%= url_for('register') %>">Go to register page.</a>
+  </div>
+
+@@ register.html.ep
+% layout 'default';
+  <h1>Simple Search - <%= $title %></h1>
+  <form method="post" action="<%= url_for('post') %>">
+    <div>
+    Resist person information.
+    </div>
+    <div>
+      Name
+      <input type="text" name="name" >
+    </div>
+    <div>
+      Height
+      <input type="text" name="height">
+    </div>
+    <div>
+      <input type="submit" value="Resister" >
+    </div>
+  </form>
+  <div>
+    <a href="<%= url_for('index') %>">Go to search page</a>
+  </div>
+
+@@ error.html.ep
+% layout 'default';
+  <h1>Simple Search - <%= $title %></h1>
+  <%= $message %>
+
+@@ search-result.html.ep
+% layout 'default';
+  <h1>Simple Search - <%= $title %></h1>
+  <div>
+    <a href="<%= url_for('index') %>">Go to Searching page</a>
+    <a href="<%= url_for('register') %>">Go to Resisting page</a>
+  </div>
+  <div>
+    % for my $person (@$persons) {
+      <div>
+        <hr>
+        <div>Name: <%= $person->{name} %></div>
+        <div>Height: <%= $person->{height} %></div>
+      <div>
+    % }
+  </div>
+</pre>
+
+<a href="/blog/20100123126425.html">while文</a>を使ってファイルから行を取り出しています。

@@ -1,0 +1,85 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html"><span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>File::Path - 複数階層のディレクトリを作成・削除</h2>
+
+
+
+<b>File::Path</b>モジュールを使用すると、複数階層のディレクトリを作成したり、削除したりすることができます。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use File::Path qw/mkpath rmtree/;
+</pre>
+
+mkpathで複数階層のディレクトリの作成を行うことができます(※1)。戻り値は作成したディレクトリ名の一覧です。たとえば'xxx/yyy/zzz'というディレクトリを作成した場合は@createdは('xxx', 'xxx/yyy', 'xxx/yyy/zzz')になります。mkpathでエラー(※2)が発生した場合は例外が投げられます。
+
+<pre>
+# 複数階層のディレクトリの作成
+@created = mkpath $dir;
+</pre>
+
+第3引数でディレクトリ作成時のパーミッションを指定することができます。デフォルトは0777です。(第2引数は作成したディレクトリ名を標準出力に出力するかどうかの指定です。)
+
+<pre>
+@created = mkpath($dir, 0, 0644);
+</pre>
+
+rmtreeで複数階層のディレクトリの削除を行うことができます。戻り値は削除することのできたファイル(ディレクトリを含む)の数です。削除でエラーが発生した場合にrmtreeは警告を発生させます。
+
+<pre>
+# 複数階層のディレクトリの削除
+$removed = rmtree $dir;
+</pre>
+
+mktreeで複数階層のディレクトリを作成するサンプルです。
+
+<pre>
+# 複数階層のディレクトリの作成
+my $dir = 'xxx/yyy/zzz';
+mkpath $dir;
+</pre>
+
+rmtreeで複数階層のディレクトリを削除するサンプルです。'xxx'ディレクトリ以下のすべてのファイルとディレクトリが削除されます。
+
+<pre>
+my $dir = 'xxx';
+rmtree $dir;
+</pre>
+
+rmtreeで発生した警告をキャッチして例外に変換するサンプルです。
+
+<pre>
+my $dir = 'xxx';
+local $SIG{__WARN__} = sub { die @_ };
+rmtree $dir;
+</pre>
+
+File::PathのAPIには新しいものや新しい機能が追加されたものもありますが、ここでは互換性を考慮して古いAPIのみを紹介しています。
+
+書き込み権限がなかったためにディレクトリを作成できなかった場合などにエラーとなります。ディレクトリがすでに存在している場合はエラーにはなりません。
+
+<h3>関連</h3>
+
+<ul>
+  <li>
+    <a href="/blog/20080524121160.html">複数階層のディレクトリを作成する</a>
+  </li>
+  <li>
+    <a href="/blog/20080527121190.html">複数階層を持つディレクトリを一度に削除する</a>
+  </li>
+</ul>
+

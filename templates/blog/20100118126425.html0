@@ -1,0 +1,28 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>map関数 -  配列のすべての要素の変換</h2>
+
+
+<strong>配列のすべての要素を変換</strong>するには<strong>map関数</strong>を使用します。@arrayの各要素がデフォルト変数$_に渡されてきますので、コードブロック{ }の中で必要な変換を行います。変換文で最後に評価されたものが@mappedに順番に追加されます。
+
+<pre>
+# 配列のすべての要素の変換
+@mapped = map { 変換文 } @array;
+</pre>
+
+

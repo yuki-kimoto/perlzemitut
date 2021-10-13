@@ -1,0 +1,38 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>reverse関数 - 配列を逆順(文字列を逆順)にする</h2>
+
+
+
+<strong>reverse関数</strong>を使用すると、<a href="/blog/20161003147558.html">文字列</a>を逆順あるいは<a href="/blog/20161012147627.html">配列</a>を逆順にすることができます。
+
+<pre>
+# 文字列を逆順にする
+$str_reverse = reverse $str;
+
+# 配列を逆順にする
+@array_reverse = reverse @array;
+</pre>
+
+<a href="/blog/20161013147635.html">ハッシュ</a>とキーの値を入れ替えるのに、reverse関数を使用することもできます。
+
+<pre>
+%hash_reverse = reverse %hash;
+</pre>
+
+

@@ -1,0 +1,57 @@
+
+<h2>Perl自体をソースコードからコンパイルする方法</h2>
+
+Perl自体をソースコードからコンパイルする方法。まず「git clone」でPerlのソースコードをとってくる。
+
+<pre>
+git clone http://perl5.git.perl.org/perl.git
+</pre>
+
+これは、現在の開発版の最新のブランチです。
+
+次にREADMEの中に掲載されている次のコマンドを実行します。
+
+<pre>
+./Configure -des -Dprefix=$HOME/localperl
+</pre>
+
+リリース版だとこのコマンドでMakefileが生成されますが、開発版だと失敗するので次のコマンドを実行します。
+
+<pre>
+./Configure -des -Dusedevel -Dprefix=$HOME/localperl
+</pre>
+
+次にコンパイルです。makeコマンドを実行します。
+
+<pre>
+make
+</pre>
+
+次にテストです。
+
+<pre>
+make test
+</pre>
+
+最後にインストール。「$HOME/localperl」にインストールされます。
+
+<pre>
+make install
+</pre>
+
+最近僕は、Perlのソースコードをちょっとさわったりするのですが、変更を加えた後に、makeとmake testを走らせるというのは、ちょっと現実的ではない。これは、モジュールの試験も含めて全部やってしまう。
+
+そこで、最小限のPerlをコンパイルしたり、最小限のテストを実行する方法が用意されています。
+
+次のコマンドで、miniperlと呼ばれる小さなPerlをコンパイルできます。
+
+<pre>
+make miniperl
+</pre>
+
+次のコマンドで、小さなテストを走らせることができます。
+
+<pre>
+make minitest
+</pre>
+

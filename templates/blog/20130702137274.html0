@@ -1,0 +1,41 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20130702137274.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>rootユーザーでいるときに、一般ユーザーにスイッチしてコマンドを実行する方法 / Mojolicious</h2>
+
+
+
+<strong>rootユーザー</strong>でいるときに、<strong>一般ユーザーにスイッチ</strong>して<strong>コマンドを実行</strong>するには、以下のように<strong>su</strong>の<strong>-c</strong>オプションを使用します。
+
+<pre>
+su - ユーザー名 -c コマンド
+</pre>
+
+最近はWebアプリケーションを作成しているのですけれど、rootユーザーから一般ユーザーにスイッチして、アプリケーションを実行する一番よい方法はなにかなぁと最近考えています。これは、サーバーが起動したときに、自動的にWebアプリケーションを実行したいし、rootユーザーからWebアプリを管理したいからです。
+
+suとsudoはどちらがいいかなぁと考えているのですがsudoは端末(tty)からではないと実行できないというデフォルトの設定が入っていることがあるため、suのほうがいい気がします。コマンドをダブルクォートで囲まないといけないのが、すこし面倒ですけども。
+
+サンプルとしては次のようなシェルを記述します。
+
+<pre>
+#!/bin/sh
+
+PERL_BIN=/home/gitprep/perl5/perlbrew/perls/perl-5.16.3/bin
+su - gitprep -c "PATH=$PERL_BIN:$PATH /home/gitprep/webapp/gitprep/gitprep $*"
+</pre>
+
+PATHをきちんと設定してあげる必要あるところもポイントです。なぜなら端末にログインしているわけではないのでPATHの編集を行っている.bashrcが読み込まれないからです。どのPerlを使うのかは、デフォルトのPerlをつかない場合は指定する必要があります。
+

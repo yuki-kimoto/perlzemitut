@@ -1,0 +1,138 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Strawberry PerlをWindowsにインストールする</h2>
+
+
+
+Strawberry Perl(ストロベリーパール)はWindowsでPerlを利用するために作成されたPerlのディストリビューションのひとつです。
+
+<a href="http://strawberryperl.com"><img style="border:#ddd 1px solid" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180808/20180808073552.png?1533681423"></a>
+
+<a href="http://strawberryperl.com">Strawberry Perl for Windows</a>
+
+Strawberry Perlの良いところは、
+
+<ul>
+  <li>
+    Unix/Linux環境のPerlと近い感覚で使うことができる
+  </li>
+  <li>
+    gccなどの開発環境が準備されていて、CPANモジュールがインストール可能
+  </li>
+  <li>
+    古いバージョンのPerlも公開されている
+  </li>
+</ul>
+
+です。
+
+PerlのUnix生まれの言語なので、Windowsでもなるべく<b>Unix環境に近い感覚</b>で利用できると使いやすく感じます。
+
+Strawberry Perlを使うと、<b>ほとんどのCPANモジュールがインストールが可能</b>です。
+
+<b>古いバージョンのPerlもそのまま残してくれている</b>ので、開発をしていて、古いPerlがダウンロードできなくなったという心配もありません。
+
+WindowsでPerlを利用する場合は、一番最初に試してみてほしいPerlです。
+
+以下では、Windows 10を想定して、インストール方法を解説します。Windowsの古いバージョンでも、手順はほとんど同じです。
+
+<h4>Strawberry Perlのダウンロード</h4>
+
+Strawberry Perlをダウンロードして、インストールしてみましょう。2018年の最新のPerlは、Perl 5.28です。
+
+以下のリンクから<b>Strawberry Perl 5.28 64bit MSI installer</b>をクリックして、Strawberry Perlをデスクトップにダウンロードしましょう。
+
+<ul>
+  <li>
+    <a href="http://strawberryperl.com/releases.html">Strawberry Perl Releases</a>
+  </li>
+</ul>
+
+<a href="http://strawberryperl.com/releases.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180808/20180808073518.png?1533681603"></a>
+
+MSI installerというのはWindowsのデフォルトのインストーラーという意味です。
+
+末尾のバージョン番号が少し違うこともあるかもしれませんが、気にしないで大丈夫です。
+
+ほとんどの場合は64bit版のWindowsで大丈夫だと思いますが、32bit版が必要な方は、32bitの方のStrawberry Perlをダウンロードしてください。
+
+<h4>Strawberry Perlのインストール</h4>
+
+ダウンロードしたStrawberry Perlをダブルクリックします。
+
+インストーラーが起動します。空き容量の計算に少し時間がかかる場合がありますが、そのまま待ちましょう。
+
+インストーラーが起動しますので「Next」を押して進みます。
+
+途中で「I accept the terms in the License Agreement」というチェックボックスがでてくるので、チェックをいれて「Next」を押します。
+
+さらに「Next」を押して進んでいって、最後に「Install」をクリックするとStrawberry Perlのインストールが始まります。
+
+ここで「この不明な発行元からのアプリがデバイスに変更を加えることを許可しますか?」というダイアログが表示されると思いますが、「はい」をクリックしましょう。
+
+5分くらい時間がかかるので待ちましょう。
+
+プログレスバーが満タンになると、Strawberry Perlのインストールが完了します。
+
+「Finish」を押してダイアログを閉じましょう。Readmeが表示されますが、これも閉じて大丈夫です。
+
+<h4>Perlがインストールされていることの確認</h4>
+
+インストールが完了したら実際にStrawberry Perlがインストールできているか確認してみましょう。
+
+コマンドプロンプトというツールをを実行してPerlのバージョンを表示してみます。
+
+コマンドプロンプトは、「スタートメニュー」→「アプリの一覧」→「Windowsシステムツール」→「コマンドプロンプト」から実行できます。
+
+黒い画面がでてくるので、以下の文字をキーボードからうち「Enter」を押してみてください。
+
+<pre>
+perl -v
+</pre>
+
+次のようにバージョン情報が表示されればインストールは成功しています。
+
+<pre>
+This is perl 5, version 28, subversion 0 (v5.28.0) built for MSWin32-x64-multi-thread
+</pre>
+
+これでStrawberry Perlのインストールは完了です。
+
+WindowsでPerlを実行するためにはコマンドプロンプトと呼ばれるものを利用します。perlコマンドを使ってPerlスクリプトを実行できるようになります。
+
+コマンドプロンプトの使い方を知りたい方は「<a href="/blog/20080603121251.html">Perlを実行するためのコマンドプロンプト入門</a>」という記事で解説しています。
+
+Strawberry Perlとコマンドプロンプトで、<a href="https://linux.perlclub.net/">Linux</a>風の環境を作りたいという場合は、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20200117144713.html">Strawberry PerlとコマンドプロンプトでLinux風環境を作る方法</a>
+  </li>
+</ul>
+
+<h3>その他のインストール方法</h3>
+
+WindowsでPerlを利用するその他の方法については、以下を参考にしてください。それぞれに長所があります。
+
+<ul>
+  <li>
+    <a href="/blog/20080602121231.html">ActivePerlをWindowsにインストールする</a>
+  </li>
+  <li>
+    <a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>
+  </li>
+</ul>
+
+<h3>Strawberry Perlがうまく動かない</h3>
+
+Active PerlやStrawbery Perl 32bitなど別のPerlがインストールされていると、うまく動かない場合があります。別のPerlを<a href="https://win10labo.info/apli-uninstall/">アプリのアンインストール画面</a>からアンインストールして、もう一度Strawberry Perlをインストールしなおしてみてください。

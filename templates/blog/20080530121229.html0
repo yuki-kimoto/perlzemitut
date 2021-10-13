@@ -1,0 +1,223 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>File::Find - サブディレクトリを再帰的に処理する</h2>
+
+
+
+<strong>File::Find</strong>を使用すると、再帰的にすべてのファイルを処理することができます。
+
+<pre>
+use File::Find;
+find(\&process, $top_dir);
+
+sub process{
+  # 行いたい処理
+}
+</pre>
+
+File::Find は、chdir で、ディレクトリを変更しながら、すべてのファイルを処理していきます。第一引数には、サブルーチンへのリファレンスを渡します。( &process がサブルーチンで、 \ 記号で、リファレンスを作成しています。 )
+
+第二引数以降は、処理したいディレクトリのリストを渡します。( 例では、ひとつだけ )。find の代わりに、 finddepth を使うと、走査順を、変更できます。( 以下で解説 )
+
+<h4>カレントディレクトリを変更したくない場合</h4>
+
+カレントディレクトリを変更しないで、走査したい場合は「no_chdir」オプションを使用することができます。
+
+この場合は、サブルーチンへのリファレンスは「wanted」に指定します。
+
+<pre>
+find({wanted => \&process, no_chdir => 1}, $top_dir);
+</pre>
+
+<h3>処理の記述の中で、使うことのできる変数</h3>
+
+<table>
+  <tr>
+    <td>
+      現在のカレントディレクトリ           
+    </td>
+    <td>
+      $File::Find::dir   
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      現在のファイル名( ベース名 )         
+    </td>
+    <td>
+      $_                 
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      現在のファイル名( 絶対パス )         
+    </td>
+    <td>
+      $File::Find::name  
+    </td>
+  </tr>
+
+</table>
+
+
+sub process の中で、カレントディレクトリや、処理対象のファイル名を取得できます。これらを使って、各ファイルに行いたいことを記述します。
+
+<h3>find の走査順序( 行きがけ順 )</h3>
+
+<pre>
+(1) $top_dir |-- (2) top.txt
+             |
+             |-- (3) dir1    |-- (4) 1.txt
+             |               |-- (5) dir1_1  |-- (6) 1_1.txt
+             |               |-- (7) dir1_2  |-- (8) 1_2.txt
+             |
+             |-- (8) dir2    |-- (9) 2.txt
+</pre>
+
+一般的に行きがけ順と呼ばれている順で、走査します。同一階層の場合は、ディレクトリより先に、ファイルが、処理されます。(3) より (2) のほうが先。
+
+<h3>finddepth の走査順序(帰りがけ順)</h3>
+
+<pre>
+(10) $top_dir |-- (1) top.txt
+              |
+              |-- (7) dir1    |-- (2) 1.txt
+              |               |-- (4) dir1_1  |-- (3) 1_1.txt
+              |               |-- (6) dir1_2  |-- (5) 1_2.txt
+              |
+              |-- (9) dir2    |-- (8) 2.txt
+</pre>
+
+一般的に帰りがけ順と呼ばれている順で、走査します。各ディレクトリは、自分より下の階層の処理がすべて終了した直後に、処理されます。同一階層の場合は、ディレクトリより先に、ファイルが、処理されます。
+
+<h3>サンプル</h3>
+
+再帰的にすべてのファイルを処理するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use File::Path;
+use Fcntl;
+use File::Find;
+
+# 再帰的にすべてのファイルを処理する。
+
+# ディレクトリとファイルの作成
+my $top_dir = "dir_20080530_$$";
+my @dirs = (
+  "$top_dir/dir1", "$top_dir/dir1/dir1_1", "$top_dir/dir1/dir1_2",
+  "$top_dir/dir2",
+);
+for my $dir (@dirs) {
+  eval { mkpath $dir };
+  if (@!) { die "@!" }
+}
+
+my @files = (
+  "$top_dir/top.txt", "$top_dir/dir1/1.txt",
+  "$top_dir/dir1/dir1_1/1_1.txt", "$top_dir/dir1/dir1_2/1_2.txt",
+  "$top_dir/dir2/2.txt"
+);
+for my $file (@files) {
+  sysopen( my $fh, $file, O_WRONLY | O_CREAT | O_EXCL )
+    or die "$file を作成することができません。: $!";
+  close $fh;
+}
+print "準備: $top_dir を作成しました。\n\n";
+
+# File::Findのサンプル
+
+print "1: 再帰的に、すべてのファイル名( ベース名 )を出力する。\n";
+# 第一引数に、それぞれのファイルに対して行いたい処理を書いた
+# サブルーチンへのリファレンスを渡す。
+find( \&print_file_name, $top_dir );
+                                     
+sub print_file_name{
+  # $_ に、現在走査しているディレクトリを
+  # 基点としたファイル名が格納されている。
+  # $File::Find::dir には、現在走査している
+  # ディレクトリ名が、格納されている。
+  print "$_ ( $File::Find::dir )\n";
+}
+print "\n";
+
+print "2: 再帰的にすべてのファイル名(フルパス)を出力する。\n";
+find(\&print_file_full_name, $top_dir);
+
+sub print_file_full_name{
+  # $_ に、現在走査しているディレクトリを
+  # 基点としたファイル名が、格納されている。
+  print $File::Find::name, "\n";
+}
+print "\n";
+
+print "3: ディレクトリを、帰りがけ順に走査する\n";
+finddepth(\&print_file_full_name, $top_dir);
+</pre>
+実行結果
+<pre>
+準備: dir_20080530_4944 を作成しました。
+
+1: 再帰的に、すべてのファイル名( ベース名 )を出力する。
+. ( dir_20080530_4944 )
+top.txt ( dir_20080530_4944 )
+dir1 ( dir_20080530_4944 )
+1.txt ( dir_20080530_4944/dir1 )
+dir1_1 ( dir_20080530_4944/dir1 )
+1_1.txt ( dir_20080530_4944/dir1/dir1_1 )
+dir1_2 ( dir_20080530_4944/dir1 )
+1_2.txt ( dir_20080530_4944/dir1/dir1_2 )
+dir2 ( dir_20080530_4944 )
+2.txt ( dir_20080530_4944/dir2 )
+
+2: 再帰的にすべてのファイル名(フルパス)を出力する。
+dir_20080530_4944
+dir_20080530_4944/top.txt
+dir_20080530_4944/dir1
+dir_20080530_4944/dir1/1.txt
+dir_20080530_4944/dir1/dir1_1
+dir_20080530_4944/dir1/dir1_1/1_1.txt
+dir_20080530_4944/dir1/dir1_2
+dir_20080530_4944/dir1/dir1_2/1_2.txt
+dir_20080530_4944/dir2
+dir_20080530_4944/dir2/2.txt
+
+3: ディレクトリを、帰りがけ順に走査する
+dir_20080530_4944/top.txt
+dir_20080530_4944/dir1/1.txt
+dir_20080530_4944/dir1/dir1_1/1_1.txt
+dir_20080530_4944/dir1/dir1_1
+dir_20080530_4944/dir1/dir1_2/1_2.txt
+dir_20080530_4944/dir1/dir1_2
+dir_20080530_4944/dir1
+dir_20080530_4944/dir2/2.txt
+dir_20080530_4944/dir2
+dir_20080530_4944
+</pre>
+
+(参考)<a href="/blog/20100409127089.html">File::Path</a>、<a href="/blog/20100312126967.html">eval</a>,<a href="/blog/20080804121794.html">sysopen関数</a>、<a href="/blog/20180310152509.html">Fcntl</a>
+
+<ul>
+  <li>
+    <a href="/blog/20080601121230.html">複数階層のディレクトリを再帰的にコピー</a>
+  </li>
+</ul>
+

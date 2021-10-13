@@ -1,0 +1,351 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20150425142996.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>さくらのレンタルサーバー・スタンダードでMojoliciousアプリを公開</h2>
+
+
+
+Hello Worldアプリケーションを作成し、自分のマシンの上で、実行して、ブラウザで表示させました。けれども、最終的には、インターネットを使って、他の人に、作成したアプリを見せたいと思うようになると思います。
+
+インターネットでWebサイトを公開するための手順は、いくつかありますが、今回はもっとも簡単な方法として、さくらのレンタルサーバー・スタンダードを利用したいと思います。
+
+さくらのレンタルサーバー・スタンダードは、インターネットで、Webサイトを公開するためのサービスです。共有レンタルサーバーと呼ばれ、CGIを使って作成されたファイルを、実行して、表示することができます。
+
+Hello Worldアプリケーションは、実は、CGIとしても、実効することが可能です。ですので、自分のマシンで作成したアプリケーションを、さくらのレンタルサーバー・スタンダードを使って公開することができます。
+
+<h3>さくらレンタルサーバー・スタンダードの申し込み</h3>
+
+さくらのレンタルサーバー・スタンダードは、こちらのページから申し込むことができます。1ヶ月500円程度で利用でき、ディスク容量も100GBと、かなり大きいので、お得です。また、この後解説しますが、SSHを使って、サーバー上で、コマンドを実行することができます。
+
+<blockquote>
+<a href="http://www.sakura.ne.jp/standard.html">さくらのレンタルサーバー スタンダードの申し込み</a>
+</blockquote>
+
+こちらのサイトでの解説手順に従って、進めていってください。
+
+<h3>SSHを使って、サーバーに接続する</h3>
+
+さくらのレンタルサーバー・スタンダードが利用できるようになったら、さっそく手順を進めていきましょう。まず最初に、SSHを使って、サーバーに接続するということをやってみたいと思います。
+
+SSHというのは、セキュアな通信で、サーバーに対してコマンドを実行するためのプロトコルです。この後の作業で、異なるバージョンのPerlに変更したり、CGIのパーミッションを変更したりするときに、コマンドというものを実効する必要があります。
+
+そのために、SSHを使って、サーバーに接続する必要があります。Mac OS Xをお持ちの方であれば、sshコマンドは、すでに用意されています。ターミナルを開けば、sshコマンドを利用することができるので、準備は要りません。
+
+Windowsの場合は、SSHクライアントであるTeratermと呼ばれるアプリケーションをインストールしましょう。Teratermを使えば、SSHを使って、サーバーで、コマンドを実行することができます。
+
+<h4>WindowsでのTera Termのインストール</h4>
+
+以下のサイトからTera Termをダウンロードしてインストールします。
+
+<blockquote>
+<a href="http://www.forest.impress.co.jp/lib/inet/servernt/remote/utf8teraterm.html">Tera Term</a>
+</blockquote>
+
+インストールが完了したら、Tera Termを起動します。「New Connection」というウインドウが表示されると思います。
+
+Hostの部分には、さくらスタンダードを申し込んだときに、受け取ったホスト名を入力します。
+
+<blockquote>
+xxxxx.sakura.ne.jp
+</blockquote>
+
+xxxxxのところにはユーザー名が入ります。
+
+ 「Service」の部分はSSHを指定します。
+ 
+<blockquote>
+SSH
+</blockquote>
+
+「OK」ボタンを押すと、SSH Authenticationというウインドウが開きます。
+「User name」と「Passphrase」の部分にさくらスタンダードで受け取った、ユーザー名とパスワードを入力します。
+
+「OK」をクリックすると、サーバーに接続することができます。
+
+<h4>Mac OS Xでのサーバーへの接続</h4>
+
+Mac OS Xには、デフォルトでsshコマンドが利用できますので、ターミナルを開いてSSHコマンドを実行します。
+
+<pre>
+ssh yyy@xxx.sakura.ne.jp
+</pre>
+
+xxxの部分には、ユーザー名を入力してください。xxxの部分が、与えられたホスト名の該当する部分を入力してください。
+
+パスワードを聞かれますので、さくらスタンダードを申し込んだときにもらったパスワードを入力してください。
+
+サーバーに接続することができます。
+
+<h3>利用するPerlのバージョンを変更する</h3>
+
+Mojoliciousを利用するには、5.10.1以上のPerlが必要です。さくらのスタンダードでは、Perlのバージョンを簡単に切り替えることができます。
+
+SSHでは、コマンドというものを使ってさまざまな操作を行います。まず、Perlのバージョンが指定されたファイルを表示してみましょう。以下のコマンドを入力して、Enterを押すとコマンドを実行できます。
+
+<pre>
+cat .perl.version
+</pre>
+
+catの後ろには空白があるので注意しましょう。コマンドを実行するときはいつでもEnterを押すので、覚えておいてください。
+
+次に、さくらのスタンダードでは2015年現在Perl 5.14が利用できるので、この設定を書き換えます。
+
+<pre>
+echo "5.14" > .perl.version
+</pre>
+
+もとに戻したい場合は次のコマンドで元に戻せます。
+
+<pre>
+echo "5.8" > .perl.version
+</pre>
+
+次のコマンドでPerlのバージョンを確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+以下のように、Perl 5.14が表示されれば、成功です。
+
+<pre>
+This is perl 5, version 20, subversion 1 (v5.20.1) built for amd64-freebsd
+</pre>
+
+<h3>Mojoliciousをインストールする</h3>
+
+Mojoliciousをインストールするには、cpanmというPerlのモジュールをインストールするツールを利用するのが簡単です。cpanmをダウンロードして、Mojoliciousをインストールしましょう。
+
+<h4>cpanmのダウンロード</h4>
+
+まず最初にcurlというコマンドを使ってcpanmをダウンロードします。
+
+<pre>
+curl -LOk http://xrl.us/cpanm
+</pre>
+
+ファイル一覧を表示するコマンドを使ってcpanmがダウンロードされているかどうか確認しましょう。
+
+<pre>
+ls
+</pre>
+
+cpanmというファイルが表示されているか確認しましょう。
+
+<h4>Mojoliciousのインストール</h4>
+
+次にcpanmを使ってMojoliciousをインストールしましょう。
+
+<pre>
+perl cpanm Mojolicious
+</pre>
+
+次のような画面が表示されます。
+
+<pre>
+--> Working on Mojolicious
+Fetching http://www.cpan.org/authors/id/S/SR/SRI/Mojolicious-6.08.tar.gz ... OK
+Configuring Mojolicious-6.08 ... OK
+Building and testing Mojolicious-6.08 ... OK
+Successfully installed Mojolicious-6.08
+1 distribution installed
+</pre>
+
+Mojoliciousがインストールされていることを確認してみましょう。perldocというコマンドは、Perlのドキュメントを見るコマンドですが、Mojoliciousがインストールされていれば、ドキュメントを見ることができます。
+
+<pre>
+perldoc Mojolicious
+</pre>
+
+Mojoliciousがインストールされていれば、ドキュメントが表示されます。ドキュメントの表示を終えるときは「q」を押します。
+
+<pre>
+q
+</pre>
+
+<h3>Mojoliciousアプリケーションの修正</h3>
+
+さくらのスタンダードで動かすためには、先ほど作成した「webapp.pl」スクリプトを少し修正する必要があります。
+
+
+<h3>シェバングの追加</h3>
+
+以下が先ほど作成したスクリプトです。
+
+<pre>
+use Mojolicious::Lite;
+
+get '/' => sub {
+  my $self = shift;
+
+  $self->render(text => 'Hello World');
+};
+
+app->start;
+</pre>
+
+このスクリプトの先頭に次の一行を追加してください。これは、シェバングと呼ばれ、CGIをPerlを使って実行するための指示になります。
+
+<pre>
+#!/usr/bin/env perl
+</pre>
+
+また、Mojoliciousをインストールしたディレクトリを、ライブラリのパスとして読み込むために、次の2行を追加します。
+
+<pre>
+use FindBin;
+use lib "$FindBin::Bin/../perl5/lib/perl5";
+</pre>
+
+
+スクリプトは次のようになります。
+
+<pre>
+#!/usr/bin/env perl
+use FindBin;
+use lib "$FindBin::Bin/../perl5/lib/perl5";
+
+use Mojolicious::Lite;
+
+get '/' => sub {
+  my $self = shift;
+
+  $self->render(text => 'Hello World');
+};
+
+app->start;
+</pre>
+
+(参考)<a href="/blog/20100524127696.html">FindBin</a>
+
+なお、自分の環境で開発をするときも、このままおいておいても大丈夫です。
+
+<h3>ファイル名の変更</h3>
+
+さくらのスタンダードで実効するときは、ファイル名の拡張子を「.cgi」にする必要があります。
+
+ 「webapp.pl」を「webapp.cgi」に変更してください。
+
+<h3>Mojoliciousアプリケーションのアップロード</h3>
+
+Mojoliciousのインストールが終われば、次は、作成したHello Worldアプリケーションのアップロードを行います。
+
+Windowsの場合は、Windowsの場合は、Windows7以降であれば、FTPソフトは、エクスプローラに統合されているので、これを利用します。もし、Windows7より前の場合は、FFFTPというソフトを利用すれば、ファイルをアップロードすることができます。
+
+Mac OS Xの場合も、FTPソフトは、デフォルトでインストールされているので、これを利用します。
+
+<h3>Windowsの場合(Windows7以降の場合を解説)</h3>
+
+エクスプローラから、FTPを使って、サーバーに接続しましょう。なんでもよいので、フォルダをダブルクリックして、エクスプローラを立ち上げてください。
+
+上にあるアドレスバーの空白部分をクリックすると、自分でURLを入力することができます。ここに次のように、入力してください。
+
+<pre>
+ftp:yyy@xxx.sakura.ne.jp
+</pre>
+
+yyy@xxx.sakura.ne.jpはSSHの接続のときに利用したものと同じものです
+
+すると、サーバーにFTPで接続することができます。ユーザー名とパスワードを聞かれますので、入力してください。
+
+接続するとwwwというフォルダがあると思います。このフォルダの中にインターネットで、公開するファイルを配置します。
+
+Hello Worldアプリケーションを、「webapp.cgi」という名前で保存したと思いますが、これをwwwフォルダの中に保存してください。
+
+これで、ファイルのアップロードは終了です。
+
+<h3>Mac OS Xの場合</h3>
+
+Finderは、ファイルを見るためのものですが、これを使って、サーバーへFTP接続をすることができます。
+
+Finderを使って、FTP接続するには、「Finderのメニューの移動（Go）＞サーバへ接続（Connect to Server）を選択。」します。
+
+次に、接続したいサーバーを次のように入力してください。
+
+<pre>
+ftp:yyy@xxx.sakura.ne.jp
+</pre>
+
+yyy@xxx.sakura.ne.jpはSSHの接続のときに利用したものと同じものです
+
+すると、サーバーにFTPで接続することができます。ユーザー名とパスワードを聞かれますので、入力してください。
+
+接続するとwwwというフォルダがあると思います。このフォルダの中にインターネットで、公開するファイルを配置します。
+
+Hello Worldアプリケーションを、「webapp.cgi」という名前で保存したと思いますが、これをwwwフォルダの中に保存してください。
+
+これで、ファイルのアップロードは終了です。
+
+<h3>アプリケーションを実効するための準備</h3>
+
+アプリケーションを実効するためには、いくつかの準備が必要です。
+
+<h4>ファイルのパーミッションを755にする</h4>
+
+CGIファイルを実行するためには、CGIファイルのパーミッションというものを、755にする必要があります。ここでは、おまじないとして覚えておいてください。
+
+まず、先ほど解説した手順でSSHを使って、サーバーに接続してください。Windowsの場合は、Tera Termを、Mac OS Xの場合はターミナルからsshコマンドを利用するのでしたね。
+
+そして、まず、webapp.cgiの存在するディレクトリに移動します。ディレクトリを移動するには、「cd」コマンドを使用します。
+
+<pre>
+cd ~/www
+</pre>
+
+「~」というのは、自分のホームディレクトリを表す記号です。ホームディレクトリの中の「www」フォルダに移動します。
+
+次に、「webapp.cgi」のファイルのパーミッションを「755」に変更します。
+
+<pre>
+chmod 755 webapp.cgi
+</pre>
+
+<h4>Windowsの場合は、改行コードを「LF」にする</h4>
+
+Windowsの場合は、デフォルトでは、改行コードというものが「CR + LF」というものになっています。さくらのスタンダードで動かすために、改行コードを「LF」に変換する必要があります。
+
+次のコマンドで改行コードを、「LF」に統一します。
+
+<pre>
+perl  -i.org  -pe  's/\r\n/\n/g' webapp.cgi
+</pre>
+
+これを毎回やるのは面倒ですね。秀丸やさくらエディタなどの、Windowsのテキスト編集ソフトを利用すれば、あらかじめ、「LF」に統一しておけるので便利です。
+
+<h4>Perlのスクリプトが正しいかを確認する</h4>
+
+Perlのスクリプトが間違っていた場合は、CGIの実効が失敗しますので、CGIが正しいかどうかを確認します。
+
+<pre>
+perl -c webapp.cgi
+</pre>
+
+「perl -c」というコマンドを使うと、Perlのスクリプトの文法が正しいことが確認できます。以下のように表示されれば、Perlのスクリプトは正しく記述できています。
+
+<pre>
+webapp.cgi syntax OK
+</pre>
+
+<h3>Mojoliciousアプリケーションにアクセスする</h3>
+
+さっそく、Mojoliciousアプリケーションにアクセスしてみましょう。ブラウザから、URLを入力してみてください。
+
+<pre>
+http://xxx.sakura.ne.jp/webapp.cgi
+</pre>
+
+「Hello World」と表示されれば成功です。これで、インタネット上での公開が完了し、すべての人から、あなたの作成したMojoliciousアプリケーションを見ることができます。おめでとう!
+

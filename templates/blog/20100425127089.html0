@@ -1,0 +1,60 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>base - クラスを継承する</h2>
+
+
+
+<strong>base</strong>モジュールを使用すると、クラスを継承することができます。
+
+<pre>
+# クラスの継承
+package YourClass;
+
+use base 'BaseClass';
+</pre>
+
+継承を行うと基底クラスにあるメソッドをサブクラスで呼び出すことができるようになります。基底クラスのBaseClassでparseというメソッドが定義されていた場合はサブクラスのYourClassでもparseメソッドを呼び出すことができます。
+
+<pre>
+基底クラス
+　▲
+サブクラス ← 基底クラスのメソッド + 自身のメソッドを利用できる
+</pre>
+
+<h3>単一継承と多重継承</h3>
+
+Perlは多重継承をサポートしますが、多重継承はモジュール間の継承関係をとても複雑にしてしまいます。ですから、継承は単一継承に限るのがモジュールの関係をシンプルに保つ上でよいとされています。
+
+実際、単一継承でプログラムを組むと、わかりやすく可読性の高いプログラムになります。単一継承でできないことはありませんし、設計もきれいになりますので、ぜひ単一継承でプログラムを作成してみてください。
+
+<h3>baseモジュールに関するFAQ</h3>
+
+Q. parentというモジュールを見たことがあるのですが、baseモジュールと何が異なりますか。
+A. parentモジュールはbaseモジュールを簡素にしたものです。役割としては同じものです。parentは5.10.0からコアモジュールになりました。baseモジュールはPerl5.005からコアモジュールです。ポータビリティを考慮して継承を行うときはbaseモジュールが利用されていることが多いと思われます。
+
+Q. baseモジュールで継承する仕組みを教えてください。
+A. Perlでは@ISAというパッケージ変数に基底クラスを設定すると継承を行うことができます。baseモジュールはこれをコンパイル時に行っているだけです。次のような実装と同じ意味になります。
+<pre>
+# 継承の仕組み
+package YourClass;
+
+BEGIN {
+  our @ISA = ('BaseClass');
+}
+</pre>
+

@@ -1,0 +1,48 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>サイト情報</h2>
+
+<ul>
+  <li>
+    <a href="/blog/20160718146881.html">Perlゼミ管理人</a>
+  </li>
+  <li>
+    <a href="/blog/20170918151092.html">木本裕紀の書籍</a>
+  </li>
+  <li>
+    <a href="/blog/20120326133275.html">もっと自在にサーバを使い倒す 業務に役立つPerl</a>
+  </li>
+  <li>
+    <a href="/blog/20130220136137.html">読み物</a>
+  </li>
+  <li>
+    <a href="http://d.hatena.ne.jp/perlcodesample/archive">すべての記事</a>
+  </li>
+  <li>
+    <a href="/blog/20170919151092.html">人気の記事</a>
+  </li>
+  <li>
+    <a href="/blog/20170920151092.html">イベント・コミュニティ・勉強会</a>
+  </li>
+  <li>
+    <a href="/blog/20170921151092.html">リンク集</a>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/perlcodesample">はてなブックマーク</a>
+  </li>
+  <li>
+    <a href="/blog/20130421136653.html">GitPrep</a>
+  </li>
+</ul>
+
+

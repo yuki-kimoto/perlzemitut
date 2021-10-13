@@ -1,0 +1,102 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110212130370.html">
+      <span itemprop="name">ファイル入出力</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>バッファリングとは</h2>
+
+
+Perlの出力関数である<a href="/blog/20170404149131.html">print関数</a>は、バッファリングを行います。バッファリングとは「データを貯めておく」という意味です。Perlのprint関数は実際に呼び出されても、即座にファイルに内容を書き出しません。書き込み内容をバッファリングしておいて、バッファがある容量をこえると実際にファイルに書き出します。
+
+バッファリングを無効にしたいという場合は、以下の記事をご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20080812121854.html">バッファリングを無効にする</a>
+  </li>
+</ul>
+
+以下はバッファリングを実感するサンプルです。すぐにはファイルに書き込まれないことがわかると思います。
+
+<pre>
+use strict;
+use warnings;
+
+# 書き込み用のファイル( 上書きするので注意 )
+my $file = "sample20080811.txt";
+
+open(my $fh, ">", $file)
+  or die "Cannot open $file: $!";
+    
+print $fh "遅延書き込み\n"; # print関数呼び出し
+print "ファイルサイズはまだ" . -s $file . "バイトで書き込まれていません。\n";
+sleep 3;
+
+# closeと同時にバッファをファイルに書き出す(遅延書き込み)。
+close $fh or die "Cannot close $file"; 
+
+print "この時点で書き込まれました。サイズは" . -s $file . "バイトです。\n";
+sleep 3;
+</pre>
+
+(参考)<a href="/blog/20080718121643.html">open関数</a>、<a href="/blog/20160312145776.html">close関数</a>
+
+<h3>Perlのprint関数のバッファリングの仕様</h3>
+
+<h4>(1)ブロックバッファリング</h4>
+
+Perlのprint関数は標準でブロックバッファリングを行います。(例外はディスプレイに出力する場合で、行バッファリングを行います。Perl 5.6以降 )
+
+ブロックバッファリングとは、一定のバイト数までバッファにデータを蓄積するバッファリング方式のことです。バッファに蓄積された書き込み内容が一定のバイト数をこえると、実際にファイルに書き込みが行われれます。
+
+一定のバイト数というのは、設定によりますが一般的に4kBくらいだと思います。また、ファイルがクローズするタイミングでも、バッファの内容がファイルに書き出されます。
+
+<h4>(2)行バッファリング</h4>
+
+ディスプレイに出力するときは、行バッファリングが行われます。改行文字がでてくるまで、バッファに書き込み内容が蓄積され、改行が出現したときに、バッファの内容がファイルに書き出されます。
+
+<h3>バッファリングと遅延書き込み</h3>
+
+print関数が、書き込み内容をバッファに貯めて一度に出力するのは、ファイルへの出力のコストが非常に高いからです。ファイルに書き込むということはディスクにアクセスするということです。
+
+ディスクI/Oというのは、メモリI/Oに比べて非常に速度が遅いので、ディスクアクセスへの回数をできるだけ減らすことがプログラムの性能向上につながります。
+
+こういう理由で、Perlはprint関数を呼び出したときに実際に書き込みを行わず、書き込みバッファに一定バイトまでデータを蓄積して一度にファイルに書き出します。これを遅延書き込みと呼びます。
+
+<h3>コード解説</h3>
+
+<h4>(1)ブロックバッファリングが行われる</h4>
+
+<pre>
+print $fh "遅延書き込み\n"; # print関数呼び出し
+print "ファイルサイズはまだ" . -s $file . "バイトで書き込まれていません。\n";
+sleep 3;
+</pre>
+
+print 関数で$fhに書き込みましたが、この時点ではまだ内容が書き出されず、ファイルのサイズは0バイトのままです。書き込み内容が、バッファに蓄積されている状態です。
+
+ちなみに、ディスプレイへの出力は、行バッファリングですので、"\n"が出現した時点で出力されます。
+
+<h4>(2)遅延書き込みが行われる</h4>
+
+<pre>
+# closeと同時にバッファをファイルに書き出す(遅延書き込み)。
+close $fh or die "Cannot close $file"; 
+
+print "この時点で書き込まれました。サイズは" . -s $file . "バイトです。\n";
+sleep 3;
+</pre>
+
+$fh をクローズした時点で、バッファにある書き込み内容がファイルに出力されます。遅延書き込みが行われたことがわかると思います。

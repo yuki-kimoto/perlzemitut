@@ -1,0 +1,26 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20140516140022.html";</script>
+
+<h2>MojoliciousのリバースプロキシのSSLの検知方法が変わります</h2>
+
+MojoliciousのリバースプロキシでのSSLの検知方法が変わります。リバースプロキシを使って、かつSSLで運用している方はバージョンアップに注意です。バージョンを移すときは両方記述して、バージョンアップ後に、古い指定方法を削りましょう。
+
+<pre>
+  <VirtualHost *:443>
+    ServerName localhost
+    <Proxy *>
+      Order deny,allow
+      Allow from all
+    </Proxy>
+    ProxyRequests Off
+    ProxyPreserveHost On
+    ProxyPass / http://localhost:8080/ keepalive=On
+    ProxyPassReverse / http://localhost:8080/
+
+    # 古い指定方法
+    RequestHeader set X-Forwarded-HTTPS "1"
+
+    # 新しい指定方法
+    RequestHeader set X-Forwarded-Proto "https"
+  </VirtualHost>
+</pre>
+

@@ -1,0 +1,420 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20140507139946.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>データベースの基礎 / Mojolicious入門</h2>
+
+
+
+次にデータを保存するために、<strong>データベースの利用方法</strong>を学びましょう。Webアプリケーションでは、データはデータベースに保存するようにしましょう。過去の時代においてはファイルに保存されることも多かったですが、ファイルのロック機構や、アクセス量などを考えると、データベースを利用するのが最善です。
+
+データベースにはSQLite, MySQL, PostgreSQLなどありますが、今回はもっとも簡単なSQLiteを使います。SQLiteは簡単ですが、機能に制限がありますので、Webサイトを実際に作るときの最善の選択はMySQLかPostgreSQLです。MySQLについては、応用編で扱いたいと思います。
+
+データベースについて、詳しく解説するよりも、今回は使い方を中心に解説します。最初にsqlite3というSQLiteのデータベースを利用するアプリケーションを使って、データベース操作の基礎を覚えましょう。
+
+<h3>sqlite3のインストール</h3>
+
+まずSQLiteを操作するためのツールであるsqlite3をインストールします。
+
+<h4>Windowsへのsqlite3のインストール</h4>
+
+Windowsを利用している場合は次の手順でsqlite3をダウンロードします。以下のサイトにからsqlite3をダウンロードしてください。
+
+<blockquote>
+<a href="http://www.sqlite.org/download.html">SQLite.org Download</a> → <a href="http://www.sqlite.org/2014/sqlite-shell-win32-x86-3080403.zip">sqlite-shell-win32-x86-3080403.zip</a>
+</blockquote>
+
+zipファイルをダウンロードするので、展開してください。「sqlite3.exe」というファイルがあるのを確認してください。これがSQLiteのデータベースを操作するためのアプリケーションです。これをアプリケーションのパスが通っている場所に配置する必要があります。
+
+今回はPerlをインストールしたディレクトリと同じディレクトリに配置しましょう。「C:\Perl\site\bin」というディレクトリの中に「sqlite3.exe」をコピーして配置してください。
+
+次にコマンドプロンプトを立ち上げて次のコマンドを実行してください。
+
+<pre>
+sqlite3 test.db
+</pre>
+
+以下のようにsqlite3が起動すれば、インストールは完了です。
+
+<pre>
+SQLite version 3.8.4.3 2014-04-03 16:53:12
+Enter ".help" for usage hints.
+sqlite>
+</pre>
+
+終了するには「.q」と入力してEnterを押します。
+
+<pre>
+.q
+</pre>
+
+<h4>Mac OS Xへのsqlite3のインストール</h4>
+
+Mac OS Xにはsqlite3が最初からインストールされているので、特別な作業は必要ありません。ターミナルからsqlite3を起動してみましょう。
+
+<pre>
+sqlite3 test.db
+</pre>
+
+以下のようにsqlite3が起動するか確認しましょう。
+
+<pre>
+SQLite version 3.8.4.3 2014-04-03 16:53:12
+Enter ".help" for usage hints.
+sqlite>
+</pre>
+
+終了するには「.q」と入力してEnterを押します。
+
+<pre>
+.q
+</pre>
+
+<h4>Linuxへのsqlite3のインストール</h4>
+
+CentOS, Redhat Linux, Fedoraの場合は、yumコマンドでsqlite3をインストールします。
+
+<pre>
+yum -y install sqlite
+</pre>
+
+Ubuntuの場合はapt-getコマンドでsqlite3をsqlite3をインストールします。
+
+<pre>
+sudo apt-get install -y sqlite3
+</pre>
+
+次にシェルから次のコマンドを実行してください。
+
+<pre>
+sqlite3 test.db
+</pre>
+
+以下のようにsqlite3が起動すれば、インストールは完了です。
+
+<pre>
+SQLite version 3.8.4.3 2014-04-03 16:53:12
+Enter ".help" for usage hints.
+sqlite>
+</pre>
+
+終了するには「.q」と入力してEnterを押します。
+
+<pre>
+.q
+</pre>
+
+<h3>テーブルの作成</h3>
+
+SQLiteではデータは、ファイルに保存されます。test.dbという名前のファイルでデータベースを作成しましょう。
+
+<pre>
+sqlite3 test.db
+</pre>
+
+sqlite3が起動したら最初にテーブルを作成します。テーブルを作成するには「create table」構文を使用します。データベースへ命令を行う言語のことをSQLといいます。「create table」もSQLのひとつです。
+
+bookというテーブル名で、id, title, authorという列を持つテーブルを作成する「create table」を実行してみましょう。
+
+<pre>
+create table book (
+  id primary key,
+  title not null default '',
+  author not null default ''
+);
+</pre>
+
+列の定義は「列名 (型) (オプション)」という形式でなされます。
+
+<pre>
+列名 (型) (オプション)
+</pre>
+
+列名は必須です。SQLiteではデータ型を指定する必要はありません。データ型を指定しなかった場合は文字列として扱われます。
+
+各テーブルには主キーをあらわすidを指定しておきましょう。これは、行を一意に識別するためのものです。主キーには<b>primary key</b>制約をつけます。primary key制約は、各行が一意であることを保障するためのもので、重複する主キーを登録を禁止するためのものです。
+
+他の列には<b>not null</b>制約をつけるようにします。not null制約とは、行にnullという値を設定できないようにする制約です。not null制約を行う場合は<b>default</b>を設定する必要がありますのであわせて設定します。
+
+nullはできる限り使わないほうがよいというのが、よい習慣ですので、すべての列にnot null制約をつけておきましょう。not nullを前提にしてデータベースを設計するのがよいです。
+
+<h4>テーブル一覧の表示</h4>
+
+テーブルを作成したらどのようなテーブルが存在するかを見てみましょう。テーブル一覧を表示するには「<strong>.tables</strong>」コマンドを使用します。
+
+<pre>
+.tables
+</pre>
+
+テーブルの一覧が表示されます。
+
+<pre>
+book
+</pre>
+
+<h4>テーブルの定義を確認</h4>
+
+create table文で作成したテーブルの定義を確認してみましょう。「<strong>.schema</strong>」コマンドを使用します。
+
+<pre>
+.schema book
+</pre>
+
+テーブルの定義が表示されます。
+
+<pre>
+CREATE TABLE book (
+  id primary key,
+  title not null default '',
+  author not null default ''
+);
+</pre>
+
+<h3>行の挿入 - insert文</h3>
+
+次に行を挿入してみましょう。データベースに行を挿入するには<strong>insert文</strong>を使用します。
+
+<pre>
+# 使用方法
+insert into テーブル名 (列名1, 列名2, ...) values (値1, 値2, 値3);
+</pre>
+
+実際にデータを挿入してみます。「id」が「00000001」、「title」が「Perl」、「author」が「kimoto」というデータをデータベースに挿入しましょう。文字列はシングルクォートで囲む必要があります。
+
+<pre>
+insert into book (id, title, author) values ('00000001', 'Perl', 'kimoto');
+</pre>
+
+どのような行が挿入されたかselect文を使って見てみましょう。select文については詳しく後ほど解説します。
+
+<pre>
+select * from book;
+</pre>
+
+次のように表示されます。
+
+<pre>
+00000001|Perl|kimoto
+</pre>
+
+列名が表示されていないので少し見づらいですね。<strong>.header</strong>コマンドを実行しておくと、列名を表示することができます。
+
+<pre>
+.header on
+</pre>
+
+もう一度select文を実行してみてください。次のように列名を含めて、行が表示されます。
+
+<pre>
+id|title|author
+00000001|Perl|kimoto
+</pre>
+
+<h3>行の更新 - update文</h3>
+
+次に行を更新してみましょう。行を更新するには<strong>update</strong>文を使用します。
+
+<pre>
+update テーブル名 set 列名1 = 値1, 列名2 = 値2, ... where 条件
+</pre>
+
+update文では、where句を使って条件を指定して、条件にマッチした行を更新するという動作を行います。where句を指定しなかった場合は、すべての行が更新されてしまうので、よく注意してください。
+
+ではupdate文を使って「title」列の「Perl」という文字列を「Ruby」に変更してみましょう。条件に「id」の値を指定して、更新します。
+
+<pre>
+update book set title = 'Ruby' where id = '00000001';
+</pre>
+
+select文で、値が変更されていることを確認してみましょう。
+
+<pre>
+select * from book;
+</pre>
+
+次のように表示されます。
+
+<pre>
+00000001|Ruby|kimoto
+</pre>
+
+<h3>行の削除 - delete文</h3>
+
+次に行を削除してみましょう。行を削除するには<strong>delete</strong>文を使用します。
+
+<pre>
+delete from テーブル名 where 条件
+</pre>
+
+delete文では、where句を使って条件を指定して、条件にマッチした行を削除するという動作を行います。where句を指定しなかった場合は、すべての行が削除されてしまうので、よく注意してください。
+
+ではdelete文を使って、行を削除してみましょう。条件に「id」の値を指定して、削除します。
+
+<pre>
+delete from book where id = '00000001';
+</pre>
+
+select文で、値が変更されていることを確認してみましょう。
+
+<pre>
+select * from book;
+</pre>
+
+行が削除されたので、何も表示されません。
+
+<h3>行の選択 - select文</h3>
+
+行を取得するためにselect文を書いてきましたが、もう少し詳しく解説しておきます。まず、select文を試すために、以下のSQLで、行を挿入してください。
+
+<pre>
+insert into book (id, title, author) values ('00000001', 'Perl Tutorial', 'kimoto');
+insert into book (id, title, author) values ('00000002', 'Perl advantage', 'ken');
+insert into book (id, title, author) values ('00000003', 'Ruby Tutorial', 'yosuke');
+</pre>
+
+<h4>列の選択</h4>
+
+select文では「*」を指定した場合は、すべての列を取得することができます。また列名を指定して、対象の列だけを取得することもできます。
+
+<pre>
+# すべての列
+select * from book;
+
+# id
+select id from book;
+
+# idとtitle
+# select id, title book;
+</pre>
+
+<h4>条件 - where句</h4>
+
+select文はwhere句で条件を指定して使うことが多いです。
+
+<pre>
+select 列名 from テーブル名 where 条件
+</pre>
+
+条件演算子には以下のものがあります。
+
+<table>
+  <tr>
+    <td>
+      演算子
+    </td>
+    <td>
+      意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      =
+    </td>
+    <td>
+      等しい
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      &lt;&gt;
+    </td>
+    <td>
+      等しくない
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ～より大きい
+    </td>
+    <td>
+      &gt
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ～より大きい、または等しい
+    </td>
+    <td>
+      &gt=
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ～より小さい
+    </td>
+    <td>
+      &lt
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ～より小さい、または等しい
+    </td>
+    <td>
+      &lt=
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ～を含む
+    </td>
+    <td>
+      like
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ヌル
+    </td>
+    <td>
+      is null
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ヌルではない
+    </td>
+    <td>
+      is not null
+    </td>
+  </tr>
+
+</table>
+
+演算子は次のように利用できます。
+
+<pre>
+# 「id」が「00000002」に等しい
+select * from book where id = '00000002';
+</pre>
+
+like演算子の使い方が少し異なるので解説します。like演算子を使う場合は、文字列の中にワイルドカードとして「%」を使うことができます。次のように記述すれば「title」に「Perl」を含んでいる行だけを取得することができます。
+
+<pre>
+# 「title」に「Perl」を含む
+select * from book where title like '%Perl%';
+</pre>
+
+これでデータベースにデータを保存して、取得する最低限の知識はマスターできました。
+

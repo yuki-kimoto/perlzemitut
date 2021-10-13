@@ -1,0 +1,32 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20110329130559.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>MojoliciousとAnyEventを同時に利用する</h2>
+
+
+
+
+MojoliciousはMojo::IOLoopという自前のIOループを持っている。これはAnyEventと同時に利用することができる。
+
+<ul>
+  <li>
+    <a href="https://github.com/kraih/mojo/wiki/Mojolicious-and-anyevent">Mojolicious and anyevent</a>
+  </li>
+</ul>
+
+recurringというメソッドを使うと、Mojo::IOLoopが1週するたびに1度実行されるコールバックを登録することができる。というわけなので、Mojo::IOLoopが1週するたびにAnyEventのイベントをone_eventメソッドを使って1度実行してあげればよいというわけ。
+
+

@@ -1,0 +1,106 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161026147748.html">
+      <span itemprop="name">数値</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>2進数、8進数、16進数での数値表現</h2>
+
+
+
+2進数、8進数、16進数での数値の表現を解説します。
+
+<h4>2進数</h4>
+
+0b を先頭につけると2進数で数値を指定できます。
+
+<pre>
+my $num_bin = 0b1111;
+</pre>
+
+<h4>8進数</h4>
+
+0を先頭につけると8進数で数値を指定できる。
+
+<pre>
+my $num_oct = 0777;
+</pre>
+
+<h4>16進数</h4>
+
+0x を先頭につけると16進数で数値を指定できる。
+
+<pre>
+my $num_hex = 0xFFFF;
+</pre>
+
+<h4>10進数を2進数、8進数、16進数の出力</h4>
+
+2進数、8進数、16進数で出力したい場合は、<a href="/blog/20170326149148.html">printf関数</a>でフォーマット指定を行い出力します。%bで2進数、%oで8進数、%xで16進数(小文字)、%Xで16進数(大文字) で出力できます。
+
+<pre>
+# %b で2進数表示で出力
+printf("\$num_bin = %b\n", $num_bin);
+
+# %o で8進数表示で出力
+printf("\$num_oct = %o\n", $num_oct);
+
+# %x で16進数表示で出力(小文字)
+printf("\$num_hex = %x\n", $num_hex);
+
+# %X で16進数表示で出力(大文字)
+printf("\$num_hex = %X\n", $num_hex);
+</pre>
+
+<h3>サンプル</h3>
+
+2進数、8進数、16進数を使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+# 0b を先頭につけると2進数で数値を指定できる。
+my $num_bin = 0b1111;
+
+# 0を先頭につけると8進数で数値を指定できる。
+my $num_oct = 0777;
+
+# 0x を先頭につけると16進数で数値を指定できる。
+my $num_hex = 0xFFFF;
+
+
+# 2進数、8進数、16進数で表現した数値リテラルはprintすると10進数になります。
+print "(1)10進数での値\n";
+print "\$num_bin = $num_bin\n"; 
+print "\$num_oct = $num_oct\n";
+print "\$num_hex = $num_hex\n";
+
+print "\n";
+
+print "(2)それぞれの進数で出力\n";
+
+# %b で2進数表示で出力
+printf("\$num_bin = %b\n", $num_bin);
+
+# %o で8進数表示で出力
+printf("\$num_oct = %o\n", $num_oct);
+
+# %x で16進数表示で出力(小文字)
+printf("\$num_hex = %x\n", $num_hex);
+
+# %X で16進数表示で出力(大文字)
+printf("\$num_hex = %X\n", $num_hex);
+</pre>

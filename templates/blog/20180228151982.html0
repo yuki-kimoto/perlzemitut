@@ -1,0 +1,84 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文・文法</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>変数展開</h2>
+
+
+
+Perlには文字列の中で変数を利用することができる<b>変数展開</b>という機能があります。文字列はダブルクォートで囲う必要があります。
+
+<pre>
+my $str2 = "AAA $str1 CCC";
+</pre>
+
+<a href="/blog/20161003147558.html">文字列</a>の中で直接<a href="/blog/20161107147852.html">変数</a>を利用することができるので、<a href="/blog/20080221120361.html">文字列連結演算子</a>を使って書くよりも簡単です。積極的に使っていきましょう。
+
+変数展開のサンプルを書いてみます。
+
+<pre>
+my $animal = 'cat';
+
+my $message = "I like $animal";
+</pre>
+
+「$animal」が変数展開されて「$message」は「I like cat」になります。
+
+<h4>変数展開の後ろに文字列が続く場合</h4>
+
+変数展開をするときに、変数の後ろに文字列が続く場合に、その文字列も変数名の一部だと認識されてしまいます。このような場合は$の後ろで「{}」を使って、変数名を囲みましょう。
+
+<pre>
+my $animal = 'cat';
+
+my $message = "dog${animal}mouse";
+</pre>
+
+正しく「dogcatmouse」と展開されます。
+
+<h4>配列の変数展開</h4>
+
+<a href="/blog/20161012147627.html">配列</a>も変数展開することができます。配列が変数展開された場合は、要素が空白で連結されます。
+
+<pre>
+my @animals = ('dog', 'cat', 'mouse');
+
+my $message = "I like @animals";
+</pre>
+
+「$message」は「I like dog cat mouse」に展開されます。
+
+<h4>サブルーチンの変数展開</h4>
+
+<a href="/blog/20101130129876.html">サブルーチン</a>は変数ではないので、変数展開することができません。変数に代入してから、変数展開の機能を使うとスマートです。
+
+<pre>
+my $total = sum(1, 2);
+my $message = "Number is $total";
+</pre>
+
+<h4>ヒアドキュメントの中での変数展開</h4>
+
+<a href="/blog/20080619121405.html">ヒアドキュメント</a>の中でも、変数展開を使うことができます。終端文字列をダブルクォートで囲んでおくと変数展開を行う意図がわかりやすくなります。
+
+<pre>
+my $animal = 'cat';
+
+my $message = <<"EOS";
+I love you.
+I like $animal.
+EOS
+</pre>

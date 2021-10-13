@@ -1,0 +1,373 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20140414139745.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Mojoliciousのテンプレートヘルパー</h2>
+
+
+
+テンプレートで利用すると便利な<b>ヘルパー</b>について解説したいと思います。ヘルパーとは、テンプレート内で呼び出すことのできる関数のようなものだと考えてください。layoutヘルパー、stashヘルパーについては、すでに解説していますので、それ以外のヘルパーについて解説します。
+
+<h3>スタイルシートの埋め込み</h3>
+
+テンプレートの中にスタイルシートを記述したい場合は<strong>stylesheet</strong>タグヘルパーを使用します。<b>begin</b>と<b>end</b>で囲った部分にスタイルシートを書きます。
+
+<pre>
+%= stylesheet begin
+  body {
+    background:blue;
+  }
+% end
+</pre>
+
+通常の方法でstyleタグを使って書いてもよいのですが、こちらのほうが簡潔ですし、汎用性のあるタグに展開されるので便利です。以下のようなタグに展開されます。
+
+<pre>
+<style>/*<![CDATA[*/
+
+  body {
+    background:blue;
+  }
+
+/*]]>*/</style>
+</pre>
+
+またpublicディレクトリにあるスタイルシートをstylesheetタグヘルパーで読み込むことができます。
+
+<pre>
+%= stylesheet '/css/common.css';
+</pre>
+
+これは次のように展開されます。
+
+<pre>
+<link href="/css/common.css" rel="stylesheet" />
+</pre>
+
+タグを挿入できるヘルパーをタグヘルパーといいます。利用可能なタグヘルパーについては「<a href="/blog/20110616130993.html">Mojoliciousのタグヘルパーの一覧</a>」をご覧ください。
+
+<h3>JavaScriptの埋め込み</h3>
+
+テンプレートの中にJavaScriptを記述したい場合は<strong>stylesheet</strong>ヘルパーを使用します。<b>begin</b>と<b>end</b>で囲った部分にJavaScriptを書きます。
+
+<pre>
+%= javascript begin
+  alert('Hello');
+% end
+</pre>
+
+通常の方法でscriptタグを使って書いてもよいのですが、こちらのほうが簡潔ですし、汎用性のあるタグに展開されるので便利です。以下のようなタグに展開されます。
+
+<pre>
+<script>//<![CDATA[
+
+  alert('Hello');
+
+//]]></script>
+</pre>
+
+またpublicディレクトリにあるJavaScriptをjavascriptヘルパーで読み込むことができます。
+
+<pre>
+%= javascript '/js/common.js';
+</pre>
+
+これは次のように展開されます。
+
+<pre>
+<script src="/js/common.js"></script>
+</pre>
+
+<h3>アプリケーションオブジェクトの取得</h3>
+
+アプリケーションオブジェクトを取得するには<b>app</b>ヘルパーを使用します。
+
+<pre>
+% my $app = app;
+</pre>
+
+
+<h3>コントローラーオブジェクトの取得</h3>
+
+テンプレートの中では<b>$self</b>という名前で、コントローラーオブジェクトを参照することができます。
+
+<pre>
+% my $c = $self
+</pre>
+
+これを使って、テンプレートの中でHTTPメソッドを取得することなどができますね。
+
+<pre>
+% my $http_method = $self->req->method;
+</pre>
+
+<h3>データのダンプ</h3>
+
+データの内容をダンプするための<b>dumper</b>メソッドが用意されています。これは機能的にはData::DumperモジュールのDumper関数と同じです。
+
+<pre>
+% warn dumper $date;
+</pre>
+
+<h3>他のテンプレートの取り込み</h3>
+
+<strong>include</strong>ヘルパーを使うと他のテンプレートを取り込むことができます。
+
+<pre>
+%= include '/include/header.html.ep
+</pre>
+
+ヘッダやフッタなどは、サイトで共通なことが多いですので、これらを作っておいて、複数のテンプレートから読み込むと便利です。<b>include</b>ヘルパー第二引数以降を利用することで、スタッシュの値を設定することができます。
+
+<pre>
+%= include '/include/header.html.ep, name => 'kimoto', age => 34;
+</pre>
+
+<h3>URLの表現</h3>
+
+Mojoliciousではアプリケーションの内部的なURLを表現する場合は、パフォーマンスが重要になるアプリケーションを除いて<strong>url_for</strong>ヘルパーを使用するようにしてください。たとえば「/date/20131215」というURLを表現したい場合は次のように記述します。
+
+<pre>
+<a href="<%= url_for('/date/20131215') %>">2013/12/15</a>
+</pre>
+
+url_forメソッドを使うのは、アプリケーションに汎用性を持たせるためです。このように記述しておけば、CGIとして起動しても、サーバーとして起動しても、URLが汎用的になります。
+
+これは次のように展開されます。
+
+<pre>
+# CGIの場合
+<a href="/myapp.cgi/date/20131215">2013/12/15</a>
+
+# サーバーとして起動した場合
+<a href="/date/20131215">2013/12/15</a>
+</pre>
+
+<h4>Mojo::URLオブジェクト</h4>
+
+url_forヘルパーで取得するのはMojo::URLオブジェクトです。Mojo::URLクラスはURLを扱うためのクラスです。
+
+Mojo::URLオブジェクトを文字列化するためには<b>to_strong</b>メソッドを使うか、文字列として評価します。
+
+<pre>
+% my $url_str = url_for->to_string;
+% my $url_str = "" . url_for;
+</pre>
+
+最初の例では「<%= %>」の中は、文字列として評価されるために単純に
+
+<pre>
+<%= url_for('/some') %>
+</pre>
+
+と書くだけで、URLが文字列として展開されます。
+
+<h4>現在のURLを取得</h4>
+<strong>url_for</strong>ヘルパーで引数を指定しなければ、現在のURLを取得することができます。
+
+<pre>
+% my $current_url = url_for
+</pre>
+
+<h3>クエリ文字列</h3>
+
+url_forヘルパーで注意しておきたいのは、引数なしで現在のURLを取得する場合は、クエリ文字列を除いた部分のURLを取得できるということです。もしクエリ文字列を含めたURLを取得したい場合は<string>url_with</strong>ヘルパーを利用します。
+
+<pre>
+<%= url_with %>
+</pre>
+
+たとえば「/some?name=kimoto&age=30」というURLをアクセスした場合はurl_forヘルパーでは「/some」を取得しますがurl_withヘルパーであれば「/some?name=kimoto&age=30」を取得できます。
+
+クエリの部分はMojo::Parametersオブジェクトに保存されています。これはMojo::URLクラスの<b>query</b>メソッドで取得できます。
+
+<pre>
+my $query = url_with->query;
+</pre>
+
+またqueryメソッドは、クエリ文字列を設定する機能もあわせてもっています。クエリ文字列を設定するには以下の三種類の方法があります。最初のクエリ文字列が「title=perl&name=ken」だったと想定してください。
+
+<h4>クエリ文字列を置き換える</h4>
+
+クエリ文字列を置き換えるには次のようにリスト形式で渡します。
+
+<pre>
+$url->query(name => 'taro', price => 1900);
+</pre>
+
+上記の例の場合は以下のように置き換わります。
+
+<pre>
+# 前
+title=perl&name=ken
+
+# 後
+name=taro&price=1900
+</pre>
+
+<h4>クエリ文字列のマージ</h4>
+
+クエリ文字列をマージするには配列のリファレンスとして渡します。
+<pre>
+$url->query([name => 'taro', price => 1900]);
+</pre>
+
+次のようにマージされます。値が同じものは置き換えられます。
+
+<pre>
+# 前
+title=perl&name=ken
+
+# 後
+title=perl&name=taro&price=1900
+</pre>
+
+<h4>クエリ文字列の追加</h4>
+
+クエリ文字列を追加するにはハッシュのリファレンスとして渡します。
+<pre>
+$url->query({name => 'taro', price => 1900});
+</pre>
+
+次のように追加されます。
+
+<pre>
+# 前
+title=perl&name=ken
+
+# 後
+title=perl&name=ken&name=taro&price=1900
+</pre>
+
+Webアプリではページ番号だけを差し替えたいという要望が強いと思います。そういう場合は、クエリのマージの機能を使うのがよいでしょう。
+
+<pre>
+<%= url_with->query([page => $page]) %>
+</pre>
+
+<h3>テンプレートヘルパーを利用したサンプル</h3>
+
+今回解説したテンプレートヘルパーを使ったサンプルコードを書いてみます。
+
+<pre>
+use Mojolicious::Lite;
+
+get '/person' => sub {
+  my $self = shift;
+  
+  # パラメーター
+  my $name = $self->param('name');
+  my $age = $self->param('age');
+  
+  # 描画
+  $self->render('index', name => $name, age => $age);
+};
+
+app->start;
+
+__DATA__
+
+@@ index.html.ep
+<%
+  # スタッシュの値
+  my $name = stash('name');
+  my $age = stash('age');
+  
+  # ログの取得
+  app->log->info('Template Helper');
+  
+  # HTTPメソッド
+  my $http_method = $self->req->method;
+  
+  # データのダンプ
+  my $data = [1, 2, 3];
+  warn dumper $data;
+%>
+<html>
+  <head>
+    <title>Template Helper</title>
+    %= stylesheet '/css/common.css';
+    %= javascript '/js/common.js';
+  </head>
+  <body>
+    %= include '/include/header';
+    
+    Name: <%= $name %><br>
+    Age: <%= $age %><br>
+    Current URL: <%= url_with %><br>
+    Current URL with some change: <%= url_with->query([name => 'ken']) %>
+    %= include '/include/footer';
+  </body>
+</html>
+</pre>
+
+
+<h4>public/css/common.css</h4>
+
+CSSファイルを「public」ディレクトリの中に配置しましょう。「public/css/common.css」という名前で保存してください。文字色変更する設定などが書いてあります。
+
+<pre>
+#header h1 {
+  color:green;
+  border-bottom:1px solid gray;
+}
+
+#footer {
+  color:red;
+  border-top:1px solid gray;
+  text-align:center;
+}
+</pre>
+
+<h4>public/js/common.js</h4>
+
+JavaScriptファイルを「public」ディレクトリの中に配置しましょう。「public/js/common.js」という位置においてください。「Hello」と表示するダイアログを実行するJavaScriptです。
+
+<pre>
+alert('Hello');
+</pre>
+
+<h4>ヘッダとフッタ</h4>
+
+ヘッダとフッタを作ってみましょう。「templates」ディレクトリの中に、「templates/include/header.html.ep」と「templates/include/footer.html.ep」という名前で保存してください。
+
+<b>templates/include/header.html.ep</b>
+
+<pre>
+<div id="header">
+<h1>Template Helper</h1>
+</div>
+</pre>
+
+<b>templates/include/footer.html.ep</b>
+
+<pre>
+<div id="footer">
+Author kimoto
+</div>
+</pre>
+
+<h4>アプリケーションの実行</h4>
+
+このアプリケーションを実行して「/person?name=kimoto&age=32」でアクセスしてみてください。上部にヘッダ、下部フッタが、挿入されています。コンテンツの内容として以下が表示されます。
+
+<pre>
+Name: kimoto
+Age: 32
+HTTP Method: GET
+Current URL: /person?name=kimoto&age=32
+Current URL with some change: /person?age=32&name=ken
+</pre>
+

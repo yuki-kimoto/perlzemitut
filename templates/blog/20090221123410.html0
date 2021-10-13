@@ -1,0 +1,671 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">試験</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Test::More - 自動テストのためのテストプログラムを書く</h2>
+
+
+
+CPANにあるPerlモジュールのほぼすべてには、プログラムを試験するためのプログラムが、添付されています。プログラムだけではなくって、プログラムを試験するためのプログラムも一緒についてくるんです。これを、自動試験と呼びます。プログラムをひとつひとつ手で実行しなくても、自動試験のプログラムを実行するだけで、プログラムが正しく動くかどうかを確認できます。
+
+Perlでは、標準モジュールである<strong>Test::More</strong>を使って自動試験のプログラムを書くのが便利です。ここでは、自動試験の利点と、Test::Moreによる自動試験の記述方法を解説します。
+
+<h3>自動試験の利点</h3>
+
+<h4>1.リグレッションテストが簡単にできる。</h4>
+
+リグレッションテストは、退行試験とも呼ばれ、プログラムに機能を追加したときに元の機能が正しく動くことを確認する試験のことです。自動試験を作成しておけば、プログラムに機能を追加した後に、自動試験が成功することを確かめればよいだけです。
+
+<h4>2.リファクタリングができる</h4>
+
+リファクタリングとはコードをきれいにすることです。汎用性、可読性があがるようにコードを書き直す行為をいいます。　汚れたコードをほうっておくのはよくありません。変化に対応しなければならないプログラムの場合は、機能の追加を行いやすいようなコーディングを心がける必要があります。
+
+自動試験を作成しておけば、機能を損なうことなく、リファクタリングを行うことができます。
+
+<h3>自動試験の注意点</h3>
+
+<h4>1.コード自体の良い悪いはわからない。</h4>
+
+自動試験は、機能を見るための試験です。そのコードが汎用性があるとか、きちんとサブルーチンにまとまっているとか、可読性が高いとか、そのような部分を判断することができません。インスペクション、コードリーディングなどと組み合わせればよりよいと思います。
+
+<h4>2.目視による確認もあわせて行う</h4>
+
+自動試験は完璧な試験ではありません。自動試験の書き間違えが発生します。勘違いで自動試験が行われていなかったとか、試験自体が間違えていたということもあります。
+
+試験の間違いをなくすこつは、なるべく多角的な観点から試験をすることです。ですので、自動試験を書くときは、デバッガを使って、実際の動きを確認することを平行して行うことをお奨めします。プログラムの内部が意図したとおりに動いていることを確認しましょう。
+
+正しい試験を一度書くことができれば、後は、自動で確認できます。
+
+<h3>自動試験の簡単なサンプル</h3>
+
+では早速、Perlの自動試験のためのモジュールTest::Moreを使って自動試験のプログラムを書いてみましょう。
+
+<pre>
+use strict;
+use warnings;
+
+# テスト数を指定する
+use Test::More tests => 2; 
+
+# ok 関数で試験が成功したかを確認。この試験は成功する。
+my $num1 = 1;
+ok($num1 == 1); 
+
+# この試験は失敗する
+my $num2 = 2;
+ok($num2 == 1);
+</pre>
+
+自動試験のスクリプトの解説です。
+
+<h4>1. 試験の数を指定する。</h4>
+
+Test::Moreをuseするときはテストの数を指定します。
+
+<pre>
+use Test::More tests => 2;
+</pre>
+
+<h4>2. ok関数で試験の結果をチェック</h4>
+
+ok関数の第1引数は、試験が成功する条件を記述します。
+
+<pre>
+# ok 関数で試験が成功したかを確認。この試験は成功する。
+my $num1 = 1;
+ok($num1 == 1); 
+
+# この試験は失敗する
+my $num2 = 2;
+ok($num2 == 1);
+</pre>
+
+この記述は「$num1が1と等しいなら試験は成功」「$num2と1が等しいなら試験は成功」と読むことができます。
+
+<h4>3. 試験結果</h4>
+
+上記のサンプルの試験の結果は以下のようになります。1つ目の試験は成功、2つ目の試験は失敗したことがわかると思います。
+
+<pre>
+1..2
+ok 1 - Test1
+not ok 2 - Test2
+#   Failed test 'Test2'
+#   at b.pl line 9.
+# Looks like you failed 1 test of 2.
+</pre>
+
+<h3>サブルーチンを試験する</h3>
+
+では、もうひとつ簡単なサンプルを見てみましょう。二つの数を合計するsumという関数と数を2倍するdoubleという関数を試験します。double関数は2倍するはずが間違って3倍していて自動試験が失敗するようにしてあります。
+
+<pre>
+use strict;
+use warnings;
+
+use Test::More tests => 2;
+
+
+# 試験単位でスコープを作成するとmyで宣言したレキシカル変数の衝突が起きない。
+# sumの試験
+{
+  my $num1 = 1;
+  my $num2 = 2;
+  
+  my $total = sum($num1, $num2);
+  
+  ok($total == 3, 'sum');
+}
+
+# doubleの試験
+{
+  my $num1 = 1;
+  
+  my $double = double($num1);
+    
+  # 失敗!
+  ok($double == 2, 'double'); 
+}
+
+# 二つの数を合計するサブルーチン
+sub sum {
+  my ($num1, $num2) = @_;
+  return $num1 + $num2;
+}
+
+# 数を2倍するサブルーチン
+sub double {
+  my $num = shift;
+
+  # 2倍しなければならないのに、間違って3倍してしまった!
+  return $num * 3
+}
+</pre>
+
+<h4>1. サブルーチンの自動試験</h4>
+
+自動試験をサブルーチンごとに行います。今回のサンプルでは、sumというサブルーチンを試験しています。
+
+<pre>
+{
+  my $num1 = 1;
+  my $num2 = 2;
+  
+  my $total = sum($num1, $num2);
+  
+  ok($total == 3, 'sum');
+}
+
+# 二つの数を合計するサブルーチン
+sub sum {
+  my ($num1, $num2) = @_;
+  return $num1 + $num2;
+}
+</pre>
+
+<h4>2. 試験単位にスコープを作成する。</h4>
+
+試験をたくさん書いていくと、変数名の衝突が頻繁に起こるようになってきます。これを避けるために、{ } でスコープを作成して、その中にひとつひとつ試験を書いていきます。
+
+<pre>
+# sumの試験
+{
+  my $num1 = 1;
+  my $num2 = 2;
+  
+  my $total = sum( $num1, $num2 );
+  
+  ok( $total == 3, 'sum' );
+}
+
+# doubleの試験
+{
+  my $num1 = 1;
+  
+  my $double = double($num1);
+  
+  ok($double == 2, 'double'); # 失敗!
+}
+</pre>
+
+<h4>3. 試験結果</h4>
+
+試験結果を見てみましょう。double関数は間違って、3倍する関数になっていますので、2番目の試験が失敗します。
+
+<pre>
+ok 1 - sum
+not ok 2 - double
+#   Failed test 'double'
+#   at - line 25.
+# Looks like you failed 1 test of 2.
+</pre>
+
+
+<h3>自動試験のレイアウト</h3>
+
+上記のスクリプトは、ひとつのファイルの中で行いましたが、自動試験のディレクトトリの一般的なレイアウトを紹介します。自動試験のディレクトリのレイアウトは以下のようになります。SomeModule.pmというモジュールを試験することを想定します。
+
+<pre>
+SomeModule/ 
+    |
+    |---- lib/
+    |      |
+    |      |----SomeModule.pm
+    |
+    |
+    |----- t/
+           |
+           |---- sum.t
+           |
+           |---- double.t
+</pre>
+
+モジュール自体は、libというディレクトリの中に格納します。自動試験のプログラムは、t という名前のディレクトリの中に格納します。自動試験のプログラムの拡張子は .t にします。
+
+レイアウトに絶対的な決まりはありませんが、Perlの自動試験を便利にしてくれるモジュールの多くがこのレイアウトを想定しているので、このレイアウトにしましょう。
+
+<h4>モジュールのサンプル</h4>
+
+試験をするためのモジュールのサンプルです。「SomeModule.pm」という名前で保存して、「lib」の中に格納します。
+
+<pre>
+package SomeModule;
+use strict;
+use warnings;
+
+# 二つの数を合計する関数
+sub sum {
+  my ($num1, $num2) = @_;
+  return $num1 + $num2;
+}
+
+# 数を2倍するサブルーチン
+sub double {
+  my $num = shift;
+
+  # 2倍しなければならないのに、間違って3倍してしまった!
+  return $num * 3
+}
+
+1;
+</pre>
+
+モジュールの最後の行は真の値を返す必要があります。忘れやすいので注意しましょう。
+
+<h4>試験スクリプト</h4>
+
+自動試験のサンプルです。
+
+<h4>sum.t</h4>
+
+<pre>
+use strict;
+use warnings;
+
+# モジュールの検索パスを追加
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
+use Test::More tests => 1;
+use SomeModule;
+
+# sumの試験
+{
+  my $num1 = 1;
+  my $num2 = 2;
+  
+  my $total = SomeModule::sum($num1, $num2);
+  
+  ok($total == 3, 'sum');
+}
+</pre>
+
+(参考)<a href="/blog/20100524127696.html">FindBin</a>
+
+<h4>double.t</h4>
+
+<pre>
+use strict;
+use warnings;
+
+# モジュールの検索パスを追加
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
+use Test::More tests => 1;
+use SomeModule; 
+
+# doubleの試験
+{
+  my $num1 = 1;
+  
+  my $double = SomeModule::double($num1);
+  
+  ok($double == 2, 'double');
+}
+
+</pre>
+
+<h4>自動試験の実行</h4>
+
+自動試験を実行して見ましょう。自動試験を行うには、まずSomoModuleの中に移動します。そして、次のコマンドを実行してみましょう。
+
+<pre>
+perl t/sum.t
+</pre>
+
+試験を実行することができます。
+
+<h3>proveスクリプトですべての自動試験を実行する</h3>
+
+自動試験のプログラムが増えてくると一つ一つ自動試験を実行するのは非常に面倒です。Perlには<strong>prove</strong>というすべての自動試験を実行してくれる便利なスクリプトがあります。
+
+<pre>
+prove t
+</pre>
+
+proveを使うと、すべての自動試験を実行してくれるのでとても便利です。
+
+proveの実行結果は以下のようになります。ひとつめの試験が成功して、二つ目の試験が失敗していることが確認できます。
+
+<pre>
+t\sum.......ok
+t\double....
+t\double....NOK 1/1#   Failed test 'double'
+#   at t\double.t line 13.
+# Looks like you failed 1 test of 1.
+t\double....dubious
+        Test returned status 1 (wstat 256, 0x100)
+DIED. FAILED test 1
+        Failed 1/1 tests, 0.00% okay
+Failed Test   Stat Wstat Total Fail  List of Failed
+-----------------------------------------------------------------------------
+t\double.t    1   256     1    1  1
+Failed 1/2 test scripts. 1/2 subtests failed.
+Files=2, Tests=2,  0 wallclock secs ( 0.00 cusr +  0.00 csys =  0.00 CPU)
+Failed 1/2 test programs. 1/2 subtests failed.
+</pre>
+
+double関数が間違っていますので数値を2倍するように修正すると、以下のようにすべての試験が成功します。
+
+<pre>
+t\sum.......ok
+t\double....ok
+All tests successful.
+Files=2, Tests=2,  0 wallclock secs ( 0.00 cusr +  0.00 csys =  0.00 CPU)
+</pre>
+
+<h3>Test::Moreの関数</h3>
+
+これまでは「ok関数」だけを使って、試験を作成してきましたが、Test::Moreモジュールには、たくさんの便利な関数があります。
+
+真偽値、数値、文字列、オブジェクトの中身などを試験するには、以下の関数を使用します。
+
+<table>
+  <tr>
+    <td>
+      関数
+    </td>
+    <td>
+      解説
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      is
+    </td>
+    <td>
+      eqを使っての文字列が等しいことを確認。整数の数値比較はこれでもOK
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      isnt
+    </td>
+    <td>
+      neを使って文字列が等しくないことを確認。整数の数値比較はこれでもOK
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      like
+    </td>
+    <td>
+      文字列が<a href="/blog/20100827127859.html">正規表現</a>にマッチすることを確認
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      unlike
+    </td>
+    <td>
+      文字列が正規表現にマッチしないことを確認
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cmp_ok
+    </td>
+    <td>
+      ==, <, >, <=, >=, gt, lt, などPerlの演算子を指定して比較
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      is_deeply
+    </td>
+    <td>
+      配列の配列など複雑なデータ構造の比較に用いる
+    </td>
+  </tr>
+
+</table>
+
+<h4>is関数とisnt関数</h4>
+
+<strong>is関数</strong>は文字列が等しいことを試験します。<strong>isnt関数</strong>は文字列が等しくないことを試験します。
+
+<pre>
+is($str, 3);
+isnt($str, 5);
+</pre>
+
+第1引数は、試験を行いたい値です。第2引数は予想される結果です。
+
+is と isnt は、eq と ne を使用するので文字列としての比較になります。(たとえば "12.0" と 12 は異なります。) 数値を比較する場合で文字列として比較しても問題ないような場合は、 is と isnt を使っても良いです。
+
+それ以外の場合は、 cmp_ok という関数を使用します。
+
+<h4>like関数とunlike関数</h4>
+
+<strong>like関数</strong>は文字列が正規表現にマッチすることを試験します。<strong>unlike関数</strong>は正規表現にマッチしない</strong>ことを試験します。
+
+<pre>
+like( $str, qr/\w+/);
+unlike( $str, qr/\w+/);
+</pre>
+
+第1引数は試験したい値です。第2引数は、<strong>正規表現のリファレンス</strong>です。
+
+第2引数は、qr/\w+/ という正規表現のリファレンスになっていることに注意してください。これを '\w+' や、 /\w+/ のようにすると、試験がうまくいきません。
+
+<h4>cmp_ok関数</h4>
+
+<strong>cmp_ok関数</strong>を使うと任意の比較演算子を使って試験ができます。
+
+<pre>
+cmp_ok( $num, '<', 3); 
+</pre>
+
+第1引数、第3引数は比較したい値です。第2引数は比較演算子です。「=」「<」「<=」「>=」「>」「eq」「ne」「gt」「lt」「ge」「le」など、すべての比較演算子が使用できます。
+
+<h4>is_deeply関数</h4>
+
+<strong>is_deeply関数</strong>を使うと、配列のリファレンスやハッシュのリファレンスなどの複雑なデータ構造の試験を行うことができます。これはとても便利です。
+
+<pre>
+is_deeply($hash_ref, {a => 1, b => 2});
+</pre>
+
+第1引数は、試験をしたい値です。第2引数は、予想される結果です。
+
+次に、モジュールの読み込み、クラスの定義などを試験するための関数を紹介します。
+
+<table>
+  <tr>
+    <td>
+      can_ok
+    </td>
+    <td>
+      クラスがあるメソッドを持つかどうかの確認
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      isa_ok
+    </td>
+    <td>
+      オブジェクトが継承しているクラスの確認、リファレンスの種類の確認
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      require_ok
+    </td>
+    <td>
+      モジュールがrequireできることを確認
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      use_ok
+    </td>
+    <td>
+      モジュールがuseできることを確認
+    </td>
+  </tr>
+
+</table>
+
+<h4>can_ok関数</h4>
+
+<strong>can_ok関数</strong>は、あるクラスがあるメソッドを持っていることを確かめるための試験に使用します。
+
+<pre>
+can_ok('Book', 'title', 'author', 'price', 'to_string', 'clone');
+</pre>
+
+これは、Bookクラスが、title, author, price, to_string, clone というメソッド持っていることを確認するための試験です。
+
+<h4>isa_ok関数</h4>
+
+<strong>isa_ok</strong>はあるオブジェクトがあるクラスを継承していることを確かめるための試験に使用します。
+
+<pre>
+my $comic = Comic->new;
+isa_ok($comic, 'Book');
+</pre>
+
+これは、$comicオブジェクトがBookクラスを継承していることを確かめるための試験です。
+以下のように自分自身のクラスを指定しても試験は成功します。
+
+<pre>
+isa_ok($comic, 'Comic');
+</pre>
+
+また、オブジェクトではなくて、リファレンスがどのような種類ものものであるかの試験にも対応しています。
+
+<pre>
+my $ary_ref = [];
+isa_ok($array_ref, 'ARRAY');
+</pre>
+
+<h4>require_ok関数</h4>
+
+<strong>require_ok関数</strong>はモジュールがrequireできることを確認するための試験に使用します。
+
+<pre>
+require_ok('Book');
+</pre>
+
+これは、Bookモジュールがrequireできることを確認する試験です。require_okの使い道ですが、自分が配布したいモジュールが、別のモジュールに依存している場合、そのモジュールが存在することを確認する場合などに利用できます。
+
+<h4>use_ok関数</h4>
+
+<strong>use_ok関数</strong>はモジュールがuseできることを確認するための試験に使用します。
+
+<pre>
+BEGIN{ use_ok('Some::Module') }
+</pre>
+
+<h3>FAQ</h3>
+
+<h4>試験結果にわかりやすいコメントを表示することはできますか</h4>
+
+<strong>note関数</strong>を使用すると、試験結果にコメントを表示することができます。
+
+<pre>
+note 'some test';
+</pre>
+
+<h4>試験の数を記述するのがめんどくさいです</h4>
+
+「no_plan」あるいは「done_testing」を使用します。
+
+<pre>
+use Test::More 'no_plan';
+</pre>
+
+<pre>
+use Test::More;
+
+# 試験を書く
+
+done_testing;
+</pre>
+
+現在では、done_testingが推奨されています。
+
+まれに、試験が失敗しているのに、通るエッジケースがあるようです。確実性を求めるのであれば、テスト数を記述しましょう。
+
+<h4>一部の試験をスキップしたいです</h4>
+
+たとえば、特定の環境では、試験をスキップしたいという場合がありますね。次のように記述します。
+
+<pre>
+use Test::More;
+if ($^O eq 'MacOS') {
+  plan skip_all => 'Test irrelevant on MacOS';
+}
+else {
+  plan tests => 42;
+}
+</pre>
+
+<h4>例外の試験はどのように行いますか。</h4>
+
+例外が起こることを確認したい場合は、次のようにします。
+
+<pre>
+# 例外が起こることの確認
+eval { some_func() };
+if ($@) {
+  ok(1);
+}
+else {
+  ok(0);
+}
+
+# あるいはエラーメッセージを確認
+eval { some_func() };
+like($@, qr/error/);
+</pre>
+
+(参考)<a href="/blog/20100312126967.html">eval</a>
+
+<h4>警告の試験はどのように行いますか。</h4>
+
+警告がでることを確認したい場合は、シグナルハンドラを利用して、次のようにします。
+
+<pre>
+# 警告メッセージを代入するために準備
+my $warn;
+
+# 警告が発生したときに呼び出されるハンドラ
+local $SIG{__WARN__} = sub {
+  $warn = shift;
+};
+
+$warn = undef;
+some_func();
+if ($warn) {
+  ok(1);
+}
+else {
+  ok(0);
+}
+</pre>
+
+<h3>最後に</h3>
+
+Test::Moreを使って自動試験を作成しておくと、自動試験を実行するだけで、プログラムが正しいかどうかを確認できるので便利です。また、CPANモジュールを自分で書くためには、必ず覚える必要があります。
+
+僕が、試験を自動化できるということを知ったときは、そんな便利な方法があったんだと目からうろこでした。みなさんも、便利に利用してみてください。
+

@@ -1,0 +1,296 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110709131364.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBIx::Customで「行をフェッチ」する方法</h2>
+
+
+
+
+DBIx::Customで「行をフェッチ」する方法を解説します。
+
+<h3>行をフェッチする</h3>
+
+executeやselectメソッドの戻り値はDBIx::Custom::Resultオブジェクトです。DBIx::Custom::Resultクラスは行をフェッチするためのたくさんのメソッドがあります。
+
+<h4>一行づつフェッチ(配列)</h4>
+
+ 一行フェッチして、その行を配列のリファレンスとして取得するにはfetchメソッドを使用します。
+
+<pre>
+# fetch a row and put it into array refrence
+my $row = $result->fetch;
+</pre>
+
+次のようなデータを取得できます。
+
+<pre>
+['Perl', 'Ken']
+</pre>
+
+一般的には次のように<a href="/blog/20100123126425.html">while文</a>と一緒に使います。フェッチできる行がなくなれば、undefが返ります。
+
+<pre>
+# Fetch with while loop
+while (my $row = $result->fetch) {
+  my $title  = $row->[0];
+  my $author = $row->[1];
+}
+</pre>
+
+<h4>一行だけフェッチ(配列)</h4>
+
+一行だけフェッチして、その行を配列のリファレンスとして取得するにはfetch_oneメソッドを使用します。自動的にステートメントハンドルのfinishメソッドが呼び出されます。
+
+<pre>
+# Fetch only a row and put it into array reference
+my $row = $result->fetch_one;
+</pre>
+
+次のようなデータを取得できます。
+
+<pre>
+['Perl', 'Ken']
+</pre>
+
+<h4>すべての行をフェッチ(配列)</h4>
+
+すべての行をフェッチして、それを配列の配列のリファレンスとして取得するにはfetch_allメソッドを使用します。
+
+<pre>
+# Fetch all rows and put them into array of array reference
+my $rows = $result->fetch_all;
+</pre>
+
+次のようなデータを取得できます。
+<pre>
+[
+  ['Perl', 'Ken'],
+  ['Ruby', 'Mike']
+]
+</pre>
+
+<h4>一行づつフェッチ(ハッシュ)</h4>
+
+一行フェッチして、その行をハッシュのリファレンスとして取得するにはfetch_hashメソッドを使用します。
+
+<pre>
+# Fetch a row and put it into hash reference
+my $row = $result->fetch_hash;
+</pre>
+
+次のようなデータを取得できます。
+
+<pre>
+{title => 'Perl', author => 'Ken'}
+</pre>
+
+一般的には次のようにwhileループと一緒に使います。フェッチできる行がなくなれば、undefが返ります。
+
+<pre>
+# Fetch with while loop
+while (my $row = $result->fetch_hash) {
+  my $title  = $row->{title};
+  my $author = $row->{author};
+}
+</pre>
+
+<h4>1行だけフェッチ(ハッシュ)</h4>
+
+一行だけフェッチして、その行を配列のリファレンスとして取得するにはfetch_hash_oneメソッドを使用します。自動的にステートメントハンドルのfinishメソッドが呼び出されます。
+
+<pre>
+# Fetch only a row and put it into hash reference
+my $row = $result->fetch_hash_one;
+</pre>
+
+次のようなデータを取得できます。
+
+<pre>
+{title => 'Perl', author => 'Ken'}
+</pre>
+
+oneというメソッドはfetch_hash_oneメソッドの別名になっていて、こちらのほうが短く記述することができます。
+
+<pre>
+# Alias of fetch_hash_one
+my $row = $result->one;
+</pre>
+
+<h4>すべての行をフェッチ(ハッシュ)</h4>
+
+すべての行をフェッチして、それをハッシュの配列のリファレンスとして取得するにはfetch_hash_allメソッドを使用します。
+
+<pre>
+# Fetch all rows and put them into array of hash reference
+my $rows = $result->fetch_hash_all;
+</pre>
+
+次のようなデータを取得します。
+
+<pre>
+  [
+    {title => 'Perl', author => 'Ken'},
+    {title => 'Ruby', author => 'Mike'}
+  ]
+</pre>
+
+allというメソッドはfetch_hash_allメソッドの別名になっていて、こちらのほうが短く記述することができます。
+
+<pre>
+# Alias of fetch_hash_all
+my $rows = $result->all;
+</pre>
+
+
+<h3>便利なフェッチ方法</h3>
+
+DBIx::Custom::Resultクラスは他にも便利なフェッチするためのメソッドがあります。
+
+<h4>value</h4>
+
+ひとつの値を取得するのにvalueメソッドは便利です。最初の行の最初の値だけを取得できます。フェッチできなかった場合はundefを返します。
+
+<pre>
+my $value = $result->value;
+</pre>
+
+valueメソッドは、count関数などを使って、件数を取得したい場合に便利でしょう。
+
+<pre>
+my $count = $dbi->select('count(*)')->value;
+</pre>
+
+以下の記述とほぼ同じ意味になります。
+
+<pre>
+my $count = $dbi->select('count(*)')->fetch_one->[0];
+</pre>
+
+<h4>values</h4>
+
+最初の列の複数の値を取得するのにvaluesメソッドは便利です。
+
+<pre>
+my $values = $result->values;
+</pre>
+
+たとえばMySQLの「show tables」文を実行してテーブル一覧を取得するときに利用できます。
+
+<pre>
+my $tables = $dbi->select('show tables')->values;
+</pre>
+
+これは以下の記述と同じ意味になります。
+
+<pre>
+my $rows =  $dbi->select('show tables')->fetch_all;
+my $tables = [map { $_->[0] } @$rows];
+</pre>
+
+<h4>flat</h4>
+
+flatメソッドは、取得した行の値をひとつの平坦なリストにします。
+
+<pre>
+my @list = $result->flat;
+</pre>
+
+たとえば以下のような処理を実行するとします。
+
+<pre>
+my @list = $dbi->select(['id', 'title'])->flat;
+</pre>
+
+そして以下のようなテーブルだったとします。
+<pre>
+(ヘッダ) id    title 
+         1     Perl
+         2     Ruby
+</pre>
+
+するとflatメソッドは以下のようなリストを返却します。
+
+<pre>
+(1, 'Perl', 2, 'Ruby')
+</pre>
+
+ハッシュに代入すればキーと値のペアを簡単に取得できます。
+
+<pre>
+my %titles = $dbi->select(['id', 'title'])->flat;
+</pre>
+
+<h4>kv</h4>
+
+kvメソッドはキーと値のペアを取得するときに便利です。
+
+<pre>
+my $key_value = $result->kv;
+my $key_values = $result->kv(multi => 1);
+</pre>
+
+たとえば、本のIDをキーとしてタイトルと著者の値としたハッシュのリファレンスを取得するには次のようにします。
+
+<pre>
+my $books = $dbi->select(['id', 'title', 'author'])->kv;
+</pre>
+
+これは以下のようなデータになります。
+
+<pre>
+{
+  1 => {title => 'Perl', author => 'Ken'},
+  2 => {title => 'Ruby', author => 'Taro'}
+}
+</pre>
+
+<h4>kvs</h4>
+
+一つのキーに対して複数の値を対応させたい場合は<b>kvs</b>メソッドを使用します。
+
+<pre>
+my $books = $dbi->select(['author', 'title', 'price'])->kvs;
+</pre>
+
+次のような値が返却されます。
+
+<pre>
+{
+  Ken => [
+    {title => 'Perl', price => 1000},
+    {title => 'Good', price => 2000}
+  ],
+  Taro => [
+    {title => 'Ruby', price => 3000},
+    {title => 'Sky', price => 4000}
+  ]
+}
+</pre>
+

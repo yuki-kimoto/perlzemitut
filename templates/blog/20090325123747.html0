@@ -1,0 +1,63 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">継承の仕組み</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>継承の仕組み</h2>
+
+
+
+Perlにおける継承の仕組みを解説します。
+
+<h3>1. 継承の仕組み</h3>
+
+継承の仕組みは上位クラスに対してメソッドの探索をしているということです。前回のコードをもう一度見てみましょう。
+
+<pre>
+use strict;
+use warnings;
+
+# コンポーネントクラス
+package Component;
+sub x { return 5 }
+
+
+# ボタンクラス
+package Button;
+# 継承の記述
+our @ISA = ('Component');
+
+sub new { bless {}, 'Button' }
+
+package main;
+# ボタンクラスを使用する
+my $button = Button->new;
+print $button->x;
+</pre>
+
+Buttonクラスには、x というメソッドがないのに、 x というメソッドを呼び出しているのでした。これは、@ISA = ('Component')という記述で継承しているからだと解説しました。
+でも実は本当はメソッドの探索が行われているだけです。
+
+<h3>2. メソッド探索のアルゴリズム</h3>
+
+以下がメソッド探索のアルゴリズムです。
+
+<blockquote>
+自分のパッケージ(この例の場合は Button) に x メソッドがあれば、それを呼び出す。もしなければ、 @ISA に含まれるパッケージ(この例では Component) の x メソッドを呼び出す。
+</blockquote>
+
+これを最上位のスーパークラスまで繰り返します。これが、Perlにおける継承の実装です。
+

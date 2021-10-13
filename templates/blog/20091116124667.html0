@@ -1,0 +1,916 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Perlモジュール徹底解説</h2>
+
+Perlのモジュールについての解説です。Perlでいうモジュールとは良く使う機能や便利な機能をプログラムで利用するための仕組みです。
+
+Perlの基本文法を覚えたらいろいろなモジュールを使ってみましょう。モジュールを組み合わせると複雑な問題を簡単に解決したり、業務の自動化に役立ったりします。
+
+また<a href="http://search.cpan.org/">CPAN</a>と呼ばれるモジュールの配布サイトでは役立つたくさんのモジュールが有志によって登録されており無料で利用することができます。cpanコマンドの使い方については<a href="/blog/20100504127089.html">CPANモジュールの解説</a>を参考にしてください。
+
+<h4>モジュールの作成方法</h4>
+
+「パッケージ」などのモジュール作成のための基礎知識を知りたい場合は「<a href="/blog/20161130148051.html">モジュールの基礎</a>」を参考にしてください。実際にモジュールを自分で作成してみたい方は<a href="/blog/20090513124489.html">Module::Starterモジュール</a>を使って、モジュールのひな型を作成するのが早道です。
+
+<h4>モジュールの存在確認</h4>
+
+特定のモジュールが存在しているかどうかを知りたい場合は、perldocコマンドでドキュメントがあるかを調べてみるのが一番早い方法です。
+
+<pre>
+# perldocコマンド
+perldoc Mojolicious
+</pre>
+
+モジュールがインストールされている場所を知りたい場合は「-l」オプションを使用してください。パスが表示されます。
+
+<pre>
+perldoc -l Mojolicious
+</pre>
+
+モジュールのバージョンを知りたい場合は「-m」オプションを使って、モジュールファイルを実際に見てみるのが一番よいです。
+
+<pre>
+perldoc -m Mojolicious
+</pre>
+
+バージョンが指定されているパッケージ変数を探してください。
+
+<pre>
+our $VERSION  = '7.25';
+</pre>
+
+<h4>モジュールの読み込みパス</h4>
+
+モジュールの読み込みパスの追加方法については、以下を参考にしてください。
+
+<ul>
+  <li><a href="/blog/20200617111016.html">PERL5LIB環境変数を使ってモジュールの検索パスを追加する</a></li>
+  <li><a href="/blog/20100525127859.html">lib - モジュールの検索パスを追加</a></li>
+</ul>
+
+<h3>標準モジュール</h3>
+
+「標準モジュール」はPerlをインストールしたときに最初から利用できるモジュールのことです。「標準モジュール」だけでも結構たくさんのことがでてしまいます。
+
+<table>
+  <tr>
+    <td>
+      <b>モジュール名</b>
+    </td>
+    <td>
+      <b>説明</b>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20130912137895.html">strict</a>
+    </td>
+    <td>
+      文法を厳格にする
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="/blog/20130916137930.html">warnings</a>
+    </td>
+    <td>
+      警告を出力する
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100514127696.html">Getopt::Long</a>
+    </td>
+    <td>
+      コマンドライン引数のオプションを処理する
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100510127696.html">Archive::Tar</a>
+    </td>
+    <td>
+      tarファイルの展開と作成(v5.10以降)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100527127859.html">Cwd</a>
+    </td>
+    <td>
+      カレントディレクトリのパスを取得する
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100225126425.html">File::Basename</a>
+    </td>
+    <td>
+      ファイルのベース名とディレクトリ名の取得
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100408127089.html">File::Copy</a>
+    </td>
+    <td>
+      ファイルの移動とコピー
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100409127089.html">File::Path</a>
+    </td>
+    <td>
+      複数階層のディレクトリの作成と削除
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100412127089.html">File::Spec</a>
+    </td>
+    <td>
+      ファイル名に対する移植性のある処理
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100413127089.html">File::Temp</a>
+    </td>
+    <td>
+      一時ファイルの作成
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20080530121229.html">File::Find</a>
+    </td>
+    <td>
+      ファイルの検索
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100524127696.html">FindBin</a>
+    </td>
+    <td>
+      スクリプトが存在するディレクトリのパスの取得
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20091118124667.html">Encode</a>
+    </td>
+    <td>
+      日本語などのマルチバイト文字列を適切に処理する
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100528127859.html">utf8</a>
+    </td>
+    <td>
+      ソースコード内の文字列を内部文字列に変換
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100430127089.html">Carp</a>
+    </td>
+    <td>
+      モジュールの呼び出し元の観点で例外を発生させる
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100525127859.html">lib</a>
+    </td>
+    <td>
+      モジュールの検索パスの追加
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20091105124627.html">Time::Piece</a>
+    </td>
+    <td>
+      日付・時刻を扱うための標準モジュール(v5.10からコアモジュール)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20081014122416.html">Time::Local</a>
+    </td>
+    <td>
+      localtime,gmtimeの逆返還
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100425127089.html">base</a>
+    </td>
+    <td>
+      クラスの継承
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20080208120248.html">Data::Dumper</a>
+    </td>
+    <td>
+      変数の内容を出力する
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100509127696.html">Benchmark</a>
+    </td>
+    <td>
+      ベンチマーク(性能比較)を行う
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100427127089.html">JSON</a>
+    </td>
+    <td>
+      JSONデータの解析
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100516127696.html">MIME::Base64</a>
+    </td>
+    <td>
+      Base64形式へのエンコード
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100517127696.html">MIME::QuotedPrint</a>
+    </td>
+    <td>
+      quoted-printable形式へのエンコード
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100501127089.html">Digest::MD5</a>
+    </td>
+    <td>
+      MD5値を求める
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100502127089.html">Digest::SHA</a>
+    </td>
+    <td>
+      各種SHA値を求める　(v5.10以降)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100523127696.html">Storable</a>
+    </td>
+    <td>
+      データのシリアライズ化
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100317126967.html">Scalar::Util</a>
+    </td>
+    <td>
+      スカラ値に関するユーティリティ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20080114120030.html">List::Util</a>
+    </td>
+    <td>
+      配列に対するさまざまな操作
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20080703121510.html">Hash::Uti</a>
+    </td>
+    <td>
+      ハッシュのキーの制限
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100522127696.html">Sys::Hostname</a>
+    </td>
+    <td>
+      ホスト名の取得
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20091115124667.html">Net::FTP</a>
+    </td>
+    <td>
+      FTPクライアント
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100519127696.html">Net::Ping</a>
+    </td>
+    <td>
+      リモートホストの生存確認
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100426127089.html">Exporter</a>
+    </td>
+    <td>
+      関数のエクスポート
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100504127089.html">CPAN</a>
+    </td>
+    <td>
+      CPANからモジュールをインストールする
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100226126425.html">Pod::Usage</a>
+    </td>
+    <td>
+      PODドキュメントの出力
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20110613130982.html">Errno</a>
+    </td>
+    <td>
+      システムのエラー番号をあらわす定数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100315126967.html">POSIX</a>
+    </td>
+    <td>
+      POSIXで定義された関数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20080925122245.html">Math::BigInt</a><br><a href="/blog/20080925122245.html">Math::BigFloat</a>
+    </td>
+    <td>
+      大きな数の計算
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="/blog/20200115082029.html">Class::Struct</a>
+    </td>
+    <td>
+      オブジェクト指向を提供するコアモジュール
+    </td>
+  </tr>
+
+</table>
+
+<h3>CPANモジュール解説</h3>
+
+Perlでは無料のモジュールをCPANから簡単にインストールして使用することができます。
+
+<b>Web開発</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20140319139520.html">Mojolicious</a>
+    </td>
+    <td>
+      Webフレームワーク
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20130731137527.html">Mojolicious::Plugin::AutoRoute</a>
+    </td>
+    <td>
+      めんどうなルートを自動的に生成
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="/blog/20200729183827.html">Amazon::S3::Thin</a>
+    </td>
+    <td>
+      薄くて、軽量、低レベル操作ができるAmazon S3クライアント
+    </td>
+  </tr>
+</table>
+
+
+<b>メール送信</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20170424149304.html">MIME::Lite</a>
+    </td>
+    <td>
+      メールを簡単に送信
+    </td>
+  </tr>
+
+</table>
+
+<b>開発環境</b>
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20110220130464.html">perlbrew</a>
+    </td>
+    <td>
+      ユーザー環境にPerlをインストールする
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20101027127859.html">cpanm</a>
+    </td>
+    <td>
+      CPANインストール
+    </td>
+  </tr>
+
+</table>
+
+<b>オブジェクト指向</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20100223126425.html">Class::Accessor::Fast</a>
+    </td>
+    <td>
+      アクセサの作成
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100224126425.html">Object::Simple</a>
+    </td>
+    <td>
+      デフォルト値つきのアクセサの作成(<a href="/blog/20160912147368.html">日本語訳</a>)
+    </td>
+  </tr>
+
+</table>
+
+<b>ユーティリティ</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20130930138050.html">DDP</a>
+    </td>
+    <td>
+      データをわかりやすく出力する
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="/blog/20200212001942.html">D</a>
+    </td>
+    <td>
+      データをエンコードし標準エラー出力へダンプ
+    </td>
+  </tr>
+</table>
+
+<b>データベース</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20110401130559.html">DBIx::Custom</a>
+    </td>
+    <td>
+      データベース簡単操作
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20111101132239.html">MySQL::Diff</a>
+    </td>
+    <td>
+      MySQLの差分を表示
+    </td>
+  </tr>
+
+</table>
+
+<b>日付</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20090815124848.html">DateTime</a>
+    </td>
+    <td>
+      日付の汎用的な処理
+    </td>
+  </tr>
+
+</table>
+
+<b>統計解析</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20121214135538.html">PDL</a>
+    </td>
+    <td>
+      統計解析
+    </td>
+  </tr>
+
+</table>
+
+<b>画像編集</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20110820131832.html">Imager</a>
+    </td>
+    <td>
+      画像編集
+    </td>
+  </tr>
+
+</table>
+
+<b>CSV</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20110627131112.html">Text::CSV::Encoded</a>
+    </td>
+    <td>
+      日本語を含んだCSVファイルを取り扱う
+    </td>
+  </tr>
+
+</table>
+
+<b>テキスト差分</b>
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20100414127089.html">Text::Diff</a>
+    </td>
+    <td>
+      テキストの差分確認
+    </td>
+  </tr>
+
+</table>
+
+<b>XML</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20100424127089.html">XML::Simple</a>
+    </td>
+    <td>
+      シンプルなXMLパーサ
+    </td>
+  </tr>
+
+</table>
+
+<b>HTMLバリデーション</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20151212144988.html">Validator::Custom</a>
+    </td>
+    <td>
+      HTMLフォームの検証
+    </td>
+  </tr>
+
+</table>
+
+<b>ページング</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20110527130888.html">Data::Page</a>
+    </td>
+    <td>
+      ページング処理の支援
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20131118138474.html">Data::Page::Navigation</a>
+    </td>
+    <td>
+      ページのナビゲーションの作成
+    </td>
+  </tr>
+
+</table>
+
+<b>モジュール作成</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20090513124489.html">Module::Starter</a>
+    </td>
+    <td>
+      モジュールの雛形を作成する
+    </td>
+  </tr>
+
+</table>
+
+<b>性能解析</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20100507127089.html">Devel::NYTProf</a>
+    </td>
+    <td>
+      使いやすいプロファイラ
+    </td>
+  </tr>
+
+</table>
+
+<b>ソースコード整形</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20130326136427.html">perltidy</a>
+    </td>
+    <td>
+      ソースコードの整形
+    </td>
+  </tr>
+
+</table>
+
+<b>ping</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20100520127696.html">Net::Ping::External</a>
+    </td>
+    <td>
+      pingコマンドの実行
+    </td>
+  </tr>
+
+</table>
+
+<b>試験</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20090305123522.html">IO::ScalarArray</a>
+    </td>
+    <td>
+      標準入力の自動試験
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20090304123521.html">IO::Capture</a>
+    </td>
+    <td>
+      標準出力、標準エラー出力の自動試験
+    </td>
+  </tr>
+
+</table>
+
+<b>FFI</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20121207135484.html">FFI::Raw</a>
+    </td>
+    <td>
+      ダイナミックライブラリ内の関数を呼び出す
+    </td>
+  </tr>
+
+</table>
+
+<b>三角関数</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20080918122175.html">Math::Trig</a>
+    </td>
+    <td>
+      さまざまな三角関数
+    </td>
+  </tr>
+</table>
+
+<b>Webスクレイピング</b>
+
+<table>
+  <tr>
+    <td>
+      <a href="/blog/20210105145700.html">Selenium::Remote::Driver</a>
+    </td>
+    <td>
+      JavaScript対応のWebスクレイピング
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="/blog/20210107090920.html">Selenium::Chrome</a>
+    </td>
+    <td>
+      Chomeを使ったJavaScript対応のWebスクレイピング
+    </td>
+  </tr>
+</table>
+
+<h3>Perlモジュール紹介</h3>
+
+ここでは詳しく解説できなかったモジュールについても以下で紹介していますので、ご覧ください。
+
+<ul>
+  <li>
+    <a href="/blog/20170922150608.html">Perlモジュール紹介</a>
+  </li>
+</ul>
+
+<h3>非推奨のモジュール</h3>
+
+非推奨のモジュール。
+
+<table>
+  <tr>
+    <td>
+      <b>モジュール名</b>
+    </td>
+    <td>
+      <b>説明</b>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cgi-lib.pl
+    </td>
+    <td>
+      とても古いです。変わりにCGI.pmを使いましょう
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <a href="/blog/20100506127089.html">Devel::DProf</a>
+    </td>
+    <td>
+      シンプルなプロファイラ(性能解析ツール)ですがバグが多いので、コアモジュールから取り除かれる予定
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      encoding
+    </td>
+    <td>
+      公式に非推奨。ソースコードはUTF-8で保存して、utf8プラグマを使いましょう
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      jcode.pl
+    </td>
+    <td>
+      とても古いです。文字列を扱うにはEncodeモジュールを使用します
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      Jcode
+    </td>
+    <td>
+      公式に非推奨。文字列を扱うにはEncodeモジュールを使用します
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      bytes
+    </td>
+    <td>
+      公式に非推奨。実際にEncodeモジュールのencode関数でエンコードしてから長さを調べるようにします
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      vars
+    </td>
+    <td>
+      古い。ourでパッケージ変数を宣言するのと同じ効果を持ちます。今ならourを使ってパッケージ変数を宣言しましょう
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      Class::ISA
+    </td>
+    <td>
+      公式に非推奨。コアモジュールから取り除かれます
+    </td>
+  </tr>
+
+</table>

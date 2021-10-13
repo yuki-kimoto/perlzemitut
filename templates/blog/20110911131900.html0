@@ -1,0 +1,350 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110911131900.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBIx::Customの「テーブル」と「列」の情報を調べるメソッド</h2>
+
+
+
+
+DBIx::Customの「テーブル」と「列」の情報を調べるメソッドを紹介します。
+
+<h3>すべてのテーブルの情報を順番に調べる each_table</h3>
+
+すべてのテーブルの情報を順番に調べるには<strong>each_table</strong>メソッドを使用します。
+
+<pre>
+$dbi->each_table(
+  sub {
+    my ($dbi, $table, $table_info) = @_;
+    
+    my $table_name = $table_info->{TABLE_NAME};
+  }
+);
+</pre>
+
+データベースにあるすべてのテーブルの情報を順番にたどります。引数にはテーブルごとに実テーブルされるコールバック関数を指定します。コールバック関数は次の3つの引数を受け取ります。
+
+<ol>
+  <li>
+    DBIx::Customオブジェクト
+  </li>
+  <li>
+    テーブル名
+  </li>
+  <li>
+    テーブルの情報
+  </li>
+</ol>
+
+<h4>each_tableの高速化</h4>
+
+each_tableメソッドは遅いです。特に大量のシステムテーブルがデータベースに存在する場合は、かなり遅いです。
+
+もしuser_table_infoが設定されている場合は、each_tableはテーブルの情報としてこれを利用します。次のようにしてeach_tableを高速化することができます。
+
+<pre>
+my $table_infos = $dbi->get_table_info(exclude => qr/^system_/);
+$dbi->user_table_info($table_info);
+$dbi->each_table(sub { ... });
+</pre>
+
+<h3>テーブルの情報を取得する get_table_info</h3>
+
+テーブルの情報を取得するには<strong>get_table_info</strong>メソッドを使用します。
+
+<pre>
+my $table_infos = $dbi->get_table_info(exclude => qr/^system_/);
+</pre>
+
+excludeオプションで、除外するテーブル名を正規表現で指定することができます。
+
+<h3>データベースのテーブルの情報を設定する - user_table_info</h3>
+
+データベースのテーブルの情報を取得するには通常はeach_tableメソッドを利用しますが、システムテーブルを大量に保持しているデータベースの場合は、アクセスするたびにテーブルの情報の取得を行うと非常に低速になります。
+
+<strong>user_table_info</strong>メソッド使用すると、テーブル情報を設定しておいて、each_tableがそのテーブル情報を利用できるようになります。
+
+<pre>
+$dbi->user_table_info($user_table_info)
+</pre>
+
+each_tableメソッドは非常に速くなります。
+
+設定する情報のデータ構造は以下のようになっています。
+
+<pre>
+[
+  {table => 'book', info => {...}},
+  {table => 'author', info => {...}}
+]
+</pre>
+
+通常はget_table_infoであらかじめ取得しておいた情報をuser_table_infoに設定します。
+
+<pre>
+my $user_table_info = $dbi->get_table_info(exclude => qr/^system/);
+$dbi->user_table_info($user_table_info);
+</pre>
+
+<h3>列の情報を取得する - get_column_info</h3>
+
+列の情報を取得するには<strong>get_column_info</strong>メソッドを使用します。
+
+<pre>
+my $column_infos = $dbi->get_column_info(exclude_table => qr/^system_/);
+</pre>
+
+exclude_tableオプションで、除外するテーブル名を正規表現で指定することができます。
+
+<h3>すべての列の情報を順番に調べる - each_column</h3>
+
+すべての列の情報を順番に調べるには<strong>each_column</strong>メソッドを使用します。
+
+<pre>
+$dbi->each_column(
+  sub {
+    my ($dbi, $table, $column, $column_info) = @_;
+    
+    my $type = $column_info->{TYPE_NAME};
+    
+    if ($type eq 'DATE') {
+      # ...
+    }
+  }
+);
+</pre>
+
+データベースにあるすべての列の情報を順番にたどります。引数には列ごとに実行されるコールバック関数を指定します。コールバック関数は次の4つの引数を受け取ります。
+
+<ol>
+  <li>
+    DBIx::Customオブジェクト
+  </li>
+  <li>
+    テーブル名
+  </li>
+  <li>
+    列名
+  </li>
+  <li>
+    列の情報
+  </li>
+</ol>
+
+<h4>each_columnの高速化</h4>
+
+each_columnメソッドは遅いです。特に大量のシステム列がデータベースに存在する場合は、かなり遅いです。
+
+もしuser_column_infoが設定されている場合は、each_columnは列の情報としてこれを利用します。次のようにしてeach_columnを高速化することができます。
+
+<pre>
+my $column_infos = $dbi->get_column_info(exclude_table => qr/^system_/);
+$dbi->user_column_info($column_info);
+$dbi->each_column(sub { ... });
+</pre>
+
+この方法で、each_columnを内部で利用している、setup_modelとtype_ruleも高速化されます。
+
+<h3>データベースの列の情報を設定する - user_column_info</h3>
+
+データベースの列の情報を取得するには通常はeach_columnメソッドを利用しますが、システムテーブルを大量に保持しているデータベースの場合は、アクセスするたびに列の情報を取得すると非常に低速になります。
+
+<strong>user_column_info</strong>メソッドを使用すると、列情報を設定でき、each_columnがこの列情報を利用できるようになります。
+
+<pre>
+$dbi->user_column_info($user_column_info)
+</pre>
+
+each_columnメソッドは非常に高速になりますし、type_ruleやsetup_modelといったeach_columnを内部で利用しているメソッドも速くなります。
+
+設定する情報のデータ構造は以下のようになっています。
+
+<pre>
+[
+  {table => 'book', column => 'title', info => {...}},
+  {table => 'author', column => 'name', info => {...}}
+]
+</pre>
+
+通常はget_column_infoであらかじめ取得しておいた情報をuser_column_infoに設定します。
+
+<pre>
+my $user_column_info = $dbi->get_column_info(exclude_table => qr/^system/);
+$dbi->user_column_info($user_column_info);
+</pre>
+
+<h3>テーブルを指定してすべての列のタイプ名を表示する show_typename</h3>
+
+テーブルを指定してすべての列のタイプ名を表示するには<strong>show_typename</strong>メソッドを使用します。
+
+<pre>
+$dbi->show_typename($table);
+</pre>
+
+一行目にはテーブル名、2行目以降は列名とタイプ名が表示されます。
+
+<pre>
+book
+title: varchar
+issue_date: date
+</pre>
+
+このタイプ名はtype_ruleのinto1とinto2で利用することができます。
+
+<h3>指定したテーブルのすべての列のデータタイプを表示する - show_datatype</h3>
+
+指定したテーブルのすべての列のデータタイプを表示するには<strong>show_datatype</strong>メソッドを使用します。
+
+<pre>
+$dbi->show_datatype($table);
+</pre>
+
+一行目はテーブル名、2行目以降は列名とデータタイプが表示されます。
+
+<pre>
+book
+title: 5
+issue_date: 91
+</pre>
+
+このデータタイプはtype_ruleのfrom1とfrom2で利用することができます。
+
+<h3>タイプ名の一覧の取得 available_typename</h3>
+
+データベースで利用できるタイプ名の一覧を取得するには<strong>available_typename</strong>メソッドを使用します。
+
+<pre>
+print $dbi->available_typename;
+</pre>
+
+タイプ名は、データベースのテーブル定義の時に指定する型とだいたい一致しますが、完全に一致するわけではないので注意してください。
+
+正しいタイプ名を知るには<strong>show_typename</strong>メソッドを使用してください。
+
+<h3>データタイプの一覧の取得 available_datatype</h3>
+
+データベースで利用できるデータタイプの一覧を取得するには<strong>available_datatype</strong>メソッドを使用します。
+
+<pre>
+print $dbi->available_datatype;
+</pre>
+
+このメソッドで列挙されるデータタイプは以下のようなロジックで取得されるものです。
+
+<pre>
+for my $i (-1000 .. 1000) {
+  $dbh->type_info($i);
+  my $data_type = $type_info->{DATA_TYPE};
+}
+</pre>
+
+ステートメントハンドルのTYPE属性で取得できる値と似ていますが、まったく一致するわけではいようですので注意してください。またSQLiteでは、何も列挙されません。
+
+<pre>
+$sth->{TYPE}
+</pre>
+
+正しいデータタイプを知るには<strong>show_datatype</strong>メソッドを利用してください。
+
+<h4>PostgreSQLで利用可能なデータタイプ</h4>
+
+DBIで取得できるPostgreSQLで利用可能なDataTypeです。
+
+<blockquote>
+Data Type (Type name)
+ -3 (bytea)
+0 (unknown)
+1 (bpchar)
+2 (numeric)
+3 (numeric)
+4 (int4)
+5 (int2)
+6 (float4)
+7 (float8)
+8 (int8)
+9 (date) # これは間違っているのかも
+10 (tinterval)
+11 (timestamp)
+12 (text)
+16 (bool)
+50 (array)
+91 (date) # dateはこれが正しいとおもいます。
+92 (time)
+93 (timestamp)
+94 (timetz)
+95 (timestamptz)
+</blockquote>
+
+<h3>Microsoft SQL Server 2008 R2で利用可能なデータタイプ</h3>
+
+DBIで取得できるMicrosoft SQL Server 2008 R2が返すデータタイプの一覧です。available_datatypeの値。DBD::ODBC経由でアクセスしたときのものです。
+
+<pre>
+Data Type (Type name)
+-150 (sql_variant)
+-11 (uniqueidentifier)
+-10 (ntext)
+-9 (nvarchar)
+-8 (nchar)
+-7 (bit)
+-6 (tinyint)
+-5 (bigint)
+-4 (image)
+-3 (varbinary)
+-2 (binary)
+-1 (text)
+-150 (sql_variant)
+1 (char)
+2 (numeric)
+3 (decimal)
+4 (int)
+5 (smallint)
+6 (float)
+7 (real)
+12 (varchar)
+93 (datetime)
+</pre>
+
+date型が見当たりませんが、SQL ServerではDate型はなんと、-9(nvarchar)で返ってくるようです。date型の場合はSQLサーバーの場合は、自動判定ができないようです。
+
+<h3>検索するテーブルから特定のテーブルを除外する - exclude_table</h3>
+
+DBIx::Customにはデータベースのテーブルを検索するメソッドがあります。特定のテーブルを検索対象から除外したい場合は<strong>exclude_table</strong>を利用します。
+
+<pre>
+$dbi->exclude_table(qr/pg_/);
+</pre>
+
+値には正規表現のリファレンスを指定します。
+
+each_column, each_table, type_rule, setup_modelという四つのメソッドは、データベースのテーブル情報を取得しにいきますが、exclude_tableで指定された正規表現にマッチしたテーブルを検索対象から除外します。
+
+Microsoft SQL ServerやOracleは内部に大量のシステムテーブルを保持しているので、うまく設定すればパフォーマンスがよくなります。
+

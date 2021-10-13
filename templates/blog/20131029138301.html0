@@ -1,0 +1,468 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <span itemprop="name">PDL</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>PDLにおける多次元データの表現</h2>
+
+
+
+これまでは1次元のデータだけを扱ってきましたが、PDLで<strong>多次元データ</strong>を表現する方法を解説したいと思います。
+
+<h3>多次元データの表現</h3>
+
+多次元データを表現するには、pdl関数を使って次のようにします。
+
+<pre>
+use PDL;
+
+my $data = pdl [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [10, 11, 12]
+];
+</pre>
+
+最初に<strong>次元</strong>と<strong>ランク</strong>と呼ばれる概念を覚えましょう。視覚的に理解したほうがわかりやすいので図示します。
+
+<pre>
+　　    　  1次元
+              ランク1  ランク2  ランク3
+2次元 ランク1 [1,       2,       3],
+      ランク2 [4,       5,       6],
+      ランク3 [7,       8,       9],
+      ランク4 [10,      11,      12]
+</pre>
+
+これまでやってきた1次元データだと考えましょう。
+
+<pre>
+1次元
+ランク1  ランク2  ランク3
+[1,       2,       3],
+</pre>
+
+<h4>要素の取得と設定</h4>
+
+多次元データの要素の取得方法と設定方法を覚えましょう。要素の取得と設定にはナイススライス記法を使います。1次元目のランク,2次元目のランクの順で指定して、添え字は0から始まります。
+
+<pre>
+use PDL;
+use PDL::NiceSlice;
+
+# データ
+my $data = pdl [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [10, 11, 12]
+];
+
+# 要素をPDL変数として取得(1次元2ランク-2次元3ランク)
+my $data_1_2 = $data(1, 2);
+
+# 要素の値そのものを取得
+my $data_1_2_raw = $data->at(1, 2);
+
+# 要素を設定。
+$data(1, 2) .= 20;
+</pre>
+
+<h4>複数の要素の取得、複数の要素の設定</h4>
+
+PDL変数に対して複数の要素を取得したり、設定することもできます。以下の例では1次元目の2ランクから3ランク, 2次元の3ランクを取得します。
+
+<pre>
+# 複数の要素の取得(1次元2～3ランク, 2次元3ランク)
+my $data_sliced1 = $data(1:2, 2);
+</pre>
+
+複数の要素を設定するには次のようにします。
+
+<pre>
+# 複数の要素の設定(1次元2～3ランク, 2次元3ランク)
+$data(1:2, 2) .= pdl [21, 22];
+</pre>
+
+もちろん1次元目だけでなく、2次元目の複数の要素を取得を行うこともできます。
+
+<pre>
+# 複数の要素の取得(1次元3ランク, 2次元1-2ランク)
+my $data_sliced2 = $data(2, 0:1);
+</pre>
+
+2次元目の複数の要素を設定するには次のようにします。
+
+<pre>
+# 複数の要素の設定(1次元3ランク, 2次元1～2ランク)
+$data(2, 0:1) .= pdl [
+  [30],
+  [31]
+];
+</pre>
+
+複数次元の複数ランクの取得・設定も同じようにして行うことができます。
+
+<pre>
+# 複数の要素の取得(1次元2～3ランク, 2次元1～2ランク)
+my $data_sliced3 = $data(1:2, 0:1);
+
+# 複数の要素の設定(1次元2～3ランク, 2次元1～2ランク)
+$data(1:2, 0:1) .= pdl [
+  [40, 41],
+  [42, 43]
+];
+</pre>
+
+<h4>サンプル</h4>
+
+実行できるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+
+use PDL;
+use PDL::NiceSlice;
+
+# データ
+my $data = pdl [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [10, 11, 12]
+];
+
+# 要素をPDL変数として取得(1次元2ランク,2次元3ランク)
+my $data_1_2 = $data(1, 2);
+
+# 要素の値そのものを取得
+my $data_1_2_raw = $data->at(1, 2);
+
+print "$data_1_2\n";
+print "$data_1_2_raw\n";
+
+# 要素を設定。
+$data(1, 2) .= 20;
+
+print "$data\n";
+
+# 複数の要素の取得(1次元2から3ランク,2次元2ランク)
+my $data_sliced1 = $data(1:2, 1);
+
+print "$data_sliced1\n";
+
+# 複数の要素の設定(1次元2～3ランク,2次元3ランク)
+$data(1:2, 2) .= pdl [21, 22];
+
+print "$data\n";
+
+# 複数の要素の取得(1次元3ランク, 2次元1-2ランク)
+my $data_sliced2 = $data(2, 0:1);
+
+print "$data_sliced2\n";
+
+# 複数の要素の設定(1次元3ランク, 2次元1-2ランク)
+$data(2, 0:1) .= pdl [
+  [30],
+  [31]
+];
+
+print "$data\n";
+
+# 複数の要素の取得(1次元2～3ランク, 2次元1～2ランク)
+my $data_sliced3 = $data(1:2, 0:1);
+
+print "$data_sliced3\n";
+
+# 複数の要素の設定(1次元2～3ランク, 2次元1～2ランク)
+$data(1:2, 0:1) .= pdl [
+  [40, 41],
+  [42, 43]
+];
+
+print "$data";
+</pre>
+
+<h3>データの初期化</h3>
+
+PDLはさまざまなデータの初期化の機能を持っています。データを初期化する方法を紹介します。
+
+<h4>0で初期化</h4>
+
+複数次元のランク数を指定して0で初期化するにはzerosメソッドを使用します。zerosはPDL::Coreで定義されています。
+
+<pre>
+use PDL;
+
+# 0で初期化(1次元は2ランク, 2次元は3ランク)
+my $data_zeros = pdl->sequence(2, 3);
+</pre>
+
+<h4>1で初期化</h4>
+
+複数次元のランク数を指定して1で初期化するにはonesメソッドを使用します。onesはPDL::Coreで定義されています。
+
+<pre>
+# 1で初期化(1次元は2ランク, 2次元は3ランク)
+my $data_ones = pdl->ones(2, 3);
+print "$data_ones\n";
+</pre>
+
+<h4>nullで初期化</h4>
+
+PDLではnullという値が定義されています。nullで初期化するにはnullメソッドを使用します。nullははPDL::Coreで定義されています。
+
+<pre>
+# nullで初期化
+my $data_null = pdl->null;
+</pre>
+
+<h4>1～nまでで初期化</h4>
+
+<strong>0～n-1までの値で初期化</strong>するには<strong>sequence</strong>メソッドを使用します。sequenceはPDL::Basicで定義されています。
+
+<pre>
+# 0～19で初期化
+my $data_seq = pdl->sequence(20);
+</pre>
+
+複数の次元を指定することもできます。
+
+<pre>
+# 0～14で初期化(1次元3ランク, 2次元5ランク)
+my $data_seq2 = pdl->sequence(3, 5);
+</pre>
+
+<h4>サンプル</h4>
+
+実行できるサンプルです。
+
+<pre>
+use PDL;
+
+# 0で初期化(1次元は2ランク, 2次元は3ランク)
+my $data_zeros = pdl->zeros(2, 3);
+print "$data_zeros\n";
+
+# 1で初期化(1次元は2ランク, 2次元は3ランク)
+my $data_ones = pdl->ones(2, 3);
+print "$data_ones\n";
+
+# nullで初期化
+my $data_null = pdl->null;
+print "$data_null\n";
+
+# 0～19で初期化
+my $data_seq = pdl->sequence(20);
+print "$data_seq\n";
+
+# 0～14で初期化(1次元3ランク, 2次元5ランク)
+my $data_seq2 = pdl->sequence(3, 5);
+print "$data_seq2\n";
+</pre>
+
+
+<h3>複数要素をまとめて演算する</h3>
+
+PDLでは複数の要素をまとめて演算することができます。以下のデータを見てください。
+
+<pre>
+use PDL;
+
+my $data = pdl [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [10, 11, 12]
+];
+</pre>
+
+<h4>1次元のランクを減らす和の演算</h4>
+
+まず1次元のランクを減らす和の演算を行ってみましょう。上記のデータが次のようになるイメージです。
+
+<pre>
+[6]
+[15]
+[24]
+[33]
+</pre>
+
+和を求めるには<strong>sumover</strong>メソッドを使用します。someoverはPDL::Ufuncにおいて実装されています。
+
+<pre>
+# 1次元のランクを減らす和の演算
+my $data_sumover1 = $data->sumover;
+</pre>
+
+sumoverメソッドは含まれる値が整数型の時に利用してください。浮動小数点の場合は代わりにdsomeoverを使ってください。
+
+ランクを減らす演算を行うと、次元はひとつ減り次のようなデータになります。
+
+<pre>
+[6, 15, 24, 33]
+</pre>
+
+<h4>2次元のランクを減らす和の演算</h4>
+
+上記の例では1次元のランクを減らす和の演算を行いました。次は2次元のランクを減らす和の演算を行ってみましょう。この演算を行うには、<strong>xchg</strong>メソッドで1次元と2次元の位置の交換を行ってから、someover関数を使用します。
+
+<pre>
+# 2次元のランクを減らす和の演算
+my $data_sumover2 = $data->xchg(0, 1)->sumover;
+</pre>
+
+次のようなデータを取得できます。
+
+<pre>
+[22 26 30]
+</pre>
+
+また次元の位置を移動させるメソッドにはxchgの他に<strong>mv</strong>, <strong>reorder</strong>があるので調べてみましょう。
+
+<h4>次元を減らす他の演算を行うメソッド</h4>
+
+sumover以外にもPDL::Ufuncでは、同じタイプの演算を行うメソッドが定義されています。
+
+<table>
+  <tr>
+    <td>
+      <b>演算</b>
+    </td>
+    <td>
+      メソッド
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      平均
+    </td>
+    <td>
+      average, daverage
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      中央値
+    </td>
+    <td>
+      medover, medoddover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      最頻値
+    </td>
+    <td>
+      modeover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      積
+    </td>
+    <td>
+      prodover, dprodover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      積の累積
+    </td>
+    <td>
+      cumuprodover, dcumuprodover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      合計の累積
+    </td>
+    <td>
+      cumusumover, dcumusumover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      and演算
+    </td>
+    <td>
+      andover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      or演算
+    </td>
+    <td>
+      orover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ビットワイズアンド演算
+    </td>
+    <td>
+      bandover
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ビットワイズオアー演算
+    </td>
+    <td>
+      borover
+    </td>
+  </tr>
+
+</table>
+
+<h4>サンプル</h4>
+
+実行できるサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use PDL;
+
+my $data = pdl [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [10, 11, 12]
+];
+
+# 1次元のランクを減らす和の演算
+my $data_sumover1 = $data->sumover;
+print "$data_sumover\n";
+
+# 2次元のランクを減らす和の演算
+my $data_sumover2 = $data->xchg(0, 1)->sumover;
+print "$data_sumover2\n";
+</pre>
+

@@ -1,0 +1,43 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/"><span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161126148016.html"><span itemprop="name">ファイル操作</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>複数階層のディレクトリを作成する</h2>
+
+
+
+複数階層のディレクトリを作成するには<a href="/blog/20100409127089.html">File::Path</a>モジュールの<strong>mkpath</strong>関数を使用します。
+
+<pre>
+use File::Path 'mkpath';
+mkpath $dir_multi_level;
+</pre>
+
+複数階層のディレクトリを作成するには、File::Path モジュールのmkpath関数を使います。
+
+<h3>サンプル</h3>
+
+複数階層のディレクトリを作成するサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use File::Path 'mkpath';
+
+# 複数階層のディレクトリを作成する。
+my $dir_multi_level = "dir_20080524_$$/dir1";
+
+print "1: 複数階層のディレクトリを作成する。\n";
+mkpath($dir_multi_level);
+</pre>

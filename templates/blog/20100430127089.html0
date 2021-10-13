@@ -1,0 +1,176 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>Carp - 呼び出し元の観点で例外を発生させる</h2>
+
+
+
+<strong>Carp</strong>モジュールを使用すると、モジュールの呼び出し元の観点で例外を発生させることができます。
+
+<pre>
+# モジュールの読み込みと関数のインポート
+use Carp 'croak';
+</pre>
+
+<strong>croak関数</strong>を使用するとモジュールの呼び出し元の観点で例外を発生させることができます。メッセージの末尾には呼び出し元の行番号が追加されます。
+
+<pre>
+# 呼び出し元の行番号をエラーメッセージに含めて例外を発生させる
+croak "Exception!";
+</pre>
+
+例外はdie関数で発生させることができますが、die関数は実行された位置の行番号をメッセージの末尾に追加します。croakはcroakが実行された位置の行番号ではなく、呼び出し元の行番号を末尾に追加する点がdieと異なります。
+
+dieとcroakの使いわけとして、次の点を覚えておきましょう。
+
+<ul>
+  <li>
+    Perlスクリプト(*.pl)で例外を発生させる場合はdieを使用する
+  </li>
+  <li>
+    Perlモジュール(*.pm)で例外を発生させる場合はcroakを使用する。
+  </li>
+</ul>
+
+<h3>モジュールの呼び出し元の観点とは</h3>
+
+モジュールの呼び出し元の観点という言葉は少し理解しづらい部分があると思いますので、サンプルを使って説明してみます。
+
+YourModuleモジュールでparse関数が定義されているとしましょう。mainパッケージでこの関数を呼び出して例外が発生したとします。
+
+最初はdieの例を見てみましょう。
+
+<pre>
+# dieで例外を発生させた場合               # 1
+package YourModule;                       # 2
+                                          # 3
+                                          # 4
+sub parse {                               # 5
+  # dieで例外を発生させる                 # 6
+  die "Exception!";                       # 7
+}                                         # 8
+                                          # 9
+package main;                             #10
+                                          #11
+                                          #12
+# parse関数の呼び出し。例外が発生する。   #13
+YourModule::parse();                      #14
+</pre>
+
+このプログラムは次のメッセージを表示して終了します。dieが実行された行番号が含まれています。
+<pre>
+Exception! at a.pl line 7.
+</pre>
+
+次はcroakの場合です。
+<pre>
+# croakで例外を発生させた場合             # 1
+package YourModule;                       # 2
+use Carp 'croak';                         # 3
+                                          # 4
+sub parse {                               # 5
+  # dieで例外を発生させる                 # 6
+  croak "Exception!";                     # 7
+}                                         # 8
+                                          # 9
+package main;                             #10
+                                          #11
+                                          #12
+# parse関数の呼び出し。例外が発生する。   #13
+YourModule::parse();                      #14
+</pre>
+
+するとプログラムは次のメッセージを表示して終了します。parseが呼び出された位置の行番号が含まれています。
+<pre>
+Exception! at a.pl line 14
+</pre>
+
+このようにcroakを使用すると呼び出し元の観点で例外を投げることができます。
+
+<h3>完全なスタックトレースを見る</h3>
+
+どこから関数が呼び出されてどの位置で例外が発生したかというすべての情報について知りたい場合があります。このような場合にはcroakで追加されるメッセージを変更して完全なスタックとレースを表示する方法があります。
+
+次の一行をスクリプトの好きな位置に追加するだけです。
+
+<pre>
+# croakのメッセージを完全なスタックトレース情報を含むものに変える
+use Carp 'verbose';
+</pre>
+
+先ほどのスクリプトに埋め込んでみました。YourModule::parse()の直前に置きました。
+
+<pre>
+package main;
+
+# parse関数の呼び出し
+use Carp 'verbose';
+YourModule::parse();
+</pre>
+
+すると次のように完全なスタックトレースを見ることができます。
+<pre>
+Exception! at a.pl line 7
+        YourModule::parse() called at a.pl line 14
+</pre>
+
+一般的にいえばCPANに存在するPerlモジュールの多くは例外を発生させるときにcroakを使用しています。つまりuse Carp 'verbose'を記述することで、完全なスタックトレースを見ることが期待できるということです。
+
+またモジュールがさらに他のモジュールを利用している場合に、そこで発生した例外は本当の呼び出し元の観点ではないということがあります。
+
+<pre>
+呼び出し元
+　▼
+モジュール1
+　▼
+モジュール2 - ここでcroakが実行されると呼び出し元はモジュール1になってしまい
+              本当の呼び出し元の行番号がわからない。
+</pre>
+
+このような場合にもuse Carp 'verbose'を記述することで完全なスタックトレースを取得することができます。
+
+<h3>Carpモジュールに関するFAQ</h3>
+
+Q. Carpモジュールにはconfessという関数もありますがcroakを使ったほうがよいのでしょうか。
+A. confessは完全なスタックトレース情報を表示させることができますが、croakはメッセージが簡潔で、オプションを指定することで完全なスタックトレース情報に切り替えることができるので好んで利用されるようです。
+
+Q. 例外ではなく警告を発生させたいです。
+A. carp関数を使用すると警告を発生させることができます。
+<pre>
+# 警告
+use Carp 'carp';
+carp 'Warning!';
+</pre>
+
+Q.スクリプトを変更せずに完全なスタックトレースを表示させたいのですが可能でしょうか。
+A.はい可能です。スクリプト単位で指定したい場合は次のようにします。
+<pre>
+perl -MCarp=verbose script.pl
+</pre>
+
+またPERL5OPTという環境変数を利用すれば、すべてのスクリプトについて完全なスタックトレースを表示することができます。PERL5OPTにすでに値が設定されている場合は空白の後ろに接続するようにしてください。
+
+<pre>
+# bash
+export PERL5OPT=-MCarp=verbose
+export PERL5OPT='-Mstrict -MCarp=verbose'
+
+# Windows
+set PERL5OPT=-MCarp=verbose
+set PERL5OPT=-Mstrict -MCarp=verbose
+</pre>
+

@@ -1,0 +1,52 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161004147558.html">
+      <span itemprop="name">標準関数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    here
+  </li>
+</ol>
+<h2>warn関数 - 警告を出力する</h2>
+
+
+<strong>警告を出力</strong>するには<strong>warn関数</strong>を使用します。メッセージの末尾には警告が出力された行番号が自動的に追加されます。行番号を表示させないようにするには末尾を改行で終えます。
+
+<pre>
+# 警告を出力する
+
+# 行番号あり
+warn $message;
+
+# 行番号なし
+warn "$message\n";
+</pre>
+
+実際にwarnが行っていることは標準エラー出力にメッセージを出力することです。行番号が含まれていることと「__WANR__」シグナルを発生させることを除いて次のprint文と同じです。警告を意味しない場合でも標準エラー出力にメッセージを出力したい場合にはwarnが利用されることがあります。
+
+<pre>
+# warnの意味は標準エラー出力への出力とほぼ同じ
+perl STDERR $message;
+</pre>
+
+<h3>警告をキャッチする</h3>
+
+警告をキャッチすることができます。warnが実行されると__WARN__シグナルが発生するのでこれをシグナルハンドラでキャッチします。
+
+<pre>
+# 警告のキャッチ
+
+$SIG{__WARN__} = sub {
+    # 実行したい処理
+};
+
+warn "warning!";
+</pre>

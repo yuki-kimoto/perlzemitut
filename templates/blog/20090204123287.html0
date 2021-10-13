@@ -1,0 +1,36 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161130148051.html">
+      <span itemprop="name">モジュール基礎</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>モジュール名を変数で指定してモジュールを読み込む</h2>
+
+
+
+モジュール名を変数で指定して読み込むには、少し工夫が要ります。<a href="/blog/20090207123288.html">requre</a>は、引数に文字列か裸のワードを受け取ります。requireは文字列を受け取ったときは、それをファイル名だと認識します。一方、裸のワードを受け取ったときは、それをモジュール名だと認識します。
+
+<pre>
+# 引数が文字列の場合はファイル名だと認識される。
+require "Carp.pm";
+
+# 引数が裸のワードの場合はモジュール名だと認識される。
+require Carp;
+</pre>
+
+requireがこのような仕様になっていますので、引数がファイル名だと認識されます。そこで、モジュール名を変数で指定して読み込むには次のように書きます。
+
+<pre>
+my $module = "Carp";
+eval "require $module;";
+</pre>
+
+<a href="/blog/20100312126967.html">eval</a>に文字列を与えると、文字列の中の実行文を実行します。"require $module;"は、変数展開されて、require Carp; になります。これがevalによって、実行されてモジュールが読み込まれることになります。
+

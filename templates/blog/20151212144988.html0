@@ -1,0 +1,931 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>Validator::Custom - HTML入力データのバリデーション</h2>
+
+
+
+Validator::Customは、HTMLフォームのバリデーションを手伝うためのPerlのモジュールです。値のチェックとフィルタリング、エラーメッセージの扱いを簡潔に記述できます。使い方は、きわめて簡単で、複雑なバリデーションの組み合わせにも、柔軟に対応できます。
+
+<h3>名前</h3>
+
+Validator::Custom - HTMLフォームのバリデーション、簡潔でよい柔軟性を持つ
+
+<h3>使い方</h3>
+
+<pre>
+  use Validator::Custom;
+  my $vc = Validator::Custom->new;
+  
+  # 入力データ
+  my $id = 1;
+  my $name = 'Ken Suzuki';
+  my $price = ' 19.23 ';
+  my $favorite = ['001', '002'];
+  
+  # バリデーションオブジェクトの作成
+  my $validation = $vc->validation;
+  
+  # 「ID」が整数であることをチェック
+  if (!$vc->check($id, 'int')) {
+    # 失敗時のメッセージを追加
+    $validation->add_failed(id => 'id must be integer');
+  }
+  
+  # 「名前」に長さがあることをのチェック
+  if (!(length $name)) {
+    $validation->add_failed(name => 'name must have length');
+  }
+  # 「名前」の長さが30より小さいことをチェック
+  elsif (!(length $name < 30)) {
+    $validation->add_failed(name => 'name is too long');
+  }
+  
+  # 左右の空白を取り除くために「価格」をフィルタリング
+  $price = $vc->filter($price, 'trim');
+
+  # 「価格」が、小数部が2桁以内の数値であることをチェック
+  if (!$vc->check($price, , 'number', {decimal_part_max => 2})) {
+    # Set default value if validation fail
+    $price = 20.25;
+  }
+  
+  # 「お気に入り」のそれぞれの値を、「trim」フィルター関数を使ってフィルタリング
+  $favorite = $vc->filter_each($favorite, 'trim');
+  
+  # 「お気に入り」が少なくともひとつの値を持つことをチェック
+  if (@$favorite == 0) {
+    $validation->add_failed(favorite => 'favorite must be selected more than one');
+  }
+  # 「お気に入り」が「001」「002」「003」のうちのどれかひとつであることをチェック
+  elsif (!($vc->check_each($favorite, 'in',  ['001', '002', '003']))) {
+    $validation->add_failed(favorite => 'favorite is invalid');
+  }
+  
+  # バリデーションの結果が正しいかをチェック
+  if ($validation->is_valid) {
+    # ...
+  }
+  else {
+    
+    # どのパラメーターが失敗したのかをチェック
+    unless ($validation->is_valid('name')) {
+      # ...
+    }
+    
+    # 失敗したすべてのパラメーターの名前を取得
+    my $failed = $validation->failed;
+
+    # 失敗したひとつのパラメーターのメッセージを取得
+    my $name_message = $validation->message('name');
+    
+    # 失敗したすべてのパラメーターのメッセージを取得
+    my $messages = $validation->messages;
+    
+    # 失敗したすべてのパラメーターの名前とメッセージをハッシュのリファレンスとして取得
+    my $messages_h = $validation->messages_to_hash;
+  }
+</pre>
+
+=====
+
+<h3>解説</h3>
+
+Validator::CustomはHTMLフォームのバリデータで、簡潔さとよい柔軟性を備えています。
+
+特徴は以下のようになっています。
+
+<ul>
+  <li>
+    いくつかのチェック関数がデフォルトで利用できます。<b>ascii_graphic</b>,<b>int</b>, <b>number</b>, <b>in</b>など。
+  </li>
+  <li>
+    いくつかのフィルター関数がデフォルトで利用できます。<b>trim</b>, <b>remove_blank</b>など。
+  </li>
+  <li>
+    あなた自身のチェック関数とフィルター関数を追加することができます。
+  </li>
+  <li>
+    簡潔なバリデーションオブジェクト利用できます。失敗したパラメーターの名前とメッセージを順序を保って保存できます。
+  </li>
+</ul>
+
+<h3>ガイド</h3>
+
+<h4> 1. 基礎</h4>
+
+<b>1. 新しいValidator::Customオブジェクトを作成</b>
+
+まず最初に<b>new</b>メソッドを使って、Validator::Customオブジェクトを作成します。
+
+<pre>
+  use Validator::Custom;
+  my $vc = Validator::Custom->new;
+</pre>
+
+<b>2.バリデーションのための入力データの準備</b>
+
+次に、入力データを準備します。
+
+<pre>
+  my $id = 1;
+  my $name = 'Ken Suzuki';
+  my $price = ' 19.23 ';
+  my $favorite = ['001', '002'];
+</pre>
+
+<b>3. バリデーションオブジェクトの作成</b>
+
+次に、<b>validation</b>メソッドを使って、新しいバリデーションオブジェクトを作成します。
+
+<pre>
+  my $validation = $vc->validation;
+</pre>
+
+これは、
+失敗したパラメーター名とメッセージを保存するための、<a href="/blog/20151210144988.html">Validator::Custom::Validation</a>オブジェクトです。
+
+<b>4. 入力データの検証</b>
+
+<pre>
+  # 「ID」が整数であることをチェック
+  if (!$vc->check($id, 'int')) {
+    # 失敗時のメッセージを追加
+    $validation->add_failed(id => 'id must be integer');
+  }
+</pre>
+
+値が、整数であることをチェックするために<b>int</b>チェック関数を使用することができます。<b>int</b>チェック関数はデフォルトのチェック関数です。チェック関数は<b>check</b>メソッドを通して、利用することができます。
+
+チェックが成功しなかった場合は、失敗したパラメーターの名前とメッセージを、<a href="/blog/20151210144988.html">Validator::Custom::Validation</a>クラスの<b>add_failed</b>メソッドを使って追加することができます。
+
+<pre>
+  # 左右の空白を取り除くために「価格」をフィルタリング
+  $price = $vc->filter($price, 'trim');
+</pre>
+
+左右のスペースを削除するために、<b>trim</b>フィルター関数を使うことができます。
+
+<pre>
+  # 「お気に入り」のそれぞれの値を、「trim」フィルター関数を使ってフィルタリング
+  $favorite = $vc->filter_each($favorite, 'trim');
+</pre>
+
+「お気に入り」のそれぞれの値をフィルターするために、<b>filter_each</b>メソッドを使うことができます。
+
+<pre>
+  # 「お気に入り」が少なくともひとつの値を持つことをチェック
+  if (@$favorite == 0) {
+    $validation->add_failed(favorite => 'favorite must be selected more than one');
+  }
+  # 「お気に入り」が「001」「002」「003」のうちのどれかひとつであることをチェック
+  elsif (!($vc->check_each($favorite, 'in',  ['001', '002', '003']))) {
+    $validation->add_failed(favorite => 'favorite is invalid');
+  }
+</pre>
+
+「お気に入り」のそれぞれの値をチェックするために、<b>check_each</b>メソッドを使うことができます。
+
+デフォルトのチェック関数とフィルター関数を知りたい場合は、「チェック関数」と「フィルター関数」の項目を見て下さい。
+
+<h4>2 バリデーションオブジェクトの扱い</h4>
+
+すべての入力データが正しいことをチェックするには<b>is_valid</b>メソッドを使用します。
+
+<pre>
+  # バリデーションの結果が正しいことを確認する
+  if ($validation->is_valid) {
+    # 成功
+  }
+  else {
+    # 失敗
+  }
+</pre>
+
+もし、ひとつの入力データが正しいかどうかをチェックしたい場合は、<b>is_valid</b>メソッドをパラメーターつきで使ってください。
+
+<pre>
+  # どのパラメーターが失敗したかを確認
+  unless ($validation->is_valid('name')) {
+    # ...
+  }
+</pre>
+
+<b>failed</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターの名前を取得できます。
+
+<pre>
+  # バリデーションに失敗したすべてのパラメーターの名前を取得
+  my $failed = $validation->failed;
+</pre>
+
+<b>message</b>メソッドを使って、バリデーションに失敗したパラメーターのメッセージを取得できます。
+
+<pre>
+  # バリデーションに失敗したパラメーターのメッセージを取得
+  my $name_message = $validation->message('name');
+</pre>
+
+<b>messages</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターのメッセージを取得できます。
+
+<pre>
+  # バリデーションに失敗したすべてのパラメーターのメッセージを取得
+  my $messages = $validation->messages;
+</pre>
+
+<b>messages_to_hash</b>メソッドを使って、バリデーションに失敗したすべてのパラメーターの名前とメッセージを、ハッシュリファレンス形式で取得できます。
+
+<pre>
+  # 失敗したすべてのパラメーターの名前とメッセージをハッシュのリファレンスとして取得
+  my $messages_h = $validation->messages_to_hash;
+</pre>
+
+<a href="/blog/20151210144988.html">Validator::Custom::Validation</a>も参考にしてください。
+
+<h4>3 発展的な技術</h4>
+
+<b> 1. チェック関数の追加</b>
+
+必要であれば、<b>add_check</b>メソッドを使って、自分自身でチェック関数を追加できます。
+
+<pre>
+  $vc->add_check(
+    telephone => sub {
+      my ($vc, $value, $arg) = @_;
+      
+      my $is_valid;
+      if ($value =~ /^[\d-]+$/) {
+        $is_valid = 1;
+      }
+      return $is_valid;
+    }
+  );
+</pre>
+
+チェック関数は、みっつの引数をとります。最初の引数は、Validator::Customオブジェクト、二つ目の引数は、チェックするための値、三つ目の引数は、チェック関数への引数。
+
+チェック関数は、戻り値として真か偽の値を返す必要があります。
+
+<b> 2. フィルター関数の追加</b>
+
+必要であれば、<b>add_filter</b>メソッドを使って、自分自身でフィルター関数を追加できます。
+
+<pre>
+  $vc->add_filter(
+    to_upper_case => sub {
+      my ($vc, $value, $arg) = @_;
+      
+      my $new_$value = uc $value;
+                  
+      return $new_value;
+    }
+  );
+</pre>
+
+フィルター関数は、みっつの引数をとります。最初の引数は、Validator::Customオブジェクト、二つ目の引数は、フィルタリングするための値、三つ目の引数は、フィルター関数への引数。
+
+フィルター関数は、フィルタリングの結果を返却する必要があります。
+
+<h3> チェック関数</h3>
+
+Validator::Customは、次のデフォルトのチェック関数を持ちます。すべてのチェック関数は<b>check</b>メソッドを使って呼び出すことができます。
+
+<h4> int</h4>
+
+<pre>
+  my $value = 19;
+  my $is_valid = $vc->check($value, 'int');
+</pre>
+
+整数値かどうかをチェックする。
+
+正しい値の例
+
+<pre>
+  "-10"
+  "234"
+</pre>
+
+不正な値の例
+
+<pre>
+  "10.11"
+  "abc"
+</pre>
+
+もし値の範囲のチェックも行いたいのであれば、次のように書くことができます。
+
+<pre>
+  my $is_valid =  $vc->check($value, 'int') && $value > 0;
+</pre>
+
+<h4> number</h4>
+
+<pre>
+  my $is_valid = $vc->check($value, 'number');
+</pre>
+
+値が数値であるかどうかをチェックします。数値というのは、整数と小数を意味します。
+
+正しい値の例:
+
+<pre>
+  '1'
+  '123'
+  '123.456'
+  '-1'
+  '-100'
+  '-100.789'
+</pre>
+
+不正な値の例:
+
+<pre>
+  'a';
+  '1.a';
+  'a.1';
+</pre>
+
+<b>decimal_part_max</b>オプションを使って、小数部の最大桁数を指定することもできます。
+
+<pre>
+  my $is_valid = $vc->check($value, 'number', {decimal_part_max => 3});
+</pre>
+
+正しい値の例:
+
+<pre>
+  '123'
+  '123.456'
+  '-100.789'
+</pre>
+
+不正な値の例:
+
+<pre>
+  '123.4567'
+  '-100.7891'
+</pre>
+
+<h4> ascii_graphic</h4>
+
+<pre>
+  my $is_valid = $vc->check($value, 'ascii');
+</pre>
+
+値がAsciiのグラフィック文字(16進の「21-7e」)であるかをチェックします。一般的には、パスワードの文字をチェックするために利用します。
+
+正しい値の例:
+
+<pre>
+  "Ken!@-"
+</pre>
+
+不正な値の例:
+
+<pre>
+  "aa aa"
+  "\taaa"
+</pre>
+
+<h4> in</h4>
+
+<pre>
+  my $value = '001';
+  my $is_valid = $vc->check($value, 'in', ['001', '002', '003']);
+</pre>
+
+値が、与えられた複数の値のうちのひとつであるかどうかをチェックします。
+
+正しい値の例:
+
+<pre>
+  '001'
+  '002'
+  '003'
+</pre>
+
+不正な値の例:
+
+<pre>
+  '004'
+  '005'
+</pre>
+
+<h3> フィルター関数</h3>
+
+Validator::Customは次のデフォルトのフィルター関数を持っています。すべてのフィルター関数はy C<filter> method.
+
+<h4> trim</h4>
+
+<pre>
+  my $new_value = $vc->filter($value, 'trim');
+</pre>
+
+前後の空白を取り除きます。[ \t\n\r\f]というASCIIの空白文字だけではなく、ユニコードの空白文字も取り除くことに注意してください。
+
+フィルタリングの例:
+
+<pre>
+  入力: '  　Ken  '
+  出力: 'Ken'
+</pre>
+
+<h4> remove_blank</h4>
+
+<pre>
+  my $new_values = $vc->filter($values, 'remove_blank');
+</pre>
+
+空文字と未定義の文字を配列のリファレンスから取り除きます。
+
+フィルタリングの例:
+
+<pre>
+  入力: [1, 2, '', undef, 4]
+  出力: [1, 2, 4]
+</pre>
+
+<h3> メソッド</h3>
+
+Validator::Customは<a href="http://search.cpan.org/dist/Object-Simple/lib/Object/Simple.pm">Object::Simple</a>のすべてのメソッドを継承しており、次の新しいメソッドを実装しています。
+
+<h4> new</h4>
+
+<pre>
+  my $vc = Validator::Custom->new;
+</pre>
+
+新しいValidator::Customオブジェクトを生成します。
+
+<h4> add_check</h4>
+
+<pre>
+  $vc->add_check(int => sub { ... });
+</pre>
+
+チェック関数を追加します。
+
+サンプル:
+
+<pre>
+  $vc->add_check(
+    int => sub {
+      my ($vc, $value, $arg) = @_;
+      
+      my $is_valid = $value =~ /^\-?[\d]+$/;
+      
+      return $is_valid;
+    }
+  );
+</pre>
+
+チェック関数は、みっつの引数をとります。最初の引数は、Validator::Customオブジェクト、二つ目の引数は、チェックするための値、三つ目の引数は、チェック関数への引数。チェック関数は、戻り値として真か偽の値を返す必要があります。
+
+<h4> add_filter</h4>
+
+<pre>
+  $vc->add_filter(trim => sub { ... });
+</pre>
+
+フィルター関数を追加します。
+
+サンプル:
+
+<pre>
+  $vc->add_filter(
+    trim => sub {
+      my ($vc, $value, $arg) = @_;
+      
+      $value =~ s/^\s+//;
+      $value =~ s/\s+$//;
+      
+      return $value;
+    }
+  );
+</pre>
+
+フィルター関数は、みっつの引数をとります。最初の引数は、Validator::Customオブジェクト、二つ目の引数は、フィルタリングするための値、三つ目の引数は、フィルター関数への引数。
+
+フィルター関数は、フィルタリングの結果を返却する必要があります。
+
+<h4> check</h4>
+
+<pre>
+  my $is_valid = $vc->check($value, 'int');
+  my $is_valid = $vc->check($value, 'int', $arg);
+</pre>
+
+チェック関数を実行します。
+
+第一引数は、チェックをする値です。第二引数は、チェック関数の名前です。第三引数は、チェック関数の引数です。
+
+<h4> check_each</h4>
+
+<pre>
+  my $is_valid = $vc->check_each($values, 'int');
+  my $is_valid = $vc->check_each($values, 'int', $arg);
+</pre>
+
+チェック関数を配列のリファレンスのすべての要素に対して実行します。ひとつ以上の値が不正であれば、<b>check_each</b>メソッドは偽の値を返却します。
+
+第一引数は、チェックをする値です。これは、配列のリファレンスである必要があります。第二引数は、チェック関数の名前です。第三引数は、チェック関数の引数です。
+
+<h4> filter</h4>
+
+<pre>
+  my $new_value = $vc->filter($value, 'trim');
+  my $new_value = $vc->filter($value, 'trim', $arg);
+</pre>
+
+フィルター関数を実行します。
+
+第一引数は、フィルタリングを行う値です。第二引数は、フィルター関数の名前です。第三引数は、フィルター関数の引数です。
+
+<h4> filter_each</h4>
+
+<pre>
+  my $new_values = $vc->filter_each($values, 'trim');
+  my $new_values = $vc->filter_each($values, 'trim', $arg);
+</pre>
+
+フィルター関数を配列のリファレンスのすべての要素に対して実行します。
+
+第一引数は、フィルタリングを行う値です。これは、配列のリファレンスである必要があります。第二引数は、フィルター関数の名前です。第三引数は、フィルター関数の引数です。
+
+<h4> サンプル</h4>
+
+バリデーションを行ういくつかのサンプルを紹介します。
+
+パスワードのチェック:
+
+<pre>
+  my $password = 'abc';
+  my $password2 = 'abc';
+  
+  my $validation = $vc->validation;
+  
+  if (!length $password) {
+    $validation->add_failed(password => 'password must have length');
+  }
+  elsif (!$vc->check($password, 'ascii')) {
+    $validation->add_failed(password => 'password contains invalid characters');
+  }
+  elsif ($password ne $password2) {
+    $validation->add_failed(password => "two passwords don't match");
+  }
+  
+  if ($validation->is_valid) {
+    # ...
+  }
+  else {
+    # ...
+  }
+</pre>
+
+チェックボックス、少なくとも一つが選択されている。特定の値。
+
+<pre>
+  my $favorite = ['001', '002'];
+
+  my $validation = $vc->validation;
+  
+  if (@$favorite == 0) {
+
+    $validation->add_failed(favorite => 'favorite must be selected at least 1');
+  }
+  elsif (!$vc->check($favorite, 'in', ['001', '002', '003'])) {
+    $validation->add_failed(favorite => 'favorite have invalid value');
+  }
+  
+  if ($validtion->is_valid) {
+    # ...
+  }
+  else {
+    # ...
+  }
+</pre>
+
+日付の文字列をTime::Pieceオブジェクトに変換:
+
+<pre>
+  my $date = '2014/05/16';
+  
+  my $validation = $vc->validation;
+  
+  my $date_tp;
+  if (!length $datetime) {
+    $validation->add_failed(date => 'date must have length');
+  }
+  else {
+    eval { $date_tp = Time::Piece->strptime($date, '%Y/%m/%d') };
+    if (!$date_tp) {
+      $validation->add_failed(date => 'date value is invalid');
+    }
+  }
+</pre>
+
+日付時刻の文字列をTime::Pieceオブジェクトに変換:
+
+<pre>
+  my $datetime = '2014/05/16 12:30:40';
+  
+  my $validation = $vc->validation;
+  
+  my $datetime_tp;
+  if (!length $datetime) {
+    $validation->add_failed(datetime => 'datetime must have length');
+  }
+  else {
+    eval { $datetime_tp = Time::Piece->strptime($datetime, '%Y/%m/%d %H:%M:%S') };
+    if (!$datetime_tp) {
+      $validation->add_failed(datetime => 'datetime value is invalid');
+    }
+  }
+</pre>
+
+(参考)<a href="/blog/20100312126967.html">eval</a>
+
+<h3> FAQ</h3>
+
+<h4> まだValidator::Customの0.xxのバージョンを使用しています。ドキュメントを見たいのですが。</h4>
+
+<a href="http://search.cpan.org/~kimoto/Validator-Custom/lib/Validator/Custom/Document/Version0.pod">Validator::Custom::Document::Version0</a>を見てください。これは「Validator::Custom 0.xx」の完全なドキュメントです。
+
+<h4> バージョン1.xxで気をつけなければならない点は何ですか。</h4>
+
+<ul>
+  <li>
+    <b>in_array</b>制約関数は<b>in</b>チェック関数にリネームされています。
+  </li>
+  <li>
+    <b>trim</b>フィルター関数は、[ \t\n\r\f]だけでなく、ユニコード文字列も削除するようになりました。
+  </li>
+  <li>
+    <b>decimal</b>制約関数は<b>number</b>チェック関数にリネームされ、簡易化されています。
+  </li>
+  <li>
+    <b>date_to_timepiece</b>制約関数はもう存在しません。代替の方法については、「サンプル」の「日付の文字列をTime::Pieceオブジェクトに変換」を参照してください。
+  </li>
+  <li>
+    <b>datetime_to_timepiece</b>制約関数はもう存在しません。代替の方法については、「サンプル」の「日付時刻の文字列をTime::Pieceオブジェクトに変換」を参照してください。
+  </li>
+</ul>
+
+<h4> バージョン0.xxの制約関数に対応するチェック関数をどのように作成すればよいですか</h4>
+
+いくつかのサンプルを見せます。
+
+space
+
+<pre>
+  $vc->add_check(space => sub {
+    my ($vc, $value, $arg) = @_;
+    return defined $value && $value =~ '^[ \t\n\r\f]*$' ? 1 : 0;
+  });
+</pre>
+
+http_url
+
+<pre>
+  $vc->add_check(http_url => sub {
+    my ($vc, $value, $arg) = @_;
+    return defined $value && $value =~ /^s?https?:\/\/[-_.!~*'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/ ? 1 : 0;
+  });
+</pre>
+
+decimal
+
+<pre>
+  $vc->add_check(decimal => sub {
+    my ($vc, $value, $arg) = @_;
+
+    return undef unless defined $value;
+    
+    my $digits_tmp = $arg;
+    
+    # Digit
+    my $digits;
+    if (defined $digits_tmp) {
+      if (ref $digits_tmp eq 'ARRAY') {
+        $digits = $digits_tmp;
+      }
+      else {
+        $digits = [$digits_tmp, undef];
+      }
+    }
+    else {
+      $digits = [undef, undef];
+    }
+    
+    # Regex
+    my $re;
+    if (defined $digits->[0] && defined $digits->[1]) {
+      $re = qr/^[0-9]{1,$digits->[0]}(\.[0-9]{0,$digits->[1]})?$/;
+    }
+    elsif (defined $digits->[0]) {
+      $re = qr/^[0-9]{1,$digits->[0]}(\.[0-9]*)?$/;
+    }
+    elsif (defined $digits->[1]) {
+      $re = qr/^[0-9]+(\.[0-9]{0,$digits->[1]})?$/;
+    }
+    else {
+      $re = qr/^[0-9]+(\.[0-9]*)?$/;
+    }
+    
+    # Check value
+    if ($value =~ /$re/) {
+      return 1;
+    }
+    else {
+      return 0;
+    }
+  }
+</pre>
+
+<h4> バージョン0.xxの制約関数に対応するフィルター関数をどのように作成すればよいですか </h4>
+
+いくつかのサンプルを見せます。
+
+trim_collapse
+
+<pre>
+  $vc->add_filter(trim_collapse => sub {
+    my ($vc, $value, $arg) = @_;
+    
+    return undef unless defined $value;
+    
+    $value =~ s/[ \t\n\r\f]+/ /g;
+    $value =~ s/^[ \t\n\r\f]*(.*?)[ \t\n\r\f]*$/$1/ms;
+
+    return $value;
+  });
+</pre>
+
+trim_lead
+
+<pre>
+  $vc->add_filter(trim_lead => sub {
+    my ($vc, $value, $arg) = @_;
+    
+    return undef unless defined $value;
+
+    $value =~ s/^[ \t\n\r\f]+(.*)$/$1/ms;
+
+    return $value;
+  });
+</pre>
+
+trim_trail
+
+<pre>
+  $vc->add_filter(trim_trail => sub {
+    my ($vc, $value, $arg) = @_;
+    
+    return undef unless defined $value;
+
+    $value =~ s/^(.*?)[ \t\n\r\f]+$/$1/ms;
+
+    return $value;
+  });
+</pre>
+
+trim_uni
+
+<pre>
+  $vc->add_filter(trim_uni => sub {
+    my ($vc, $value, $arg) = @_;
+    
+    return undef unless defined $value;
+
+    $value =~ s/^\s*(.*?)\s*$/$1/ms;
+
+    return $value;
+  });
+</pre>
+
+trim_uni_collapse
+
+<pre>
+  $vc->add_filter(trim_uni_collapse => sub {
+    my ($vc, $value, $arg) = @_;
+
+    return undef unless defined $value;
+    
+    $value =~ s/\s+/ /g;
+    $value =~ s/^\s*(.*?)\s*$/$1/ms;
+
+    return $value;
+  });
+</pre>
+
+trim_uni_lead
+
+<pre>
+  $vc->add_filter(trim_uni_lead => sub {
+    my ($vc, $value, $arg) = @_;
+    
+    return undef unless defined $value;
+    
+    $value =~ s/^\s+(.*)$/$1/ms;
+    
+    return $value;
+  });
+</pre>
+
+trim_uni_trail
+
+<pre>
+  $vc->add_filter(trim_uni_trail => sub {
+    my ($vc, $value, $arg) = @_;
+    
+    return undef unless defined $value;
+
+    $value =~ s/^(.*?)\s+$/$1/ms;
+
+    return $value;
+  });
+</pre>
+
+<h3> 著者</h3>
+
+木本裕紀(kimoto.yuki@gmail.com)
+
+[http://github.com/yuki-kimoto/Validator-Custom]
+
+<h3>Validator::Customのチェック関数のサンプル</h3>
+
+「ひらがな」や「かたかな」、メールアドレスのチェックなどの、チェック関数のサンプルはこちらにあります。
+
+<ul>
+  <li>
+    <a href="/blog/20101019127859.html">Validator::Customのチェック関数のサンプル</a>
+  </li>
+</ul>
+
+<h3>Validator::Custom 1.0 以前におけるドキュメント</h3>
+
+Validator::Custom 1.0 以前におけるドキュメントは、こちらにあります。
+
+<ul>
+  <li>
+    <a href="/blog/20120110132619.html">Validator::Custom 1.0 以前におけるドキュメント</a>
+  </li>
+</ul>
+
+<h3>チェック関数のサンプル</h3>
+
+Validator::Customにおけるバリデーシのためのチェック関数のサンプルをいくつか紹介します。
+
+<h4>ひらがなとカタカナ</h4>
+
+<strong>ひらがな</strong>と</strong>カタカナ</strong>であることを判定するには以下のような制約関数を登録します。
+
+<pre>
+# ひらがな
+$vc->add_check(
+  hiragana => sub {
+    my ($vc, $value) = @_;
+    my $is_valid = $value =~ /^\p{InHiragana}+$/;
+    return $is_valid;
+  }
+);
+
+# カタカナ
+$vc->add_check(
+  katakana => sub {
+    my ($vc, $value) = @_;
+    my $is_valid = $value =~ /^\p{InKatakana}+$/
+    return $is_valid;
+  }
+);
+</pre>
+
+<h4>メールのバリデーション</h4>
+
+メールのバリデーションは、デフォルトのチェック関数としては準備されていません。必要であればEmail::Valid::Looseをインストールしてから、チェック関数を登録して使うのがよいでしょう。
+
+<pre>
+use Email::Valid::Loose;
+
+$vc->add_check(
+  email => sub {
+    my ($vc, $value) = @_;
+    return Email::Valid::Loose->address($value);
+  }
+);
+</pre>
+

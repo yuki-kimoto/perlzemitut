@@ -1,0 +1,139 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Webアプリケーションの雛形の作成</h2>
+
+
+
+Mojoliciousでは最低限必要な雛形を自動的に生成してくれます。雛形の作成方法と作成されたWebアプリケーションの雛形について解説を行います。
+
+<h3>Webアプリケーションの雛形の作成</h3>
+
+Webアプリケーションの雛形を作成するにはmojo直下のディレクトリに移動して次のコマンドを実行します。アプケーション名は先頭が大文字でその後の文字は小文字にしておくのが良い習慣であると思われます。(「TestApp」のような名前はあまりよくなく、「Testapp」のような名前がよいと思います。)
+
+<pre>
+# Windowsの場合
+perl script\mojo generate app Webアプリケーション名
+
+# Unix系OSの場合
+perl script/mojo generate app Webアプリケーション名
+</pre>
+
+ではSampleappという名前のWebアプリケーション名で雛形を作成してみましょう。
+
+<pre>
+# Windowsの場合
+perl script\mojolicious generate app Sampleapp
+
+# Unix系OSの場合
+perl script/mojolicious generate app Sampleapp
+</pre>
+
+作成されたファイルの一覧が画面に出力されます。
+
+<pre>
+  [mkdir] C:\Download\mojo\sampleapp\script
+  [write] C:\Download\mojo\sampleapp\script\sampleapp
+  [chmod] sampleapp/script/sampleapp 744
+  [mkdir] C:\Download\mojo\sampleapp\lib
+  [write] C:\Download\mojo\sampleapp\lib\Sampleapp.pm
+  [mkdir] C:\Download\mojo\sampleapp\lib\Sampleapp
+  [write] C:\Download\mojo\sampleapp\lib\Sampleapp\Example.pm
+  [mkdir] C:\Download\mojo\sampleapp\t
+  [write] C:\Download\mojo\sampleapp\t\basic.t
+  [mkdir] C:\Download\mojo\sampleapp\log
+  [mkdir] C:\Download\mojo\sampleapp\public
+  [write] C:\Download\mojo\sampleapp\public\index.html
+  [mkdir] C:\Download\mojo\sampleapp\templates
+  [write] C:\Download\mojo\sampleapp\templates\not_found.html.ep
+  [exist] C:\Download\mojo\sampleapp\templates
+  [write] C:\Download\mojo\sampleapp\templates\exception.html.ep
+  [mkdir] C:\Download\mojo\sampleapp\templates\layouts
+  [write] C:\Download\mojo\sampleapp\templates\layouts\default.html.ep
+  [mkdir] C:\Download\mojo\sampleapp\templates\example
+  [write] C:\Download\mojo\sampleapp\templates\example\welcome.html.ep
+</pre>
+
+<h3>作成された各ディレクトリの役割</h3>
+
+「Sampleapp」という名前を指定した場合はmojo配下に「sampleapp」というディレクトリができます。sampleapp以下のファイルを編集してWebアプリケーションを作成してゆくことになります。全体の概要をつかむために各ディレクトリの役割を解説しておきます。
+
+<pre>
+sampleapp -+
+           |-lib       アプリケーションを格納する
+           |-log       エラーや警告ログを格納する
+           |-public    静的なファイル(HTML, CSS, JavaScript)を格納する
+           |-script    HTTPサーバの起動スクリプトなどを格納する
+           |-t         Webアプリケーションの試験を格納する
+           |-templates HTMLのテンプレートを格納する
+</pre>
+
+簡単にファイルの解説を行います。
+
+<h4>lib - アプリケーションを格納するディレクトリ</h4>
+
+libディレクトリはアプリケーションを格納します。アプリケーションというのはMojoliciousではPerlで書かれたモジュールのことです。ですので.pmファイルがlibディレクトリ以下に格納されることになります。
+
+lib配下のファイルを図示するとデフォルトでは次のようになっています。
+
+<pre>
+lib -+
+     |- Sampleapp.pm
+     |- Sampleapp/ -+
+                    |- Example.pm
+</pre>
+
+Sampleapp.pmはアプリケーション本体を表すクラスです。この中でアプリケーションに関する設定や、URLごとにおける処理の分岐などの記述を行います。
+
+Sampleappディレクトリ以下にはコントローラになるクラスなどが配置されます。コントローラクラスとはURLに対応する処理を記述するクラスのことです。コントローラはURLに対応する処理を記述するものだと覚えておきましょう。(よくいわれるMVCのCにあたるものです)
+
+<h4>log - エラーや警告ログを格納する</h4>
+
+Mojoliciousのメッセージはlogディレクトリ以下のdevelopment.logというファイルに出力されます。何かエラーが出たときはこのログをみます。
+
+<h4>public - 静的なファイル(HTML, CSS, JavaScript)を格納する</h4>
+
+このディレクトリにはHTMLファイル、CSS、JavaScriptなどの静的なファイルを格納します。
+
+<h4>script - HTTPサーバの起動スクリプトなどを格納する</h4>
+
+script以下にはHTTPサーバを起動するスクリプトなどが配置されます。Mojoliciousでは試験などに便利なようにHTTPサーバが実装されています。このHTTPサーバを起動することによってApacheなどのHTTPサーバがなくてもWebアプリケーションを実行することができます。
+
+<h4>t - Webアプリケーションの試験を格納する</h4>
+
+t以下にはWebアプリケーションの試験を格納します。Webアプリケーションの試験は一般的には面倒ですが、MojolicousではTest::Mojoというテスティングフレームワークがあるので簡単にテストを行うことができます。
+
+<h4>templates - HTMLのテンプレートを格納する</h4>
+
+Mojoliciousには標準のテンプレートエンジンとしてMojo::Templateがあります。これはMVCのVに該当するものです。Mojo::Templateを使用すればリクエストに応じてHTMLを動的に生成することができます。Mojo::TemplateはHTML::TemplateやTemplate-Toolkitと異なりPerlの構文をテンプレートの中で利用できるのが特徴です。
+
+Mojoliciousのテンプレートの拡張子は「.ep」になっています。templatesのディレクトリ構成をもう少しだけ詳しく見てみましょう。以下のようになっています。
+
+<pre>
+templates + example -+
+          |          |- welcome.html.ep - HTMLのボディ用のテンプレート
+          |
+          + layouts -+
+          |          |- default.html.ep - HTMLヘッダ用のテンプレート
+          |
+          + exception.html.ep
+          |
+          + not_found.html.ep
+</pre>
+
+layoutsというディレクトリがあることに注目してください。これは一般的にHTMLのヘッダ用のテンプレートとして利用されます。exsample/welcome.html.epというのは「Exsample」というコントローラの「welcome」というアクションに対応するテンプレートになります。アクションについては後ほど解説します。
+
+exceptions.html.epというのは例外用のテンプレートです。Mojoliciousではこのテンプレートを使用してエラーメッセージが画面にわかりやすく表示されるので開発がとても行いやすいです。not_found.html.epはページが見つからなかった場合に利用されるテンプレートです。
+

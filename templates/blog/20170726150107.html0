@@ -1,0 +1,34 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20170726150107.html";</script>
+
+<h2>2017年WebフレームワークベンチマークでPerl製のMojoliciousは最速のC++の56.6%の速度だ</h2>
+
+2017年WebフレームワークベンチマークでPerl製のMojoliciousは最速のC++の56.6%の速度だ。
+
+<blockquote>
+<a href="https://www.techempower.com/benchmarks/#section=data-r14&hw=ph&test=query&d=1l">Web Framework Benchmarks 2017-05-10 Round 14 - Responses per second at 20 queries per request</a>
+</blockquote>
+
+[f:id:perlcodesample:20170726221337p:image]
+
+[f:id:perlcodesample:20170726221331p:image]
+
+このベンチマークは、「リクエスト当たり20のクエリに対する、一秒当たりのレスポンス数(Responses per second at 20 queries per request)」を表示したもののようだ。複数のクエリに対する性能を見るベンチマークのようだ。<a href="https://irclog.perlgeek.de/mojo/">Mojoliciousのirc</a>で張られていたので紹介します。
+
+ちょっと小さくて見にくいですがMojoliciosuは秒間5,353件のレスポンスを返せるようです。最速のC++のフレームワークの56.6%の速度です。C++に対して1.76倍の速度に収まっています。
+
+このベンチマークで、単一クエリーのところを見るとそんなに速くないが、複数クエリだと、相当速いみたい。僕は、Webのパフォーマンスに、あまり詳しくないので、はっきりしたことはいえないけど、複数クエリのほうのベンチマークの方が、現実に近いように思う。
+
+PerlはC言語/C++の20倍～100倍遅いといわれているけれど、Webにおける複数クエリのベンチマークだと、C++の1.76倍の遅さに収まる。
+
+<h3>C++の1.76倍に収まる理由は?</h3>
+
+あまり詳しくないので、推測で語ります。WebというのはHTTPリクエストであり、文字列処理であって、Perlは、大量の文字列処理に強いということ。並列のアクセスに対しても、メモリの使用量も小さく抑えられる。Full GCが起こらないので、レスポンス性能は高い。
+
+数値計算においては、C言語の20～100倍遅いが、大量のテキスト処理という分野になると、パフォーマンスがC言語に近づいていくような感じはする。
+
+実際にPerlが使われているWebの現場においても、ニュースや広告などの配信でPerlのパフォーマンスで耐えられているということがある。ベンチマークも、この現実を表現しているのかもしれない。
+
+Mojoliciousの非同期I/Oの設計も貢献しているのだけれど、Perl自体の性能も貢献しているのかもしれない。
+
+僕は、パフォーマンスについての理論は少し知っているが、現実のWebパフォーマンスについては、そういう現場で働いたことがないので、よくわからないので、上に書いたのは、推測ということで。
+

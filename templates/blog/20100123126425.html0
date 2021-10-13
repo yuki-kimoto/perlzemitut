@@ -1,0 +1,140 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">while文</span>
+    <meta itemprop="position" content="4" />
+  </li>
+</ol>
+
+<h2>while文 - 繰り返し処理を行う</h2>
+
+while文を使うと<strong>繰り返し処理</strong>を記述することができます。条件が真の間ブロックの中身を繰り返します。
+
+<pre>
+while (条件) {
+  ...
+}
+</pre>
+
+<h3>0～2までの数値を出力</h3>
+
+while文を使用して0～2までの数値を出力するサンプルです。while文の最後で変数「$i」をインクリメントしています。「$i」が3になると、条件が偽となるので、whileから抜けます。
+
+<pre>
+# 0～2まで数値を出力
+my $i = 0;
+while ($i <= 2) {
+  print "$i\n";
+  $i++;
+}
+</pre>
+
+while文と<a href="/blog/20080327120662.html">for文</a>(あるいは<a href="/blog/20080328120673.html">foreach文</a>)の違いは何でしょうか?
+
+while文で繰り返しの処理すべてを記述することができますが、for文あるいはforeach文で記述できる場合は、for文あるいはforeach文を使って書いたほうがきれいに書けます。
+
+<pre>
+# for文
+for (my $i = 0; $i <= 2; $i++) {
+  print "$i\n";
+}
+
+# foreach文
+foreach my $num (@nums) {
+  print "$num\n";
+}
+</pre>
+
+補足情報として、Perlにおいてはfor文とforeach文は、まったく同じもので、互いに書き換えることができます。
+
+<h3>無限ループを使ったサンプル</h3>
+
+whileのよく使う例としては、無限ループの記述があります。条件に1を記述すると、ループが永遠に繰り返されます。
+
+<pre>
+while (1) {
+  ...
+}
+</pre>
+
+ループを脱出するには、<a href="/blog/20170527149589.html">last文</a>を使用します。ループの脱出は、C言語と異なりbreak文ではなく、last文なので注意してください。
+
+以下の例では、<a href="/blog/20161012147627.html">配列</a>の要素を<a href="/blog/20100106126425.html">pop関数</a>でひとつづつ取り除いていって、配列の要素がなくなった場合に、<a href="/blog/20161023147731.html">if文</a>で判定して、last文を使ってwhileブロックを抜けるようにしています。
+
+<pre>
+my @nums = (1, 2, 3);
+while (1) {
+  if (@nums) {
+    pop @nums;
+  }
+  else {
+    last;
+  }
+}
+</pre>
+
+<h3>標準入力/コマンドライン引数から行を順番に読みこむ</h3>
+
+while文でよく使う例として、<a href="/blog/20080722121673.html">行入力演算子</a>を使って、標準入力あるいは、コマンドライン引数で与えられたファイルから、行を順番に読み込んでみましょう。
+
+<pre>
+# 行読み込み
+while (my $line = <>) {
+  # 一行目だけスキップ
+  next if $. == 1;
+  
+  # 改行を削除
+  chomp $line;
+  
+  # 処理
+  print "Line: $line\n";
+}
+</pre>
+
+このサンプルでは、<a href="/blog/20080226120403.html">chomp関数</a>を使って、改行を取り除いて、「Line:」をつけて出力しています。
+
+<a href="/blog/20161102147817.html">特殊変数「$.」</a>と<a href="/blog/20080329120687.html">next文</a>を使って、行番号が1行目の時だけ、処理をスキップしています。
+
+このプログラムは以下のように使います。while文と行入力演算子を使うと、簡単にファイルや標準入力から行を読み込むプログラムが書けます。
+
+<pre>
+# コマンドライン引数からファイル名を読み込む場合
+perl script.pl file
+
+# 標準入力からパイプを使って読み込む場合
+cat file > perl script.pl
+</pre>
+
+これは、複数ファイルでも大丈夫です。
+
+<pre>
+# コマンドライン引数からファイル名を読み込む場合
+perl script.pl file1 file2
+
+# 標準入力からパイプを使って読み込む場合
+cat file1 file2 > perl script.pl
+</pre>
+
+
+<h3>関連情報</h3>
+
+繰り返し処理については、以下で詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20170521149524.html">for文、while文による繰り返し</a>
+  </li>
+</ul>
+
+Perlには<a href="/blog/20171225151420.html">do ～ while文</a>も存在しますが、next文やlast文がそのままでは使えないので、while文を使うことを強くお勧めします。

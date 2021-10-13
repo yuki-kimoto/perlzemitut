@@ -1,0 +1,41 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20170311148922.html";</script>
+
+<h2>YAPC::Kansai 2017 発表資料「MojoliciousとWebSocketでサーバーpush配信」</h2>
+<a href="https://yapcjapan.org/2017kansai/">YAPC関西でゲストスピーカー</a>として、話させていただきました。参加者の方、YAPC運営スタッフの方、ありがとうございました。
+
+YAPC::Kansai 2017 発表資料「MojoliciousとWebSocketでサーバーpush配信」を公開します。
+
+<blockquote>
+<b><big>発表資料</big></b>
+<a href="https://onedrive.live.com/view.aspx?resid=605A8810ADC954E2!1133&ithint=file%2cpptx&app=PowerPoint&authkey=!ANwGpJigakO4fzs">MojoliciousとWebSocketでサーバーpush配信</a>
+</blockquote>
+
+デモで使った「猫コントローラー」のソースコードもこちらからダウンロードできます。
+
+<blockquote>
+<a href="http://d.hatena.ne.jp/perlcodesample/files/neko.zip">猫コントローラーのデモのソースコード</a>
+</blockquote>
+
+<h3>YAPCの写真</h3>
+
+発表しているところの写真です。60分も話したのは、生まれて初めてなので、緊張しました。うまく話せたかな。
+
+<a href="http://f.hatena.ne.jp/perlcodesample/20170304134924"><img src="http://img.f.hatena.ne.jp/images/fotolife/p/perlcodesample/20170304/20170304134924.jpg" alt="20170304134924"></a>
+<a href="http://f.hatena.ne.jp/perlcodesample/20170304141935"><img src="http://img.f.hatena.ne.jp/images/fotolife/p/perlcodesample/20170304/20170304141935.jpg" alt="20170304141935"></a>
+<a href="http://f.hatena.ne.jp/perlcodesample/20170304141925"><img src="http://img.f.hatena.ne.jp/images/fotolife/p/perlcodesample/20170304/20170304141925.jpg" alt="20170304141925"></a>
+<a href="http://f.hatena.ne.jp/perlcodesample/20170304142016"><img src="http://img.f.hatena.ne.jp/images/fotolife/p/perlcodesample/20170304/20170304142016.jpg" alt="20170304142016"></a>
+<a href="http://f.hatena.ne.jp/perlcodesample/20170304142243"><img src="http://img.f.hatena.ne.jp/images/fotolife/p/perlcodesample/20170304/20170304142243.jpg" alt="20170304142243"></a>
+
+<h3>YAPC感想</h3>
+
+YAPCは笑いと熱気であふれていましたね! とても楽しめました。普段はWebでしか知れない人を、実際に見れるのは、非常に良い体験だと自分ながらに思いました。
+
+懇親会に向かうときに、偶然<a href="https://www.sixapart.jp/pressroom/2012/10/ex_vp_hirata_to_become_cto.html">sixapartの平田さん</a>と一緒になりました。Movable Typeはクラウド化して、<a href="https://movabletype.net/">Movable Type.net</a>になっていて、内部は実はMojolciiousで書かれているという話を聞いたりしました。帰って調べてみたら、使いやすそう。
+
+それとPerl5.8で動く<a href="https://github.com/jamadam/mojo-legacy">mojo-legacy</a>を開発していたjamadamさんと懇親会で出会えたのがびっくりした。
+
+沖縄のPerl入学式のmasakystさんにも初めてあった! 琉球大学のPerlが好きな学生さんたちは、超元気だった!
+
+「業務で役立つPerl」を購入していただいた方からも感想などをいただけて非常に有意義なYAPCでした。日本語の扱い方や実際のログ解析を書いているのが、よかったという感想をもらえたので、参考になりました。
+
+人と会うということは、自分が思っていた以上にエネルギーが充電できるね! 自分を見直すきっかけにもなる。

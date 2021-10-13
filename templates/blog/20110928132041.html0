@@ -1,0 +1,78 @@
+<script>location.href='https://dbix-custom.perlzemi.com/blog/20110928132041.html';</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+        <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20110401130559.html">
+      <span itemprop="name">DBIx::Custom</span></a>
+    <meta itemprop="position" content="4" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>order by句の生成 / DBIx::Custom</h2>
+
+
+
+<strong>DBIx::Custom::Order</strong>クラスを利用するとorder by句を簡単に記述することができます。たとえば、デフォルトの順序を最初に指定しておいて、状況に応じて順序をカスタマイズすることが簡単にできます。
+
+DBIx::Custom::Orderオブジェクトを生成するには、orderメソッドを使用します。
+
+<pre>
+my $order = $dbi->order;
+</pre>
+
+DBIx::Custom::Orderオブジェクトが取得できます。
+
+並びを指定するにはprependメソッドを使用します。order by句のパーツが前へ前へと追加されていきます。
+
+<pre>
+$order->prepend('title', 'price desc');
+$order->prepend('author desc');
+</pre>
+
+最終的にorder句で利用する文字列に変換するにはto_stringメソッドを利用するか、DBIx::Custom::Orderオブジェクトを文字列として評価します。
+
+<pre>
+my $order_str = $order->to_string;
+my $order_str = "$order";
+</pre>
+
+次のようなorder句が生成されます。
+
+<pre>
+order by author desc, title, price desc
+</pre>
+
+では次に同名の列名を含むものをさらにprependして見ましょう。
+
+<pre>
+$order->prepend('price asc');
+</pre>
+
+この場合には、priceが二つ存在しますが、DBIx::Custom::Orderオブジェクトは、重複を適切に処理してくれます。後で追加されたものが優先されます。文字列化すると次のようなorder by句が生成されるのが確認できます。
+
+<pre>
+order by price asc, author desc, title
+</pre>
+
+もし並びの順序が固定されている場合はDBIx::Custom::Orderオブジェクトを使わずに直接記述するのが簡単です。並びの順序を動的に変えたい場合にDBIx::Custom::Orderオブジェクトを利用しましょう。
+

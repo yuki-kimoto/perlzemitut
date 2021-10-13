@@ -1,0 +1,19 @@
+<h2>Perl Banjo(パール バンジョー) - Perlを書いて、実行、保存、共有ができるWebサービス</h2>
+
+<a href="https://perlbanjo.com/">PerlBanjo.com</a>は、Perlを書いて、実行、保存、共有ができるWebサービスです。
+
+<a href="https://perlbanjo.com/"><img src="/images/perlbanjo/perlbanjo-image.png" style="width:100%"></a>
+
+<a href="https://perlbanjo.com/">PerlBanjo.com</a>
+
+Perl Banjo(パール バンジョー)(PerlBanjo.com)では、すぐにPerlプログラムを実行することができます。
+
+Perlのソースコードをテキストエリアに書いて、「Save for 30 days &amp; run」を押すと、Perlのソースコードを、実行して共有することができます。
+
+コマンドライン引数を与えることができます。
+
+インターフェースは、シンプルで、実行も速く、約5秒程度で結果が返ってきました。
+
+他の人が書いたソースコードを、少しだけ修正して、実行して、保存、共有という使い方もできそうです。
+
+WebからすぐにPerlを実行できるので、「Perlってこういう風に書くのよ」という紹介にもつかえそう。

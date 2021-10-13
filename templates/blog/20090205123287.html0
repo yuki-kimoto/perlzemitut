@@ -1,0 +1,89 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+      <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>use - モジュールを読み込む</h2>
+
+
+
+モジュールをコンパイル時に読み込むには<strong>use</strong>を使用します。
+
+<pre>
+use モジュール名
+</pre>
+
+モジュール名は裸の文字列で指定する必要があります。クォートやダブルクォートで囲んだ文字列は受け付けません。また変数も受付ません。
+
+<pre>
+# 裸の文字列でモジュール名を指定する
+use CGI;
+</pre>
+
+また標準的な慣習としてモジュール名の後ろに関数名を指定すると、関数を現在の名前空間にインポートすることができます。
+
+<pre>
+# 関数のインポート
+use File::Basename 'basename', 'dirname';
+</pre>
+
+モジュールを読み込む手段としては、useの他にrequire関数がありますが、モジュールを読み込む場合は通常はuseを使っておきましょう。モジュールは、importメソッドを呼ばれることを期待しているので、use を使えば自動で行ってくれます。
+
+<h3>useで実行される処理</h3>
+
+useで実行されるのは次の処理です。File::Basenameの場合を例にしています。
+
+<pre>
+# useで実行される処理
+BEGIN {
+  require File::Basename;
+  File::Basename->import(qw/basename dirname/);
+}
+</pre>
+
+BEGINブロックで囲われた部分はコンパイル時に実行されます。requireでモジュールが読み込まれ、そのモジュールのimportがメソッド呼び出しとして実行されます。
+
+<h3>importを実行しない方法</h3>
+
+useは自動的にimportを実行します。importを実行したくない場合は次のようにします。
+
+<pre>
+# importを実行しない
+use File::Basename ();
+</pre>
+
+<h3>useに変数を渡す方法</h3>
+
+useは裸の文字列しか受け取ることができないため、変数を渡すには工夫が必要です。<a href="/blog/20100312126967.html">eval</a>を使って変数名を裸の文字列として認識させる必要があります。
+
+またevalは危険がある処理を実行する可能性があるので、必ず有害な処理を含まないことを確認してから実行します。モジュールの読み込みに失敗した場合はエラーメッセージが$@に格納されます。
+
+<pre>
+# useに変数を渡す
+
+# モジュール名
+my $module = 'AAA';
+
+# ワード文字だけで構成されていることを確認
+die "Invalid module name" if $module =~ /\W/;
+
+# モジュールの読み込み
+eval "use $module";
+
+# モジュール読み込みに失敗した場合の処理
+die $@ if $@;
+</pre>
+

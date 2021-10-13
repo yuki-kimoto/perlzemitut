@@ -1,0 +1,99 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="3" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>数値リテラル - ソースコード上での数値の表現</h2>
+
+
+
+ソースコード上での数値の表現を<strong>数値リテラル</strong>といいます。数値リテラルは次の表記が可能です。
+
+<h4>整数</h4>
+
+クオートやダブルクオートで囲まれていない数字は、Perlによって数値リテラルとして解釈されます。
+
+<pre>
+my $num1 = 1;
+
+# 負の数
+my $num2 = -1;
+</pre>
+
+<h4>桁区切りの表現</h4>
+
+数値リテラル中でアンダーバーが含まれていた場合は無視されます。1_000_000 と 1000000 という表記は等価です。アンダーバーは、大きな数値を読みやすくするために使用することができます。
+
+<pre>
+# _ を桁区切りとして利用できる。
+my $num3 = 1_000_000;
+</pre>
+
+<h4>小数(浮動小数点)</h4>
+
+.(ドット)が含まれると、小数として解釈されます。数学での表記と同じです。Perlの少数は倍精度浮動小数点です。
+
+<pre>
+# 小数点
+my $num4 = 1.33;
+</pre>
+
+<h4>少数の指数表記</h4>
+
+少数の数値の表現として指数表記を使うことができます。1.3E3 は、1300 と等価です。1.3E-3 は、0.0013 と等価です。
+
+<pre>
+# 1.3 × 10の3乗
+my $num5 = 1.3E3;
+
+# 1.3 × 10の-3乗
+my $num6 = 1.3E-3;
+</pre>
+
+<h4>2進数</h4>
+
+0b を先頭につけると2進数で数値を指定できます。
+
+<pre>
+my $num_bin = 0b1111;
+</pre>
+
+<h4>8進数</h4>
+
+0を先頭につけると8進数で数値を指定できる。
+
+<pre>
+my $num_oct = 0777;
+</pre>
+
+<h4>16進数</h4>
+
+0x を先頭につけると16進数で数値を指定できる。
+
+<pre>
+my $num_hex = 0xFFFF;
+</pre>
+
+<h4>Perlにおける数値とは?</h4>
+
+Perlにおける数値については以下で詳しく解説しています。
+
+<ul>
+  <li>
+    <a href="/blog/20161026147748.html">Perlにおける数値の扱い</a>
+  </li>
+</ul>
+
+

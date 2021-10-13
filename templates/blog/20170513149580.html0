@@ -1,0 +1,136 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161022147731.html">
+        <span itemprop="name">構文</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>next文 - 次の繰り返しの先頭にジャンプする【リンク移転】</h2>
+
+
+
+<a href="/blog/20080329120687.html">next文</a>を使うと次の繰り返しの先頭にジャンプすることができます。これは、C言語やJavaのcontinue文に該当します。
+
+<pre>
+next
+</pre>
+
+next文はwhile文やfor文などの繰り返し文の中で使うことができます。
+
+<pre>
+while (1) {
+  if (条件) {
+    next;
+  }
+}
+
+for (my $i = 0; $i < 10; $i++) {
+  if (条件) {
+    next;
+  }
+}
+
+foreach my $animal (@animals) {
+  if (条件) {  
+    next;
+  }
+}
+</pre>
+
+特定の条件の時だけ、処理を飛ばしたい場合にnext文を利用することができます。
+
+<h3>サンプルプログラム</h3>
+
+next文を使ったサンプルプログラムです。
+
+<h4>特定の文字に一致したときにループの先頭にジャンプ</h4>
+
+ループ処理の途中で、ある条件の場合に、次のループの先頭にジャンプしたい場合にnext文を利用できます。
+
+<pre>
+use strict;
+use warnings;
+
+my @chars = qw(z z a b c d e f);
+
+for my $char (@chars){
+  next if $char eq 'z';
+  print "$char\n";
+}
+</pre>
+
+実行結果です。「z」のときだけ、次のループの先頭にジャンプしているので、後ろに続く<a href="/blog/20170404149131.html">print関数</a>が実行されないです。
+
+<pre>
+a
+b
+c
+d
+e
+f
+</pre>
+
+「qw(z z a b c d e f)」は<a href="/blog/20080222120369.html">文字列リスト演算子</a>です。
+
+if文、for文、while文については、以下で詳しく解説していますので、参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20161023147731.html">if文を使った条件分岐の構文を覚えよう</a>
+  </li>
+  <li>
+    <a href="/blog/20170521149524.html">for文、while文を使った繰り返しの処理を覚えよう</a>
+  </li>
+</ul>
+
+<h3>正規表現と一緒に使ってみる</h3>
+
+nextと正規表現を組み合わせることも多いです。ひとつサンプルを書いてみます。「ABC」という文字列が含まれていない場合に、出力をスキップするサンプルを書いてみます。条件判定にはunless文を使っています。
+
+<pre>
+use strict;
+use warnings;
+
+my @strings = ('ABC', 'ABCD', 'CDE', 'FGH');
+
+for my $string (@strings){
+  next unless $string =~ /ABC/;
+  print "$string\n";
+}
+</pre>
+
+出力結果です。「ABC」が含まれているものだけ出力されます。
+
+<pre>
+ABC
+ABCD
+</pre>
+
+<h3>関連情報</h3>
+
+<h4>last文を使うとループを脱出できる</h4>
+
+next文と似たものにlast文があります。last文を使うと、ループを抜けることができます。
+
+<pre>
+last
+</pre>
+
+last文については、以下の記事を参考にしてください。
+
+<ul>
+  <li>
+    <a href="/blog/20170527149589.html">last文 - 繰り返しから抜ける</a>
+  </li>
+</ul>
+

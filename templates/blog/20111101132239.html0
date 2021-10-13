@@ -1,0 +1,65 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>MySQL::Diff - MySQLのデータベースの差分を調べる</h2>
+
+
+
+MySQLのデータベースの差分から、差分をなくすようなコマンドを自動生成するツールを探していたら、<strong>MySQL::Diff</strong>というモジュールを発見した。このモジュールにはmysqldiffというコマンドラインツールがついているので、通常はこちらを使うのが良いみたい。
+
+開発環境と本番環境の差分を埋めるのにとても役立つ。すべての差分を表示してくれるわけではなく、テーブル定義に関する部分だけのようなので、トリガやインデックスについては、自分で設定する必要があるようです。
+
+ドキュメントにはオプションの説明がないようなので、--helpコマンドで確認できる。
+<pre>
+mysqldiff --help
+</pre>
+
+まずデータベースのテーブル定義をmysqldumpで取得しましょう。今は開発環境にいて開発環境のデータベースサーバーに変更を加えていると仮定します。
+
+<pre>
+mysqldump -d -uken db > db_devel
+</pre>
+
+本番環境にはsshで接続できると仮定しましょう。そうするとsshでコマンドを実行してリダイレクトしましょう。
+
+<pre>
+ssh ken@remotehost mysqldump -d -uken db > db_production
+</pre>
+
+mysqldiffでは一時的にデータベースを利用するので、データベースの情報を指定する必要があります。
+
+<pre>
+mysqldiff  --host=localhost --user=ken --password=ppp db_production db_devel 
+</pre>
+
+するとdb_productionをdb_develにあわせるためのコマンドが出力されます。
+<pre>
+## mysqldiff 0.43
+##
+## Run on Sun Nov 27 15:57:54 2011
+## Options: user=root, debug=0
+##
+## --- file: db_production
+## +++ file: db_devel
+
+CREATE TABLE book (
+  id int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+</pre>
+
+db_productionとdb_develの順番を間違えると、逆のコマンドが生成されますので、注意してください。
+

@@ -1,0 +1,146 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>Perlにおける数値の扱い</h2>
+
+
+
+Perlにおける数値の扱いについて解説します。四則演算、三角関数、進数変換、乱数の扱いについて解説。
+
+<h4>数値の基礎</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080826121977.html">数値リテラル - ソースコード上での数値の表現</a>
+  </li>
+  <li>
+    <a href="/blog/20080827121984.html">2進数、8進数、16進数での数値表現</a>
+  </li>
+</ul>
+
+<h4>数値計算のための演算子</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080910122105.html">4則演算</a>
+  </li>
+  <li>
+    <a href="/blog/20080629121475.html">べき乗を求める **</a>
+  </li>
+  <li>
+    <a href="/blog/20180224151948.html">インクリメント演算子 ++</a>
+  </li>
+  <li>
+    <a href="/blog/20180226151973.html">デクリメント演算子 --</a>
+  </li>
+</ul>
+
+<h4>数値と文字列</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080829122001.html">数値と文字列の自動変換</a>
+  </li>
+  <li>
+    <a href="/blog/20080831122025.html">文字列が整数を表現しているかを判定する</a>
+  </li>
+  <li>
+    <a href="/blog/20090501124313.html">数値であるかどうかの判定を行う looks_like_number</a>
+  </li>
+</ul>
+
+<h4>数値と誤差</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080828121992.html">数値と誤差</a>
+  </li>
+  <li>
+    <a href="/blog/20080921122214.html">浮動小数点を比較する</a>
+  </li>
+  <li>
+    <a href="/blog/20080922122214.html">四捨五入を行う</a>
+  </li>
+  <li>
+    <a href="/blog/20080923122214.html">整数部を取り出す int</a>
+  </li>
+  <li>
+    <a href="/blog/20080924122227.html">小数部を切り上げる - ceil関数</a>
+  </li>
+  <li>
+    <a href="/blog/20090430122227.html">小数部を切り下げる - floor関数</a>
+  </li>
+</ul>
+
+<h4>数学関数</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080912122145.html">絶対値を求める abs</a>
+  </li>
+  <li>
+    <a href="/blog/20080630121483.html">正の平方根を求める sqrt</a>
+  </li>
+</ul>
+
+<h4>三角関数</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080913122145.html">円周率を取得する</a>
+  </li>
+  <li>
+    <a href="/blog/20080914122145.html">角度をラジアンに変換する</a>
+  </li>
+  <li>
+    <a href="/blog/20080916122166.html">三角関数</a>
+  </li>
+  <li>
+    <a href="/blog/20080918122175.html">さまざまな三角関数</a>
+  </li>
+</ul>
+
+<h4>指数関数・対数関数</h4>
+
+<ul>
+  <li>
+    <a href="/blog/20080919122184.html">自然対数の底 ネイピア数eを取得する</a>
+  </li>
+  <li>
+    <a href="/blog/20080920122192.html">対数を求める</a>
+  </li>
+</ul>
+
+<h4>進数変換</h4>
+
+Perlで「進数変換」を行う方法を解説します。「10進数」「8進数」「2進数」「任意の進数へ変換」する方法を紹介しています。
+
+<ul>
+  <li>
+    <a href="/blog/20080901122026.html">Perlで「進数変換」を行う方法</a>
+  </li>
+</ul>
+
+<h4>乱数</h4>
+
+Perlで「乱数」を生成する方法を解説します。
+
+<ul>
+  <li>
+    <a href="/blog/20080906122079.html">乱数を生成する</a>
+  </li>
+</ul>
+
+<h4>有効桁数の大きな数値の計算</h4>
+
+桁数の大きな整数を計算するには「Math::BigInt」、有効桁数の大きな浮動小数点を計算するには「Math::BigFloat」が利用できます。
+
+「<a href="/blog/20080925122245.html">有効桁数の大きな数値を計算する Math::BigInt  Math::BigFloat</a>」をご覧ください。

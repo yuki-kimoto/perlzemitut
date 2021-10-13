@@ -1,0 +1,769 @@
+
+<h2>Validator::Custom 1.0 以前におけるドキュメント</h2>
+
+<a href="/blog/20151212144988.html">このページはValidator::Custom 1.0 以前のドキュメントになります。最新版のドキュメントは、こちらです。</a>
+
+
+<strong>Validator::Custom</strong>は<strong>HTMLフォーム</strong>のデータの<strong>バリデーション</strong>(<strong>値の検証</strong>)を行うための便利なモジュールです。バリデーションのルールを少ない記述で書けること、制約ごとにエラーメッセージを設定できること、良く使う機能は最初から提供していて、ユーザー定義の制約を簡単に追加できる柔軟性の高い設計などが特徴です。
+
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom->new;
+
+# データ
+my $data = {
+  price => 1200
+  name => 'Perl',
+  password => 'secret',
+  passwrod2 => 'secret'
+};
+
+# ルールの作成
+my $rule = $vc->create_rule($data, $rule);
+$rule->require('price')->check('int')->message('price must be number');
+
+$rule->optional('name')
+  ->check('not_blank')->message('name is empty')
+  ->check({length => [0, 20])->message('name is too long');
+
+$rule->require('password')
+  ->check('not_blank')->message('password is empty')
+  ->check('ascii')->message('password contains invalid caharcters');
+
+$rule->require(['password', 'password2'])->name('password_check')
+  ->check('duplication')->message('Two password not match')
+  ->copy(0);
+
+# バリデーション
+my $vresult = $vc->validate($data, $rule);
+
+# 結果の確認
+if ($vresult->is_ok) {
+  # 安全なデータ
+  my $safe_data = $vresult->data;
+}
+else {
+  # エラーメッセージ
+  my $errors = $vresult->messages;
+}
+</pre>
+
+ルール作成の古い文法はこちら。上記の新しい文法で書くのが推奨です。
+
+<pre>
+# ルールの作成(古い文法)
+my $rule = [
+  price => [
+    [int => 'price must be number']
+  ],
+  name => [
+    [not_blank => 'name is empty'],
+    [{length => [0, 20]} => 'name is too long']
+  ],
+  password => [
+    [not_blank => 'password is empty'],
+    [ascii => 'password contains invalid caharcters']
+  ],
+  {password_check => ['password', 'password2']}
+    => {copy => 0}
+    => [
+      [duplication => 'Two password not match']
+    ]
+];
+</pre>
+
+こちらのドキュメントは、新しい文法に書き直しますので、古い文法については、公式のドキュメントを参考にしてください。
+
+<h3>Validator::Customのインストール</h3>
+
+<strong>Validator::Custom</strong>を<strong>インストール</strong>するにはcpanコマンドを使用します。
+
+<pre>
+cpan Validator::Custom
+</pre>
+
+WindowsでもUnix系のOSでもインストールすることができます。cpanコマンドではルート権限がないインストールを行うことができませんので、ユーザーのローカル環境にインストールしたい場合はcpanmなどのツールを使用してください。
+
+<h3>Validator::Customオブジェクトの生成</h3>
+
+Validator::Customオブジェクトの生成するには<strong>new</strong>メソッドを使用します。
+
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom->new;
+</pre>
+
+このオブジェクトを使ってバリデーションの処理を行います。
+
+<h3>バリデーションの基礎</h3>
+
+バリデーションの基礎について解説します。以下のソースコードを見てください。
+
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom->new;
+
+# データ
+my $data = {price => 1200};
+
+# ルールの作成
+my $rule = $vc->create_rule;
+$rule->require('price')->check('int');
+
+# バリデーション
+my $vresult = $vc->validate($data, $rule);
+
+# 結果の確認
+if ($vresult->is_ok) { print "OK\n" }
+else { print "Not OK\n" }
+</pre>
+
+<h4>データ</h4>
+
+バリデーションを行うデータは、ハッシュリファレンスである必要があります。
+
+<pre>
+# データ
+my $data = {price => 1200};
+</pre>
+
+<h4>ルール</h4>
+
+次にバリデーションのためのルールを作成します。
+
+<pre>
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('price')->check('int');
+</pre>
+
+まず最初にValidator::Custom::Ruleオブジェクトを、<b>create_rule</b>メソッドを使って、作成します。
+
+<pre>
+my $rule = $vc->create_rule;
+</pre>
+
+次に、<b>require</b>メソッドを使って、存在する必要のあるキーの名前を記述します。
+
+<pre>
+$rule->require('price')
+</pre>
+
+もしキーが任意のものであるならば、<b>require</b>の代わりに<b>optional</b>を使うこともできます。
+
+<pre>
+$rule->optional('price')
+</pre>
+
+次に制約を記述します。
+
+<pre>
+$rule->require('price')->check('int');
+</pre>
+
+今回はひとつのキーのチェックだけですが、複数の値をチェックする場合は、引き続き記述していくことができます。
+
+<pre>
+$rule->require('name')->check('string');
+</pre>
+
+<h4>バリデーション</h4>
+
+バリデーションを行うには、validateメソッドを使用します。
+
+<pre>
+# バリデーション
+my $vresult = $vc->validate($data, $rule);
+</pre>
+
+戻り値は、Validator::Custom::Resultオブジェクトです。
+
+<h4>結果の確認</h4>
+
+Validator::Custom::Resultオブジェクトを使って、結果の確認を行うことができます。
+
+<pre>
+my $ok = $vresult->is_ok;
+</pre>
+
+is_okメソッドで、バリデーションの結果が正しいかどうかを確認することができます。
+
+<h3>複数の値のバリデーション</h3>
+
+複数の値のバリデーションを行うためのルールを作成してみます。
+
+<pre>
+# 複数の値を含むデータ
+my $data = {price => 1200, title => 'Perl'};
+
+# 複数の値のバリデーションを行うためのルール
+my $rule = $vc->create_rule;
+$rule->require('price')->check('int');
+$rule->require('title')->check('ascii');
+</pre>
+
+複数の値をバリデーションのするときは、次のように複数回<b>require</b>を書くだけです。ルールの中身は次のようになります。
+
+<pre>
+my $rule = $vc->create_rule;
+$rule->require('price')->check('int');
+$rule->require('title')->check('ascii');
+</pre>
+
+<h3>ユーザー定義の制約の登録 - register_constraint</h3>
+
+デフォルトで用意されている制約とand条件とor条件を使って、さまざまな制約を表現することができました。Validator::Customではこれに加えて、ユーザー定義の制約を新しく登録することができます。
+
+ここでは簡易的に、Emailが正しい形式であるかを確認するための制約を登録してみます。制約を登録するには<b>register_constraint</b>メソッドを使用します。
+
+<pre>
+# Emailが正しい形式かを確認するための制約を登録
+$vc->register_constraint(
+  email => sub {
+    my $value = shift;
+    
+    # 正しいときは1を、正しくないときは0を返却
+    return 0 unless defined $value;
+    return $value =~ /^.+@.+$/ ? 1 : 0;
+  }
+);
+</pre>
+
+制約の登録の形式は次のようになります。
+<pre>
+$vc->register_constraint(
+  制約名 => 制約のための処理
+);
+</pre>
+
+一度に複数の制約を登録することもできます。
+<pre>
+$vc->register_constraint(
+  制約名1 => 制約のための処理1,
+  制約名2 => 制約のための処理2
+);
+</pre>
+
+制約のための処理は、サブルーチンのリファレンスです。データが正しいときは1を、正しくないときは0を返すようにしてください。
+
+<pre>
+sub 制約名 {
+  ...  
+  if(正しい) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+</pre>
+
+登録した制約は、ルールの中で利用することができます。
+
+<pre>
+# 複数の値のバリデーションを行うためのルール
+my $rule = $vc->create_rule;
+$rule->require('admin_email')->check('email');
+my $data = {admin_email => 'foo@my.com'};
+</pre>
+
+<h3>制約関数を登録する</h3>
+
+Validator::Customでは、バリデーションのための制約関数を簡単に登録することができます。制約関数を登録するには<strong>register_constraint</strong>メソッドを使用します。
+
+<pre>
+$vc->register_constraint(
+  tel_num => sub {
+    my $value = shift;
+    $value =~ /^[\d-]+$/ ? 1 : 0;
+  }
+);
+</pre>
+
+値が正しいものであった場合は1を、値が間違ったものであった場合は0を返却するようにします。注意として、真になる値として、配列のリファレンスを返却してはいけません。配列のリファレンスは制約関数をフィルタとして扱う場合に利用されるからです。
+
+このように登録した制約関数はルールの中で使用することができます。
+
+<pre>
+$rule->require('tel')->check('tel_num');
+</pre>
+
+制約関数は複数同時に登録することもできます。
+
+<pre>
+$vc->register_constraint(
+  tel_num => sub {
+     my $value = shift;
+     $value =~ /^[\d-]+$/ ? 1 : 0;
+  },
+  hiragana => sub { ... }
+);
+</pre>
+
+<h3>項目が存在しなくてもよい require => 0 / Validator::Customリファレンス</h3>
+
+<strong>項目が存在しても存在しなくてもよい</strong>場合は<strong>require</strong>メソッドの代わりに<b>optional</b>メソッドを使用します。
+
+<pre>
+my $rule = $vc->create_rule;
+$rule->optional('name')->check('int');
+</pre>
+
+上記のルールはnameが存在しても存在しなくてもよくて、存在する場合はintでなければならないことを表現します。
+
+<h3>少なくともひとつの項目に値が含まれている</h3>
+
+複数のテキストボックスを入力して、そのうちの少なくともひとつに値が含まれていることをチェックしたい場合があります。このような場合は少し工夫がいります。テキストボックスの値をマージしてから、それが空でないことをチェックするのがよいでしょう。
+
+<pre>
+# 少なくともひとつの項目に値が含まれている
+my $vc = Validator::Custom->new;
+$data = {name1 => 'Ken', name2 => '', name3 => 'Taro'};
+$rule = [
+  {key => qr/^name\d+$/} => [
+    'merge',
+    'trim',
+    'not_blank'
+  ],
+];
+my $result = $vc->validate($data, $rule);
+</pre>
+
+<h3>and条件を使ったルール</h3>
+
+<a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+
+
+バリデーションを行うときに、複数の条件を満たしているかどうかを記述したいことがあります。たとえば、1000より大きくて2000より小さいという条件を書きたいときなどです。
+
+and条件を使ったルールを作成してみます。<b>check</b>メソッドを複数回呼び出すだけです。ここではgreater_thanとless_thanという制約を使っています。ハッシュリファレンスで制約を指定することで、引数を渡すこともができます。
+
+<pre>
+# データ
+my $data = {price => 1200};
+
+# and条件を使ったルール
+my $rule = $vc->create_rule;
+$rule->require('price')
+  ->check({greater_than => 1000})
+  ->check({less_than => 2000});
+</pre>
+
+<h3>or条件を使ったルール</h3>
+
+バリデーションを行うときに、あるひとつの条件を満たしているかどうかを記述したいことがあります。たとえば、空白あるいは整数という条件を記述したい場合があります。
+
+or条件を使ったルールを作成してみます。or条件を記述するには<b>check_or</b>メソッドを使用します。
+
+<pre>
+# データ
+my $data = {price => 1200};
+
+# or条件を使ったルール
+my $rule = $vc->create_rule;
+$rule->require('price')->check_or('blank', 'int');
+</pre>
+
+<h4>and条件とor条件を同時に使う</h4>
+
+and条件とor条件を同時に使うこともできます。
+
+<pre>
+$rule->require('price')
+  ->check_or('blank', 'int')
+  ->check({greater_than => 1000});
+</pre>
+
+<h3>制約での引数の指定</h3>
+
+デフォルトで用意されている制約には引数を受け取ることができるものがあります。<b>equal_to</b>, <b>between</b>などです。
+
+引数を渡すには制約名の部分をハッシュリファレンスを使って次のように指定します。
+
+<pre>
+{制約名 => 引数}
+</pre>
+
+<b>equal_to</b>と<b>between</b>のサンプルは次のようになります。
+
+<pre>
+my $rule = $vc->create_rule;
+$rule->require('price')->check({'equal_to' => 1000});
+$rule->require('age')->check({between => [1, 20]});
+my $data = {price => 1000, age => 19};
+</pre>
+
+引数には、スカラ値であれば、文字列でも数値でも、配列のリファレンスでも、ハッシュのリファレンスでも渡すことができます。
+
+<h3>to_array(フィルタ) - 配列のリファレンスへの変換</h3>
+
+値を配列のリファレンスに変換したい場合は<b>to_array</b>フィルタを使用します。
+
+<pre>
+# データ
+my $data = {languages => 'Japanese'};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('languages')->filter('to_array');
+
+my $vresult = $vc->validate($data, $rule);
+print $vresult->data->{languages}; # ['Japanese']
+</pre>
+
+to_arrayは配列のリファレンスではないデータを配列のリファレンスに変換します。もともと配列のリファレンスだった場合は何もしません。
+
+これはチェックボックスなどで、ひとつの値がくるか、複数の値がくるかがわからない場合に、配列のリファレンスに変換するのに便利です。
+
+<h3>in_array(制約関数) - 値が配列の値に含まれたものがどうかをチェックする</h3>
+
+HTMLフォームのチェックで、値が、ある値以外は許可したくないという場合があると思います。そのような場合は<strong>in_array</strong>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {food => 'sushi'};
+
+# ルール
+my $rule = $rule->create_rule;
+$rule->require('food')->check({'in_array' => [qw/sushi bread apple/]});
+</pre>
+
+in_array制約関数の引数には、許容する値を含んだ配列のリファレンスを指定します。
+
+<pre>
+{'in_array' => [qw/sushi bread apple/]}
+</pre>
+
+<h4>チェックボックスなどの複数の値に適用する</h4>
+
+チェックボックスの値は、複数になりますね。複数の値すべてが、ある値に含まれてほしいという場合は次のように記述します。
+
+<pre>
+# 複数の値
+my $data = {food => ['sushi', 'cake']};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('food')
+  ->each(1)->check({'in_array' => [qw/sushi bread apple/]);
+
+my $is_valid = $vc->validate($data, $rule);
+</pre>
+
+<b>each</b>メソッドを利用することで、要素のそれぞれの値に対して、検証を行うことができます。
+
+少しややこしいですが、覚えてしまうと便利です。
+
+<h4>応用</h4>
+
+たとえば、少なくともひとつがチェックされていて、そのすべての値が001か002というルールは次のようにかけます。
+
+<pre>
+# ルール
+$rule->require('food')
+  ->filter('to_array')
+  ->check('selected_at_least')
+  ->each(1)
+  ->check({'in_array' => [qw/001 002/]});
+</pre>
+
+Validator::Customを使うと、HTMLフォームのバリデーションチェックが簡単にかけます。
+
+<h3>selected_at_least(制約関数) - 少なくともひとつが選択されている</h3>
+
+HTMLフォームで、チェックボックスの中で、少なくともひとつが選択されているかを調べたい場合があります。そのようなときは<b>selected_at_least</b>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {hobby => ['music', 'movie' ]};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('hobby')->check({selected_at_least => 1});
+</pre>
+
+selected_at_least制約関数には、引数で少なくともいくつ選択されている必要があるかを指定できます。このサンプルでは、1が指定されているので、少なくともひとつという意味になります。
+
+<h3>制約関数の中で登録されている制約関数を利用する</h3>
+
+Validator::Customでバリデーションのための制約関数を書くときに、低レベルな制約関数を利用したいという場合があるかと思います。
+
+次のように書きます。
+
+<pre>
+use Validator::Custom;
+my $vc = Validator::Custom->new;
+
+$vc->register_constraint(
+  int_plus_alpha => sub {
+    my ($value, $args, $vc) = @_;
+    
+    my $is_int = $vc->constraints->{'int'}->($value);
+    
+    my $is_valid = $is_int && $value < 1000;
+    
+    return $is_valid;
+  }
+);
+</pre>
+
+制約関数は、第３引数として、Validator::Customオブジェクトがわたってくるというのがポイントです。
+
+constraints属性は、制約関数を含むハッシュリファレンスを返却しますので、以下のようにしてすでに登録されている制約関数を利用することができます。
+
+<pre>
+my $is_int = $vc->constraints->{'int'}->($value);
+</pre>
+
+<h3>uint(制約関数) - 非負数の整数</h3>
+
+HTMLフォームで、非負数の整数のみを許可したい場合があると思います。そのような場合は、<b>uint</b>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {age => 19};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('age')->check('uint');
+
+my $is_valid = $vc->validate($data, $rule);
+</pre>
+
+内部的には「^[0-9]+$」という正規表現が使われています。
+
+<h3>duplication(制約関数) - メールアドレスが一致していることをチェック</h3>
+
+HTMLフォームで、パスワードを二つ入力してもらって、パスワードが同じことをチェックしたい場合があります。そのような場合は、<b>duplication</b>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {mail1 => 'a@somehost.com', mail2 => 'a@somehost.com'};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require(['mail1', 'mail2'])->name('mail_check')
+  ->check('duplication');
+</pre>
+
+二つの値がどちらも未定義の場合は、バリデーションは失敗することに注意してください。
+
+<h3>length(制約関数) - 文字列の長さのチェック</h3>
+
+HTMLフォームで、文字列の長さをチェックしたい場合があると思います。そのような場合は、<b>length</b>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {value1 => 'aaa', value2 => 'bbbbb'};
+
+# ルール
+my $rule = $vc->create_rule;
+# 長さは3
+$rule->require('value1')->check({'length' => 3});
+# 長さが2以上5以下
+$rule->require('value2')->check({'length' => [2, 5]});
+# 長さが2以上
+$rule->require('value3')->check({'length' => {min => 2, max => 5}});
+# 長さが2以上
+$rule->require('value4')->check({'length' => {min => 2, max => 5}});
+# 長さが5以下
+$rule->require('value4')->check({'length' => {max => 5}});
+</pre>
+
+長さのチェックができます。文字列が内部文字列の場合は文字列の長さをチェックできます。文字列がバイト文字列の場合は、バイト数をチェックします。
+
+<h3>defined(制約関数) - 定義されている</h3>
+
+<strong>定義されている</strong>ことを指定するには<strong>defined</strong>制約関数を使用します。
+
+<pre>
+my $data => {name => 'Ken'};
+my $rule = $vc->create_rule;
+$rule->require('name')->check('defined');
+</pre>
+
+HTMLフォームの場合は、空文字列かどうかを確認できればよいのでdefineの代わりにnot_blankを使えばよいでしょう。
+
+<h3>decimal(制約関数) - 正の数値(桁数指定)</h3>
+
+<a href="/blog/20151212144988.html">このページはVersion 0.xxに関するドキュメントになります。最新版のドキュメントは、こちらです。</a>
+
+
+<strong>数値</strong>であることを指定するには<strong>decimal</strong>制約関数を使用します。数値というのは正の整数と少数を含みます。負の数は含まないので注意してくだだい。引数で小数点の前にくる最大の桁数と小数点の後にくる最大の桁数を指定できます。
+
+<pre>
+my $data = {num1 => '123', num2 => '1.45'};
+my $rule = $vc->create_rule;
+$rule->require('num1')->check({'decimal' => 3});
+$rule->require('num2')->check({'decimal' => [1, 2]});
+</pre>
+
+<h3>blank(制約関数) - 空文字列</h3>
+
+<strong>空文字列</strong>であることを指定するには<strong>blank</strong>制約関数を使用します。
+
+<pre>
+my $data = {name => ''};
+my $rule = $vc->create_rule;
+$rule->require('name')->check('blank');
+</pre>
+
+HTMLフォームのバリデーションにおいては、特に使う機会はないと思います。
+
+<h3>between(制約関数) - AからBの間の数値</h3>
+
+<strong>AからBの間の数値</strong>であることを指定するには<strong>between</strong>制約関数を使用します。両端のAとBを含むということに注意してください。
+
+<pre>
+my $data = {age => 19};
+my $rule = $vc->create_rule;
+$rule->require('age')->check({between => [1, 20]});
+</pre>
+
+betweenは整数であるかどうかは考慮しません。さらに整数の制約をかけたい場合はint制約関数もあわせてしようしてください。
+
+<h3>ascii(制約関数) - アスキー図形文字</h3>
+
+HTMLフォームのパスワードなど<strong>アスキーの印字文字</strong>(16進数の21～7Eまで)のみを許可したい場合があります。そのような場合は<strong>ascii</strong>制約関数を使用します。
+
+<pre>
+my $data = {password => 'ajf&$#-'};
+my $rule = $vc->create_rule;
+$rule->require('password')->check('ascii');
+</pre>
+
+ASCIIコードの全体ではなくって、図形文字の範囲なので、タブや空白などが含まれていた場合はバリデーションが失敗します。
+
+<h3>duplication(制約関数) - 二つの値が同一であることのチェック</h3>
+
+<strong>ふたつの値が一致</strong>していることをチェックしたい場合はC<duplication>制約関数を使用します。どちらか一方の値が未定義だった場合は常にバリデーションは失敗します。
+
+複数の値
+
+<pre>
+my $data = {password1 => 'secret', password2 => 'secret'};
+my $rule = $vc->create_rule;
+$rule->require(['passwrod1', 'password2'])->name('password_check')
+  ->check('duplication');
+</pre>
+
+複数の値をチェックする場合は、配列のリファレンスをrequireメソッドに渡すことができます。この場合は、キーの値をnameメソッドをつけてください。
+
+<h4>パスワードのチェックを実際に行う</h4>
+
+パスワードのチェックを実際に行う場合は、パスワードが空ではないこと、パスワードがアスキーの図形文字だけで構成されていることのチェックもあわせて行います。またふたつのパスワードが一致しているという制約については、バリデーション後の安全なデータに識別キーに対応する値は必要がないのでcopyオプションに0を指定しておきましょう。
+
+ルールは以下のようになります。
+
+<pre>
+$rule->require('password')
+  ->check('not_blank')->message('password is empty')
+  ->check('ascii')->message('password contains invalid character');
+$rule->require(['password1', 'password2'])->name('password_check')
+  ->check('duplication')->message('Two password is not matched')
+</pre>
+
+<h3>regex(制約関数) - 正規表現にマッチする</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>ある正規表現にマッチする</strong>ことをチェックしたい場合は<strong>regex</strong>制約関数を使用します。
+
+<pre>
+#データ
+my $data = {num => '123'};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('num')->check({'regex' => qr/\d{0,3}/});
+</pre>
+
+<h3>not_space(制約関数) - 空白文字ではない</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>空白文字ではない</strong>ことをチェックしたい場合は<strong>not_space</strong>制約関数を使用します。空白文字とは空白文字、タブ文字、改行文字だけで構成されている文字列のことです。文字列が存在しない場合も含まれます。ユニコードにおける空白文字は含まれません。
+
+<pre>
+#データ
+my $data = {name => 'Ken'};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('name')->check('not_space');
+</pre>
+
+<h3>not_defined(制約関数) - 値が定義されていない</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>値が定義されていない</strong>ことをチェックしたい場合は<strong>not_defined</strong>制約関数を使用します。
+
+<pre>
+#データ
+my $data = {name => 'Ken'};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('name')->check('not_defined');
+</pre>
+
+<h3>less_than(制約関数) - 数値がある数より小さい</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>数値がある数より小さい</strong>ことをチェックしたい場合は<strong>less_than</strong>制約関数を使用します。
+
+<pre>
+#データ
+my $data = {num => 20};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('num')->check({'less_than' => 25});
+</pre>
+
+<h3>int(制約関数) - 整数</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>整数</strong>であることをチェックしたい場合は<strong>int</strong>制約関数を使用します。
+
+<pre>
+#データ
+my $data = {age => 19};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('age')->check('int');
+</pre>
+
+<h3>http_url(制約関数) - HTTPあるいはHTTPSのURL</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>HTTPあるいはHTTPSのURL</strong>であることをチェックしたい場合は<strong>http_url</strong>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {url => 'http://somehost.com'};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('url')->check('http_url');
+</pre>
+
+<h3>greater_than(制約関数) - ある数より大きい</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>ある数より大きい</strong>ことをチェックしたい場合は<strong>greater_than</strong>制約関数を使用します。
+
+<pre>
+#データ
+my $data = {price => 1000};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('price')->check({'greater_than' => 900});
+</pre>
+
+<h3>equal_to(制約関数) - 数値が等しい</h3>
+
+<strong>HTMLフォーム</strong>で、<strong>数値が等しい</strong>ことをチェックしたい場合は<strong>equal_to</strong>制約関数を使用します。
+
+<pre>
+# データ
+my $data = {price => 1000};
+
+# ルール
+my $rule = $vc->create_rule;
+$rule->require('price')->check({'equal_to' => 1000});
+</pre>
+

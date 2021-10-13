@@ -1,0 +1,47 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161102147817.html">
+        <span itemprop="name">特殊変数</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+<h2>コマンドライン引数の扱い @ARGV</h2>
+
+
+
+Perlで<b>コマンドライン引数</b>を処理する方法を解説します。
+
+コマンドライン引数とは、プログラムを実行するときに、プログラム名に加えて空白区切りで指定できる引数のことです。
+
+たとえば「test.pl」を実行するときに「1」「3」「5」という値を指定したい場合は、次のようにプログラムを呼び出すことができます。
+
+<pre>
+perl test.pl 1 3 5
+</pre>
+
+上記の例は数字ですがファイル名などの文字列でも大丈夫です。
+
+<pre>
+perl test.pl a.txt b.txt
+</pre>
+
+<h4>コマンドライン引数内で空白を使いたい場合</h4>
+
+コマンドライン引数の区切りは空白です。空白を使いたい場合は、クォートを使って、エスケープをする必要があります。
+
+<pre>
+perl test.pl foo "bar baz"
+</pre>
+
+

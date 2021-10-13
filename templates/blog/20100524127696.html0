@@ -1,0 +1,58 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>FindBin - スクリプトが存在するディレクトリのパスを取得</h2>
+
+
+
+<strong>FindBin</strong>モジュールを使用すると、スクリプトが存在するディレクトリのパスを取得することができます。
+
+<pre>
+# モジュールの読み込み
+use FindBin;
+</pre>
+
+スクリプトが存在するディレクトリのパスは<strong>$FindBin::Bin</strong>という<a href="/blog/20080308120495.html">パッケージ変数</a>に代入されています。
+
+<pre>
+# スクリプトが存在するディレクトリのパスを取得
+my $script_dir = $FindBin::Bin;
+</pre>
+
+FindBinは使い方が少し変わったモジュールですが、スクリプトの存在するディレクトリのパスを取得するための標準的な方法です。
+
+<h4>モジュールの読み込みパスを設定</h4>
+
+FindBinモジュールは<a href="/blog/20100525127859.html">lib</a>モジュールと一緒に利用され、モジュールの読み込みパスを設定することが多いです。
+
+以下のようにすると、スクリプトの存在するディレクトリの中にあるlibというディレクトリが、モジュールの読み込みパスに設定できます。
+
+<pre>
+# スクリプトの存在するディレクトリのlibディレクトリを検索パスに追加
+use FindBin;
+use lib "$FindBin::Bin/lib";
+</pre>
+
+<h4>スクリプトのベース名</h4>
+
+スクリプトのベース名は<strong>$FindBin::Script</strong>で取得することができます。
+
+<pre>
+use FindBin;
+$FindBin::Script
+</pre>
+

@@ -1,0 +1,990 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Perlの特殊変数</h2>
+
+
+
+Perlの特殊変数の一覧です。特殊変数とは、Perlであらかじめ定義されているグローバル変数のことです。変数名によって、その用途が特定されています。これだけは必ず覚えておきたいという特殊変数から紹介します。
+
+<h4>@ARGV - コマンドライン引数</h4>
+
+「@ARGV」には、<a href="/blog/20080108132865.html">コマンドライン引数</a>が代入されています。
+
+<pre>
+@ARGV
+</pre>
+
+<h4>@_ - サブルーチンの引数</h4>
+
+「@_」には、<a href="/blog/20101130129876.html">サブルーチン</a>の<a href="/blog/20180523152759.html">引数</a>が代入されてきます。
+
+<pre>
+@_
+</pre>
+
+<h4>$1, $2, $3, ... - 正規表現でキャプチャされた文字列</h4>
+
+「$1」「$2」「$3」には、<a href="/blog/20100827127859.html">正規表現</a>で<a href="/blog/20180524152759.html">キャプチャ</a>された文字列が代入されます。
+
+<pre>
+$1;
+$2;
+$3;
+</pre>
+
+<h4>$_ - デフォルト変数</h4>
+
+「$_」は<a href="/blog/20180118151628.html">デフォルト変数</a>と呼ばれます。自分でデフォルト引数を利用することは、可読性のことを考えると控えたほうがよいですが、標準関数には、デフォルト変数を利用するものがあるので、いくつか覚えておく必要があります。
+
+最低限、<a href="/blog/20100118126425.html">map関数</a>、<a href="/blog/20100119126425.html">grep関数</a>、<a href="/blog/20170521149524.html">後置のfor</a>で「$_」が使われることが多いので覚えておきましょう。
+
+<b>map関数</b>
+
+<pre>
+map { $_ => 1} @elements
+</pre>
+
+<b>grep関数</b>
+
+<pre>
+grep { $_ eq 'foo' } @elements
+</pre>
+
+<b>後置のfor</b>
+
+<pre>
+$_ for @elements;
+</pre>
+
+<h4>%ENV - 環境変数の取得と設定 </h4>
+
+<a href="/blog/20180510152716.html">環境変数</a>には<strong>%ENV</strong>という特殊変数でアクセスできます。
+
+<pre>
+%ENV
+</pre>
+
+環境変数名が、キーになっており $ENV{'env_name'} で値を参照できます。環境変数とは、OSが持つ変数のようなものです。環境変数は、OSがプロセスを起動したときに、プロセス空間のメモリ上にコピーされます。OSの環境変数は、プロセスからは、変更できません。
+環境変数は、自由に設定変更できますが、そのプロセスでのみで有効です。あるプロセスが、子プロセスを起動したときは、OSが、プロセスを起動したときのように、環境変数がコピーされます。
+
+<h4>$0 - プログラム名を取得する</h4>
+
+<a href="/blog/20180509152716.html">プログラム名を取得</a>するには<strong>特殊変数「$0」</strong>を使用します。
+
+<pre>
+$0;
+</pre>
+
+プログラムを起動したときの名前を取得します。つまり、絶対パスでプログラムを指定すれば、絶対パス名が、カレントディレクトリから、相対パスで指定した場合は、相対パス名で、プログラム名を取得できます。
+
+<h4>@INC - モジュールの検索パスのリスト</h4>
+
+<a href="/blog/20180508152716.html">モジュールの検索パスの一覧</a>は<strong>@INC</strong>という特殊変数に代入されています。
+
+<pre>
+@INC
+</pre>
+
+モジュールの検索パスとは、Perlが、モジュールを読み込むために、検索するディレクトリのことです。@INC に、含まれないディレクトリに置かれたモジュールは、読み込むことができません。
+
+<b>libモジュールを使って、モジュールの検索パスを追加する</b>
+
+<pre>
+use lib './lib';
+</pre>
+
+<a href="/blog/20100525127859.html">lib</a>モジュールを使うことで、コンパイル時に、@INC に、検索パスを追加できます。
+
+<b>@INC の先頭に直接、モジュールの検索パスを追加する</b>
+
+<pre>
+unshift @INC, './lib2';
+</pre>
+
+<a href="/blog/20100105126425.html">unshift関数</a>で、直接先頭に、追加します。このやり方より、use lib を用いるほうがよいです。use lib を使う利点は、コンパイル時に、検索パスが追加されることと、可読性が高まること、アーキテクチャに応じたパスも追加されることです。
+
+<h4>%INC - 読み込まれているモジュールを調べる</h4>
+
+<a href="/blog/20180529152759.html">読み込まれているモジュール</a>を調べるには<strong>%INC</strong>という変数を見ます。
+
+<pre>
+%INC
+</pre>
+
+%INC ハッシュは、モジュール名とモジュールのファイル名の組み合わせが、代入されています。モジュール名と、実際にどのファイルをインポートしたのかがわかります。
+
+モジュールの検索パスが格納されている、 @INC とは何の関係もありません。@INC と %INC はまったく別の変数です。モジュール名だけを知りたい場合は、<a href="/blog/20080210120265.html">keys関数</a>で、キーだけを取り出してあげます。
+
+<h4>$^O - OS名を取得する</h4>
+
+<a href="/blog/20180527152759.html">OS名を取得</a>するには<strong>$^O</strong>という特殊変数を使用します。
+
+<pre>
+$^O
+</pre>
+
+<b>$^O の値とOSの種類</b>
+
+各OSにおける「$^O」の値をまとめました。
+
+<table>
+  <tr>
+    <td>
+      <span style="font-weight:bold;">$^Oの値</span>
+    </td>
+    <td>
+      <span style="font-weight:bold;">説明とリンク</span>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      MacOS　
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/Mac_OS">MacOS</a> 
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      MSWin32 
+    </td>
+  </tr>
+|<a href="http://ja.wikipedia.org/wiki/Microsoft_Windows">Windows 全般</a>|
+  <tr>
+    <td>
+      os2     
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/OS/2">OS/2</a> 
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      VMS      
+    </td>
+    <td>
+        <a href="http://ja.wikipedia.org/wiki/OpenVMS">VMS</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      epoc     
+    </td>
+    <td>
+       <a href="http://sudo.com/index.php/archive/mobilephone/nokia/epoc-os">EPOC OS　  (たぶん) </a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      NetWare  
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/NetWare">NetWare</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      symbian  
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/Symbian_OS">Symbian OS</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      dos      
+    </td>
+    <td>
+      <a href="http://ja.wikipedia.org/wiki/MS-DOS">MS-DOS</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      cygwin   
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/Cygwin">cygwin</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      linux    
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/Linux">Linux</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      freebsd  
+    </td>
+    <td>
+      <a href="http://ja.wikipedia.org/wiki/FreeBSD">FreeBSD</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      solaris  
+    </td>
+    <td>
+      <a href="http://ja.wikipedia.org/wiki/Solaris">Solaris</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      Unix  ( 違うかも )     
+    </td>
+    <td>
+       <a href="http://ja.wikipedia.org/wiki/UNIX">Unix</a> 
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      darwin 
+    </td>
+    <td>
+      Mac OS X
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      CentOS
+    </td>
+    <td>
+      Linux
+    </td>
+  </tr>
+
+</table>
+
+<h3>その他の特殊変数</h3>
+
+<h4>$$ - プロセスIDを取得する</h4>
+
+<a href="/blog/20180520152690.html">プロセスIDを取得</a>するには特殊変数「<strong>$$</strong>」を使用します。
+
+<pre>
+$$
+</pre>
+
+プロセスIDとは、OSがプロセスを一意に識別するために、プロセス起動時に割り当てる識別子のことです。
+
+<h4>$^T - プロセスの開始時刻を取得する </h4>
+
+<a href="/blog/20180526152759.html">プロセスの開始時刻を取得</a>するには特殊変数「<strong>$^T</strong>」を使用します。
+
+<pre>
+$^T
+</pre>
+
+時刻は、エポック秒(1970年1月1日0時0分0秒からの秒数) で取得されます。
+
+<h4>$? - 子プロセスの終了ステータス</h4>
+
+<a href="/blog/20180525152759.html">子プロセスの終了ステータス</a>を取得するには「$?」を使用します。
+
+<pre>
+$?
+</pre>
+
+waitで子プロセスの終了を待った]場合は、$?に子プロセスの終了ステータスを含めた複数の値が格納されます。またsystem関数を使って子プロセスを実行した場合にも$?が設定されます。
+
+<h3>すべての特殊変数の一覧</h3>
+
+特殊変数の一覧を以下にまとめておきます。詳細については<a href="http://perldoc.jp/docs/perl/5.20.1/perlvar.pod">公式ドキュメント「perlvar」</a>をご覧ください。
+
+<table>
+  <tr>
+    <td>
+      *特殊変数
+    </td>
+    <td>
+      *意味
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $_
+    </td>
+    <td>
+      デフォルト引数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      @_
+    </td>
+    <td>
+      サブルーチンの引数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $"
+    </td>
+    <td>
+      配列がダブルクォートで変数展開された場合のセパレーター
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $$
+    </td>
+    <td>
+      プロセスID
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $0
+    </td>
+    <td>
+      実行されているプログラムの名前
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $(
+    </td>
+    <td>
+      プロセスの実グループID
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $)
+    </td>
+    <td>
+      プロセスの実行グループID
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $<
+    </td>
+    <td>
+      プロセスの実ユーザーID
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $>
+    </td>
+    <td>
+      プロセスの実行ユーザーID
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $;
+    </td>
+    <td>
+      多次元配列のエミュレーションのための添え字の区切り文字
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $a, $b
+    </td>
+    <td>
+      sort関数で使う変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %ENV
+    </td>
+    <td>
+      環境変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^F
+    </td>
+    <td>
+      ファイル記述子の最大値
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      @F
+    </td>
+    <td>
+      自動スプリットモードが有効の場合、それぞれの行のフィールドを含む
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      @INC
+    </td>
+    <td>
+      ライブラリの読み込みパスのリスト
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %INC
+    </td>
+    <td>
+      インクルードされたファイルの名前の一覧
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^I
+    </td>
+    <td>
+      置き換え編集の拡張子
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^M
+    </td>
+    <td>
+      メモリが足りなくなった場合にトラップするか
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^O
+    </td>
+    <td>
+      オペレーティングシステムの名前
+    </td>
+  </tr>
+|
+  <tr>
+    <td>
+      %SIG
+    </td>
+    <td>
+      シグナルハンドラ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^T
+    </td>
+    <td>
+      プログラムを開始した時刻
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^V
+    </td>
+    <td>
+      Perlのバージョン情報
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^X
+    </td>
+    <td>
+      実行されたときの名前
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $1, $2, $3
+    </td>
+    <td>
+      正規表現でキャプチャされた文字列
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $&
+    </td>
+    <td>
+      最後に成功したパターンマッチでマッチした文字列
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $`
+    </td>
+    <td>
+      パターンマッチでマッチした文字列の前の部分
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $'
+    </td>
+    <td>
+      パターンマッチでマッチした文字列の後の部分
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $+
+    </td>
+    <td>
+      最後のパターンマッチの最後にキャプチャされた文字列
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^N
+    </td>
+    <td>
+      パターンマッチにおける最後に使われたグループ
+    </td>
+  </tr>
+|
+  <tr>
+    <td>
+      @+
+    </td>
+    <td>
+      最後に成功したマッチングの最後へのオフセット
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %+
+    </td>
+    <td>
+      最後に成功したマッチングで名前付きキャプチャの値
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      @-
+    </td>
+    <td>
+      最後マッチした先頭のオフセット
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %-
+    </td>
+    <td>
+      最後に成功したマッチングで名前付きキャプチャの値、値のリストが可能
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^R
+    </td>
+    <td>
+      正規表現アサートの結果
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^RE_DEBUG_FLAGS}
+    </td>
+    <td>
+      正規表現デバッグフラグ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $ARGV
+    </td>
+    <td>
+      &lt;&gt;からの読み込んでいるときのファイル名
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      @ARGV
+    </td>
+    <td>
+      コマンドライン引数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ARGV
+    </td>
+    <td>
+      &lt;ARGV&gt;で@ARGVの中のファイル名に対するファイルハンドル
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ARGVOUT
+    </td>
+    <td>
+      -iを使ったときの現在開いているファイルハンドル
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $,
+    </td>
+    <td>
+      printのための出力フィールドの区切り文字
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $.
+    </td>
+    <td>
+      ファイルハンドルの現在の行番号
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $/
+    </td>
+    <td>
+      入力レコードセパレーター
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $\
+    </td>
+    <td>
+      出力レコードセパレーター
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $&#x7c;
+    </td>
+    <td>
+      バッファリングしないようにする
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^LAST_FH}
+    </td>
+    <td>
+      最後に読み込んだファイルハンドルへのリファレンス
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^A
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^L
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $%
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $-
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $:
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $=
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $~
+    </td>
+    <td>
+      フォーマットに関する特殊変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^CHILD_ERROR_NATIVE}
+    </td>
+    <td>
+      システムコールにおけるネイティブなステータス
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^E
+    </td>
+    <td>
+      現在のOSのエラー情報
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^S
+    </td>
+    <td>
+      現在のインタープリタの状態
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^W
+    </td>
+    <td>
+      警告
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $!
+    </td>
+    <td>
+      システムコールのエラー
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %!
+    </td>
+    <td>
+      システムコールのエラーナンバーと内容
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $?
+    </td>
+    <td>
+      子プロセスのエラー
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $@
+    </td>
+    <td>
+      <a href="/blog/20100312126967.html">eval</a>で例外をキャッチした場合に、その内容が保存される
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^C
+    </td>
+    <td>
+      コンパイルスイッチ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^D
+    </td>
+    <td>
+      デバッグフラグ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^ENCODING}
+    </td>
+    <td>
+      Perlのソースコードの文字コード
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^GLOBAL_PHASE}
+    </td>
+    <td>
+      Perlインタープリタの現在のフェーズ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^H
+    </td>
+    <td>
+      コンパイル時ヒント
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      %^H
+    </td>
+    <td>
+      $^Hと同じスコープを持つ
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^OPEN}
+    </td>
+    <td>
+      PerlIOのための内部変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      $^P
+    </td>
+    <td>
+      デバッグのための内部変数
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^TAINT}
+    </td>
+    <td>
+      テイントモードかどうか
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^UNICODE}
+    </td>
+    <td>
+      ユニコード設定
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^UTF8CACHE}
+    </td>
+    <td>
+      内部UTF-8のオフセットキャッシュコードの状態
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      ${^UTF8LOCALE}
+    </td>
+    <td>
+      UTF-8ロケールが検出されたかどうか
+    </td>
+  </tr>
+
+</table>
+
+特殊変数は、ソースコードの可読性を著しく下げるので、本当に必要になるまでは、使わないことをお勧めします。
+

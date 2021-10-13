@@ -1,0 +1,80 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20101114127859.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>Mojolicious::LiteからMojoliciousに移行する場合に考えておきたいこと</h2>
+
+
+
+仕事でMojolicious::Liteでプロトタイピングをはじめて、Mojoliciousに移行させたのですけれど、そのときにこんな風にMojolicious::Liteを記述しておいたほうが移行が楽だったなぁということを書いておきます。ほとんとどの手順は<a href="http://wiki.livedoor.jp/mojolicious/d/Mojolicious::Guides::Growing">Mojolicious::Guides::Growing</a>を見れば大丈夫です。移行してみるとやはりメンテナンス性があがりますね。
+
+<h4>URLをコントローラとアクションのふたつの組にしておく</h4>
+
+Mojoliciousへの移行を考えている場合は、次のように定義しておくとよいです。ルート名は自動でも設定されますが、ハイフン区切りにしておくと見やすいでしょう。
+
+<pre>
+# Mojolicious::Lite
+get '/foo/bar' => sub { ... } => 'foo-bar';
+
+# Mojolicious
+$r->get('/foo/bar')->to('foo#bar')->name('foo-bar');
+</pre>
+
+URLにパラメーターを含めるのはもちろんかまいません。アクションとコントローラには影響がありません。
+
+<pre>
+# Mojolicious::Lite
+get '/foo/bar/:id' => sub { ... } => 'foo-bar';
+
+# Mojolicious
+$r->get('/foo/bar/:id')->to('foo#bar')->name('foo-bar');
+</pre>
+
+以下のように3つにしてしまったりするとMojoliciousへの移行が大変になります。
+
+<pre>
+# Mojolicious::Lite
+get '/foo/bar/baz' => sub { ... } => 'foo-bar-baz';
+</pre>
+
+反対にアクション名がない場合はindexというアクションに対応させるとよいでしょう。
+
+<pre>
+# Mojolicious::Lite
+get '/foo' => sub { ... } => 'foo';
+
+# Mojolicious
+$r->get('/foo')->to('foo#index')->name('foo');
+</pre>
+
+<h3>埋め込まれているテンプレートファイルは自動的にファイルに出力できる</h3>
+
+埋め込まれているテンプレートファイルは自動的にファイルに出力できます。自分で記述する必要はありません。
+
+<pre>
+__DATA__
+
+@@ foo-bar.html.ep
+<html><body>Hello</body></html>
+</pre>
+
+inflateコマンドを使用します。
+
+<pre>
+perl myapp.pl inflate
+</pre>
+
+出力されたファイルは「foo-bar.html.ep」のようにハイフン区切りになっていますので、「foo/bar.html.ep」のようにコントローラー名を持つディレクトリを作ってその中にアクション名のファイルをいれます。
+

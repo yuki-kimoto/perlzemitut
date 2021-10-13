@@ -1,0 +1,77 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20170130148603.html">
+      <span itemprop="name">データベース</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>DBD::Oracleをインストール</h2>
+
+
+
+(CentOS5.5, CentOS5.7で確認)
+
+PerlモジュールのDBD::Oracleをインストールしたのでメモ。
+
+DBD::Oracleをインストールするためには以下のライブラリが必要でした。
+
+<pre>
+oracle-instantclient11.2-basic-11.2.0.2.0.i386.rpm
+oracle-instantclient11.2-devel-11.2.0.2.0.i386.rpm
+oracle-instantclient11.2-sqlplus-11.2.0.2.0.i386.rpm
+</pre>
+
+<a href="http://www.oracle.com/technetwork/jp/topics/linuxsoft-083388-ja.html">Oracleのサイトからダウンロード</a>できますが、ユーザー登録が必要になります。
+
+次にこれらのrpmパッケージをインストールします。
+
+<pre>
+rpm -hiv oracle-instantclient11.2-basic-11.2.0.2.0.i386.rpm
+rpm -hiv oracle-instantclient11.2-devel-11.2.0.2.0.i386.rpm
+rpm -hiv oracle-instantclient11.2-sqlplus-11.2.0.2.0.i386.rpm
+</pre>
+
+次に必要な環境変数の設定を行います。
+
+<pre>
+vi /etc/profile.d/oracle.sh
+</pre>
+
+上記の空のファイルに以下の設定を追加します。
+
+<pre>
+export ORACLE_HOME='/usr/lib/oracle/11.2/client'
+export C_INCLUDE_PATH='/usr/include/oracle/11.2/client'
+export LD_LIBRARY_PATH='/usr/lib/oracle/11.2/client/lib'
+</pre>
+
+次にライブラリの設定を行います。
+
+<pre>
+vi /etc/ld.so.conf.d/oracle.conf
+</pre>
+
+上記の空のファイルに以下の項目を追加します。
+
+<pre>
+/usr/lib/oracle/11.2/client/lib
+</pre>
+
+この状態で環境変数を反映させるために端末を立ち上げなおしてください。
+
+後はcpanコマンドでインストールするだけです。
+
+<pre>
+cpan DBD::Oracle
+</pre>
+

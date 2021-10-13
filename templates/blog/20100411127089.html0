@@ -1,0 +1,93 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+  </li>
+</ol>
+<h2>Perlの例外処理の仕組みを理解しよう</h2>
+
+
+
+Perlではエラーの通知に<strong>例外処理</strong>を使用することができます。例外処理はとても簡単です。例外を発生させる方法と例外をキャッチする方法を覚えればよいだけだからです。
+
+<h3>例外を発生させる</h3>
+
+例外を発生させるにはdie関数を使用します。dieが実行されるとプログラムはエラーステータスで終了します。dieには文字列を渡すことができます。
+
+<pre>
+# 例外を発生させる
+die $message;
+</pre>
+
+例外を発生させるサンプルを書いてみます。関数の中で値が正の整数ではなかった場合に例外を発生させるようにしています。プログラムはメッセージを表示して終了します。
+
+<pre>
+# 値のチェック。正の整数ではないので例外が発生し、プログラムは終了する。
+is_int('a');
+
+sub is_int {
+  my $num = shift;
+  
+  # 値が正の整数でない場合に例外を発生させる
+  die "\"$num\" must be number" unless $num =~ /^\d+$/;
+}
+</pre>
+
+<h3>例外をキャッチする</h3>
+
+呼び出した関数で例外が発生したときにプログラムを終了させたくない場合は例外をキャッチすることができます。例外をキャッチするには<a href="/blog/20100312126967.html">eval</a>ブロックを使用します。
+
+<pre>
+eval { 例外が発生する処理 };
+</pre>
+
+例外が発生した場合die関数で指定されたメッセージは$@という特殊変数に格納されます。この$@を利用して例外が発生した場合の処理を書きます。
+
+<pre>
+if ($@) {
+    # 例外が発生した場合の処理
+}
+</pre>
+
+例外が発生したということはエラーが起こったということなので、たいていの場合はそのまま処理を続けてもうまくいきません。例外をキャッチする動機としては、リトライしてエラーから回復できる可能性のある場合(タイムアウトなどの場合)や、そのままプログラムが終了すると一時ファイルなどのゴミが残ってしまうので後処理を行う必要がある場合などが挙げられます。
+
+is_int関数で発生した例外をキャッチするサンプルです。
+
+<pre>
+# 例外をキャッチ
+eval { is_int('a') };
+
+# 例外が発生した場合の処理
+if ($@) {
+  print "Exception occur: $@";
+}
+
+sub is_int {
+  my $num = shift;
+  
+  # 値が正の整数でない場合に例外を発生させる
+  die "\"$num\" must be number." unless $num =~ /^\d+$/;
+}
+</pre>
+
+<h3>モジュールで例外を発生させる場合</h3>
+
+モジュールを作成してその中の関数で例外を発生させる場合はCarpモジュールのcroak関数を使用します。croakは内部でdieを呼び出しています。dieと異なる点は、croakは呼び出し元の行番号を例外メッセージの中に含めてくれるということです。これによってモジュールの利用者がその関数やメソッドを呼び出した位置を知ることができます。
+
+<pre>
+package YourModule;
+
+use Carp 'croak';
+
+sub func {
+  
+  # 例外を発生させる
+  croak "Error message";
+}
+</pre>
+

@@ -1,0 +1,350 @@
+<script>location.href="https://mojolicious.perlzemi.com/blog/20110408130611.html";</script>
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+      <span itemprop="name">Perl</span>
+    </a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20140319139520.html">
+      <span itemprop="name">Mojolicious</span>
+    </a>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+<h2>MojoliciousでのテンプレートやJSONの描画 renderメソッドの解説</h2>
+
+
+
+
+<h3>JSONを描画する</h3>
+
+JSONを描画するにはMojolicious::Controllerクラスのrenderメソッドの<strong>json</strong>オプションを使用します。
+
+<pre>
+my $data = {name => 'Ken', age => 19};
+$c->render(json => $data);
+</pre>
+
+Perlのデータを渡すとJSONとして描画されます。
+
+<pre>
+// JSON
+{"name" : "Ken", "age" : 19}
+</pre>
+
+Perlのデータに含む文字列は内部文字列である必要があることに注意してください。Perlの内部文字列は自動的にUTF-8バイト文字列に変換されます。
+
+以下はMojoliciousとMojolicious::Liteのサンプルです。
+
+<pre>
+# Mojolicious::Lite
+get '/' => sub {
+  my $self = shift;
+  my $data = {name => 'Ken', age => 19};
+  $self->render(json => $data);
+};
+
+# Mojolicious
+package MyApp::Picture;
+
+use Mojo::Base 'Mojolicious::Controller';
+
+sub json_data {
+  my $self = shift;
+  my $data = {name => 'Ken', age => 19};
+  $self->render(json => $data);
+}
+</pre>
+
+注:render_jsonメソッドはMojolicious 4.0で削除されました。
+
+<h3>テンプレートを描画する</h3>
+
+テンプレートを描画するにはMojolicious::Controllerクラスの<strong>render</strong>メソッドを使用します。templateをキーに使用します。
+
+<pre>
+$c->render(template => $file);
+</pre>
+
+引数を与えない場合は、ルート名に対応するテンプレート、あるいはコントローラー名とアクション名に対応するテンプレートが描画されます。
+
+<pre>
+# ルート名に対応するテンプレート、
+# あるいはコントローラー名とアクション名に対応するテンプレートを描画
+$c->render;
+</pre>
+
+たとえばMojolicious::Liteの場合ははルート名を指定すると、それに対応するテンプレート「index.html.ep」が描画されます。
+
+<pre>
+get '/' => sub {
+  my $self = shift;
+  $self->render(template => 'index');
+};
+
+app->start;
+
+__DATA__
+
+@@ index.html.ep
+<html>
+...
+</html>
+</pre>
+
+Mojoliciousの場合はコントローラー名とアクション名に対応するテンプレート「picture/list.html.ep」が描画されます。
+
+<pre>
+package MyApp::Controller::Picture;
+
+use Mojo::Base 'Mojolicious::Controller';
+
+sub list {
+  my $self = shift;
+  $self->render;
+}
+</pre>
+
+<h4>Mojolicious 6での変更</h4>
+
+コントローラークラスの名前空間のデフォルトの場所は「MyApp」から「MyApp::Controller」になりました。MyAppは、まだ利用できますが、将来的には、廃止されるかもしれませんので、コントローラークラスは「MyApp::Controller::」のプレフィックスで、作成するようにしてください。
+
+<h3>メモリ上のZIPデータを描画する</h3>
+
+メモリ上のZIPデータを描画(HTTPレスポンスとして返す)するには以下のようにします。
+
+<pre>
+use Mojolicious::Lite;
+get '/' => sub {
+  # ZIPの作成
+  my $zip = Archive::Zip->new;
+  $zip->addDirectory('dir1');
+  
+  # スカラ変数にZIPの内容を出力
+  my $content;
+  open my $fh, '>', \$content;
+  binmode $fh;
+  $zip->writeToFileHandle($fh);
+  close $fh;
+  
+  # ZIPファイルの名前を指定
+  $self->res->headers->content_disposition("attachment; filename=foo.zip");
+  
+  # ZIPとして描画
+  return $self->render(data => $content, format => 'zip');
+};
+app->start;
+</pre>
+
+ZIPデータの作成にはArchive::Zipモジュールを使用します。Archive::ZipモジュールのaddDirectoryメソッドを使用してディレクトリを追加しています。
+
+Archive::Zipにはスカラ変数に出力する機能はなく、ファイルハンドルに出力する機能しかないので、Perlのスカラ入出力の機能を使って、スカラ変数に出力しています。
+
+Content-Dispositionヘッダを使うとファイルに名前をつけることができます。
+
+描画するときはZIPはバイナリデータなのでdataオプションを使用します。formatにzipを指定すれば、Content-Typeに自動的に「application/zip」を設定してくれます。
+
+<h3>CSVデータを描画する</h3>
+
+CSVデータを描画(HTTPレスポンスとして返す)するには以下のようにします。
+
+<pre>
+use Mojolicious::Lite;
+use Text::CSV::Encoded;
+use utf8;
+get '/' => sub {
+  my $self = shift;
+  
+  # Create Text::CSV::Encoded object
+  my $csv = Text::CSV::Encoded->new({encoding_out => 'UTF-8'});
+  
+  # Rows
+  my $rows = [
+    ['Perl', 'Ken'],
+    ['Ruby', 'Tom']
+  ];
+  
+  # Scalar I/O
+  my $content = '';
+  open my $fh, '>>', \$content;
+  
+  # Print csv data to scalar variable
+  for my $row (@$rows) {
+    $csv->print($fh, $row);
+    print $fh "\n";
+  }
+  
+  # HTTP Headers
+  my $headers = $self->res->headers;
+  $headers->content_disposition('attachment; filename=pictures.csv');
+  $headers->content_type('text/csv;charset=UTF-8');
+  
+  # Render data
+  return $self->render(data => $content);
+};
+app->start;
+</pre>
+
+CSVデータの作成にはText::CSV::Encodedモジュールを使用します。ひとつのレコードのデータを行に変換するためにはprintメソッドを利用するしかありませんが、これはファイルハンドルへの出力のためのメソッドです。そのためPerlのスカラ入出力の機能を使って、スカラ変数に出力しています。
+
+Content-Dispositionヘッダを使うとファイルに名前をつけることができます。CSVデータであることがわかるようにContent-Typeも指定しましょう。描画するときはCSVデータはバイナリデータ(内部文字列ではない)のでdataオプションを使用します。
+
+<h3>描画のときにテンプレートを記述するクラスを指定する</h3>
+
+描画のときにテンプレートを記述するクラスをrenderメソッドの引数で<strong>template_class</strong>を指定することができます。
+
+<pre>
+$c->render(template_class => $class);
+</pre>
+
+これはプラグインなどの中に直接テンプレートを記述したい場合にとても便利でしょう。Mojoliciousのプラグインはとても柔軟でWebアプリケーション自体を記述して取り込ませることができます。
+
+<pre>
+package Mojolicious::Plugin::Viewer;
+use Mojo::Base 'Mojolicious::Plugin';
+
+sub register {
+  my ($self, $app, $conf) = @_;
+  
+  my $r = $app->route;
+  $r->get('/viewer', sub {
+     my $self = shift;
+     # テンプレートクラスの指定
+     return $self->render(template_class => __PACKAGE__);
+  });
+}
+
+1;
+
+__DATA__
+
+@@ viewer.html.ep
+<html>
+  <head>
+    <title>Viewer</title>
+  <body>
+     Viewer <%= lc 'A' %>
+  </body>
+</html>
+</pre>
+
+<h3>動的に大きなファイルを配信する</h3>
+
+Webアプリケーションで、動的に大きなファイルを配信したいときにどうすればよいでしょうか。たとえば、データサイズがわからないので、一部づつ配信したい場合ですね。全部をメモリの上に乗せてしまうと、メモリが圧迫されてしまう可能性があるので、全部をメモリ上に乗せるというのは避けたいですね。
+
+こんなときはHTTPのチャンクエンコーディングを使って、一部づつ配信しましょう。ブラウザから見ると最終的にはひとつのファイルに見えるので問題はないです。
+
+write_chunkというメソッドとコールバックをうまく組み合わせれば実現できます。
+
+<pre>
+get '/sizeunknowndata' => sub {
+  my $self = shift;
+
+  my $file = 'foo.tar.gz';
+  open my $fh, '<', $file
+    or die "Error";
+
+  # Write chunk
+  $self->res->headers->content_type('application/gzip');
+  $self->res->headers->content_disposition(qq/attachment; filename="$file"/);
+  my $cb;
+  $cb = sub {
+    my $c = shift;
+    my $size = 500 * 1024;
+    my $length = sysread($fh, my $buffer, $size);
+    unless (defined $length) {
+      close $fh;
+      undef $cb;
+      return;
+    }
+    $c->write_chunk($buffer, $cb);
+  };
+  $self->$cb;
+};
+</pre>
+
+読み込むデータがなくなったら、ファイルハンドルを閉じて、$cbを未定義にして、参照を取り除きます。
+
+<h4>追記</h4>
+
+タイトルの「大きなファイルを配信する」というタイトルは誤解がありました。「動的に大きなファイルを配信する」というタイトルに変更しました。
+
+大きな静的ファイルは通常は「public」以下においておけば、メモリを圧迫することなく、配信できます。またMojoliciousは非同期I/Oですので、処理がブロッキングするということもありません。
+
+
+<h3>404 Not Foundのページを描画する</h3>
+
+404 Not foundのページ(ページが見つからないときに表示するページ)を描画するには<strong>reply->not_found</strong>を使用します。　
+
+<pre>
+get '/' => sub {
+  my $sefl =shift;
+  
+  # 404 not foundのページを描画したい場合
+  if (...) {
+    return $self->reply->not_found;
+  }
+
+  $self->render;
+}
+</pre>
+
+<h4>Mojolicious 6での変更点</h4>
+
+404 Not Foundページの描画は、render_not_foundから、reply->not_foundに変更されました。
+
+
+<h3>例外(エラー)ページを描画する</h3>
+
+意図していない処理で何らかのエラーが発生した場合に、ユーザーにエラーページを見せたい場合があります。そのようなページを描画するには<strong>reply->exception</strong>を使用します。　
+
+<pre>
+get '/' => sub {
+  my $sefl =shift;
+  
+  # 例外(エラー)ページを描画する
+  if (...) {
+    return $self->reply->exception;
+  }
+
+  $self->render;
+}
+</pre>
+
+<h4>Mojolicious 6での変更点</h4>
+
+例外ページを描画するための、render_exceptionメソッドは、reply->exceptionに変更されました。
+
+
+<h3>JSONの描画にJSON::XSを利用する方法</h3>
+
+MojoliciousはMojo::JSONという自前でJSONを描画するモジュールを持っていますが、これはピュアPerlで書かれています。JSONを高速に描画するために、JSON::XSを使いたいという場合は、次のようにしてJSONのためのハンドラを置き換えるのがよいと思います。
+
+<pre>
+use Mojolicious::Lite;
+use Mojo::JSON::XS;
+
+# jsonの描画のためのハンドラを置き換える
+app->renderer->add_handler(json => sub {
+  my ($self, $c, $output, $options) = @_;
+  $$output = Mojo::JSON::XS->new->encode($options->{json});
+});
+
+get '/' => sub {
+  my $self = shift;
+  
+  $self->render(json => {name => 'kimoto'});
+};
+
+app->start;
+</pre>
+
+Mojo::JSON::XSはMojo::JSONと同じインターフェースを持っていて、内部的にJSON::XSを利用しているモジュールです。Mojo::JSON::Anyというパッケージに含まれているので、使うときにはこれをインストールしましょう。
+
+<pre>
+cpan Mojo::JSON::Any
+</pre>
+
