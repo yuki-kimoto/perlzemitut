@@ -615,19 +615,6 @@
     padding-left:115px;
   }
 
-  .bottom {
-    padding-bottom:30px;
-    padding-top:30px;
-    margin-left:auto;
-    margin-right:auto;
-  }
-  .bottom h3 {
-    background:orange;
-    padding-top:17px;
-    padding-bottom:16px;
-    text-align:center;
-  }
-  
   .youtube_block {
     width:calc(100% - 30px);
     margin:0 auto;
