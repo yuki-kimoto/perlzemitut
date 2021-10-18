@@ -10,33 +10,18 @@
     <meta itemprop="position" content="2" />
   </li>
 </ol>
-<h2> ActivePerlをWindowsにインストールする</h2>
 
+<h2>ActivePerlのインストール</h2>
 
+<strong>ActivePerl</strong>はActiveState社によって無償で提供されているWindowsで商用利用可能なPerlディストリビューションの一つです。
 
-<strong>ActivePerl</strong>をWindowsに<strong>インストール</strong>してPerlを使えるようにしましょう。
+特徴はWindows関連のモジュールが多く添付されていることです。Excelなどを直接操作できるWin32::OLEなどのモジュールが標準で添付されています。
 
-<a href="https://www.activestate.com/activeperl"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180809/20180809180334.png?1533805550"></a>
+ActivePerlをWindowsにインストールしてPerlを使えるようにしましょう。インストールは簡単です。
 
-<a href="https://www.activestate.com/activeperl">ActivePerl | ActiveState</a>
+<h3>ActivePerlのダウンロード</h3>
 
-ActivePerlはActiveState社によって無償で提供されているPerlディストリビューションの一つです。
-
-特徴は
-
-<ul>
-  <li>
-    Windows関連のモジュールが多く添付されている
-  </li>
-</ul>
-
-ことです。Excelなどを直接操作できるWin32::OLEなどのモジュールが標準で添付されています。
-
-インストールは簡単です。CPANモジュールをインストールすることもできます。
-
-<h4>ActivePerlのダウンロード</h4>
-
-ActivePerlをt次のページからダウンロードします。2018年8月現在の最新版は、5.26.1です。
+ActivePerlをt次のページからダウンロードします。2021年現在の最新版は、5.32です。
 
 <ul>
   <li>
@@ -44,13 +29,13 @@ ActivePerlをt次のページからダウンロードします。2018年8月現�
   </li>
 </ul>
 
-<a href="https://www.activestate.com/activeperl/downloads"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180809/20180809181736_original.png?1533806274"></a>
+<a href="https://www.activestate.com/activeperl/downloads"><img style="border:1px solid #ddd;width:100%;" src="/images/active_perl/active_perl_click.png"></a>
 
-登録をするかどうか聞かれることがありますが、必須ではないので、ダウンロードを進めることができます。msiという拡張子はWindowsのインストーラであることを表します。
+2021年現在は、ActivePerlのダウンロードにはActiveStateへの会員登録が必要です。msiという拡張子はWindowsのインストーラであることを表します。
 
 フリーで提供されているのは64bit版だけです。
 
-<h4>ActivePerlのインストール</h4>
+<h3>ActivePerlのインストール</h3>
 
 ダウンロードしたActive Perlをダブルクリックします。
 
@@ -70,7 +55,7 @@ ActivePerlをt次のページからダウンロードします。2018年8月現�
 
 「Finish」を押してダイアログを閉じましょう。Readmeが表示されますが、これも閉じて大丈夫です。
 
-<h4>Perlがインストールされていることの確認</h4>
+<h3>Perlがインストールされていることの確認</h3>
 
 インストールが完了したら実際にActive Perlがインストールできているか確認してみましょう。
 
@@ -87,19 +72,45 @@ perl -v
 次のようにバージョン情報が表示されればインストールは成功しています。
 
 <pre>
-This is perl 5, version 26, subversion 1 (v5.26.1) built for MSWin32-x64-multi-thread
+This is perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x64-multi-thread
 (with 1 registered patch, see perl -V for more detail)
 </pre>
 
 これでActive Perlのインストールは完了です。
 
-WindowsでPerlを実行するためにはコマンドプロンプトと呼ばれるものを利用します。perlコマンドを使ってPerlスクリプトを実行できるようになります。
+<h3>Active Perlの使い方</h3>
 
-コマンドプロンプトの使い方を知りたい方は「<a href="/blog/20080603121251.html">Perlを実行するためのコマンドプロンプト入門</a>」という記事で解説しています。
+Active Perlは、Windowsでは、コマンドプロンプトと呼ばれるツール上でperlコマンドを使って、実行します。
 
-<h3>その他のPerlのインストール方法</h3>
+コマンドプロンプトの使い方を知りたい方は「<a href="/blog/20080603121251.html">Perlを実行するためのコマンドプロンプト入門</a>」という記事を参考にしてください。
 
-WindowsでPerlを利用するその他の方法については、以下を参考にしてください。それぞれに長所があります。
+<h3>Active Perlのその他の情報</h3>
+
+Active Perlのその他の情報です。
+
+<h4>Active Perlのアンインストール方法</h4>
+
+Active Perlのアンインストール方法の解説です。Windows 10で実行した例です。
+
+「スタートメニュー」→「設定」→「アプリ」→「Active Perlをクリック」→「アンインストール」
+
+<h4>ActivePerlとStrawberry Perlの違い</h4>
+
+Strawberry Perlは、ActivePerlによく似ていますが、会員登録が必要ない、<a href="https://c.perlzemi.com/">C言語</a>のコンパイラでPerlの<a href="/blog/20100809127859.html">XSモジュール</a>のコンパイルに必要なMinGWがデフォルトでインストールされている、<a href="https://perlzemi.com/blog/20101027127859.html">cpanm</a>がデフォルトでインストールされている、使用頻度の高い画像処理などのライブラリが使えるなど、Perlユーザーが使いやすい構成になっています。
+
+またActive Perlは無償利用では、最新バージョンのPerlだけが公開されているのに対して、Strawberry Perlでは、古いバージョンのPerlも公開されています。
+
+<h4>ActivePerlのインストールのサポート</h4>
+
+ActivePerlをインストールできない、ActivePerlのインストールに失敗したということでお困りの場合は、Perlゼミを運営しているPerlクラブのPerlクラブフォーラムでご質問ください。
+
+<ul>
+  <li><a href="https://perlclub.net/forum">Perlクラブフォーラム</a></li>
+</ul>
+
+<h4>Windowsへのその他のPerlのインストール方法</h4>
+
+WindowsでPerlを利用するその他の方法については、以下を参考にしてください。
 
 <ul>
   <li>
