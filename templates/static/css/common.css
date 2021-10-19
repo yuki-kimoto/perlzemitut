@@ -178,8 +178,8 @@
     font-size:12px;
   }
   .block-link-list ul {
-    padding:0 16px;
-    margin-left:0;
+    margin-left:10px;
+    margin-right:10px;
   }
   .block-link-list li {
     border: 1px solid #ddd;
@@ -343,22 +343,18 @@
   }
 
   h2 {
-    padding:12px 5px 5px 35px;
-    font-size:22px;
+    padding:16px 5px 13px 15px;
+    font-size:23px;
     margin:0;
     margin-top:0px;
     margin-bottom:15px;
     display: block;
     vertical-align: middle;
     line-height:130%;
-    border-left:none;
     background:url(/images/allow.png) no-repeat;
     background-position:0 5px;
-    border:3px solid #eaefee;
     border-top:3px solid #0f9b6c; 
     background-color:#e8efed;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.4);
-    background-position:10px 13px;
   }
   h2 a, h2 a:visited {
     color:#333;
@@ -685,6 +681,8 @@
     padding-right:0;
     border-left:0;
     border-right:0;
+    margin-left:10px;
+    margin-right:10px;
   }
 
   h3 {
@@ -693,9 +691,9 @@
   }
 
   /* ヘッダ */
-  .header_main, h2,h4,h5, p, pre {
-    margin-left:auto;
-    margin-right:auto;
+  .header_main, h4, h5, p, pre {
+    margin-left:10px;
+    margin-right:10px;
   }
   .header_right a,.header_right a:visited {
     padding:15px 10px 10px 10px;
