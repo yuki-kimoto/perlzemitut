@@ -193,6 +193,27 @@ dirコマンドはOS依存です。そのOSで「ls -l」を実行した出力�
 -rwx------  1 someuser  somegroup     77 Apr  1  2009 mm.txt
 </pre>
 
+<h4>rmdir</h4>
+
+ディレクトリを削除します。
+
+<pre>
+# ディレクトリの削除
+$ftp->rmdir($dir)
+</pre>
+
+<h4>mkdir</h4>
+
+ディレクトリを作成します。第二引数が真であれば、再帰的にディレクトリを作成します。
+
+<pre>
+# ディレクトリを作成
+$ftp->mkdir($dir)
+
+# 再帰的にディレクトリを作成
+$ftp->mkdir($dir, $is_recurse)
+</pre>
+
 <h4>quit</h4>
 
 FTPサーバーとの接続を閉じます。
