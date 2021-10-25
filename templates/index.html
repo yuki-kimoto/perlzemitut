@@ -130,86 +130,19 @@ Perlゼミのお勧めの記事です。
   </li>
 </ul>
 
-<h3>Perlプログラミングの特徴</h3>
+<h3>Perlって何ができるの?</h3>
 
-Perlは、初心者が始めやすいテキスト処理が得意なプログラミング言語です。需要の高いLinuxサーバー管理や、Web開発のHTML・CSS編集では、テキスト表現を頻繁に扱いますので、Perlプログラミングの基本をしっかりマスターすることが、プロのITエンジニアを目指す近道のひとつです。
-
-Perlは正規表現が、プログラミング言語の機能として組み込まれており、文章の中にある単語を簡単に検索・置換できます。(置換の例)「perl -p -e 's/りんご/みかん/g'」。Perlは、Linux/Unixミドルウェアを支えるツールの基盤であるため、ほとんどのLinux/Unixの環境にインストールされており、後方互換性が高く安定して運用できることに定評があります。
-
-PerlってCGIじゃないの? 古くて嫌われているんじゃないの? 「$」「@」記号だらけで読みにくいんじゃないの? そんな疑問・不安をお持ちの方も多いようです。安心してください。2021年のPerl Web開発は、1990年代と異なり、扱いやすいWebフレームワーク・良質な開発ライブラリがあり、クラウドサーバー対応、パフォーマンス良好で、push通知やリアルタイム更新などの現代的なWeb開発機能を実現できます。
-
-パブリッククラウドのひとつのAmazon AWSでは、PerlのAIライブラリAI::MXNet(C++ライブラリへのバインディング)が公式にサポートされており、トレンド技術への対応も進んでいます。
-
-<h3>Perlプログラミングをお試し</h3>
-
-以下のコードをリンク先で、貼り付けて「Save for 30 days & run」のボタンをクリックしてみてください。「,」カンマ区切りデータを「|」区切りに変換するPerlプログラムです。
-
-<pre>
-use strict;
-use warnings;
-
-# 「,」カンマ区切りデータを「|」区切りに変換する
-while (my $line = <DATA>) {
-    chomp $line;
-    my @items = split(/,/, $line);
-    my $new_line = join('|', @items);
-    print "$new_line\n";
-}
-
-__DATA__
-1,Web Development,2000
-2,Perl Tutorial,1500
-</pre>
-
-<a href="https://perlbanjo.com/">プログラムを試す</a>
-
-入力は「__DATA__」以下に書かれているデータです。
-
-<pre>
-1,Web Development,2000
-2,Perl Tutorial,1500
-</pre>
-
-Perlを実行すると出力結果は、以下のようになります。
-
-<pre>
-1|Web Development|2000
-2|Perl Tutorial|1500
-</pre>
-
-プロのITエンジニアになるための、最初のPerlテキスト処理プログラミングを実行しました。おめでとうございます!
-
-<h3>PerlでLinuxサーバー管理</h3>
-
-PerlはLinuxとの相性が良いです。viテキストエディタや基本的なLinuxコマンド、Linuxの仕組みについて学びたい方はこちら。UbuntuでのWeb開発環境構築のサイトもあります。Gitによるソースコード管理方法も解説しています。
+「Perlって何ができるの」ということを記事にしてみました。
 
 <ul>
-  <li><a href="https://linux.perlclub.net/">Linuxサーバー管理入門</a></li>
-  <li><a href="https://ubuntu.perlclub.net/">Ubuntu開発環境構築</a></li> 
-  <li><a href="https://git.perlclub.net/">Git入門</a></li>
-</ul>
-
-<h3>PerlでWebサイト作成</h3>
-
-Webサイト作成のためにHTML・CSSを学びたい方は、こちら。Giblogというツールを使って、Webサイトを作る方法も解説しています。
-
-<ul>
-  <li><a href="https://htmlcss.perlclub.net/">HTML・CSS入門</a></li> 
-  <li><a href="https://giblog.perlclub.net">Giblog</a></li>
-</ul>
-
-<h3>PerlでWebアプリ開発</h3>
-
-Web開発環境構築が終わって、Webアプリ開発を始めたいならこちら。
-
-<ul>
-  <li><a href="https://webapp.perlzemi.com/">Webアプリ開発入門</a></li>
+  <li>
+    <a href="/blog/20100228126944.html">何ができるの?</a>
+  </li>
 </ul>
 
 <h3>Perlの哲学</h3>
 
-Perlを嫌っている人の発言を、どこかで見たり聞いたりしてその理由を知りたいという動機で検索された方もおられるでしょう。Perlへの誤解を解いて、Perlの哲学を知ることができるコンテンツをご用意しています。「PerlってCGI?」「$ @ など記号の違いが難しくって、嫌われている?」そんな疑問に答えるコンテンツもご用意しています。
-Perlは、正規表現が言語に組み込まれており、テキスト処理が得意なプログラミング言語です。現在でも、テキスト処理・Web開発の分野でPerlを使う意味は十分にあると考えています。
+Perlを嫌っている方の発言を、どこかで見たり聞いたりしてその理由を知りたいという動機で検索された方もおられるでしょう。Perlへの誤解を解いて、Perlの哲学を知ることができるコンテンツを作成しました。
 
 <ul>
   <li><a href="https://philosophy.perlzemi.com/">言語哲学を知る</a></li>
