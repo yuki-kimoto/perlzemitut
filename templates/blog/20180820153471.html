@@ -23,9 +23,9 @@ WindowsにPerlをインストールしましょう。Strawberry Perl, ActivePerl
 
 <h4>Strawberry Perlのインストール</h4>
 
-Strawberry Perl(ストロベリーパール)は、WindowsでのPerlディストリビューションのひとつです。Strawberry Perlは、インストールが簡単で、<a href="https://c.perlzemi.com/">C言語</a>のコンパイラ「MinGW」、<a href="https://perlzemi.com/blog/20101008127859.html">CPAN</a>モジュールインストーラー「<a href="https://perlzemi.com/blog/20101027127859.html">cpanm</a>」、画像処理などで良く使うCライブラリが添付されています。
+Strawberry Perl(ストロベリーパール)は、WindowsでのPerlディストリビューションのひとつです。Strawberry Perlは、インストールが簡単で、<a href="https://c.perlzemi.com/">C言語</a>のコンパイラ「<a href="https://ja.wikipedia.org/wiki/MinGW">MinGW</a>」、<a href="/blog/20101008127859.html">CPAN</a>モジュールインストーラー「<a href="/blog/20101027127859.html">cpanm</a>」、画像処理などで良く使うCライブラリが添付されています。
 
-<a href="/blog/20180808153368.html"><img style="border:1px solid #ddd" width="340" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180808/20180808073552.png?1533681423"></a>
+<a href="/blog/20180808153368.html"><img style="border:1px solid #ddd;max-width:450px;" src="/images/strawberry_perl/strawberry_perl_logo.png"></a>
 
 <a href="/blog/20180808153368.html">Strawberry Perl(ストロベリーパール)をWindowsにインストールする</a>
 
@@ -33,12 +33,14 @@ Strawberry Perl(ストロベリーパール)は、WindowsでのPerlディスト�
 
 ActivePerlも、WindowsでPerlを使えるように設定されたPerlのひとつです。ExcelなどのWindowsアプリと連携したり、GUIの画面を作ったりしたい場合は、これがおすすめです。
 
-<a href="/blog/20080602121231.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180809/20180809180334.png?1533805550"></a>
+<a href="/blog/20080602121231.html"><img style="border:1px solid #ddd;max-width:480px;" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180809/20180809180334.png?1533805550"></a>
 <a href="/blog/20080602121231.html">ActivePerlをWindowsにインストールする</a>
 
 <h4>msys2をWindowsにインストールしてPerlを使う</h4>
 
-msys2はWindows上に完全なLinux環境を再現できるツールです。
+msys2はWindows上に疑似的なLinux環境を構築できるツールです。
+
+<a href="/blog/20180806153350.html"><img style="max-width:500px;" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180806/20180806080447.png"></a>
 
 たとえば、Windowsでは、<a href="/blog/20161103147817.html">プロセス間通信</a>に関する機能が通常ではうまく動きませんが、msys2上であればうまく動きます。
 
@@ -46,40 +48,28 @@ msys2はWindows上に完全なLinux環境を再現できるツールです。
 
 Web開発をWindowsで体験してみたい場合は、お勧めの方法です。
 
-<a href="/blog/20180806153350.html"><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180806/20180806080447.png"></a>
-
 <a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>
 
 <div id="mac"></div>
 
-<h3>macOSにおけるPerlのインストール</h3>
+<h3>MacへのPerlのインストール</h3>
 
-ITエンジニアといえばmacOSというくらいに、開発者はmacOS所有率が高しです。
+MacにはPerlが標準でインストールされていますが、ユーザー環境に最新のPerlをインストールすることもできます。
 
-macOSにはPerlが標準でインストールされていますが、ユーザー環境に最新のPerlをインストールすることもできたりします。
+<a href="/blog/20180814153419.html"><img style="border:1px solid #ddd;max-width:300px;" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180821/20180821072522.png"></a>
 
 ユーザー環境にPerlがインストールできるとシステム環境を汚さなくっても済むのでお勧めの方法でもあります。
 
 次の記事では、macOSへのPerlのインストール方法を解説しています。
 
-<a href="/blog/20180814153419.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180821/20180821072522.png"></a>
-
 <a href="/blog/20180814153419.html">macOSへのPerlのインストール</a>
 
 <div id="linux"></div>
 
-<h3>Unix/LinuxにおけるPerlのインストール</h3>
+<h3>LinuxへのPerlのインストール</h3>
 
-Perlで作ったWebサイトを公開する場合は、最終的にはUnix/Linuxのサーバーに配置することになります。
+LinuxへのPerlのインストール方法の解説です。Perlで<a href="https://webapp.perlzemi.com/">Webアプリ</a>を開発したり、公開したりする場合は、<a href="https://linux.perlzemi.com/">Linuxサーバー</a>を使うことが多いでしょう。PerlはUNIX生まれのプログラミング言語で、LinuxはUNIXの派生です。PerlはUnixやLinuxと相性が良いです。
 
-Perlに慣れてくると開発環境をUnix/Linuxそのものにしたほうが開発効率が良くなることでしょう。
+<a alt="Unix/LinuxへのPerlのインストール" href="/blog/20180813153411.html"><img style="border:1px solid #ddd;max-width:400px;" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180820/20180820075726.png"></a>
 
-本番環境と同じ環境で開発をしたほうが、本番環境と開発環境のずれがなくって、やりやすいということもあります。
-
-次の記事では、Unix/LinuxにおけるPerlのインストール方法を解説していますので参考にしてください。
-
-<a alt="Unix/LinuxへのPerlのインストール" href="/blog/20180813153411.html"><img style="border:1px solid #ddd" src="https://cdn-ak.f.st-hatena.com/images/fotolife/p/perlcodesample/20180820/20180820075726.png"></a>
-
-<a href="/blog/20180813153411.html">Unix/LinuxへのPerlのインストール</a>
-
-
+<a href="/blog/20180813153411.html">LinuxへのPerlのインストール</a>
