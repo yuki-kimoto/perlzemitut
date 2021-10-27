@@ -138,40 +138,137 @@ my $win;
 }
 </pre>
 
-<!--
+<h3>キーボード入力</h3>
 
-<h4>キーボード入力</h4>
-    # Consoleタブへ移動
-    SendKeys('^]');
+キーボード入力ついて説明します。
 
-    # Elementsタブへ移動
-    SendKeys('^[');
-    
-    # 下のタグに移動
-    SendKeys('{DOWN}');
+<h4>キーボード入力の基本</h4>
 
-    # 上のタグに移動(bodyを選択できる
-    SendKeys('{UP}');
+キーボード入力するにはSendKeys関数を使用します。複数の文字を指定した場合は、デフォルトで50m間隔でキーボード入力が行われます。
 
+<pre>
+# 「a」とキーボード入力
+SendKeys('a');
+
+# 「abcde」とキーボード入力
+SendKeys('abcde');
+</pre>
+
+同じ文字を、繰り返し実行する場合は<a href="/blog/20180227151973.html">繰り返し演算子「x」</a>を使うと簡単です。
+
+<pre>
+「a」を5回入力
+SendKeys('a' x 5);
+</pre>
+
+<h4>アルファベット以外のキー</h4>
+
+上下左右、タブ、ファンクションキー、Enterキーなどは、アルファベット以外のキーです。「{キー名}」という記法を使います。
+
+<pre>
+SendKeys('{DOWN}');
+SendKeys('{UP}');
+SendKeys('{ENTER}');
+SendKeys('{TAB}');
+SendKeys('{F12}');
+</pre>
+
+すべてのアルファベット以外のキー名です。<a href="https://metacpan.org/pod/Win32::GuiTest">Win32::GuiTestのドキュメント</a>から引用しました。
+
+<pre>
+{BACKSPACE}   Backspace
+{BS}          Backspace
+{BKSP}        Backspace
+{BREAK}       Break
+{CAPS}        Caps Lock
+{DELETE}      Delete
+{DOWN}        Down arrow
+{END}         End
+{ENTER}       Enter (same as ~)
+{ESCAPE}      Escape
+{HELP}        Help key
+{HOME}        Home
+{INSERT}      Insert
+{LEFT}        Left arrow
+{NUMLOCK}     Num lock
+{PGDN}        Page down
+{PGUP}        Page up
+{PRTSCR}      Print screen
+{RIGHT}       Right arrow
+{SCROLL}      Scroll lock
+{TAB}         Tab
+{UP}          Up arrow
+{PAUSE}       Pause
+{F1}          Function Key 1
+...           ...
+{F24}         Function Key 24
+{SPC}         Spacebar
+{SPACE}       Spacebar
+{SPACEBAR}    Spacebar
+{LWI}         Left Windows Key
+{RWI}         Right Windows Key 
+{APP}         Open Context Menu Key
+</pre>
+
+TABで特定のフォーム部品にフォーカスを当てたい場合は、繰り返し使うので、繰り返し演算子と一緒に使うと便利です。
+
+<pre>
+SendKeys('{TAB}' x 5);
+</pre>
+
+<h4>Ctrl, Alt, Shift</h4>
+
+Ctrl, Alt, Shiftを押しながらのキーボード入力は、以下の文字を、先頭につけることでできます。
+
+<pre>
++ means SHIFT 
+^ means CTRL 
+% means ALT
+</pre>
+
+
+Ctrl, Alt, Shiftを組み合わせた例です。
+
+<pre>
+# Ctrl + c (コピー)
 SendKeys('^c');
-  SendKeys('^l');
-  SendKeys('^v');
-  SendKeys('{ENTER}');
-  SendKeys('{TAB}' x $baibai_bukken_search_button_tab_press_count);
-  SendKeys('^v');
-    SendKeys('{LEFT}');
-  SendKeys('{RIGHT}' x $bukken_search_results_pagenation_forword_right_count_max);
-  SendKeys('{F12}');
-    SendKeys('^]');
-    SendKeys('^[');
-    SendKeys('{DOWN}');
-    SendKeys('{UP}');
-  SendKeys('^c');
-  SendKeys('{F12}');
--->
 
+# Ctrl + v (貼り付け)
+SendKeys('^v');
 
-<h3>クリップボード</h3>
+# Shift + a (A)
+SendKyes('+a');
+
+# Alt + l (画面ロック)
+SendKyes('%l');
+</pre>
+
+<h4>日本語のフォーム入力</h3>
+
+IMEを使って日本語をキーボードからフォーム入力するのは、難しいです。
+
+キーボードから入力するのではなくって、Perlの内部文字列を、Windowsのクリップボードに保存して、それを、フォーム入力に貼り付けるのがお勧めです。Perlのソースコードは、UTF-8で保存してください。
+
+<pre>
+use utf8;
+use Encode 'encode';
+
+use Win32::GuiTest;
+use Win32::Clipboard;
+
+# クリップボードオブジェクトの作成
+my $clip = Win32::Clipboard->new;
+
+my $string = 'Perlゼミ';
+
+# 文字列をクリップボードに保存
+$clip->Set(encode('cp932', $string));
+
+# 「Ctrl + v」で貼り付け
+SendKeys('^v');
+</pre>
+
+<h3>クリップボード操作</h3>
 
 クリップボード操作について解説します。テキストをコピーしたり、フォームの入力欄に、文字を貼り付ける場合に使用します。
 
@@ -283,31 +380,6 @@ if ($html =~ /検索結果/) {
 <h3>RPAロボット作成のポイント</h3>
 
 RPAロボット作成のポイント
-
-<h4>日本語のフォーム入力</h3>
-
-IMEを使って日本語をキーボードからフォーム入力するのは、難しいです。
-
-キーボードから入力するのではなくって、Perlの内部文字列を、Windowsのクリップボードに保存して、それを、フォーム入力に貼り付けるのがお勧めです。Perlのソースコードは、UTF-8で保存してください。
-
-<pre>
-use utf8;
-use Encode 'encode';
-
-use Win32::GuiTest;
-use Win32::Clipboard;
-
-# クリップボードオブジェクトの作成
-my $clip = Win32::Clipboard->new;
-
-my $string = 'Perlゼミ';
-
-# 文字列をクリップボードに保存
-$clip->Set(encode('cp932', $string));
-
-# 「Ctrl + v」で貼り付け
-SendKeys('^v');
-</pre>
 
 <h4>ブラウザの応答を待つ</h4>
 
