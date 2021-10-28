@@ -1,4 +1,4 @@
-<h2>PerlでWebブラウザ自動操作ロボット作成方法のまとめ - 実用的なRPAをPerlで作ってみよう(書き始め)</h2>
+<h2>PerlでWebブラウザ自動操作ロボット作成方法のまとめ - 実用的なRPAをPerlで作ってみよう</h2>
 
 PerlでWebブラウザ自動操作ロボット作成方法をここにまとめていきます。Windowsのユーザーが対象です。
 
@@ -136,6 +136,95 @@ my $win;
   }
   $win = $browser_wins[0];
 }
+</pre>
+
+<h3>マウス操作</h3>
+
+マウス操作ついて説明します。
+
+<h4>マウスを移動させる</h4>
+
+マウスを移動させるにはMouseMoveAbsPix関数を使用します。原点は、デスクトップウィンドウの左上になります。
+
+<pre>
+# マウスを移動させる
+MouseMoveAbsPix($x, $y);
+</pre>
+
+<h4>対象ウィンドウの左上の位置を取得する</h4>
+
+ブラウザを操作する場合は、ブラウザのウィンドウの左上の位置を知りたいですね。GetWindowRect関数を使うと、対象のウィンドウの原点の位置を取得できます。
+
+<pre>
+# 対象ウィンドウの左上の位置を取得する
+my ($win_left, $win_top, $win_right, $win_bottom) = Win32::GuiTest::GetWindowRect($win);
+</pre>
+
+対象ウィンドウの原点から、左100px、下200pxの位置にマウスを移動させるには次のようにします。
+
+<pre>
+# 対象ウィンドウの原点から、左100px、下200pxの位置にマウスを移動
+my $left = 100;
+my $top = 200;
+MouseMoveAbsPix($win_left + $left, $win_top + $top);
+</pre>
+
+<h4>マウスの左ボタンを押す</h4>
+
+マウスの左ボタンを押すにはSendLButtonDown関数を使用します。
+
+<pre>
+# マウスの左ボタンを押す
+SendLButtonDown();
+</pre>
+
+<h4>マウスの左ボタンを離す</h4>
+
+マウスの左ボタンを離すにはSendLButtonUp関数を使用します。
+
+<pre>
+# マウスの左ボタンを押す
+SendLButtonDown();
+</pre>
+
+<h4>マウスを左クリックする</h4>
+
+マウスを左クリックするには、マウスの左ボタンを押して、離します。
+
+<pre>
+# マウスを左クリックする
+SendLButtonDown();
+SendLButtonUp();
+</pre>
+
+<h4>マウスの左ボタンをダブルクリックする</h4>
+
+マウスの左ボタンをダブルクリックするには、マウスの左ボタンを押して、離してを2回繰り返します。
+
+<pre>
+# ダブルクリック
+SendLButtonDown();
+SendLButtonUp();
+SendLButtonDown();
+SendLButtonUp();
+</pre>
+
+<h4>その他のマウスイベント</h4>
+
+その他のマウスイベントです。真ん中のボタンを押す、離す、右ボタンを押す、離すです。
+
+<pre>
+# 真ん中のボタンを押す
+SendMButtonDown()
+
+# 真ん中のボタンを離す
+SendMButtonUp()
+
+# 右ボタンを押す
+SendRButtonDown()
+
+# 右ボタンを離す
+SendRButtonUp()
 </pre>
 
 <h3>キーボード入力</h3>
@@ -377,9 +466,41 @@ if ($html =~ /検索結果/) {
 }
 </pre>
 
+<h4>HTMLの保存</h4>
+
+HTMLを保存するには、通常の<a href="/blog/20110212130370.html">Perlのファイル入出力</a>を使用します。
+
+<pre>
+use FindBin;
+
+# 保存場所(プログラムのあるディレクトリのdata/test.html)
+my $file = "$FindBin::Bin/data/test.html";
+
+# ファイルを書き込みモードでオープン
+open my $fh, '>', $file
+  or die "Can't open file $file: $!";
+
+# 書き込み
+print $fh $html;
+</pre>
+
 <h3>RPAロボット作成のポイント</h3>
 
-RPAロボット作成のポイント
+RPAロボット作成のポイントです。
+
+<h4>ブラウザの起動サイズを決めておく</h4>
+
+マウスでクリックする位置を確定させるために、ブラウザの起動サイズを決めて起動しましょう。
+
+Chromeでは、ショートカット」「プロパティ」「リンク先」に次のように設定することで、ブラウザの起動サイズを決めることができます。
+
+<pre>
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --window-position=150,10 --window-size=1505,933
+</pre>
+
+<h4>試験環境と本番環境でディスプレイのサイズをそろえる</h4>
+
+試験環境と本番環境でディスプレイのサイズをそろえましょう。マウス移動は、ピクセル位置指定なので、ディスプレイの解像度が違うと、違う位置を指してしまいます。
 
 <h4>ブラウザの応答を待つ</h4>
 
