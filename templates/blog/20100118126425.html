@@ -42,12 +42,12 @@ my @strs = ('  a', '  b', '   c');
 my @trimed = map { $_ =~ s/^\s+//; $_ } @strs;
 </pre>
 
-ひとつの要素をふたつの要素に変換することもできます。@keysが('a', 'b', 'c')の場合は@mappedは(a => 1, b => 1, c => 1)になります。
+ひとつの要素をふたつの要素に変換することもできます。@keysが('a', 'b', 'c')の場合は%mappedは(a => 1, b => 1, c => 1)になります。
 
 <pre>
 # ふたつの要素に変換
 my @keys = ('a', 'b', 'c');
-my @mapped = map { $_ => 1 } @keys;
+my %mapped = map { $_ => 1 } @keys;
 </pre>
 
 mapで書くことができるものはforeach文でも書くことができます。mapのほうが簡潔に記述できるのでPerlではよく利用されます。
