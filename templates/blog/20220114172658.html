@@ -1,0 +1,89 @@
+<h2>How to create the Cover of Amazon Kindle Paperback using Perl?</h2>
+
+Describe how to create the Cover of Amazon Kindle Paperback using Perl? Perl is a programing language. You can create the the cover image of Amazon Kindle Paperback using Perl module <a href="https://metacpan.org/pod/Imager">Imager</a>.
+I assume you have an ebook cover. Based on this, you will create the paperback cover. In this example, I use A5(148 x 210 mm).
+
+<a href="/images/kindle_paperback/ebook_coloer.jpg" style="width:200px">
+
+<h3>Create a Paperback Cover - Amazon Kindle Officail</h3>
+
+At first, you see the Amazon Kindle Officail page "Create a Paperback Cover".
+
+<ul>
+  <li><a href="https://kdp.amazon.com/en_US/help/topic/G201953020">Create a Paperback Cover</a></li>
+</ul>
+
+You will find the following page "Print Cover Calculator and Templates".
+
+<ul>
+  <li><a href="https://kdp.amazon.com/cover-calculator">Create a Paperback Cover</a></li>
+</ul>
+
+You must calcurate the size of the cover image using the tool "Print Cover Calculator and Templates".
+
+<h3>Enter Your Book Information</h3>
+
+<b>Binding type</b>
+
+Paperback
+
+<b>Interior type</b>
+
+Choice the one of them you want.
+
+<ul>
+  <li>
+    Black & White
+  </li>
+  <li>
+    Premiam Color
+  </li>
+  <li>
+    Standard Color
+  </li>
+</ul>
+
+<b>Paper type</b>
+
+White paper
+
+<b>Page-turn direction</b>
+
+Choice the one of them you want.
+
+<ul>
+  <li>
+    Left to Right
+  </li>
+  <li>
+    Right to Left
+  </li>
+</ul>
+
+<b>Measurement units</b>
+
+Millimeters.
+
+<b>Interior trim size</b>
+
+Custom trim size.
+
+A5(148 x 210 mm)
+
+<b>Page count</b>
+
+Calcurate the page count of your book.
+
+<pre>
+page_count = body_page_count + cover_page_count.
+</pre>
+
+body_page_count is the page count of your PDF book.
+
+cover_page_count is the page count of the color. This is always 4p.
+
+<b>Example:</b>
+
+<pre>
+120p = 116p + 4p
+</pre>
