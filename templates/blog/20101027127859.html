@@ -15,87 +15,92 @@
     here
   </li>
 </ol>
-<h2>cpanmによるPerlのローカル環境構築</h2>
 
+<h2>cpanm - ユーザーディレクトリへのCPANモジュールのインストール</h2>
 
+cpanmを使うとユーザーディレクトリに<a href="/blog/20100504127089.html">CPAN</a>モジュールをインストールすることができます。cpanmは、Perlのモジュールインストーラーとして、デフォルトで採用するディストリビューションも増えています。
 
-cpanmを使ってローカル環境を構築する手順です。迷わない一直線の手順です。 
+<pre>
+# CPANモジュールのインストール
+cpanm モジュール名
+</pre>
 
 <h3>cpanmのインストール</h3>
 
-以下のコマンドを個人ユーザで実行してください。
+cpanmのインストール方法を解説します。
+
+<h4>Strawberry Perl</h4>
+
+Windowsで利用できるPerlディストリビューションである<a href="/blog/20180808153368.html">Strawberry Perl</a>では、cpanmを標準で利用することができます。
+
+<h4>perlbrew</h4>
+
+<a href="/blog/20110220130464.html">perlbrew</a>でPerlをユーザーディレクトリにインストールした場合は、以下のコマンドでcpanmをインストールできます。
+
+<pre>
+perlbrew install-cpanm
+</pre>
+
+<h4>plenv</h4>
+
+<a href="/blog/20180816153437.html">plenv</a>でPerlをユーザーディレクトリにインストールした場合は、以下のコマンドでcpanmをインストールできます。
+
+<pre>
+plenv install-cpanm
+</pre>
+
+<h4>cpanm単体でダウンロード</h4>
+
+cpanmは、単体のコマンドとしてダウンロードすることも可能です。
 
 <pre>
 # cpanmのインストール
-curl -L -O http://xrl.us/cpanm
-perl cpanm App::cpanminus
+curl -L -O http://xrl.us/cpanm > cpanm
+chmod 755 cpanm
 </pre>
 
-cpanmを使うと簡単にローカル環境にCPANモジュールをインストールできるようになります。root権限がない場合はユーザのホームディレクトリ以下のperl5というディレクトリ以下にCPANモジュールがインストールされます。インストールには時間がかかるかもしれませんが、しばらく待ちます。
-
-<h3>モジュールやコマンドを利用するための設定</h3>
-
-インストールしたモジュールやコマンドを利用するには次の設定を「.bashrc」というbashの設定ファイルに追加する必要があります。
+単体でダウンロードした場合は、以下のようにして実行します。
 
 <pre>
-export PERL_CPANM_OPT="--local-lib=~/perl5"
-export PATH=$HOME/perl5/bin:$PATH;
-export PERL5LIB=$HOME/perl5/lib/perl5:$PERL5LIB;
+# CPANモジュールのインストール
+./cpanm モジュール名
 </pre>
 
-PERL_CPANM_OPTはcpanmの設定を行うための環境変数です。モジュールをインストールするディレクトリを指定しています。デフォルトで「~/perl5」以下にインストールされるのですが、警告が発生するので明示的に指定します。PATHはインストールされたコマンドを利用するための設定です。たとえばcpanmコマンドが利用できるようになります。PERL5LIBでモジュールのインクルードパスを追加できます。この設定を行うとスクリプトからインストールしたモジュールが利用できるようになります。
-
-次のように「.bashrc」を編集して、上記の記述を追加しましょう。
-
-<pre>
-vi ~/.bashrc
-</pre>
-
-次にこの設定を反映させます。
-
-<pre>
-source ~/.bashrc
-</pre>
+配布するアプリケーションに組み込む場合に便利です。
 
 <h3>モジュールのインストール</h3>
 
-ためしにMojoliciousというモジュールをインストールしてみましょう。
+<a href="https://mojolicious.perlzemi.com/">Mojolicious</a>というモジュールをインストールしてみましょう。
 
 <pre>
 cpanm Mojolicious
 </pre>
 
-lsコマンドを使って「~/perl5/lib/perl5」というディレクトリにMojoliciousがインストールされていることを確認できます。
+<h4>バージョンを指定してインストール</h4>
+
+バージョンを指定してインストールすることができます。
 
 <pre>
-ls ~/perl5/lib/perl5
+cpanm Mojolicious@9.23
 </pre>
 
-またモジュールを実際に利用できるかどうかを試してみましょう。コマンドラインから次のコマンドを実行してエラーが出なかったら成功です。
+<h4>指定したディレクトリにインストール</h4>
 
-<pre>
-perl -MMojolicious -e 1
-</pre>
-
-これでローカル環境にモジュールをどんどんインストールすることができます。他のサーバにモジュールを配置したい場合は、アーキテクチャがまったく同じであれば、「~/perl5」をまるまるコピーするだけです。もちろん「.bashrc」の記述も忘れずに行います。Perlでのデプロイ作業はとても簡単ですね。
-
-<h3>cpanmを使って指定したディレクトリにCPANモジュールをインストールする</h3>
-
-cpanmを使って指定したディレクトrにCPANモジュールをインストールするには<b>-L</b>オプションを使用します。
+指定したディレクトリにCPANモジュールをインストールするには<b>-L</b>オプションを使用します。
 
 <pre>
 cpanm -L extlib DBIx::Custom
 </pre>
 
-カレントディレクトリの<b>extlib</b>というディレクトリにDBIx::Customがインストールされます。
+カレントディレクトリの<b>extlib</b>というディレクトリに<a href="https://dbix-custom.perlzemi.com/">DBIx::Custom</a>がインストールされます。
 
-<h3>cpanmとcpanfileでバージョンを指定してモジュールをインストールする</h3>
+<h3>cpanfile - インストールするモジュールの定義</h3>
 
-<strong>cpanm</strong>と<strong>cpanfile</strong>を使うと、バージョンを指定してモジュールをインストールすることができます。
+<strong>cpanfile</strong>を使うと、インストールするモジュールを定義することができます。
 
 <h4>cpanfileの記述</h4>
 
-cpanfileを記述します。cpanfileはモジュールのバージョンを指定するためのファイルです。cpanfileという名前のファイルを作成してください。以下のような記述を行います。
+cpanfileを記述します。cpanfileはモジュールとモジュールのバージョンを指定するためのファイルです。cpanfileという名前のファイルを作成してください。以下のような記述を行います。
 
 <pre>
 requires 'DBI', '== 1.619';
@@ -188,17 +193,16 @@ requires モジュール名 バージョン
 
 <h4>モジュールのインストール</h4>
 
-cpanmの<strong>--installdeps</strong>オプションを使うと、cpanfileの記述を調べて、モジュールをインストールしてくれます。(ドットがオプションの後ろに続くことに注意)
+cpanmの<strong>--installdeps</strong>オプションを使うと、cpanfileの定義を使って、モジュールをインストールしてくれます。
 
 <pre>
-perl cpanm --installdeps .
+# cpanfileの定義を使ってモジュールをインストール
+cpanm --installdeps .
 </pre>
 
 <strong>-L</strong>オプションを使えば、指定したディレクトリにモジュールをインストールすることもできます。
 
 <pre>
-perl cpanm -L extlib --installdeps .
+cpanm -L extlib --installdeps .
 </pre>
-
-自分の作成したPerlのアプリケーションが、CPANに存在するモジュールに依存しているときは、cpanmとcpanfileを一緒に含めておくと、ユーザーに簡単に利用してもらうことができます。
 
