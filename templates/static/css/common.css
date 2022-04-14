@@ -143,6 +143,26 @@
   .footer .perlri_link a:hover {
     opacity:0.8;
   }
+  
+  .footer-services {
+    background:#ecefec;
+    padding-top:15px;
+    padding-bottom:15px;
+  }
+  .footer-services ul {
+    display:flex;
+    flex-wrap:wrap;
+  }
+
+  .footer-services li {
+    width:33.3%;
+    list-style:none;
+  }
+  .footer-services a {
+    text-decoration:none;
+    font-size:15px;
+    line-height:2;
+  }
   .entry {
     float:left;
     width:calc(1030px - 330px);
