@@ -364,7 +364,7 @@
   }
 
   h2 {
-    padding:16px 5px 13px 15px;
+    padding:21px 5px 18px 15px;
     font-size:23px;
     margin:0;
     margin-top:0px;
@@ -372,10 +372,8 @@
     display: block;
     vertical-align: middle;
     line-height:130%;
-    background:url(/images/allow.png) no-repeat;
-    background-position:0 5px;
-    border-top:3px solid #0f9b6c; 
-    background-color:#e8efed;
+    background-color:#e9fff0;
+    font-color:020
   }
   h2 a, h2 a:visited {
     color:#333;
@@ -386,7 +384,7 @@
   }
   h3 {
     font-size:21px;
-    padding: 8px 8px 6px 13px;
+    padding: 10px 8px 8px 13px;
     margin:18px 10px 14px 10px;
     border:1px solid #56bd9a;
     background:#e1fae1;
