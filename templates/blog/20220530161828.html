@@ -1,0 +1,235 @@
+<h2>Perl 5.36がリリース - warningsの有効化、サブルーチンシグネチャ、try-catch-finally文</h2>
+
+Perl 5.36が2022年5月28日にリリースされました。warningsの有効化、サブルーチンシグネチャ、try-catch-finally文、ブール・文字列・数値を区別する関数の追加など機能強化が図られています。
+
+<h3>Perl 5.36の機能を使う</h3>
+
+Perl 5.36で提供されているすべての機能を使うには、バージョン宣言「use v5.36」をソースコードの先頭に記述します。
+
+<pre>
+use v5.36;
+</pre>
+
+バージョン宣言はソースコードの先頭で行ってください。そうしないと、予期しない動作が発生する可能性があります。
+
+<h3>warningsの有効化</h3>
+
+警告を発生させる<a href="/blog/20130916137930.html">warningsモジュール</a>が、バージョン宣言によって有効になります。
+
+<pre>
+use warnings;
+</pre>
+
+<a href="https://perlzemi.com/blog/20130912137895.html">strictモジュール</a>は、すでにバージョン宣言によって有効になっているので、Perl 5.36では、バージョン宣言によってstrictとwarningsが有効になります。
+
+<pre>
+# これまで
+use strict;
+use warnings;
+
+# Perl 5.36以降
+use v5.36;
+</pre>
+
+将来<a href="https://perlzemi.com/blog/20220527071723.html">Perl 7</a>がリリースされた場合は、マイナーバージョンを省略して、以下のように書けます。
+
+<pre>
+use v7;
+</pre>
+
+<h3>サブルーチンシグネチャが実験的ではなくなりました</h3>
+
+サブルーチンシグネチャが実験的ではなくなり、バージョン宣言を行うと有効になります。サブルーチンシグネチャは、引数をサブルーチン名の後ろに記述できる機能のことです。
+
+<pre>
+use v5.36;
+
+sub add ($x, $y) {
+  return $x + $y;
+}
+</pre>
+
+これまで、書いていたサブルーチンは次のように書けます。
+
+<pre>
+# これまで
+sub add ($x, $y) {
+  my ($x, $y) = @_;
+  
+  $y = 3 unless defined $y;
+  
+  return $x + $y;
+}
+
+# v5.36
+sub add ($x, $y = 3) {
+  return $x + $y;
+}
+</pre>
+
+ただし、サブルーチンシグネチャで書かれたサーブルーチンは、引数の個数のチェックが行われることに注意してください。与えられた引数が少ないあるいは多い場合は、例外が発生します。
+
+引数が多い場合の引数チェックを省略させたい場合は、以下のように記述します。
+
+<pre>
+sub add ($x, $y, @) {
+  return $x + $y;
+}
+</pre>
+
+<h3>実験的なtry-catch-finally構文</h3>
+
+実験的なtry-catch-finally構文が書けるようになりました。
+
+<pre>
+use feature 'try';
+
+try {
+  
+}
+catch ($e) {
+  
+}
+finally {
+  
+}
+</pre>
+
+<h3>「-g」コマンドラインフラグ</h3>
+
+perlコマンドで、ファイルを一度に読みこむオプション「-g」が追加されました。
+
+<pre>
+perl -n -g -E 'if (m|<h1>(.*?)</h1>|) { say $1; }' a.html
+</pre>
+
+これまでPerlは「-0777」というオプションで、同じ機能を実現できていましたが、頻繁に使われるので、使いやすいオプション名が追加されました。
+
+<pre>
+perl -n -0777 -E 'if (m|<h1>(.*?)</h1>|) { say $1; }' a.html
+</pre>
+
+<h3>Unicode 14.0がサポートされました。</h3>
+
+<a href="https://gigazine.net/news/20210916-unicode-14-emoji/">Unicode 14.0</a>がサポートされました。
+
+<h3>builtin名前空間</h3>
+
+実験的に標準関数用のbuiltin名前空間が追加されました。Perlが、名前の衝突を気にせずに、関数を追加することができるようになりました。
+
+<pre>
+my $true = builtin::true;
+
+use builtin 'true';
+
+my $true = true;
+</pre>
+
+builtin名前空間のすべての関数は現在実験的です。
+
+<h3>true関数、false関数、is_bool関数の追加</h3>
+
+真偽値を表すbuiltin::trueとbuiltin::false関数が追加されました。
+
+<pre>
+# 真
+builtin::true;
+
+# 偽
+builtin::falsebuiltin::false;
+</pre>
+
+「builtin::true」は「!!1」、builtin::false「!!0」と等価です。
+
+builtin::is_bool関数で、真偽値をチェックできるようになりました。
+
+<pre>
+if (builtin::is_bool $bool) {
+  
+}
+</pre>
+
+JSONを生成するときなどに便利です。
+
+<h3>数値と文字列の区別ができるようになりました</h3>
+
+Perl 5.36では、builtin::created_as_number関数とbuiltin::created_as_string関数を使って、数値と文字列を区別できるようになりました。JSONなどのシリアライザーで使われることが想定されています。
+
+<pre>
+if (builtin::created_as_number $data) {
+  
+}
+
+if (builtin::created_as_string $data) {
+  
+}
+</pre>
+
+builtin::is_boolを組み合わせて使うと、JSONのシリアライズとデシリアライズをコアの関数だけを使って、正しく行うことができます。
+
+<pre>
+if (builtin::is_bool $data) {
+  
+}
+eleif (builtin::created_as_number $data) {
+  
+}
+elsif (builtin::created_as_string $data) {
+  
+}
+</pre>
+
+<h3>builtin::trim関数</h3>
+
+builtin::trim関数が追加されました。前後の空白を取り除くことができます。
+
+<pre>
+my $trim = builtin::trim $string;
+</pre>
+
+<h3>複数個の要素のイテレート</h3>
+
+複数個の要素をイテレートするfor文が追加されました。この機能は、実験的です。
+
+<pre>
+for my ($key, $value) (%hash) { ... }
+for my ($left, $right, $gripping) (@moties) { ... }
+</pre>
+
+<h3>Perl 5.36をすぐにインストールするには?</h3>
+
+<a href="/blog/20110220130464.html">perlbrew</a>あるいは<a href="/blog/20180816153437.html">plenv</a>を使うと、Perl 5.36をすぐに試すことができます。
+
+<b>perlbrew</b>
+
+<pre>
+perlbrew install perl-5.36.0
+</pre>
+
+<b>plenv</b>
+
+<pre>
+plenv install 5.36.0
+</pre>
+
+<h3>すべての変更を見る</h3>
+
+すべての変更点を見るには、perldeltaを見てください。
+
+<a href="https://metacpan-org.translate.goog/release/RJBS/perl-5.36.0/view/pod/perldelta.pod?_x_tr_sl=en&_x_tr_tl=ja&_x_tr_hl=ja&_x_tr_pto=wapp">perldelta</a>
+
+<h3>感想</h3>
+
+Perl 5.36リリースおめでとうございます。開発者の皆様、ありがとうございます。
+
+「use warnings」がバージョン宣言で、有効になって、バージョン宣言を使う動機が増えそうです。
+
+複数イテレートforループは、使う機会がありそうです。
+
+「-g」オプションでワンライナーが簡単になりますね。
+
+trimも使用頻度が高そうです。
+
+文字列・数値・ブールが区別できるようになったのは、とても良いです。
+
+サブルーチンシグネチャの引数の個数チェックは、予期しない実行時例外が発生するので、高い信頼性が必要とされるプロダクトの本番環境で使用された場合に、ちょっと心配ではあります。
