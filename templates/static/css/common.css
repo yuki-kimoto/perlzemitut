@@ -146,10 +146,12 @@
   
   .footer-services {
     background:#ecefec;
-    padding-top:15px;
-    padding-bottom:15px;
+    padding-top:18px;
+    padding-bottom:18px;
   }
   .footer-services ul {
+    max-width:860px;
+    margin:0 auto;
     display:flex;
     flex-wrap:wrap;
   }
@@ -160,7 +162,7 @@
   }
   .footer-services a {
     text-decoration:none;
-    font-size:15px;
+    font-size:16px;
     line-height:2;
   }
   .entry {
