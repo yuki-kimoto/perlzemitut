@@ -189,7 +189,7 @@ sub create_list {
   
   my $list_content;
 
-  $list_content .= "<h2>Perlゼミ新着情報</h2>\n";
+  $list_content .= qq(<h2><a href="/list.html">Perlゼミ新着情報</a></h2>\n);
   
   $list_content .= "<ul>\n";
   my $before_year = 0;
