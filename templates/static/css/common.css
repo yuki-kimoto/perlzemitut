@@ -374,11 +374,10 @@
     display: block;
     vertical-align: middle;
     line-height:130%;
-    background-color:#e9fff0;
-    font-color:020
+    background-color:#1C825F;
   }
   h2 a, h2 a:visited {
-    color:#333;
+    color:white;
     text-decoration:none;
   }
   h2 a:hover {
@@ -386,22 +385,19 @@
   }
   h3 {
     font-size:21px;
-    padding: 10px 8px 8px 13px;
-    margin:18px 10px 14px 10px;
-    border:1px solid #56bd9a;
-    background:#e1fae1;
-    color:#334433;
-    margin-top:30px;
-    background:#1c825f;
-    color:white;
-    border:none;
-    letter-spacing:1px;
+    border-top:4px solid #1C825F;
+    padding:16px 0px 15px 18px;
+    letter-spacing:0.5px;
+    margin:15px 0 10px 0;
+    background:#F3F3Fa;
+    margin-top:40px;
+    color:#3c3c33;
   }
   h4 {
-    font-size:19px;
+    font-size:18px;
     color:#334433;
     margin:18px 13px 10px 13px;
-    border-left:8px solid #56BD9A;
+    border-left:7px solid #56BD9A;
     padding:3px 0 0 8px;
     padding-bottom:1px;
     margin-top:35px;
@@ -672,9 +668,6 @@
   }
   
 @media only screen and (max-width:860px) {
-  .entry {
-    width:100%;
-  }
   .site-title {
     text-align:center;
     width:100%;
@@ -682,9 +675,6 @@
   }
   .site-title a, .site-title a:visited {
     color:white;
-  }
-  .hatena-body {
-    width:100%;
   }
   p.share-button {
     position:static;
@@ -718,15 +708,6 @@
   }
   .header_right a,.header_right a:visited {
     padding:15px 10px 10px 10px;
-  }
-
-  /* サイドバー */
-  .side {
-    margin:0;
-    padding:0;
-    width:100%;
-    height:auto;
-    overflow:visible;
   }
 }
 
