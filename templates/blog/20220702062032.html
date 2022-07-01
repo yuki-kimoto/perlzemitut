@@ -1,0 +1,38 @@
+<h2>Perlを使い始める最も簡単な方法</h2>
+
+Perlを使い始める最も簡単な方法は、<a href="https://perlbanjo.com/">PerlBanjo.com</a>を使用することです。
+
+次のソースコードを<a href="https://perlbanjo.com/">PerlBanjo.com</a>にコピーして、実行ボタンをクリックしてください。
+
+<pre>
+print "Hello World！\ n";
+</pre>
+
+<b>結果：</b>
+
+<pre>
+Hello World!
+</pre>
+
+<h3>正規表現</h3>
+
+<a href="/blog/20100827127859.html">正規表現</a>の例を最新のPerlの書き方で書きます。
+
+<pre>
+use v5.36;
+
+my $message = 'I like apples. I buy apples.';
+
+say "Input:$message";
+
+$message =~ s/apple/orange/g;
+
+say "Outpu:$message";
+</pre>
+
+<b>結果：</b>
+
+<pre>
+Input:I like apples. I buy apples.
+Outpu:I like oranges. I buy oranges.
+</pre>
