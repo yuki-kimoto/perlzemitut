@@ -36,3 +36,73 @@ say "Outpu:$message";
 Input:I like apples. I buy apples.
 Outpu:I like oranges. I buy oranges.
 </pre>
+
+<h3>CSVの解析</h3>
+
+1ファイルでのCSVの解析。 <code>,</code>は、空白に変換されます。
+
+<pre>
+use v5.36;
+
+while (my $line = <DATA>) {
+  chomp $line;
+  
+  my ($id, $name, $price) = split(',', $line);
+  
+  my $new_line = join(' ', $id, $name, $price);
+  
+  say $new_line;
+}
+
+__DATA__
+1,Perl,2000
+2,Database,3000
+3,Web,4000
+</pre>
+
+<b>Result:</b>
+
+<pre>
+1 Perl 2000
+2 Database 3000
+3 Web 4000
+</pre>
+
+<h3>Parsing UTF-8 CSV</h3>
+
+<code>UTF-8</code>で書かれたCSVの解析。
+
+<pre>
+use v5.36;
+use utf8;
+use Encode 'decode', 'encode';
+
+while (my $line = <DATA>) {
+  $line = decode('UTF-8', $line);
+  
+  chomp $line;
+  
+  my ($id, $name, $price) = split(',', $line);
+  
+  my $new_line = join(' ', $id, $name, $price);
+  
+  say encode('UTF-8', $new_line);
+}
+
+# Plain UTF-8 CSV data
+
+no utf8;
+
+__DATA__
+1,Perl,2000
+2,あいう,3000
+3,えお,4000
+</pre>
+
+<b>Result:</b>
+
+<pre>
+1 Perl 2000
+2 あいう 3000
+3 えお 4000
+</pre>
