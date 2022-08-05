@@ -11,7 +11,7 @@
   </li>
 </ol>
 
-<h2>ActivePerlのインストール</h2>
+<h2>ActivePerl のダウンロードとインストール</h2>
 
 <strong>ActivePerl</strong>はActiveState社によって無償で提供されているWindowsで商用利用可能なPerlディストリビューションの一つです。
 
@@ -21,7 +21,7 @@ ActivePerlをWindowsにインストールしてPerlを使えるようにしま�
 
 <h3>ActivePerlのダウンロード</h3>
 
-ActivePerlをt次のページからダウンロードします。2021年現在の最新版は、5.32です。
+次のページから ActivePerl をダウンロードしてインストールします。 2022 年の最新バージョンは Perl 5.34 です。
 
 <ul>
   <li>
@@ -29,37 +29,35 @@ ActivePerlをt次のページからダウンロードします。2021年現在�
   </li>
 </ul>
 
-<a href="https://www.activestate.com/activeperl/downloads"><img style="border:1px solid #ddd;width:100%;" src="/images/active_perl/active_perl_click.png"></a>
+<a href="https://www.activestate.com/activeperl/downloads"><img style="border: 1px solid # ddd; width: 100%;" src="/images/installation/active_perl_click.png"></a>
 
 2021年現在は、ActivePerlのダウンロードにはActiveStateへの会員登録が必要です。msiという拡張子はWindowsのインストーラであることを表します。
 
-フリーで提供されているのは64bit版だけです。
+ActivePerl のダウンロードには、ActiveState メンバーシップへの登録が必要です。
 
-<h3>ActivePerlのインストール</h3>
+登録後、以下のページが表示されます。
 
-ダウンロードしたActive Perlをダブルクリックします。
+<img style="border: 1px solid # ddd; width: 100%;" src="/images/installation/active_perl_create_project.png">
 
-インストーラーが起動します。「Next」を押して進みます。
+ページの一番下までスクロールします。
 
-途中で「I accept the terms in the License Agreement」というチェックボックスがでてくるので、チェックをいれて「Next」を押します。
+<img style="border: 1px solid # ddd; width: 100%;" src="/images/installation/active_perl_create_rantime.png">
 
-「typical」を選択します。
+「ランタイムの作成」をクリックします。ランタイムが作成されます。
 
-さらに「Next」を押して進んでいって、最後に「Install」をクリックするとActive Perlのインストールが始まります。
+「Install」ボタンをクリックすると、以下の内容が表示されます。
 
-ここで「この不明な発行元からのアプリがデバイスに変更を加えることを許可しますか?」というダイアログが表示されると思いますが、「はい」をクリックしましょう。
+<img style="border: 1px solid # ddd; width: 100%;" src="/images/installation/active_perl_install_runtime.png">
 
-5分くらい時間がかかるので待ちましょう。
+コマンドをコピーして、コマンド プロンプトに貼り付けます。
 
-プログレスバーが満タンになると、Active Perlのインストールが完了します。
-
-「Finish」を押してダイアログを閉じましょう。Readmeが表示されますが、これも閉じて大丈夫です。
-
-<h3>Perlがインストールされていることの確認</h3>
+<h3>ActivePerl のインストールを確認する</h3>
 
 インストールが完了したら実際にActive Perlがインストールできているか確認してみましょう。
 
 コマンドプロンプトというツールをを実行してPerlのバージョンを表示してみます。
+
+まず、<a href="/blog/20080603121251.html">コマンド プロンプト</a>を実行します。コマンド プロンプトは Windows CLI ツールです。
 
 コマンドプロンプトは、「スタートメニュー」→「アプリの一覧」→「Windowsシステムツール」→「コマンドプロンプト」から実行できます。
 
@@ -72,8 +70,7 @@ perl -v
 次のようにバージョン情報が表示されればインストールは成功しています。
 
 <pre>
-This is perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x64-multi-thread
-(with 1 registered patch, see perl -V for more detail)
+This is perl 5, version 34, subversion 0 (v5.34.0) built for MSWin32-x64-multi-thread
 </pre>
 
 これでActive Perlのインストールは完了です。
@@ -120,3 +117,14 @@ WindowsでPerlを利用するその他の方法については、以下を参考
     <a href="/blog/20180806153350.html">msys2をWindowsにインストールしてPerlを使う</a>
   </li>
 </ul>
+
+<h3>他のコマンドラインツール</h3>
+
+Perlを実行するための他のコマンドラインツールです。
+
+<ul>
+  <li>
+    <a href="/blog/20220420170117.html">PerlのためのPowerShell(pwsh)入門</a>
+  </li>
+</ul>
+
