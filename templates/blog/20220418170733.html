@@ -1,0 +1,87 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name"><a href="/blog/20180820153471.html">インストール</a></span>
+    <meta itemprop="position" content="2" />
+  </li>
+</ol>
+
+<h2>WSL 2 への Perl のインストール</h2>
+
+<a href="https://docs.microsoft.com/en-us/windows/wsl/install">WSL 2</a> は、Linux 用の Windows サブシステムです。 WSL 2 を使用して Linux を Windows にインストールできます。そして、Perl を使用できます。
+
+<img style = "border: 1px solid # ddd; max-width: 600px;" src = "/images/installation/wsl2.png">
+
+<h3>WSL 2 のインストール</h3>
+
+WSL 2 をインストールしましょう。<a href="/blog/20080603121251.html">Windows コマンド プロンプト</a>で次のコマンドを実行します。
+
+<pre>
+# WSL 2 をインストール
+wsl --install
+</pre>
+
+<a href="https://en.ubuntu.perlzemi.com/">Ubuntu</a> がデフォルトでインストールされます。
+
+Windows を再起動して WSL2 を有効にします。
+
+数分かかります。
+
+次のメッセージが表示されます。
+
+<h4>ユーザー名</h4>
+
+<pre>
+Installing, this may take a few minutes...
+
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
+Enter new UNIX username:
+</pre>
+
+例として以下のユーザー名を入力します。
+
+<pre>
+kimoto_ubuntu
+</pre>
+
+Ubuntu 端末上で右クリックすると、ユーザー名を貼り付けることができます。
+
+<h4>Password</h4>
+
+次にパスワードを設定します。
+
+Ubuntuのセットアップが完了しました。
+
+<h3>Ubuntu を起動</h3>
+
+Ubuntuを起動しましょう。
+
+"スタートメニュー" | "Ubuntu"
+
+<h3>Perl のインストールを確認</h3>
+
+Perl はデフォルトで Ubuntu にインストールされています。 Perlのインストールを確認してみましょう。
+
+<pre>
+perl -v
+</pre>
+
+Perlのバージョンが表示されます。
+
+<pre>
+This is perl 5, version 30, subversion 0 (v5.30.0) built for x86_64-linux-gnu-thread-multi
+</pre>
+
+<h3>エクスプローラー使用してファイルを表示する</h3>
+
+Ubuntu 上のファイルは、次のパスで参照できます。 <b>\\wsl$</b> は WSL 2 のルート ディレクトリです。
+
+<pre>
+\\wsl$\Ubuntu\home\kimoto_ubuntu
+</pre>
