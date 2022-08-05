@@ -1,0 +1,529 @@
+<h2>PerlのためのPowerShell(pwsh)入門</h2>
+
+<ol class = "bread" itemscope itemtype = "http://schema.org/BreadcrumbList">  <li itemprop = "itemListElement" itemscope itemtype = "http://schema.org/ListItem">    <a itemprop="item" href="/">        <span itemprop = "name">Perl </span></a>
+    <meta itemprop = "position" content = "1" />
+  </li>
+  &#8250;
+  <li itemprop = "itemListElement" itemscope itemtype = "http://schema.org/ListItem">      <span itemprop = "name">here </span>
+    <meta itemprop = "position" content = "2" />
+  </li>
+</ol>
+
+PowerShell(pwsh) は、Windows でプログラムを実行するための <a href="https://ja.wikipedia.org/wiki/%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%95%E3%82%A7%E3%83%BC%E3%82%B9">CUI</a> ツールです
+<h3>Features of PowerShell(pwsh)</h3>
+
+<ul>
+  <li>UTF-8</li>
+  <li>Linux/UNIX ライクなシェル</li>
+  <li>ls、echo コマンドなど</li>
+  <li>文字列は "" と '' で囲むことができます</li>
+</ul>
+
+<h3>PowerShell(pwsh)のインストール</h3>
+
+PowerShell(pwsh)は以下のページからダウンロードできます。
+
+<a href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7#installing-the-msi-package">PowerShell のインストール</a>
+
+次のリンクをクリックして、PowerShell (pwsh) をダウンロードします。
+
+<a href="https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/PowerShell-7.2.2-win-x64.msi"!>PowerShell-7.2.2-win-x64.msi</a>
+
+そして、ダウンロードしたファイルをダブルクリックします。インストーラーが実行されます。
+
+"Next" | "Next" | "Next" | "Install" | "Finish"
+
+<h3>PowerShell/pwsh の実行</h3>
+
+PowerShell/pwsh を実行してみましょう。
+
+"スタートメニュー" | "アプリケーション" | "PowerShell" | "PowerShell 7 (x64)"
+
+<img src="/images/installation/pwsh.png">
+
+ホーム ディレクトリが PowerShell/pwsh に表示されます。
+
+<pre>
+PS C:\Users\kimot
+</pre>
+
+<h3>ファイル拡張子の表示</h3>
+
+Perl プログラムの拡張子は「<b>.pl</b>」です。ファイルの拡張子が表示されると便利です。
+
+ファイル拡張子を表示する方法は、次のページに記載されています。
+
+<a href="https://www.pc-koubou.jp/magazine/36291">Windows 10 ファイルの拡張子を表示させる方法</a>
+
+<h3>メモ帳の実行</h3>
+
+Perl プログラムはテキスト ファイルです。メモ帳を使用して Perl プログラムを作成できます。
+
+メモ帳の使い方は以下のページに記載されています。
+
+<a href="https://www.curict.com/item/b4/b41e69d.html">11 ways to start Notepad in Windows</a>
+
+<h3>Perl プログラムの作成</h3>
+
+Perl プログラムを作成してみましょう。
+
+ホーム ディレクトリに「start.pl」という名前のファイルを作成します。
+
+<pre>
+C:\Users\kimot\start.pl
+</pre>
+
+そして次のように入力します。
+
+<pre>
+print "Hello World";
+</pre>
+
+そしてそれを保存します。
+
+<h3>Perl プログラムの実行</h3>
+
+<b>perl</b> コマンドを使用して Perl プログラムを実行できます。
+
+<pre>
+perl start.pl
+</pre>
+
+出力は次のとおりです。
+
+<pre>
+Hello World
+</pre>
+
+<h3>PowerShell/pwsh のコマンド</h3>
+
+PowerShell/pwshのよく使うコマンドを紹介します。
+
+<h4>ls</h4>
+
+「ls」コマンドは、ファイルのリストを表示します。
+
+<pre>
+ls
+</pre>
+
+<h4>cd</h4>
+
+「cd」コマンドは、作業ディレクトリを変更します。
+
+<pre>
+cd DirectoryName
+</pre>
+
+「..」は1階層上のフォルダを意味するファイル名です。
+
+<pre>
+cd ..
+</pre>
+
+<h4>ドライブの変更</h4>
+
+「c:」または「d:」を使用してドライブを変更できます。
+
+<pre>
+Set-Location -Path c:
+Set-Location -Path d:
+</pre>
+
+<h4>コマンド履歴の表示</h4>
+
+コマンド履歴は「↑」「↓」キーで見ることができます。
+
+<pre>
+↑
+↓
+</pre>
+
+<h3>環境変数の一覧を表示</h3>
+
+次のように環境変数の一覧を表示できます。
+
+<pre>
+ls env:
+</pre>
+
+<h3>環境変数を表示</h3>
+
+環境変数を表示します。
+
+<pre>
+echo $env:PATH
+</pre>
+
+<h4>環境変数の設定</h4>
+
+環境変数は次のように設定できます。
+
+<pre>
+$env:DATE=20080604
+</pre>
+
+
+
+
+
+
+翻訳タイプ
+テキスト翻訳
+
+言語を検出する
+
+英語
+
+日本語
+
+韓国語
+
+日本語
+
+英語
+
+韓国語
+原文
+<h2>PowerShell(pwsh) Tutorial for Perl</h2>
+
+<ol class = "bread" itemscope itemtype = "http://schema.org/BreadcrumbList">  <li itemprop = "itemListElement" itemscope itemtype = "http://schema.org/ListItem">    <a itemprop="item" href="/">        <span itemprop = "name">Perl </span></a>
+    <meta itemprop = "position" content = "1" />
+  </li>
+  &#8250;
+  <li itemprop = "itemListElement" itemscope itemtype = "http://schema.org/ListItem">      <span itemprop = "name">here </span>
+    <meta itemprop = "position" content = "2" />
+  </li>
+</ol>
+
+PowerShell(pwsh) is a <a href="https://en.wikipedia.org/wiki/Command-line_interface">CUI</a> tool to run programs on Windows. 
+
+<h3>Features of PowerShell(pwsh)</h3>
+
+<ul>
+  <li>UTF-8</li>
+  <li>Linux/UNIX-like Shell</li>
+  <li>ls, echo commands, etc</li>
+  <li>A string is quoted "" and ''</li>
+</ul>
+
+<h3>Installation of PowerShell(pwsh)</h3>
+
+PowerShell(pwsh) can be downloaded from the following page.
+
+<a href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7#installing-the-msi-package">Installing PowerShell on Windows</a>
+
+Click the following link to download PowerShell(pwsh).
+
+<a href="https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/PowerShell-7.2.2-win-x64.msi"!>PowerShell-7.2.2-win-x64.msi</a>
+
+And double-click the downloaded file. The installer is executed.
+
+"Next" | "Next" | "Next" | "Install" | "Finish"
+
+<h3>Execution of PowerShell/pwsh</h3>
+
+Let's execute PowerShell/pwsh.
+
+"スタートメニュー" | "アプリケーション" | "PowerShell" | "PowerShell 7 (x64)"
+
+<img src="/images/installation/pwsh.png">
+
+Your home directory is shown on PowerShell/pwsh.
+
+<pre>
+PS C:\Users\kimot
+</pre>
+
+<h3>Showing File Extensions</h3>
+
+The extension of Perl program is "<b>.pl</b>". It is useful if extensions of files are displayed.
+
+The way to show file extensions is described in the following page.
+
+<a href="https://www.howtogeek.com/205086/beginner-how-to-make-windows-show-file-extensions/">How to Make Windows Show File Extensions</a>
+
+<h3>Execution of Notepad</h3>
+
+Perl programs are text files. You can create your Perl programs using Notepad.
+
+The way to use Notepad is described in the following page.
+
+<a href="https://www.digitalcitizen.life/start-notepad-windows/">11 ways to start Notepad in Windows</a>
+
+<h3>Creating Perl Programs</h3>
+
+Let's create a Perl program.
+
+Create a file named "start.pl" at your home directory.
+
+<pre>
+C:\Users\kimot\start.pl
+</pre>
+
+And write the following text.
+
+<pre>
+print "Hello World";
+</pre>
+
+And save it.
+
+<h3>Running Perl Programs</h3>
+
+You can run your Perl program using <b>perl</b> command.
+
+<pre>
+perl start.pl
+</pre>
+
+The output is:
+
+<pre>
+Hello World
+</pre>
+
+<h3>Commands of PowerShell/pwsh</h3>
+
+Introdule often used commands of PowerShell/pwsh.
+
+<h4>ls</h4>
+
+The "ls" command displays the list of files.
+
+<pre>
+ls
+</pre>
+
+<h4>cd</h4>
+
+The "cd" command changes the working directory.
+
+<pre>
+cd DirectoryName
+</pre>
+
+".." is the file name that means the folder one level higher.
+
+<pre>
+cd ..
+</pre>
+
+<h4>Changing Drives</h4>
+
+You can change drives using "c:" or "d:".
+
+<pre>
+Set-Location -Path c:
+Set-Location -Path d:
+</pre>
+
+<h4>Seeing Command Histories</h4>
+
+You can see command histories using "↑" and "↓" keys.
+
+<pre>
+↑
+↓
+</pre>
+
+<h3>Show Environment Variables</h3>
+
+Show environment variables.
+
+<pre>
+ls env:
+</pre>
+
+<h4>Getting Environment Variables</h4>
+
+You can get and show an environment variable as the following.
+
+<pre>
+echo $env:PATH
+</pre>
+
+$env:MYENV = "This is my env."
+
+<h4>Setting Environment Variable</h4>
+
+You can set an environment variable as the following.
+
+<pre>
+$env:DATE=20080604
+</pre>
+
+3,680 / 5,000
+翻訳結果
+<h2>Perl の PowerShell (pwsh) チュートリアル</h2>
+
+<ol class = "bread" itemscope itemtype = "http://schema.org/BreadcrumbList"> <li itemprop = "itemListElement" itemscope itemtype = "http://schema.org/ListItem"> <a itemprop="item " href="/"> <span itemprop = "name">Perl </span></a>
+    <meta itemprop = "position" content = "1" />
+  </li>
+  &#8250;
+  <li itemprop = "itemListElement" itemscope itemtype = "http://schema.org/ListItem"> <span itemprop = "name">こちら</span>
+    <meta itemprop = "position" content = "2" />
+  </li>
+</ol>
+
+PowerShell(pwsh) は、Windows でプログラムを実行するための <a href="https://en.wikipedia.org/wiki/Command-line_interface">CUI</a> ツールです。
+
+<h3>PowerShell(pwsh)の特徴</h3>
+
+<ul>
+  <li>UTF-8</li>
+  <li>Linux/UNIX ライクなシェル</li>
+  <li>ls、echo コマンドなど</li>
+  <li>文字列は "" と '' で囲まれています</li>
+</ul>
+
+<h3>PowerShell(pwsh)のインストール</h3>
+
+PowerShell(pwsh)は以下のページからダウンロードできます。
+
+<a href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7#installing-the-msi-package">PowerShell のインストールWindows で</a>
+
+次のリンクをクリックして、PowerShell (pwsh) をダウンロードします。
+
+<a href="https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/PowerShell-7.2.2-win-x64.msi"!>PowerShell-7.2.2-win-x64.msi </a>
+
+そして、ダウンロードしたファイルをダブルクリックします。インストーラーが実行されます。
+
+"次へ" | "次へ" | "次へ" | "インストール" | "終了"
+
+<h3>PowerShell/pwsh の実行</h3>
+
+PowerShell/pwsh を実行してみましょう。
+
+「スタートメニュー」 | "アプリ" | "パワーシェル" | 「PowerShell 7 (x64)」
+
+<img src="/images/installation/pwsh.png">
+
+ホーム ディレクトリは PowerShell/pwsh に表示されます。
+
+<プレ>
+PS C:\Users\kimot
+</プレ>
+
+<h3>ファイル拡張子の表示</h3>
+
+Perl プログラムの拡張子は「<b>.pl</b>」です。ファイルの拡張子が表示されると便利です。
+
+ファイル拡張子を表示する方法は、次のページに記載されています。
+
+<a href="https://www.howtogeek.com/205086/beginner-how-to-make-windows-show-file-extensions/">Windows にファイル拡張子を表示させる方法</a>
+
+<h3>メモ帳の実行</h3>
+
+Perl プログラムはテキスト ファイルです。メモ帳を使用して Perl プログラムを作成できます。
+
+メモ帳の使い方は以下のページに記載されています。
+
+<a href="https://www.digitalcitizen.life/start-notepad-windows/">Windows でメモ帳を起動する 11 の方法</a>
+
+<h3>Perl プログラムの作成</h3>
+
+Perl プログラムを作成してみましょう。
+
+ホーム ディレクトリに「start.pl」という名前のファイルを作成します。
+
+<プレ>
+C:\Users\kimot\start.pl
+</プレ>
+
+そして次の文章を書きなさい。
+
+<プレ>
+"Hello World" を出力します。
+</プレ>
+
+そしてそれを保存します。
+
+<h3>Perl プログラムの実行</h3>
+
+<b>perl</b> コマンドを使用して Perl プログラムを実行できます。
+
+<プレ>
+perl start.pl
+</プレ>
+
+出力は次のとおりです。
+
+<プレ>
+こんにちは世界
+</プレ>
+
+<h3>PowerShell/pwsh のコマンド</h3>
+
+PowerShell/pwshのよく使うコマンドを紹介します。
+
+<h4>ls</h4>
+
+「ls」コマンドは、ファイルのリストを表示します。
+
+<プレ>
+ls
+</プレ>
+
+<h4>cd</h4>
+
+「cd」コマンドは、作業ディレクトリを変更します。
+
+<プレ>
+cd ディレクトリ名
+</プレ>
+
+「..」は1階層上のフォルダを意味するファイル名です。
+
+<プレ>
+CD ..
+</プレ>
+
+<h4>ドライブの変更</h4>
+
+「c:」または「d:」を使用してドライブを変更できます。
+
+<プレ>
+Set-Location -Path c:
+Set-Location -Path d:
+</プレ>
+
+<h4>コマンド履歴の表示</h4>
+
+コマンド履歴は「↑」「↓」キーで見ることができます。
+
+<プレ>
+↑
+↓
+</プレ>
+
+<h3>環境変数を表示</h3>
+
+環境変数を表示します。
+
+<プレ>
+ls 環境:
+</プレ>
+
+<h4>環境変数の取得</h4>
+
+次のように環境変数を取得して表示できます。
+
+<プレ>
+echo $env:PATH
+</プレ>
+
+$env:MYENV = "これは私の環境です。"
+
+<h4>環境変数の設定</h4>
+
+環境変数は次のように設定できます。
+
+<プレ>
+$env:DATE=20080604
+</プレ>
+< H 2 > pāru no pawāsheru (pwsh) chūtoriaru </ h 2 > < ol class =" bread" itemscope itemtype =" http: / / Sukīmu. Orugu/ BreadcrumbList"> < li itemprop =" itemListElement" itemscope itemtype =" http: / / Sukīmu. Orugu/ risutoaitemu"> < a itemprop =" item" href ="/"> < supan itemprop =" name"> pāru </ supan > </ a > < meta itemprop =" pojishon" kontentsu =" 1" / > </ li >&# 8250; < li itemprop =" itemListElement" itemscope itemtype =" http: / / Sukīmu. Orugu/ risutoaitemu"> < supan itemprop =" name"> kochira </ supan > < meta itemprop =" pojishon" kontentsu =" 2" / > </ li > </ ol > pawāsheru (pwsh) wa, u~indōzu de puroguramu o jikkō suru tame no < a href =" https: / / En. Wikipedia. Orugu/ u~ikki/ Command - line _ intāfēsu"> CUI </ a > tsūrudesu. < H 3 > pawāsheru (pwsh) no tokuchō </ h 3 > < ul > < li > UTF - 8 </ li > < li > rinakkusu/ yunikkusu raikuna sheru </ li > < li > ls, echo komando nado </ li > < li > mojiretsu wa"" to'' de kakoma rete imasu </ li > </ ul > < h 3 > pawāsheru (pwsh) no insutōru </ h 3 > pawāsheru (pwsh) wa ika no pēji kara daunrōdo dekimasu. < A href =" https: / / Docs. Microsoft. Komu/ en - us/ powershell/ scripting/ insutōru/ installing - powershell - on - windows? Byū = powershell - 7# installing - the - msi - pakkēji"> pawāsheru no insutōru u~indōzu de </ a > tsugi no rinkuwokurikku shite, pawāsheru (pwsh) o daunrōdo shimasu. < A href =" https: / / Github. Komu/ pawāsheru/ pawāsheru/ releases/ download/ v 7. 2. 2/ Pawāsheru - 7. 2. 2 - Win - x 64. Msi"!> Pawāsheru - 7. 2. 2 - Win - x 64. Msi </ a > soshite, daunrōdo shita fairu o daburu kurikku shimasu. Insutōrā ga jikkō sa remasu. "-Ji e" |"-ji e" |"-ji e" |" insutōru" |" shūryō" < h 3 > pawāsheru/ pwsh no jikkō </ h 3 > pawāsheru/ pwsh o jikkō shite mimashou. `Sutātomenyū' |" apuri" |" pawāsheru" | `pawāsheru 7 (x 64)' < img src ="/ images/ installation/ pwsh. Png"> hōmu direkutori wa pawāsheru/ pwsh ni hyōji sa remasu. < Pure > PS C: \ Yūzā\ kimot </ Pure > < h 3 > fairu kakuchōshi no hyōji </ h 3 > pāru puroguramu no kakuchōshi wa `< b >. Pl </ b >'desu. Fairu no kakuchōshi ga hyōji sa reruto benridesu. Fairu kakuchōshi o hyōji suru hōhō wa,-ji no pēji ni kisai sa rete imasu. < A href =" https: / / Www. Howtogeek. Komu/ 205086/ beginner - how - to - mēku - windows - shō - fairu - extensions/"> u~indōzu ni fairu kakuchōshi o hyōji sa seru hōhō </ a > < h 3 > memochō no jikkō </ h 3 > pāru puroguramu wa tekisuto fairudesu. Memochō o shiyō shite pāru puroguramu o sakusei dekimasu. Memochō no tsukaikata wa ika no pēji ni kisai sa rete imasu. < A href =" https: / / Www. Digitalcitizen. Life/ start - notepad - windows/"> u~indōzu de memochō o kidō suru 11 no hōhō </ a > < h 3 > pāru puroguramu no sakusei </ h 3 > pāru puroguramu o sakusei shite mimashou. Hōmu direkutori ni `start. Pl' to iu namae no fairu o sakusei shimasu. < Pure > C: \ Yūzā\ kimot\ start. Pl </ Pure > soshite tsugi no bunshō o kaki nasai. < Pure >" haro World" o shutsuryoku shimasu. </ Pure > soshite sore o hozon shimasu. < H 3 > pāru puroguramu no jikkō </ h 3 > < b > perl </ b > komando o shiyō shite pāru puroguramu o jikkō dekimasu. < Pure > perl start. Pl </ Pure > shutsuryoku wa tsugi no tōridesu. < Pure > kon'nichiwa sekai </ Pure > < h 3 > pawāsheru/ pwsh no komando </ h 3 > pawāsheru/ pwsh no yoku tsukau komando o shōkai shimasu. < H 4 > ls </ h 4 > `ls' komando wa, fairu no risuto o hyōji shimasu. < Pure > ls </ Pure > < h 4 > cd </ h 4 > `cd' komando wa, sagyō direkutori o henkō shimasu. < Pure > cd direkutori-mei </ Pure > `..' Wa 1 kaisō-jō no foruda o imi suru fairu-meidesu. < Pure > CD.. </ Pure > < h 4 > doraibu no henkō </ h 4 > `c :' Matawa `d :' O shiyō shite doraibu o henkō dekimasu. < Pure > Set - Location - Path c: Set - Location - Path d: </ Pure > < h 4 > komando rireki no hyōji </ h 4 > komando rireki wa `￪'`￬' kī de miru koto ga dekimasu. < Pure > ￪ ￬ </ Pure > < h 3 > kankyō hensū o hyōji </ h 3 > kankyō hensū o hyōji shimasu. < Pure > ls kankyō: </ Pure > < h 4 > kankyō hensū no shutoku </ h 4 > jinoyōni kankyō hensū o shutoku shite hyōji dekimasu. < Pure > echo $ enbu: PATH </ Pure > $ enbu: MYENV =" kore wa watashi no kankyōdesu." < H 4 > kankyō hensū no settei </ h 4 > kankyō hensū wa tsugi no yō ni settei dekimasu. < Pure > $ enbu: Dēto = 20080604 </ Pure >
+一部を表示
+このソーステキストの詳細翻訳についての詳細を確認するにはソーステキストが必要です
+フィードバックを送信
+サイドパネル
