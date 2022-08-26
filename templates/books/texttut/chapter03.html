@@ -1,0 +1,422 @@
+<style>
+  h2 {
+    counter-increment:count1;
+    counter-reset:count2;
+  }
+  h2:before {
+    content:"3." counter(count1) " ";
+  }
+
+  h3 {
+    counter-increment:count2;
+  }
+  h3:before {
+    content:"3." counter(count1) "." counter(count2) " ";
+  }
+</style>
+
+<div style="font-size:25px;font-weight:bold;padding:10px;">第３章 正規表現でCSVファイルから必要な行を取り出す</div>
+
+<div class="chapter">
+<div class="chapter_description">
+  <div class="chapter_description_left">
+    <!-- <img width="65" src="images/kaeru_w_01.png"> -->
+  </div>
+  <div class="chapter_description_right" style="padding:10px;">
+    正規表現で検索してCSVファイルから必要な行を取り出してみるよ。正規表現のパターンマッチの構文を使うと、文字のパターンで検索できるんだ。正規表現が使えるようになるとテキスト処理がとっても便利になるよ。
+  </div>
+</div>
+
+<h2>正規表現でCSVファイルから行を取り出す準備</h2>
+
+正規表現を使ってCSVファイルから必要な行を取り出してみましょう。第２章で学習したCSVデータに発売日などの情報を追加したデータを使います。
+
+<pre>
+ID,書名,著者名,価格,発売日
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+3,データベース入門,田中太郎,1900,2019-03-06
+4,正規表現テクニック,田中太郎,3000,2019-01-08
+5,本音で語るWeb開発,望月正太郎,5000,2018-02-19
+6,気になるperl,竜崎新次郎,5000,2017-05-23
+</pre>
+
+これを「book_data.csv」として保存してください。文字コードはUTF-8で保存してください。
+
+まず、第２章で学習した、プログラムを少し改造します。CSVファイルを入力して、CSVデータをそのまま出力するプログラム「output_csv.pl」を書きます。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode', 'decode';
+
+# DATAセクションから行を一行ずつ読み込む
+while (my $line = <>) {
+
+  # 一行目は読み飛ばす($.はファイルの行番号。nextで次のループの先頭へ)
+  if ($. == 1) { next }
+
+  # PerlのUTF-8を内部文字列へデコード
+  $line = decode('UTF-8', $line);
+  
+  # 改行を削除
+  chomp $line;
+
+  # カンマで分割して各変数へ
+  my ($id, $name, $author, $price, $issued_date) = split(/,/, $line);
+  
+  # 出力行を作成
+  my $output_line = join(',', $id, $name, $author, $price, $issued_date);
+  
+  # Perlの内部文字列をUTF-8にエンコードして出力
+  print encode('UTF-8', $output_line) . "\n";
+}
+</pre>
+
+次のように入力ファイルと出力ファイルを指定して実行します。
+
+<pre>
+perl output_csv.pl book_data.csv > raw_output.csv
+</pre>
+
+出力結果です。ヘッダを除いて、入力されたデータとまったく同じデータが出力されていれば、OKです。
+
+<pre>
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+3,データベース入門,田中太郎,1900,2019-03-06
+4,正規表現テクニック,田中太郎,3000,2019-01-08
+5,本音で語るWeb開発,望月正太郎,5000,2018-02-19
+6,気になるperl,竜崎新次郎,5000,2017-05-23
+</pre>
+
+正規表現を使った検索を実践していきましょう。
+
+<h2>検索条件を指定してみよう</h2>
+
+さまざまな検索条件を指定してみましょう。
+
+<h3>書名にPerlが含まれている</h3>
+
+Perlが書名に含まれている行だけを出力してみましょう。
+
+以下の正規表現を使います。「=~」は、パターンマッチ演算子です。「/」と「/」の間に正規表現を書きます。
+
+<pre>
+if ($name =~ /Perl/) {
+  # マッチした場合の処理
+}
+</pre>
+
+以下がプログラムの全体「contain_perl.pl」です。マッチした場合のみ行を出力します。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode', 'decode';
+
+# DATAセクションから行を一行ずつ読み込む
+while (my $line = <>) {
+
+  # 一行目は読み飛ばす($.はファイルの行番号。nextで次のループの先頭へ)
+  if ($. == 1) { next }
+
+  # PerlのUTF-8を内部文字列へデコード
+  $line = decode('UTF-8', $line);
+  
+  # 改行を削除
+  chomp $line;
+
+  # カンマで分割して各変数へ
+  my ($id, $name, $author, $price, $issued_date) = split(/,/, $line);
+  
+  if ($name =~ /Perl/) {
+    # 出力行を作成
+    my $output_line = join(',', $id, $name, $author, $price, $issued_date);
+    
+    # Perlの内部文字列をUTF-8にエンコードして出力
+    print encode('UTF-8', $output_line) . "\n";
+  }
+}
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl contain_perl.pl book_data.csv
+</pre>
+
+出力結果では、書名に「Perl」を含む行だけが出力されます。
+
+<pre>
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+</pre>
+
+<h3>書名がPerlで始まる</h3>
+
+書名がPerlで始まるという正規表現に変えてみましょう。「^」は先頭を意味する正規表現文字です。サンプルプログラムは「contain_perl_head.pl」です。
+
+<pre>
+  if ($name =~ /^Perl/) {
+    # 出力処理
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl contain_perl_head.pl book_data.csv
+</pre>
+
+出力結果です。書名がPerlで始まる行だけが出力されています。
+
+<pre>
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+</pre>
+
+<h3>書名がPerlで終わる</h3>
+
+書名がPerlで終わるという正規表現に変えてみましょう。「$」は終端を意味する正規表現文字です。サンプルプログラムは「contain_perl_tail.pl」です。
+
+<pre>
+  if ($name =~ /Perl$/) {
+    # 出力処理
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl contain_perl_tail.pl book_data.csv
+</pre>
+
+出力結果です。
+
+<pre>
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+</pre>
+
+<h3>Perlの大文字と小文字を区別せずに検索</h3>
+
+Perlの大文字と区別を区別せずに検索してみましょう。「Perl」「PERL」「perl」などにマッチさせます。
+
+大文字と小文字を区別せずに検索するには正規表現の「i」オプションを使用します。サンプルプログラムは「contain_perl_nocase.pl」です。
+
+<pre>
+  if ($name =~ /perl/i) {
+    # 出力処理
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl contain_perl_nocase.pl book_data.csv
+</pre>
+
+出力結果です。「Perl」を含む行、「perl」を含む行が取り出せています。
+
+<pre>
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+6,気になるperl,竜崎新次郎,5000,2017-05-23
+</pre>
+
+<h3>書名にPerlまたはWebを含む</h3>
+
+書名にPerlまたはWebを含むという正規表現を書いてみましょう。またはを表現する「|」を使用し、「()」で囲みます。サンプルプログラムは「contain_perl_or_web.pl」です。
+
+<pre>
+  if ($name =~ /(Perl|Web)/) {
+    # 出力処理
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl contain_perl_or_web.pl book_data.csv
+</pre>
+
+出力結果です。書籍にPerlとWebが含まれている行が出力されます。
+
+<pre>
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+5,本音で語るWeb開発,望月正太郎,5000,2018-02-19
+</pre>
+
+<h3>書名が「Web(なんでもよい一文字以上)Perl」を含む</h3>
+
+書名が「Web(なんでもよい一文字以上)Perl」という正規表現を書いてみましょう。サンプルプログラムは「contain_web_any_perl.pl」です。
+
+<pre>
+  if ($name =~ /Web.+Perl/) {
+    # 出力処理
+  }
+</pre>
+
+「.」で「改行文字を除いたすべての文字」を表現できます。「+」で「直前の文字の1文字以上」を表現できます。
+
+実行してみましょう。
+
+<pre>
+perl contain_web_any_perl.pl book_data.csv
+</pre>
+
+出力結果です。
+
+<pre>
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+</pre>
+
+もし、WebとPerlの間が0文字でも良い場合は「+」の代わりに「*」を使うことができます。「*」で「直前の文字の0文字以上」を表現できます。 
+
+<pre>
+  if ($name =~ /Web.*Perl/) {
+    # 出力処理
+  }
+</pre>
+
+<h3>価格が1000円以上、2000円より小さい</h3>
+
+これは、正規表現ではありませんが、価格のの大小で検索するサンプルを書いてみます。サンプルプログラムは「price_range.pl」です。
+
+<pre>
+  if ($price >= 1000 && $price < 2000) {
+    # 出力処理
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl price_range.pl book_data.csv
+</pre>
+
+出力結果です。価格が1000円以上、2000円より小さい行が出力されています。サンプルプログラムは「price_range.pl」です。
+
+<pre>
+3,データベース入門,田中太郎,1900,2019-03-06
+</pre>
+
+<h3>2018年から2019年の間に発売された</h3>
+
+2018年から2019年の間に発売されたという条件を書いてみましょう。サンプルプログラムは「issued_date_range_ymd.pl」です。
+
+<pre>
+  # 正規表現で発売日の年の部分を取得
+  my $issued_year;
+  if ($issued_date =~ /^(\d{4})/) {
+    $issued_year = $1;
+  }
+  
+  # 出版年を取得できた場合のみ処理
+  if (defined $issued_year) {
+    # 出版年が2018年～2019年まで
+    if ($issued_year >= 2018 && $issued_year <= 2019) {
+      # 出力処理
+    }
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl issued_date_range_ymd.pl book_data.csv
+</pre>
+
+出力結果です。2018年から2019年の間に発売された書籍のみ出力されます。
+
+<pre>
+3,データベース入門,田中太郎,1900,2019-03-06
+4,正規表現テクニック,田中太郎,3000,2019-01-08
+5,本音で語るWeb開発,望月正太郎,5000,2018-02-19
+</pre>
+
+<h4>年を取得する正規表現の解説</h4>
+
+年を取得する正規表現の解説です。
+
+<pre>
+  # 正規表現で発売日の年の部分を取得
+  my $issued_year;
+  if ($issued_date =~ /^(\d{4})/) {
+    $issued_year = $1;
+  }
+</pre>
+
+「^」は先頭を表現する正規表現文字。「\d」は、数字を表現する正規表現の文字クラス。「{4}」は、4文字続くという意味の正規表現の量指定子です。
+
+丸カッコ「()」を使って、キャプチャすることができます。キャプチャされた文字は「$1」という変数で取得できます。
+
+次の処理を見てみましょう。年が取得できた場合のみ処理を行いたいのでdefined関数で、年が取得できていることを確認しています。その後は、比較演算子「>=」「<=」と論理演算子「&&」を使って「2018年以上、かつ、2019年以下」という条件を作成しています。
+
+<pre>
+  # 出版年を取得できた場合のみ処理
+  if (defined $issued_year) {
+    # 出版年が2018年～2019年まで
+    if ($issued_year >= 2018 && $issued_year <= 2019) {
+      # 出力処理
+    }
+  }
+</pre>
+
+<h4>年月日を取得する正規表現</h4>
+
+上記の例では、年を取っているだけですが、年月日を取得する正規表現を書いてみましょう。キャプチャの丸かっこが複数存在する場合は「$2」「$3」でキャプチャを取得できます。サンプルプログラムは「issued_date_range_ymd.pl」です。サンプルプログラムは「issued_date_range_ymd.pl」です。
+
+<pre>
+  my $issued_year;
+  my $issued_month;
+  my $issued_mday;
+  if ($issued_date =~ /^(\d{4})-(\d{2})-(\d{2})/) {
+    $issued_year = $1;
+    $issued_month = $2;
+    $issued_mday = $3;
+  }
+</pre>
+
+実行してみましょう。出力結果は、先ほどのサンプルと同じです。
+
+<pre>
+perl issued_date_range_ymd.pl book_data.csv
+</pre>
+
+出力結果です。2018年から2019年の間に発売された書籍のみ出力されます。
+
+<pre>
+3,データベース入門,田中太郎,1900,2019-03-06
+4,正規表現テクニック,田中太郎,3000,2019-01-08
+5,本音で語るWeb開発,望月正太郎,5000,2018-02-19
+</pre>
+
+<h4>文字列比較で日付の範囲を指定する方法</h4>
+
+また単純に以下のように文字列比較演算子「ge」「le」を使って文字列比較をしてもかまいません。サンプルプログラムは「issued_date_range_string.pl」です。
+
+<pre>
+  # 2018年1月1日から2019年12月31の間に発売された
+  if ($issued_date ge '2018-01-01' && $issued_date le '2019-12-31') {
+    # 出力処理
+  }
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl issued_date_range_string.pl book_data.csv
+</pre>
+
+出力結果です。2018年から2019年の間に発売された書籍のみ出力されます。
+
+<pre>
+3,データベース入門,田中太郎,1900,2019-03-06
+4,正規表現テクニック,田中太郎,3000,2019-01-08
+5,本音で語るWeb開発,望月正太郎,5000,2018-02-19
+</pre>
+
+次の章では、HTMLを題材にして正規表現の検索と置換をさらに実践していきます。

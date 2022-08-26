@@ -1,0 +1,1475 @@
+<style>
+  h2 {
+    counter-increment:count1;
+    counter-reset:count2;
+  }
+  h2:before {
+    content:"5." counter(count1) " ";
+  }
+
+  h3 {
+    counter-increment:count2;
+  }
+  h3:before {
+    content:"5." counter(count1) "." counter(count2) " ";
+  }
+</style>
+
+<div style="font-size:25px;font-weight:bold;padding:10px;">第５章 多次元データ構造とJSONデータ入出力</div>
+
+<div class="chapter">
+<div class="chapter_description">
+  <div class="chapter_description_left">
+    <!-- <img width="65" src="images/kaeru_w_01.png"> -->
+  </div>
+  <div class="chapter_description_right" style="padding:10px;">
+   Perlで多次元データ構造を扱う方法について学んでいくよ。データを自由に表現できるようになると、プログラミングの幅が広がるよ。応用として、Webでよく使われるデータ表現であるJSONの入出力をしてみるよ。
+  </div>
+</div>
+
+<h2>JSONデータを入出力するサンプル</h2>
+
+Perlで多次元データ構造を扱う方法を、JSONを入出力するプログラムを使って解説していきます。JSONは、多次元データ構造を表現できるWebでよく使われるデータ形式です。
+
+<h3>複数の書籍の情報を表現するJSONデータ</h3>
+
+<h4>書籍データのCSVでの表現</h4>
+
+前の章で学んだ、書籍のCSVデータは次のようなものでした。
+
+<pre>
+ID,書名,著者名,価格,発売日
+1,Perlテキスト処理プログラミング入門,木本裕紀,2900,2021-01-03
+2,Web開発をやるぜPerl,木本裕紀,2000,2021-01-03
+3,データベース入門,田中太郎,1900,2019-03-06
+</pre>
+ 
+<h4>書籍データのJSONでの表現</h4>
+
+これを、JSONとして表現したものが以下です。
+
+<pre>
+[
+  {
+    "id" : 1,
+    "name" : "Perlテキスト処理プログラミング入門",
+    "author_name" : "木本裕紀",
+    "price" : 2900,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 2,
+    "name" : "Web開発をやるぜPerl",
+    "author_name" : "木本裕紀",
+    "price" : 2000,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 3,
+    "name" : "データベース入門",
+    "author_name" : "田中太郎",
+    "price" : 1900,
+    "issued_date" : "2019-03-06"
+  }
+]
+</pre>
+
+「ID」「書名」「著者名」「価格」「発売日」という項目名は、「id」「name」「author_name」「price」「issued_date」という英語にしてあります。連想配列の配列というデータ構造で表現しています。
+
+<h3>JSONデータフォーマットの解説</h3>
+
+JSONのデータフォーマットについて、簡単に解説しておきます。
+
+<h4>数値</h4>
+
+数値は「1」や「1.5」のように表現します。
+
+<pre>
+1
+1.5
+</pre>
+
+<h4>文字列</h4>
+
+文字列はダブルクォート「"」で囲んで表現します。
+
+<pre>
+"name"
+"Perlテキスト処理プログラミング入門"
+</pre>
+
+<h4>配列</h4>
+
+配列は「[」と「]」で囲んで「,」で複数の要素を並べます。
+
+<pre>
+[3, 5, 7]
+["apple", "orange", "banana"]
+</pre>
+
+空白や改行は、見やすくするために、自由に使うことができます。
+
+<pre>
+[
+  3,
+  5,
+  7
+]
+</pre>
+
+<h4>連想配列</h4>
+
+連想配列は「{」と「}」で囲んで、キーと値のペアを「,」で複数並べます。キーと値は「:」で繋げます。キーは、文字列である必要があります。連想配列は、Perlのハッシュに該当します。
+
+<pre>
+{"id" : 1, "name" : "モジガエル"}
+</pre>
+
+連想配列を配列の要素にすることもできます。
+
+<pre>
+[
+  {"id" : 1, "name" : "モジガエル"},
+  {"id" : 2, "name" : "サーバー太郎"}
+]
+</pre>
+
+<h4>連想配列の配列で表現された書籍のJSONデータ</h4>
+
+もう一度、書籍のJSONデータを見てみましょう。連想配列が、配列の要素になっていますね。
+
+<pre>
+[
+  {
+    "id" : 1,
+    "name" : "Perlテキスト処理プログラミング入門",
+    "author_name" : "木本裕紀",
+    "price" : 2900,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 2,
+    "name" : "Web開発をやるぜPerl",
+    "author_name" : "木本裕紀",
+    "price" : 2000,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 3,
+    "name" : "データベース入門",
+    "author_name" : "田中太郎",
+    "price" : 1900,
+    "issued_date" : "2019-03-06"
+  }
+]
+</pre>
+
+<h3>JSONデータを読み込んで、データを加工して、出力する</h3>
+
+JSONデータを読み込んで、データを加工して、出力するサンプルコードを書いてみます。
+
+価格のデータに10%の消費税を追加して、保存するという処理にしてみます。
+
+JSONデータを「book1_in.json」という名前で保存します。文字コードはUTF-8にしてください。
+
+<pre>
+[
+  {
+    "id" : 1,
+    "name" : "Perlテキスト処理プログラミング入門",
+    "author_name" : "木本裕紀",
+    "price" : 2900,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 2,
+    "name" : "Web開発をやるぜPerl",
+    "author_name" : "木本裕紀",
+    "price" : 2000,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 3,
+    "name" : "データベース入門",
+    "author_name" : "田中太郎",
+    "price" : 1900,
+    "issued_date" : "2019-03-06"
+  }
+]
+</pre>
+
+次にJSONを読み込むプログラム「edit_json_add_price_zei.pl」を作成します。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+# JSON::PPを読み込み
+# encode_json関数とdecode_json関数をインポートする
+use JSON::PP 'encode_json', 'decode_json';
+
+# ファイル全部を読み込む
+my $in_json = do { local $/; <> };
+
+# deocde_json関数でJSONデータをPerlのデータ構造に変換
+my $books = decode_json $in_json;
+
+for my $book (@$books) {
+  # 書籍の情報を取得
+  my $id = $book->{id};
+  my $name = $book->{name};
+  my $price = $book->{price};
+  my $issued_date = $book->{issued_date};
+  
+  # 税込み価格
+  my $price_zeikomi = $price * 1.1;
+  
+  # 税込み価格で書籍の情報を更新
+  
+  $book->{price} = $price_zeikomi
+}
+
+# encode_json関数でPerlのデータ構造をJSONデータに変換
+my $out_json = encode_json $books;
+
+# JSONを出力
+print $out_json;
+</pre>
+
+次のように実行してみましょう。
+
+<pre>
+perl edit_json_add_price_zei.pl book1_in.json > book1_out.json
+</pre>
+
+出力結果です。出力データには、空白文字と改行が含まれていないので、見づらいですが、価格が税込み価格に更新されているのを確認できます。
+
+<pre>
+[{"name":"Perlテキスト処理プログラミング入門","author_name":"木本裕紀","price":3190,"issued_date":"2021-01-03","id":1},{"id":2,"issued_date":"2021-01-03","name":"Web開発をやるぜPerl","author_name":"木本裕紀","price":2200},{"id":3,"issued_date":"2019-03-06","author_name":"田中太郎","name":"データベース入門","price":2090}]
+</pre>
+
+<h2>JSONを読み込むソースコードの解説</h2>
+
+JSONを読み込むソースコードを解説していきます。
+
+<h3>JSON::PPモジュールの読み込みと関数のインポート</h3>
+
+JSONデータを扱うために、JSON::PPモジュールを使います。JSON::PPモジュールは、Perl 5.14からPerlに含まれています。
+
+use文を使って、JSON::PPモジュールを読み込みます。モジュールを読み込むと同時に、利用する関数をインポートすることができます。
+
+<pre>
+# JSON::PPを読み込み
+# encode_json関数とdecode_json関数をインポートする
+use JSON::PP 'encode_json', 'decode_json';
+</pre>
+
+Perlのデータ構造からJSONデータを生成するencode_json関数をインポートしています。
+
+JSONデータをPerlのデータ構造にするdecode_json関数をインポートしています。
+
+<h3>JSONデータをファイルから読み込みPerlのデータ構造に変換する</h3>
+
+JSONデータをファイルから読み込みます。
+
+<pre>
+# ファイル全部を読み込む
+my $in_json = do { local $/; <> };
+</pre>
+
+次に、deocde_json関数でJSONデータをPerlのデータ構造に変換します。JSONの文字列は、Perlの内部文字列に変換されます。
+
+<pre>
+# deocde_json関数でJSONデータをPerlのデータ構造に変換
+my $books = decode_json $in_json;
+</pre>
+
+$booksは、以下のようなPerlのデータ構造になっています。
+
+<pre>
+[
+  {
+    "id" => 1,
+    "name" => "Perlテキスト処理プログラミング入門",
+    "author_name" => "木本裕紀",
+    "price" => 2900,
+    "issued_date" => "2021-01-03"
+  },
+  {
+    "id" => 2,
+    "name" => "Web開発をやるぜPerl",
+    "author_name" => "木本裕紀",
+    "price" => 2000,
+    "issued_date" => "2021-01-03"
+  },
+  {
+    "id" => 3,
+    "name" => "データベース入門",
+    "author_name" => "田中太郎",
+    "price" => 1900,
+    "issued_date" => "2019-03-06"
+  }
+]
+</pre>
+
+Perlでは、上記のデータ構造を理解するのにリファレンスの知識が必要になります。ハッシュの配列と呼ばれるデータ構造ですが、Perlでは、多次元データ構造を表現するのに、リファレンスとういう機能を使います。リファレンスについては、この後、詳しく解説します。
+
+<h3>Perlのデータ構造をJSONデータに変換する</h3>
+
+Perlのデータ構造をJSONデータに変換するにはJSON::PPモジュールのencode_json関数を使用します。
+
+<pre>
+# encode_json関数でPerlデータ構造をJSONデータに変換
+my $out_json = encode_json $books;
+</pre>
+
+print文で出力して、リダイレクトを使ってファイルに書き込みます。
+
+<pre>
+# JSONを出力
+print $out_json;
+</pre>
+
+以下のようにプログラムを実行します。
+
+<pre>
+perl edit_json_add_price_zei.pl book1_in.json > book1_out.json
+</pre>
+
+出力されたファイルの内容は、消費税が10%加算されたJSONデータです。
+
+<pre>
+[{"name":"Perlテキスト処理プログラミング入門","author_name":"木本裕紀","price":3190,"issued_date":"2021-01-03","id":1},{"id":2,"issued_date":"2021-01-03","name":"Web開発をやるぜPerl","author_name":"木本裕紀","price":2200},{"id":3,"issued_date":"2019-03-06","author_name":"田中太郎","name":"データベース入門","price":2090}]
+</pre>
+
+<h2>リファレンス</h2>
+
+Perlにはリファレンスという機能があります。リファレンスは日本語では「参照」という意味です。リファレンスは、実体データへの参照です。
+
+リファレンスを作成するコード「create_scalar_ref.pl」を書いてみます。リファレンスは、リファレンス生成演算子「\」で作成できます。Windowsの場合は「&yen;」マークです。
+
+<pre>
+use strict;
+use warnings;
+
+# 実際のデータ
+my $name = "kimoto";
+
+# リファレンスを作成
+my $name_ref = \$name;
+
+# 中身を表示してみるとどうなる?
+print "$name_ref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl create_scalar_ref.pl
+</pre>
+
+私の実行環境での出力結果です。
+
+<pre>
+SCALAR(0x55beb1acea08)
+</pre>
+
+リファレンスは、実際のデータの指す矢印のようなものです。「$name_ref」は「$name」というデータを指しています。リファレンスという言葉で、データを指す矢印を想像してみてください。
+
+<pre>
+# リファレンスのイメージ
+$name_ref -> $name
+</pre>
+
+内部実装では、「$name_ref」には「$name」のメモリ上の位置を示す数値(アドレス)が代入されています。出力結果に表れた16進数の数字はアドレスです。
+
+「$name」は一つの値を表すスカラ変数ですので、このようなリファレンスをスカラリファレンスと呼びます。
+
+<h3>配列リファレンスの作成</h3>
+
+配列のリファレンスも「\」を使って同じように作成できます。
+
+<pre>
+# 配列のリファレンスを作成
+my $nums_ref = \@nums;
+</pre>
+
+「$nums_ref」は「@nums」という配列の実体を指しています。
+
+<pre>
+# 配列のリファレンスのイメージ
+$nums_ref -> @nums
+</pre>
+
+配列のリファレンスを作成するサンプル「create_array_ref.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 実際のデータ
+my @nums = (3, 5, 9);
+
+# 配列リファレンスを作成
+my $nums_ref = \@nums;
+
+# 中身を表示してみるとどうなる?
+print "$nums_ref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl create_array_ref.pl
+</pre>
+
+私の実行環境での出力結果です。
+
+<pre>
+ARRAY(0x560d5ff19a08)
+</pre>
+
+<h3>配列リファレンスを簡単に作成する</h3>
+
+配列リファレンスは、無名配列生成子「[]」と呼ばれる文法を使って、簡単に作成できます。
+
+<pre>
+# 無名配列生成子を使って配列リファレンスを簡単に作成
+my $nums_ref = [3, 5, 9];
+</pre>
+
+これは、以下の記述と同じになります。配列を作成している部分が省略できてきますね。
+
+<pre>
+# 実際のデータ
+my @nums = (3, 5, 9);
+
+# 配列リファレンスを作成
+my $nums_ref = \@nums;
+</pre>
+
+Perlでは「()」と「[]」を区別して読めるようになることが、大切です。
+
+無名配列生成子を使って、配列リファレンスを簡単に作成するサンプル「create_array_ref_simple.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 無名配列生成子を使って配列リファレンスを簡単に作成
+my $nums_ref = [3, 5, 9];
+
+# 中身を表示してみるとどうなる?
+print "$nums_ref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl create_array_ref_simple.pl
+</pre>
+
+私の実行環境での出力結果です。
+
+<pre>
+ARRAY(0x55e35929b398)
+</pre>
+
+<h3>ハッシュのリファレンスの作成</h3>
+
+ハッシュのリファレンスも「\」を使って同じように作成できます。
+
+<pre>
+# ハッシュのリファレンスを作成
+my $book_ref = \%book;
+</pre>
+
+リファレンスは、実際のデータの指す矢印のようなものです。「$book_ref」は「%book」というハッシュの実体を指しています。
+
+<pre>
+# ハッシュのリファレンスのイメージ
+$book_ref -> %book
+</pre>
+
+ハッシュのリファレンスを作成するサンプル「create_hash_ref.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 実際のデータ
+my %book = (id => 1, name => 'Perl Book');
+
+# ハッシュリファレンスを作成
+my $book_ref = \%book;
+
+# 中身を表示してみるとどうなる?
+print "$book_ref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl create_hash_ref.pl
+</pre>
+
+私の実行環境での出力結果です。
+
+<pre>
+HASH(0x560d5ff19a08)
+</pre>
+
+<h3>ハッシュリファレンスを簡単に作成する</h3>
+
+ハッシュリファレンスは、無名ハッシュ生成子「{}」と呼ばれる文法を使って、簡単に作成できます。
+
+<pre>
+# 無名ハッシュ生成子を使ってハッシュリファレンスを簡単に作成
+my $book_ref = {id => 1, name => 'Perl Book'};
+</pre>
+
+これは、以下の記述と同じになります。ハッシュを作成している部分が省略できてきますね。
+
+<pre>
+# 実際のデータ
+my %book = (id => 1, name => 'Perl Book');
+
+# ハッシュリファレンスを作成
+my $book_ref = \%book;
+</pre>
+
+Perlでは「()」と「{}」を区別して読めるようになることが、大切です。
+
+無名ハッシュ生成子を使って、ハッシュリファレンスを簡単に作成するサンプル「create_hash_ref_simple.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 無名ハッシュ生成子を使ってハッシュリファレンスを簡単に作成
+my $book_ref = {id => 1, name => 'Perl Book'};
+
+# 中身を表示してみるとどうなる?
+print "$book_ref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl create_hash_ref_simple.pl
+</pre>
+
+私の実行環境での出力結果です。
+
+<pre>
+HASH(0x55e35929b398)
+</pre>
+
+<h2>デリファレンス</h2>
+
+デリファレンスは、リファレンスの作成と反対になる操作で、リファレンスから実体を取得する操作のことです。
+
+デリファレンスには、スカラのデリファレンス、配列のデリファレンス、ハッシュのデリファレンスがあります。
+
+<ul>
+  <li>スカラのデリファレンス</li>
+  <li>配列のデリファレンス</li>
+  <li>ハッシュのデリファレンス</li>
+</ul>
+
+<h3>スカラのデリファレンス</h3>
+
+スカラのデリファレンスの構文です。
+
+<pre>
+${スカラリファレンス}
+</pre>
+
+スカラリファレンスをデリファレンスして文字列の実体を取り出すサンプル「deref_scalar.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 実際のデータ
+my $name = "kimoto";
+
+# リファレンスを作成
+my $name_ref = \$name;
+
+# スカラのデリファレンスして実体を取り出す
+my $name_deref = ${$name_ref};
+
+# 中身を表示してみるとどうなる? 元に戻っていますね。
+print "$name_deref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl deref_scalar.pl
+</pre>
+
+出力結果です。「kimoto」という文字列の内容が出力されています。
+
+<pre>
+kimoto
+</pre>
+
+スカラデリファレンスの構文は、対象が単なる変数の場合は「{}」を省略できるので、次のように書かれることも多いので覚えておきましょう。
+
+<pre>
+# スカラのデリファレンスして実体を取り出す
+my $name_deref = $$name_ref;
+</pre>
+
+<h3>配列のデリファレンス</h3>
+
+配列のデリファレンスの構文です。
+
+<pre>
+@{配列リファレンス}
+</pre>
+
+配列リファレンスをデリファレンスして配列の実体を取り出すサンプル「deref_array.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 実際のデータ
+my @nums = (3, 5, 9);
+
+# 配列リファレンスを作成
+my $nums_ref = \@nums;
+
+# 配列をデリファレンスして実体を取り出す
+my @nums_deref = @{$nums_ref};
+
+# 中身を表示してみるとどうなる? 元に戻っていますね。
+print "@nums_deref\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl deref_array.pl
+</pre>
+
+出力結果です。「3」「5」「9」という配列の内容が出力されています。
+
+<pre>
+3 5 9
+</pre>
+
+配列デリファレンスの構文は、対象が単なる変数の場合は「{}」を省略できるので、次のように書かれることも多いので覚えておきましょう。
+
+<pre>
+# 配列のデリファレンス
+my @nums_deref = @$nums_ref;
+</pre>
+
+<h3>ハッシュのデリファレンス</h3>
+
+ハッシュのデリファレンスの構文です。
+
+<pre>
+%{ハッシュリファレンス}
+</pre>
+
+ハッシュリファレンスをデリファレンスしてハッシュの実体を取り出すサンプル「deref_hash.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 実際のデータ
+my %book = (id => 1, name => 'Perl Book');
+
+# ハッシュリファレンスを作成
+my $book_ref = \%book;
+
+# ハッシュのデリファレンスを行って実体を取り出す
+my %book_deref = %{$book_ref};
+
+# 中身を表示してみるとどうなる? 元に戻っていますね。
+for my $name (sort keys %book_deref) {
+  my $value = $book_deref{$name};
+  print "$name : $value\n";
+}
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl deref_hash.pl
+</pre>
+
+出力結果です。ハッシュの内容が出力されています。
+
+<pre>
+id : 1
+name : Perl Book
+</pre>
+
+ハッシュデリファレンスの構文は、対象が単なる変数の場合は「{}」を省略できるので、次のように書かれることも多いので覚えておきましょう。
+
+<pre>
+# ハッシュのデリファレンスを行って実体を取り出す
+my %book_deref = %$book_ref;
+</pre>
+
+<h2>リファレンスから要素にアクセスする</h2>
+
+配列の要素やハッシュの値をリファレンスから取り出すための、簡単な記法がPerlでは準備されています。
+
+<h3>配列のリファレンスから要素を取得・設定する</h3>
+
+配列のリファレンスから要素にアクセスするにはアロー演算子「->」を使用します。配列のリファレンスの場合と比較するために、配列の要素を取得・設定する方法も記述します。
+
+<pre>
+# 配列のリファレンスから要素を取得
+$array_ref->[$index]
+
+# 配列のリファレンスから要素を設定
+$array_ref->[$index] = 値
+
+# 参考情報
+
+# 配列の要素を取得
+$array[$index]
+
+# 配列の要素を設定
+$array[$index] = 値
+</pre>
+
+配列で要素にアクセスする場合の違いは「->」があるかないかだけですので、Perlのプログラムを読むときは、注意して読んでください。
+
+配列のリファレンスから要素の設定・取得を行うサンプル「access_array_ref.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# 配列のリファレンスを作成
+my $nums = [3, 5, 7];
+
+# 配列のリファレンスから要素を取得
+my $num = $nums->[2];
+
+print "$num\n";
+
+# 配列のリファレンスから要素を設定
+$nums->[1] = 10;
+
+# 配列のリファレンスをデリファレンスして出力
+print "@$nums\n";
+</pre>
+
+プログラムを実行してみましょう。
+
+<pre>
+perl access_array_ref.pl
+</pre>
+
+出力結果です。配列のリファレンスから要素の取得と設定ができています。
+
+<pre>
+7
+3 10 7
+</pre>
+
+<h3>ハッシュのリファレンスから要素を取得・設定する</h3>
+
+ハッシュのリファレンスから要素にアクセスするにはアロー演算子「->」を使用します。ハッシュのリファレンスの場合と比較するために、ハッシュの要素を取得・設定する方法も記述します。
+
+<pre>
+# ハッシュのリファレンスから要素を取得
+$hash_ref->{$key}
+
+# ハッシュのリファレンスから要素を設定
+$hash_ref->{$key} = 値
+
+# 参考情報
+
+# ハッシュの要素を取得
+$hash{$key}
+
+# ハッシュの要素を設定
+$hash{$key} = 値
+</pre>
+
+ハッシュで要素にアクセスする場合の違いは「->」があるかないかだけですので、Perlのプログラムを読むときは、注意して読んでください。
+
+ハッシュのリファレンスから要素の設定・取得を行うサンプル「access_hash_ref.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# ハッシュのリファレンスを作成
+my $book = {id => 1, name => 'Perl Book'};
+
+# ハッシュのリファレンスから要素を取得
+my $name = $book->{name};
+
+print "$name\n";
+
+# ハッシュのリファレンスから要素を設定
+$book->{id} = 2;
+
+# ハッシュのリファレンスをデリファレンスして出力
+for my $key (sort keys %$book) {
+  my $value = $book->{$key};
+  print "$key : $value\n";
+}
+</pre>
+
+プログラムを実行してみましょう。
+
+<pre>
+perl access_hash_ref.pl
+</pre>
+
+出力結果です。ハッシュのリファレンスから要素の取得と設定ができています。
+
+<pre>
+Perl Book
+id : 2
+name : Perl Book
+</pre>
+
+<h2>データをダンプする</h2>
+
+Perlのデータをダンプする方法について書きます。ダンプとは、この文脈では、データの中身を文字列に変換して表示することです。
+
+配列のデータ、配列のリファレンスのデータ、ハッシュのデータ、ハッシュのリファレンスのデータをData::DumperというPerlのモジュールを使ってダンプしてみましょう。
+
+<h3>配列をダンプする</h3>
+
+配列をダンプしてみましょう。Data::Dumperモジュールを読み込み、Dumper関数を使います。
+
+Dumper関数の引数は、リファレンスを渡すのがお勧めな方法なので「\」を使って、配列のリファレンスを作成しています。
+
+Dumper関数は、文字列化されたデータの情報を返すので、warn関数を使って、標準エラー出力に、出力しています。
+
+配列の情報をダンプする「dump_array.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# Data::Dumperモジュールを読み込み
+use Data::Dumper;
+
+# 配列
+my @nums = (3, 5, 6);
+
+# 配列のデータをダンプする
+warn Dumper \@nums;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_array.pl
+</pre>
+
+配列の内容が出力されます。
+
+<pre>
+$VAR1 = [
+          3,
+          5,
+          6
+        ];
+</pre>
+
+<h3>配列のリファレンスをダンプする</h3>
+
+配列のリファレンスをダンプしてみましょう。Data::Dumperモジュールを読み込み、Dumper関数を使います。
+
+Dumper関数の引数は、配列のリファレンスを渡します。
+
+Dumper関数は、文字列化されたデータの情報を返すので、warn関数を使って、標準エラー出力に、出力しています。
+
+配列のリファレンスの情報をダンプする「dump_array_ref.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# Data::Dumperモジュールを読み込み
+use Data::Dumper;
+
+# 配列のリファレンス
+my $nums = [3, 5, 6];
+
+# 配列のリファレンスのデータをダンプする
+warn Dumper $nums;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_array_ref.pl
+</pre>
+
+配列のリファレンスの内容が出力されます。
+
+<pre>
+$VAR1 = [
+          3,
+          5,
+          6
+        ];
+</pre>
+
+<h3>ハッシュをダンプする</h3>
+
+ハッシュをダンプしてみましょう。Data::Dumperモジュールを読み込み、Dumper関数を使います。
+
+Dumper関数の引数は、リファレンスを渡すのがお勧めな方法なので「\」を使って、ハッシュのリファレンスを作成しています。
+
+Dumper関数は、文字列化されたデータの情報を返すので、warn関数を使って、標準エラー出力に、出力しています。
+
+ハッシュの情報をダンプする「dump_hash.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# Data::Dumperモジュールを読み込み
+use Data::Dumper;
+
+# ハッシュ
+my %book = (id => 1, name => 'Perl Book');
+
+# ハッシュのデータをダンプする
+warn Dumper \%book;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_hash.pl
+</pre>
+
+ハッシュの内容が出力されます。
+
+<pre>
+$VAR1 = {
+          'name' => 'Perl Book',
+          'id' => 1
+        };
+</pre>
+
+<h3>ハッシュのリファレンスをダンプする</h3>
+
+ハッシュのリファレンスをダンプしてみましょう。Data::Dumperモジュールを読み込み、Dumper関数を使います。
+
+Dumper関数の引数は、リファレンスを渡すのがお勧めな方法なので「\」を使って、ハッシュのリファレンスのリファレンスを作成しています。
+
+Dumper関数は、文字列化されたデータの情報を返すので、warn関数を使って、標準エラー出力に、出力しています。
+
+ハッシュのリファレンスの情報をダンプする「dump_hash_ref.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+# Data::Dumperモジュールを読み込み
+use Data::Dumper;
+
+# ハッシュのリファレンス
+my $book = {id => 1, name => 'Perl Book'};
+
+# ハッシュのリファレンスのデータをダンプする
+warn Dumper $book;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_hash_ref.pl
+</pre>
+
+ハッシュのリファレンスの内容が出力されます。
+
+<pre>
+$VAR1 = {
+          'name' => 'Perl Book',
+          'id' => 1
+        };
+</pre>
+
+<h3>日本語のデータをダンプする</h3>
+
+日本語のデータをダンプするには、どうすればよいのでしょうか? 実は、Perlには、日本語のデータを簡単にダンプする機能が標準関数や標準モジュールとして含まれていません。
+
+これでは少し不便ですね。こういう場合は、その機能を実現するPerlのモジュールをCPANというサイトからダウンロードしてインストールできます。
+
+CPANからダウンロードするコマンドは「cpanm」あるいは「cpan」です。cpanmがある場合は、cpanmでインストールするのがお勧めです。
+
+ここでは、日本語のデータをダンプできる「D」モジュールをインストールしてみましょう。
+
+<pre>
+# cpanmの場合
+cpanm D
+
+# cpanの場合
+cpan D
+</pre>
+
+Dモジュールのインストールが終わったら次のように、日本語データをダンプしてみましょう。
+
+<h4>Windowsで日本語を含むデータをダンプする</h4>
+
+Windowsの場合は「use D;」でモジュールを読み込んだ後に、「dw」というコマンドでダンプできます。Perlの内部文字列を、cp932でエンコードして出力します。ソースコードの文字コードはUTF-8で保存してください。
+
+プログラム名は「dump_data_win.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+# ハッシュのリファレンス
+my $book = {id => 1, name => 'モジガエルのPerl入門'};
+
+# Windowsで日本語を含んだPerlのデータをダンプする
+use D;dw $book;
+</pre>
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+# ハッシュのリファレンス
+my $book = {id => 1, name => 'モジガエルのPerl入門'};
+
+# Windowsで日本語を含んだPerlのデータをダンプする
+use D;dw $book;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_data_win.pl
+</pre>
+
+次のように日本語が正しくダンプされました。
+
+<pre>
+{
+  'id' => '1',
+  'name' => 'モジガエルのPerl入門'
+} at dump_data_win.pl line 9.
+</pre>
+
+<h4>Mac、Linux/UNIXで日本語を含むデータをダンプする</h4>
+
+Mac、Linux/UNIXの場合は「use D;」でモジュールを読み込んだ後に、「du」というコマンドでダンプできます。Perlの内部文字列を、UTF-8でエンコードして出力します。ソースコードの文字コードはUTF-8で保存してください。
+
+プログラム名は「dump_data_unix.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+# ハッシュのリファレンス
+my $book = {id => 1, name => 'モジガエルのPerl入門'};
+
+# Mac、Linux/UNIXで日本語を含んだPerlのデータをダンプする
+use D;du $book;
+</pre>
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+
+# ハッシュのリファレンス
+my $book = {id => 1, name => 'モジガエルのPerl入門'};
+
+# Mac、Linux/UNIXで日本語を含んだPerlのデータをダンプする
+use D;du $book;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_data_unix.pl
+</pre>
+
+次のように日本語が正しくダンプされました。
+
+<pre>
+{
+  'id' => '1',
+  'name' => 'モジガエルのPerl入門'
+} at dump_data_unix.pl line 9.
+</pre>
+
+<h2>ハッシュの配列というデータ構造をPerlで表現する</h2>
+
+ハッシュの配列というデータ構造をPerlで表現してみましょう。ついに、ここに戻ってきました!
+
+<h3>ハッシュの配列というデータ構造の作成</h3>
+
+Perlでは、多次元データ構造は、リファレンスを使って表現します。
+
+ハッシュの配列を作成してダンプするサンプルコード「dump_array_of_hash.pl」を書いてみます。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+
+# Perlでハッシュの配列というデータ構造を表現
+# 配列のリファレンスとハッシュのリファレンスを使います。
+my $books = [
+  {
+    id => 1,
+    name => 'Perl Boook',
+    price => 2900,
+  },
+  {
+    id => 2,
+    name => 'Web Development',
+    price => 2000,
+  },
+  {
+    id => 3,
+    name => 'Database',
+    price => 1900,
+  }
+];
+
+warn Dumper $books;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dump_array_of_hash.pl
+</pre>
+
+出力結果です。ハッシュの配列がダンプされます。
+
+<pre>
+$VAR1 = [
+          {
+            'id' => 1,
+            'name' => 'Perl Boook',
+            'price' => 2900
+          },
+          {
+            'name' => 'Web Development',
+            'id' => 2,
+            'price' => 2000
+          },
+          {
+            'name' => 'Database',
+            'id' => 3,
+            'price' => 1900
+          }
+        ];
+</pre>
+
+<h3>ハッシュの配列をループする</h3>
+
+ハッシュの配列をループしてみます。書籍の価格に消費税10%を追加してみましょう。この部分の処理は、JSONでデータを読み込んだ場合の処理と全く同じです。
+
+ハッシュの配列をループする場合は、扱っているデータがリファレンスであることに注意します。
+
+forループに渡すときは、配列のリファレンスをデリファレンスして配列にします。
+
+ハッシュのリファレンスから値にアクセスする場合は、アロー演算子「->」を使います。
+
+ハッシュの配列をループする「loop_array_of_hash.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+
+# 書籍のデータ
+my $books = [
+  {
+    id => 1,
+    name => 'Perl Boook',
+    price => 2900,
+  },
+  {
+    id => 2,
+    name => 'Web Development',
+    price => 2000,
+  },
+  {
+    id => 3,
+    name => 'Database',
+    price => 1900,
+  }
+];
+
+# 配列のリファレンスをデリファレンスしてforループに渡す
+for my $book (@$books) {
+  # アロー演算子「->」で値を取得
+  my $id = $book->{id};
+  my $name = $book->{name};
+  my $price = $book->{price};
+  
+  # 消費税10%を加算
+  $book->{price} *= 1.1;
+}
+
+# データをダンプする
+warn Dumper $books;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl loop_array_of_hash.pl
+</pre>
+
+出力結果です。消費税10%が加算されていますね。
+
+<pre>
+$VAR1 = [
+          {
+            'name' => 'Perl Boook',
+            'price' => '3190',
+            'id' => 1
+          },
+          {
+            'name' => 'Web Development',
+            'price' => '2200',
+            'id' => 2
+          },
+          {
+            'id' => 3,
+            'price' => '2090',
+            'name' => 'Database'
+          }
+        ];
+</pre>
+
+<h2>演習問題: CSVファイル読込、正規表現で検索・置換、JSONデータ出力</h2>
+
+さぁ、Perlテキスト処理のエッセンスの総まとめとして、CSVデータをファイルから読み込んで、正規表現で検索・置換して、JSONデータで出力するということをやってみましょう。
+
+この処理が、自然に書けるようになれば、この書籍で学んだことが、実践できていると思います。
+
+では、書籍情報のCSVファイルを読み込んで、JSONファイルを出力する処理を書いてみてください。
+
+次の機能を実現するプログラムを書いてください。
+
+1. 検索条件は「書名が『モジガエル』で始まる、あるいは『Webシステム開発』で終わる」かつ「発売日が2020年以降」
+
+2. 価格は20%割引
+
+3. 発売日は「2021年1年3日」というフォーマットから「2021-01-03」というフォーマットに変換
+
+これまでに説明していませんが、回答では、sprintfというPerlの標準関数を使っています。sprintf関数の使い方のサンプルを書きますので、これを使って、発売日のフォーマット変換にチャレンジしてみてください。
+
+<pre>
+# 4桁-2桁-2桁にフォーマットする
+my $formatted_string = sprintf("%04d-%02d-%02d", $year, $mon, $mday);
+</pre>
+
+<h3>CSVデータ形式の入力ファイル</h3>
+
+入力のCSVファイルです。UTF-8で保存してください。
+
+<pre>
+ID,書名,著者名,価格,発売日
+1,モジガエルのPerlテキスト処理プログラミング入門,木本裕紀,2900, 2021年1年3日
+2,PerlでWebシステム開発,木本裕紀,2000,2020年12年6日
+3,データベース入門,田中太郎,1900,2020年5年6日
+4,モジガエルの正規表現テクニック,田中太郎,3000,2019年7年31日
+</pre>
+
+<h3>JSONデータ形式の出力ファイル</h3>
+
+以下のJSONの出力ファイルを出力してください。改行は見やすくするために入れていますが、内容があっていればOKです。
+
+<pre>
+[
+  {
+    "id" : 1,
+    "name" : "モジガエルのPerlテキスト処理プログラミング入門",
+    "author_name" : "木本裕紀",
+    "price" : 2320,
+    "issued_date" : "2021-01-03"
+  },
+  {
+    "id" : 2,
+    "name" : "PerlでWebシステム開発",
+    "author_name" : "木本裕紀",
+    "price" : 1600,
+    "issued_date" : "2020-12-06"
+  },
+]
+</pre>
+
+<h3>演習問題の答え合わせ</h3>
+
+答え合わせです。書籍のCSVファイルを処理してJSONに変換する「csv_to_json.pl」です。上手に書けたかな。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode', 'decode';
+use JSON::PP 'encode_json', 'decode_json';
+
+# CSVファイルを読み込んでPerlのデータ構造を作成する
+my $books = [];
+while (my $line = <>) {
+  # 1行目のヘッダを飛ばす $.は行番号
+  if ($. == 1) {
+    next;
+  }
+  
+  # 改行の削除(Windows, Mac, Linux/UNIX対応)
+  $line =~ s/\r?\n//;
+  
+  # Perlの内部文字列へ変換
+  $line = decode('UTF-8', $line);
+
+  # CSVデータをPerlの変数へ
+  my ($id, $name, $author_name, $price, $issued_date)
+    = split(/,/, $line);
+  
+  # 価格を20% off
+  my $price_off = $price * 0.8;
+  
+  # 発行日の日付を
+  #「2021年1年3日」のようなフォーマットから「2021-01-03」のようなフォーマットへ
+  my $issued_date_hyphen;
+  if ($issued_date =~ /^(\d+)年(\d+)月(\d+)日$/) {
+    my $year = $1;
+    my $mon = $2;
+    my $mday = $3;
+    
+    $issued_date_hyphen = sprintf("%04d-%02d-%02d", $year, $mon, $mday);
+  }
+  else {
+    # フォーマットが間違っている場合は、警告を出して、次の処理へ
+    # $. には行番号が含まれている
+    warn("Invalid issued date format at line $.");
+    next;
+  }
+  
+  # 条件にマッチしたときだけ追加
+  # 検索条件は「書名が『モジガエル』で始まる、あるいは『Webシステム開発』で終わる」
+  # かつ「発売日が2020年以降」
+  my $match;
+  if (
+    ($name =~ /^モジガエル/ || $name =~ /Webシステム開発$/)
+    && $issued_date_hyphen ge '2020'
+  ) {
+    # マッチ
+    $match = 1;
+  }
+  
+  # マッチした場合は追加
+  if ($match) {
+    # 書籍情報を作成
+    my $book = {
+      id => $id,
+      name => $name,
+      author_name => $author_name,
+      price => $price_off,
+      issued_date => $issued_date_hyphen,
+    };
+    
+    # 書籍を配列のリファレンスの最後の要素に追加
+    push @$books, $book;
+  }
+}
+
+# データの中身をダンプしてみたい場合
+# Windows
+# use D;dw $books;
+# Mac, Linux/UNIX
+# use D;du $books;
+
+# Perlのデータ構造をJSONデータへ変換
+my $books_json = encode_json $books;
+
+# JSONデータを出力
+print $books_json;
+</pre>
+
+次のように実行してください。
+
+<pre>
+perl csv_to_json.pl csv_to_json_in.csv > csv_to_json_out.json
+</pre>
+
+出力結果です。
+
+<pre>
+[{"name":"モジガエルのPerlテキスト処理プログラミング入門","price":2320,"id":"1","issued_date":"2021-01-03","author_name":"木本裕紀"},{"issued_date":"2020-12-06","author_name":"木本裕紀","id":"2","price":1600,"name":"PerlでWebシステム開発"}]
+</pre>
+
+JSON::PPのencode_jsonモジュールは、最小サイズになるJSON出力を行うので、見にくいですが、以下の条件で出力されていることを確認してください。
+
+1. 検索条件は「書名が『モジガエル』で始まる、あるいは『Webシステム開発』で終わる」かつ「発売日が2020年以降」
+
+2. 価格は20%割引
+
+3. 発売日は「2021年1年3日」というフォーマットから「2021-01-03」というフォーマットに変換
+
+お疲れさまでした。
+
+<h2>Perlプログラミングの今後の目標</h2>
+
+テキスト処理プログラミングでプログラミングの基礎を終えた後にチャレンジできる分野について書いておきます。
+
+<h3>Linux/UNIXサーバー管理</h3>
+
+PerlはUNIX上で誕生したプログラミング言語で、UNIXやその派生であるLinux上でのサーバー管理に適したプログラミング言語です。WindowsやMacでPerlを試した後に、Linux/UNIX上でPerlを使うことにチャレンジするのもよいでしょう。
+
+<h3>Webシステム開発</h3>
+
+Perlテキスト処理プログラミングの次の目標として、Webシステム開発にチャレンジしてみるのもよいでしょう。Webの中心的な処理は、HTTP上におけるテキスト処理なので、テキスト処理が得意なPerlとの相性はピッタリです。
+
+<h2>サンプルコードのダウンロード</h2>
+
+Perlテキスト処理のエッセンスで紹介したサンプルコードは、すべてPerlクラブのサイトからダウンロードして試すことができます。
+
+<b>Perlテキスト処理のエッセンス サンプルコードのダウンロード</b>
+
+Perlクラブで会員登録を行うと、サンプルがすべてダウンロードできます。
+
+https://perlclub.net
+
+<div style="height:1100px"></div>
+
+<b><big>Perlテキスト処理のエッセンス</big></b>
+　
+発行日
+　2021年6月1日 初版第１刷発行
+　2021年7月6日 初版第２刷発行
+　2022年2月1日 第２版第１刷発行
+
+著者
+　Perlクラブ(株)
+　
+装丁
+　MNdesign
+　
+発行者・発行所
+　Perlクラブ(株)
+　〒104-0061
+　東京都中央区銀座７丁目１７番８号銀座松良ビル５階
+　電話 03-6281-5440
+　https://perlclub.net/
+　
