@@ -1,0 +1,960 @@
+<style>
+  h2 {
+    counter-increment:count1;
+    counter-reset:count2;
+  }
+  h2:before {
+    content:"4." counter(count1) " ";
+  }
+
+  h3 {
+    counter-increment:count2;
+  }
+  h3:before {
+    content:"4." counter(count1) "." counter(count2) " ";
+  }
+</style>
+
+<div style="font-size:25px;font-weight:bold;padding:10px;">第４章 Perlワンライナーと Linuxコマンドの組み合わせ</div>
+
+<div class="chapter">
+<div class="chapter_description">
+  <div class="chapter_description_left">
+    <!-- <img width="65" src="images/chapter_top.png" style="padding:10px;"> -->
+  </div>
+  <div class="chapter_description_right" style="padding:10px;">
+    PerlワンライナーとLinuxコマンドを組み合わせてLinux上での作業を簡単にこなせるようになる方法を解説するよ。標準入出力・パイプを組み合わせて、Perlでファイル内容の置換を覚えよう。Gitでファイル内容を、すぐに戻す方法も解説。
+  </div>
+</div>
+
+<h2>Perlワンライナーとは</h2>
+
+perlコマンドの「-e」オプションを使用することで、Perlプログラムをコマンドとして実行することができます。この機能を、慣習的にPerlワンライナーと呼びます。
+
+Perlワンライナーの簡単な例として、文字列を出力してみます。
+
+<pre>
+perl -e 'print "Hello World\n"; print "Good Bye\n"'
+</pre>
+
+出力結果です。
+
+<pre>
+Hello World
+Good Bye
+</pre>
+
+<h3>Perlワンライナーでできること</h3>
+
+Perlワンライナーが得意とするのは、テキストの出力を変換することと、ファイル内容自体の置換です。
+
+Linuxの他のコマンドの出力を別の出力に変えたり、複数のファイルの内容を置換するのが得意です。
+
+まず最初にLinuxコマンドとPerlワンライナーを組み合わせる方法を学びます。また、ファイル内容の置換はリスクをともなう操作なので、ファイルの内容を間違って置換してしまった場合に、元に戻す方法も学びます。
+
+<h2>標準入出力</h2>
+
+標準入出力について解説します。
+
+<h3>標準出力とは</h3>
+
+標準出力とは、標準の出力先のことで、デフォルトでは、画面になっています。標準出力のひとつの例として、echoコマンドを実行してみましょう。
+
+
+<pre>
+echo 'Hello'
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+</pre>
+
+画面に「Hello」と表示されるのは、echoコマンドは標準出力に出力し、標準出力の出力先が画面だからです。
+
+<h3>標準エラー出力とは</h3>
+
+標準エラー出力とは、標準のエラー出力先のことで、デフォルトでは、画面になっています。Perlのワンライナーを使って、標準エラー出力に出力してみましょう。
+
+<pre>
+perl -e 'print STDERR "Error\n"'
+</pre>
+
+出力結果です。
+
+<pre>
+Error
+</pre>
+
+標準出力と同じように見えますが、標準エラー出力の出力先が、画面になっているということを意識してください。
+
+<h3>リダイレクトとは</h3>
+
+リダイレクトとは、標準出力または標準エラー出力の出力先を、ファイルに切り替えることができる機能のことです。
+
+標準出力の出力先をファイルに切り替えるには「>」を使います。
+
+<pre>
+>
+</pre>
+
+標準エラー出力の出力先をファイルに切り替えるには「2>」を使います。
+
+<pre>
+2>
+</pre>
+
+標準出力の出力先をファイルに切り替えてみましょう。
+
+<pre>
+perl -e 'print "Hello\n"' > output.txt
+</pre>
+
+画面には何も表示されず「output.txt」に以下の内容が出力されています。
+
+<pre>
+Hello
+</pre>
+
+標準エラー出力の出力先をファイルに切り替えてみましょう。
+
+<pre>
+perl -e 'print STDERR "Error\n"' 2> output.txt
+</pre>
+
+画面には何も表示されず「output.txt」に以下の内容が出力されています。
+
+<pre>
+Error
+</pre>
+
+標準出力と標準エラー出力に分かれているのは、一般的な用途では、標準出力だけを、ファイルに切り替えたい場合が多いからだと思います。
+
+標準出力だけをリダイレクトで、切り替えて、標準エラー出力は画面に表示してみましょう。
+
+<pre>
+perl -e 'print "Hello\n"; print STDERR "Error\n";' > output.txt
+</pre>
+
+画面にはエラー内容が表示されます。
+
+<pre>
+Error
+</pre>
+
+「output.txt」には、標準出力への出力内容が、リダイレクトされています。
+
+<pre>
+Hello
+</pre>
+
+<h3>標準入力とは</h3>
+
+標準入力とは、標準の入力のことで、デフォルトではキーボードからの入力です。
+
+catコマンドは、引数を指定しなかった場合に、標準入力から入力を受け取ります。引数を入力せずcatコマンドを実行してみましょう。
+
+<pre>
+cat
+</pre>
+
+入力待ちになります。以下のようにキーボードで入力して「Enter」を押してみましょう。
+
+<pre>
+hello
+</pre>
+
+そうすると、以下のように表示されます。
+
+<pre>
+hello
+</pre>
+
+これは、catコマンドが、行を読み取って、その内容をそのまま表示させているからです。
+
+catコマンドを終了するには、ファイル末尾を意味する「EOF」を送信します。「EOF」は「Ctrl + d」で送信できます。
+
+標準入力からの読み込みは、パイプと呼ばれる機能を組み合わせたときに、威力を発揮します。
+
+<h2>パイプ</h2>
+
+パイプとは、標準出力を他のコマンドの標準入力に切り替える機能のことを言います。パイプは「|」という記号です。まるでパイプのように見えますね。
+
+<pre>
+# パイプ - コマンド1の標準出力をコマンド2の標準入力とする
+コマンド1 | コマンド2
+</pre>
+
+一つの簡単なサンプルとして、perlで複数行出力したものを、headコマンドの標準入力にしてみましょう。perlコマンドで、4行のデータを出力しますが、その先頭の2行をheadコマンドで取り出します。
+
+まずperlコマンドで実行してみます。
+
+<pre>
+perl -e 'print "a\nb\nc\nd\n";'
+</pre>
+
+出力結果です。
+
+<pre>
+a
+b
+c
+d
+</pre>
+
+この標準出力を、パイプ機能を使ってheadコマンドの標準入力としてみます。
+
+<pre>
+perl -e 'print "a\nb\nc\nd\n";' | head -2
+</pre>
+
+出力結果です。先頭2行だけが取り出せました。
+
+<pre>
+a
+b
+</pre>
+
+<h2>ファイル内容の検索</h2>
+
+標準入出力・パイプとLinuxコマンドの組み合わせて、ファイル内容を検索するテクニックを紹介します。
+
+<h3>findコマンドでファイルの一覧を取得する</h3>
+
+findコマンドを使うと、ファイルの一覧を表示することができます。一般的には、隠しファイルは除外したい場合が多いのでワイルドカード「*」を指定すると、隠しファイル以外のファイルの一覧が取り出せます。
+
+<pre>
+find *
+</pre>
+
+出力結果のサンプルです。サブディレクトリの中にあるファイルとディレクトリの一覧が表示されます。
+
+<pre>
+public/blog/20080114120030.txt
+public/blog/20091120124667.html
+public/all.html
+public/examples
+</pre>
+
+<h3>特定の拡張子を持つファイルのみ取得する</h3>
+
+一般的には、ファイルである場合は、拡張子を持つことが多いですね。特定の拡張子を持つファイルのみを取得する方法を紹介します。
+
+grepコマンドを使うと、正規表現を指定して、マッチするものを取り出すことができます。Linuxのgrepコマンドでは「-P」オプションで、Perl互換の正規表現を使うことができます。Perlの正規表現については書籍「Perlテキスト処理のエッセンス」で解説しています。
+
+<h4>末尾が「.html」で終わるファイル</h4>
+
+末尾が「.html」で終わるファイルを取得してみましょう。正規表現は「\.html$」です。正規表現の「\.」は「.」を意味します。「$」は、末尾を意味します。
+
+<pre>
+find * | grep -P '\.html$'
+</pre>
+
+出力結果のサンプルです。末尾が「\.html」で終わるファイルだけを取得できています。
+
+<pre>
+public/blog/20091120124667.html
+public/all.html
+</pre>
+
+<h4>末尾が「.html」または「\.txt」で終わるファイル</h4>
+
+末尾が「.html」または「\.txt」で終わるファイルを取得してみましょう。正規表現は「(\.html|\.txt)$」です。「(A|B)」で「AまたはB」を表現できます。
+
+<pre>
+find * | grep -P '(\.html|\.txt)$'
+</pre>
+
+出力結果のサンプルです。ファイル名の末尾が「.html」または「.txt」で終わるファイルだけを取得できています。
+
+<pre>
+public/blog/20080114120030.txt
+public/blog/20091120124667.html
+public/all.html
+</pre>
+
+<h3>xargsコマンド</h3>
+
+ここで、xargsという少し特殊なコマンドを解説します。xargsは、複数行の出力結果を、次のコマンドのコマンドライン引数に変換するコマンドです。少しイメージしにくいので、例を挙げてみます。
+
+まず、複数行の出力をPerlワンライナーで作成してみましょう。
+
+<pre>
+perl -e 'print "foo\nbar\nbaz\n";'
+</pre>
+
+出力結果です。
+
+<pre>
+foo
+bar
+baz
+</pre>
+
+この出力結果をパイプで実行する先のコマンドの引数にしたいとします。
+
+<pre>
+コマンド foo bar baz
+</pre>
+
+このような場合が、xargsの出番です。複数行出力をコマンドのコマンドライン引数に変換します。
+
+<pre>
+perl -e 'print "foo\nbar\nbaz\n"' | xargs コマンド
+</pre>
+
+ひとつの例として、複数行の出力を、カンマ区切りに変換するPerlのワンライナーを書いてみましょう。joinは、文字列を区切り文字で連結する関数。@ARGVは、コマンドライン引数のリストです。
+
+<pre>
+perl -e 'print "foo\nbar\nbaz\n"' | xargs perl -e 'print join(",", @ARGV) . "\n";'
+</pre>
+
+出力結果です。
+
+<pre>
+foo,bar,baz
+</pre>
+
+<h3>findコマンドの出力結果をgrepコマンドのファイル名として指定する</h3>
+
+findコマンドは、ファイル名を複数行にして出力しますね。
+
+<pre>
+foo.txt
+bar.txt
+baz.html
+</pre>
+
+grepコマンドは、ファイルのリストを引数に受け取ることができます。以下のgrepコマンドはファイル「file1」「file2」「file3」の中にある「title」を検索します。
+
+<pre>
+grep 'title' file1 file2 file3
+</pre>
+
+xargsコマンドは、複数行の出力を、コマンドの引数に変えてくれることを思い出してください。
+
+findコマンドが出力したファイル名を、grepコマンドに渡すには、xargsコマンドを使って次のように記述します。
+
+<pre>
+find * | xargs grep 'title'
+</pre>
+
+パイプは連続させることができます。以下のコマンドを思い出してください。
+
+<pre>
+find * | grep -P '(\.html|\.txt)$'
+</pre>
+
+ファイル名の末尾が「.html」または「\.txt」で終わるファイルだけを取得します。
+
+<pre>
+public/blog/20080114120030.txt
+public/blog/20091120124667.html
+public/all.html
+</pre>
+
+この結果をxargsを使って、grepコマンドの引数にしてみましょう。
+
+<pre>
+find * | grep -P '(\.html|\.txt)$' | xargs grep 'title'
+</pre>
+
+これで、ファイル名の末尾が「.html」または「\.txt」で終わるファイルの中にある「title」を含む行を取り出すことができました。出力結果の例です。
+
+<pre>
+public/blog/20080114120030.txt:    {title => 'Sky', price => 4000}
+public/blog/20091120124667.html:    <title>Foo</title>
+public/all.html:get_title();
+</pre>
+
+<h2>Perlワンライナーで行を処理する</h2>
+
+Perlワンライナーで行を処理する方法を学びましょう。
+
+<h3>行処理をするオプション「-n」</h3>
+
+Perlで、ファイルから1行ずつ読み込んで、処理するオプション「-n」があります。lineの「-n」であると覚えると覚えやすいと思います。ファイルの読み込みは、コマンドライン引数でファイル名を指定する方法と、標準入力から読み込む方法に対応しています。
+
+<b>入力ファイル</b>
+
+以下の入力ファイル「books.txt」を読み込みます。
+
+<pre>
+Perl Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+一行ずつ読み込んで、画面に出力してみましょう。読み込んだ行は「$_」というデフォルト変数と呼ばれる特殊な変数に代入されてきます。「$_」は英語の「it」を表現していると考えるとわかりやすいでしょう。これをそのまま出力してみます。
+
+<pre>
+perl -n -e 'print "$_"' books.txt
+</pre>
+
+出力結果です。
+
+<pre>
+Perl Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+
+標準入力から読み込む方法も試しておきましょう。catコマンドの標準出力をパイプを使って、perlの標準入力に流します。
+
+<pre>
+cat books.txt | perl -n -e 'print "$_"'
+</pre>
+
+出力結果です。
+
+<pre>
+Perl Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+lsコマンドでファイル一覧を1行ずつ出力した結果を、Perlでそのまま表示してみましょう。
+
+<pre>
+ls -1 | perl -n -e 'print "$_"'
+</pre>
+
+出力結果です。
+
+<pre>
+convert_markdown.pl
+giblog.conf
+lib
+public
+README
+serve.pl
+templates
+</pre>
+
+<h3>コマンドライン引数に複数のファイルを指定する</h3>
+
+コマンドライン引数に複数のファイルを渡すこともできます。
+
+以下の入力ファイル「books2.txt」も追加で読み込んでみましょう。
+
+<pre>
+One Liner
+Linux Book
+</pre>
+
+Perlワンライナーを実行してみましょう。
+
+<pre>
+perl -n -e 'print "$_"' books.txt books2.txt
+</pre>
+
+出力結果です。
+
+<pre>
+Perl Tutorial
+Web Development
+Git for Beginners
+One Liner
+Linux Book
+</pre>
+
+<h3>現在読み込んでいるファイル名を取得する</h3>
+
+現在読み込んでいるファイル名を取得するには特殊変数「$ARGV」を使います。
+
+Perlワンライナーを実行してみましょう。
+
+<pre>
+perl -n -e 'print "$ARGV: $_"' books.txt books2.txt
+</pre>
+
+出力結果です。
+
+<pre>
+books.txt: Perl Tutorial
+books.txt: Web Development
+books.txt: Git for Beginners
+books2.txt: One Liner
+books2.txt: Linux Book
+</pre>
+
+<h3>改行を削除する</h3>
+
+改行を削除した後に、改行を追加して、出力してみましょう。改行を削除するには、chomp関数を使います。
+
+<pre>
+perl -n -e 'chomp $_;print "$_\n"' books.txt
+</pre>
+
+出力結果です。
+
+<pre>
+Perl Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+<h3>行処理に加えてprint文を実行するオプション「-p」</h3>
+
+行を出力するという処理は、非常に使用頻度の高い処理です。「-p」オプションを使うと「-n」オプションで行う行処理に「デフォルト変数をprint文で出力」という処理が加わります。
+
+行の先頭に「-」をつけて、出力という処理を書いてみましょう。
+
+<pre>
+perl -p -e '$_ = "-$_";' books.txt
+</pre>
+
+出力結果です。「-」が先頭につけられています。
+
+<pre>
+-Perl Tutorial
+-Web Development
+-Git for Beginners
+</pre>
+
+これは、以下の「-n」オプションと同じ意味です。
+
+<pre>
+perl -n -e '$_ = "-$_";print $_;' books.txt
+</pre>
+
+<h3>正規表現を組み合わせる</h3>
+
+正規表現をワンライナーと組み合わせてみましょう。正規表現については、「Perlテキスト処理のエッセンス」で基本を解説しています。
+
+PerlをLispに置換してみましょう。
+
+<pre>
+perl -p -e '$_ =~ s/Perl/Lisp/;' books.txt
+</pre>
+
+出力結果です。PerlがLispに置換されています。
+
+<pre>
+Lisp Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+パターンマッチ演算子「=~」を省略すると、デフォルト変数「$_」が、正規表現の左辺として使われます。ワンライナーでは、省略して書かれることも多いです。その文で終わっている場合は、末尾のセミコロンも省略できます。
+
+<pre>
+perl -p -e 's/Perl/Lisp/' books.txt
+</pre>
+
+Perlの省略記法は、sedの表現をそのまま使えるというところに、大きな特徴があります。以下のsedの置換の処理と同じ記法です。Perlは、Linuxコマンドとの親和性が高いです。
+
+<pre>
+sed 's/Perl/Lisp/' books.txt
+</pre>
+
+<h3>正規表現の置換に文を使用する</h3>
+
+Perlワンライナーと正規表現で、すべてを小文字にしてみましょう。正規表現の「e」オプションは、置換のための文を実行できる正規表現のオプションです。「(.+)」は「改行を除くすべての文字の1文字以上」と読みます。「()」は、キャプチャで、「$1」にキャプチャした内容が格納されます。lc関数は、大文字を小文字に変換する関数です。
+
+<pre>
+perl -p -e 's/(.+)/lc $1/e' books.txt
+</pre>
+
+出力結果です。すべてが小文字になっています。
+
+<pre>
+perl tutorial
+web development
+git for beginners
+</pre>
+
+<h3>初期化処理を記述する</h3>
+
+「-p」や「-n」は、行を単位で処理します。ですが、初期処理を記述したいという場合もあります。そのような場合は、BEGINブロックが使えます。
+
+Perlをプログラムが始まったときの、現在時刻で置換してみましょう。
+
+<pre>
+perl -p -e 'BEGIN { $TIME = localtime } s/Perl/$TIME/' books.txt
+</pre>
+
+出力結果です。Perlが現在時刻に置換されました。
+
+<pre>
+Wed Sep  1 17:46:13 2021 Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+<h3>すべての行を一度に読み込む</h3>
+
+行入力セパレーターを未定義値にすることで、ファイルを一度に読み込めます。HTMLファイルなどで、全体を読みたいときに便利です。
+
+行入力セパレーターを未定義値にするには「-0777」を使います。これは「-0」オプションで「777」指定したものです。「400」以上の値を指定すると、行入力セパレーターが未定義になります。
+
+まずHTMLの入力「index.html」です。
+
+<pre>
+<h1>
+  abcde
+</h1>
+</pre>
+
+h1タグの中の「abcde」の部分だけを取り出してみましょう。「-0777」で全行読み込みます。m||というのは、正規表現の囲み文字で「//」と同じですが、正規表現の中で「/」をそのまま使えます。「\s*」は、空白の0文字以上、「\w+」は、ワード文字(a-zA-Z0-9_)の一文字以上を表現しています。「$1」でキャプチャしています。出力したい内容をデフォルト変数「$_」に代入します。
+
+<pre>
+perl -p -0777 -e 'm|<h1>\s*(\w+)\s*</h1>|; $_ = "$1\n"' index.html
+</pre>
+
+出力結果です。「abcde」だけを取り出せました。
+
+<pre>
+abcde
+</pre>
+
+<h3>日本語の扱い</h3>
+
+単純な置換などであれば、UTF-8の日本語も置換できます。
+
+まずHTMLの入力ファイル「japan.html」です。
+
+<pre>
+<h1>
+  あいうえお
+</h1>
+</pre>
+
+「あういえお」を「かきくけこ」に置換してみましょう。
+
+<pre>
+perl -p -0777 -e 's/あいうえお/かきくけこ/' japan.html
+</pre>
+
+出力結果です。「あいうえお」が「かきくけこ」に置換されました。
+
+<pre>
+<h1>
+  かきくけこ
+</h1>
+</pre>
+
+<h3>日本語を適切に扱う</h3>
+
+上記の方法は簡易的な方法で、現代的なPerlにおける適切な日本語の扱いとはなっていません。
+
+Perlワンライナーで日本語を適切に扱える方法を紹介しておきます。入力と出力は両方ともUTF-8だとします。Perlワンライナーのオプションで、入力をPerlの内部文字列にデコード、出力をUTF-8にエンコードします。また、コマンドライン引数を、内部文字列にデコードします。このようなオプションは「-CSAD」と書きます。また、文字列リテラルをPerlの内部文字列と認識させるためには「-Mutf8」と書きます。ちょっと大変です。将来の改善を期待しましょう。「-C」の後ろはSAD(悲しい)と覚えておくと暗記できます。
+
+まずHTMLの入力「japan.html」です。
+
+<pre>
+<h1>
+  あいうえお
+</h1>
+</pre>
+
+「あいうえお」だけを取り出してみましょう。「-0777」で全行読み込みます。「-CSAD」で、入力をPerlの内部文字列にデコード、出力をUTF-8にエンコード、コマンドライン引数をPerlの内部文字列にデコードします。「-Mutf8」で、ワンライナー内の日本語をPerlの内部文字列として扱わせます。m||というのは、正規表現の囲み文字で「//」と同じですが「/」をそのまま使えます。「\s*」は、Unicdoeの空白の0文字以上、「\w+」は、Unicodeのワード文字の一文字以上を表現しています。
+
+<pre>
+perl -p -0777 -Mutf8 -CSAD -e 'm|<h1>\s*(あ\w+お)\s*</h1>|; $_ = "$1\n"' japan.html
+</pre>
+
+出力結果です。「あいうえお」が取り出せています。
+
+<pre>
+あいうえお
+</pre>
+
+<h2>Gitを使ってファイルの変更を元に戻す</h2>
+
+
+ファイル内容の置換を解説する前に、Gitを使ってファイルの変更を元に戻す方法を解説します。Gitでソースコードを管理することで、変更したファイル内容を、簡単に元に戻せます。
+
+<h3>Gitとは</h3>
+
+Gitは、バージョン管理ソフトウェアと呼ばれるツールのひとつで、ソースコードの履歴を管理することができます。Gitがインストールされていない場合は、インストールしましょう。
+
+<h3>Gitリポジトリの初期化</h3>
+
+まずソースコードを管理したいディレクトリに移動します。
+
+<pre>
+cd myproduct
+</pre>
+
+git initコマンドを使うと、Gitリポジトリの初期化を行うことができます。
+
+<pre>
+git init
+</pre>
+
+<h3>メールアドレスと名前の登録</h3>
+
+個人の識別情報としてGitに、メールアドレスと名前を登録しましょう。これは、コミットするときの個人の識別情報として利用されます。
+
+<pre>
+# 名前の設定
+git config --global user.name "John Doe"
+
+# メールアドレスの設定
+git config --global user.email johndoe@example.com
+</pre>
+
+<h3>コミットの準備を行う</h3>
+
+Gitでは、コミットを行う前に、コミットの準備を行います。コミットの準備を行うには「git add」コマンドを使用します。
+
+<pre>
+# ひとつのファイルをコミット準備状態にする
+git add ファイル名
+</pre>
+
+カレントディレクトリ以下にある、すべてのファイルを、コミット準備状態にするには「git add .」とします。
+
+<pre>
+# カレントディレクトリ以下にあるファイルをコミット準備状態にする
+git add .
+</pre>
+
+<h4>コミット準備状態を確認する</h4>
+
+コミット準備状態を確認するには「git status」コマンドを使用します。
+
+<pre>
+# コミット準備状態を確認する
+git status
+</pre>
+
+コミット準備ができている場合の出力のサンプルです。「templates/index.html」は修正、「README.md」は削除で、コミット準備状態になっています。
+
+<pre>
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        deleted:    README.md
+        modified:   templates/index.html
+</pre>
+
+<h4>コミットされるファイルの差分を確認する</h4>
+
+コミットする前には、実際にコミットされるファイルの差分を確認しましょう。実際にコミットされるファイルの差分を確認するには「git diff」コマンドの「--cached」オプションを使用します。「--cached」オプションのない「git diff」は、ワーキングディレクトリと、コミット準備されたファイルの差分を表示するので、注意しましょう。
+
+<pre>
+# コミットされるファイルの差分を確認する
+git diff --cached
+</pre>
+
+出力例です。
+
+<pre>
+$ git diff --cached
+diff --git a/README.md b/README.md
+deleted file mode 100644
+index 372dc9d3..00000000
+--- a/README.md
++++ /dev/null
+@@ -1,5 +0,0 @@
+diff --git a/README.md b/README.md
+deleted file mode 100644
+index 372dc9d3..00000000
+--- a/README.md
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<h1>
+-  Perl入門ゼミ
+-</h1>
+-
+-
+diff --git a/templates/index.html b/templates/index.html
+index 66c755ea..f0b95399 100644
+--- a/templates/index.html
++++ b/templates/index.html
+@@ -2,7 +2,7 @@
+
+ <b>Perlテキスト処理</b>と<b>正規表現</b>の入門の入門講座です。Perlは<b>テキスト処理</b>と<b>正規表現</b>が得意なプログラミング言語で<b>Linuxサーバー管理</b>、<b>Webシステム開発</b>という分野で活躍。テキスト処理と正規表現の基礎としてPerlプ
+ログラミング言語を基本から解説。LinuxとWeb開発も学べます。Hello World!
+
+-Perlは、ほとんどのLinux/Unixにインストールされていて、後方互換性が高く安定して
+運用できることに定評があります。
++Perlは、ほとんどのLinux/Unixにインストールされていて、後方互換性が高く安定して
+運用できることに定評があります。いいね。
+
+ <h4>Perlプログラミング入門</h4>
+</pre>
+ 
+<h4>コミット準備をキャンセルする</h4>
+
+コミット準備をキャンセルするには「git reset」コマンドをを使用します。
+
+<pre>
+# コミット準備をキャンセルする
+git reset
+</pre>
+
+コミット準備をキャンセルするために「git reset」コマンドに「--hard」オプションをつけないでください。現在までに変更したワーキングディレクトリの変更内容が、すべてリセットされてしまうので、気をつけてください。
+
+<h3>コミットを行う</h3>
+
+Gitでコミットを行う方法を解説します。git commitコマンドで、コミットができます。コミットの準備ができている必要があります。
+
+コミットを行うには、ソースコードの変更の要点を記述したコメントを入力する必要があります。「-m」オプションで指定します。このコメントは、コミットメッセージと呼ばれます。
+
+<pre>
+# コメントを直接入力してコミット
+git commit -m "コメント"
+</pre>
+
+「-m」オプションを使用しない場合は、viなどのエディタで、開くことができます。このエディタは、Gitの設定ファイルで設定することもできます。
+
+<pre>
+# viなどのエディタでコミットメッセージを書く
+git commit
+</pre>
+
+<h4>コミットの確認</h4>
+
+コミットを確認するには「git log」コマンドを使います。
+
+<pre>
+git log
+</pre>
+
+git logの出力のサンプルです。一番上が新しいコミットです。今コミットしたコミットメッセージが、一番上にきていることを確認しましょう。
+
+<pre>
+commit 99e77ecbb2fa0922aed2995ebc20eea20b559a87 (HEAD -> main, origin/main)
+Author: Yuki Kimoto <kimoto.yuki@gmail.com>
+Date:   Thu Jul 29 08:58:33 2021 +0900
+
+    ウィンドウのテキストを取得を追加
+
+commit 8166b40288648dab314147df751c2d27788b1d03
+Author: Yuki Kimoto <kimoto.yuki@gmail.com>
+Date:   Wed Jul 28 08:53:01 2021 +0900
+
+    子ウィンドウの一覧を取得とデスクトップウィンドウの取得を追
+
+commit 7768973127fa0495e1ac8ab745d2f10fc1c38f8a
+Author: Yuki Kimoto <kimoto.yuki@gmail.com>
+Date:   Tue Jul 27 08:16:09 2021 +0900
+
+    PerlでWebブラウザ自動操作ロボット作成方法のまとめ加筆
+</pre>
+
+<h4>間違ったコミットを戻すには?</h4>
+
+間違ってコミットしたことに、コミット直後に気が付きました。こんな場合は、間違ったコミットを戻すには、どうすればよいのでしょうか?
+
+「git reset」コマンドを使って、以前のコミットまで戻します。「git log」コマンドで、一つ前のコミットIDを確認しましょう。上記の例では以下の「8166b40288648dab314147df751c2d27788b1d03」です。
+<pre>
+commit 8166b40288648dab314147df751c2d27788b1d03
+Author: Yuki Kimoto <kimoto.yuki@gmail.com>
+Date:   Wed Jul 28 08:53:01 2021 +0900
+
+    子ウィンドウの一覧を取得とデスクトップウィンドウの取得を追
+</pre>
+
+このコミットIDを「git reset」の引数に指定します。
+
+<pre>
+# 一つ前のコミットに戻す
+git reset 8166b40288648dab314147df751c2d27788b1d03
+</pre>
+
+間違って「git reset」コマンドに「--hard」オプションを指定しないようにしましょう。現在までに変更したワーキングディレクトリの変更内容が、すべてリセットされてしまうので、気をつけてください。
+
+<h3>置換して間違った場合に変更を元に戻す</h3>
+
+本題のGitを使って、置換して間違った場合に元に戻す方法を解説します。上記の手順で、ファイルがGitで管理されていることが前提です。
+
+置換して間違った場合に元に戻すには「git reset」で「--hard」オプションを使用します。このオプションは、ワーキングディレクトリの変更を元に戻します。
+
+<pre>
+# 置換して間違った場合に変更を元に戻す
+git reset --hard
+</pre>
+
+この操作を覚えておけば、間違って置換した場合に元に戻すことができます。
+
+<h2>Perlでファイル内容を置換する</h2>
+
+Perlワンライナーを使って、ファイル内容を置換してみましょう。
+
+<h3>Perlワンライナーでファイル内容を置換する</h3>
+
+Perlワンライナーでファイル内容を置換して、標準出力に出力する方法は、上記で解説しました。以下は「books.txt」にある「Perl」を「Lisp」に置換して、標準出力に出力するPerlワンライナーです。
+
+入力ファイル「books.txt」の内容です。
+
+<pre>
+Perl Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+Perlワンライナーです。
+
+<pre>
+perl -p -e 's/Perl/Lisp/' books.txt
+</pre>
+
+出力結果です。
+
+<pre>
+Lisp Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+ここでやりたいことは、「books.txt」のファイル内容を直接置換するということです。ファイル内容を直接置換するには「-p」オプションに加えて「-i」オプションを指定します。ファイル内容の置換は、非常にリスクを伴うので、Gitでファイル管理することを、強くお勧めします。
+
+<pre>
+# ファイル内容を直接置換するPerlワンライナー
+perl -pi -e 's/Perl/Lisp/g' books.txt
+</pre>
+
+実行してみましょう。ファイル「books.txt」の中のすべての「Perl」が「Lisp」に置換されています。
+
+<pre>
+Lisp Tutorial
+Web Development
+Git for Beginners
+</pre>
+
+<h3>複数ファイルの内容を置換する</h3>
+
+Perlワンライナーで複数ファイルの内容を置換することができます。
+
+<h4>コマンドライン引数に複数ファイルを渡す</h4>
+
+Perlワンライナーで複数ファイルの内容を置換するには、コマンドライン引数で複数のファイルを指定するだけです。
+
+<pre>
+# ファイル内容を直接置換するPerlワンライナー
+perl -pi -e 's/Perl/Lisp/g' file1.txt file2.txt
+</pre>
+
+<h4>find,grep,xargsコマンドと組み合わせる</h4>
+
+少し思い出してみましょう。findコマンドとgrepコマンドを組み合わせて、特定の拡張子を持つファイルだけを取り出すということを行いました。
+
+<pre>
+find * | grep -P '(\.html|\.txt)$'
+</pre>
+
+出力結果の例です。
+
+<pre>
+public/blog/20080114120030.txt
+public/blog/20091120124667.html
+public/all.html
+</pre>
+
+この複数行の出力結果を、コマンドライン引数に変換するにはxargsを使いました。これを、ファイル内容を直接置換するPerlワンライナーを組み合わせることができます。
+
+<pre>
+find * | grep -P '(\.html|\.txt)$' | xargs perl -pi -e 's/Perl/Lisp/g'
+</pre>
+
+このワンライナーを読んでみましょう。findコマンドで、現在のディレクトリの下にある隠しファイル以外のファイルをすべて取り出します。これをパイプで、grepコマンドの入力につないで、拡張子が「.html」または「.txt」であるものを取り出します。xargsコマンドで、複数行出力されているファイル名をperlコマンドのコマンドライン引数に変換します。Perlのファイル内容を直接置換するワンライナーを実行します。

@@ -1,0 +1,1173 @@
+<style>
+  h2 {
+    counter-increment:count1;
+    counter-reset:count2;
+  }
+  h2:before {
+    content:"2." counter(count1) " ";
+  }
+
+  h3 {
+    counter-increment:count2;
+  }
+  h3:before {
+    content:"2." counter(count1) "." counter(count2) " ";
+  }
+</style>
+
+<div style="font-size:25px;font-weight:bold;padding:10px;">第２章 Linuxコマンドを覚えよう</div>
+
+<div class="chapter">
+<div class="chapter_description">
+  <div class="chapter_description_left">
+    <!-- <img width="65" src="images/chapter_top.png"> -->
+  </div>
+  <div class="chapter_description_right" style="padding:10px;">
+    Linuxファイル管理で、よく使うコマンドを紹介していくよ。文字列を出力、ファイルの一覧、ファイルの作成・削除、ディレクトリの移動・コピー、ファイルの内容を確認、パーミッションを変更する方法をマスターしよう。
+
+
+  </div>
+</div>
+
+<h2>文字列を出力するコマンド</h2>
+
+文字列を出力するコマンドについて解説します。
+
+<h3>echoコマンド - 文字列を出力する</h3>
+
+<b>echoコマンド</b>で文字列を出力できます。シングルクォートで囲った文字列の場合は、変数展開がされず、そのまま出力されます。
+
+<pre>
+echo 'Hello $FOO \'
+</pre>
+
+出力結果です。
+
+<pre>
+Hello $FOO \
+</pre>
+
+Perlとの違いで覚えておく必要があるのは「\」は、シェルではエスケープ記号ではないということです。
+
+<h4>変数展開する</h4>
+
+変数展開を行うには、ダブルクォート文字列を使用します。
+
+<pre>
+echo "Hello $HOME";
+</pre>
+
+出力結果のサンプルです。
+
+<pre>
+Hello /home/kimoto
+</pre>
+
+<h4>複数の文字列を出力する</h4>
+
+複数の文字列を出力するには、文字列を並べます。文字列の間には、空白を含めることはできません。空白を含めると、空白が出力されます。
+
+<pre>
+echo 'Hello''World'"Oh"
+</pre>
+
+出力結果です。
+
+<pre>
+HelloWorldOh
+</pre>
+
+<h4>シングルクォートの中でシングルクォートは使えない</h4>
+
+Perlと異なる一番の注意点は、シングルクォートの中で、シングルクォートを使う方法はないということです。
+
+たとえば「I'd like you」と表示するためには、文字列を並べる方法を使って以下のように書きます。
+
+<pre>
+echo 'I'"'"'d like you'
+</pre>
+
+出力結果です。
+
+<pre>
+I'd like you
+</pre>
+
+<h2>カレントディレクトリを表示・変更するコマンド</h2>
+
+カレントディレクトリを表示・変更するコマンドです。
+
+<h3>カレントディレクトリのパスを表示する - pwdコマンド</h3>
+
+カレントディレクトリのパスを表示するには<b>pwdコマンド</b>を使用します。カレントディレクトリとは、現在作業をしているディレクトリのことです。パスとは、ファイルの場所を示す表現のことです。
+
+<pre>
+# カレントディレクトリのパスを表示
+pwd
+</pre>
+
+出力結果のサンプルです。カレントディレクトリのパスが表示されます。
+
+<pre>
+/home/kimoto
+</pre>
+
+<h3>カレントディレクトリを変更する - cdコマンド</h3>
+
+カレントディレクトリを変更するには<b>cdコマンド</b>を使用します。
+
+<pre>
+# カレントディレクトリをfooに変更
+cd foo
+</pre>
+
+カレントディレクトリが「/home/kimoto」だった場合は、上記のコマンドを実行すると、カレントディレクトリは「/home/kimoto/foo」に変わります。
+
+「foo」のようなパスの表現を相対パスといいます。
+
+cdコマンドの引数に絶対パスを指定することもできます。絶対パスは「/」で始まり、ルートディレクトリからのファイルの位置を表現します。
+
+<pre>
+# カレントディレクトリを「/home/kimoto/foo」に変更
+cd /home/kimoto/foo
+</pre>
+
+Linuxのコマンドで、パスが引数になっているものは、相対パスと絶対パスの両方が受け取れるようになっています。
+
+<h4>ホームディレクトリの表現</h4>
+
+ホームディレクトリは「~」で表現できます。これは、シェルによって、ホームディレクトリに展開されます。ホームディレクトリへの移動は、次のように簡単に書けます。
+
+<pre>
+# カレントディレクトリをホームディレクトリに変更
+cd ~
+</pre>
+
+<h2>ファイルやディレクトリを一覧するコマンド</h2>
+
+ファイルやディレクトリを一覧するコマンドについて解説します。ディレクトリという言葉は、Windowsユーザーの方は聞きなれないと思います。ディレクトリは、Windowsのフォルダに該当します。
+
+<h3>ファイルの一覧を表示する - lsコマンド</h3>
+
+ファイルの一覧を表示するには<b>lsコマンド</b>を使用します。
+
+<pre>
+# ファイルの一覧を表示
+ls
+</pre>
+
+出力結果です。現在のディレクトリにあるファイルの一覧が表示されます。
+
+<pre>
+convert_markdown.pl  giblog.conf  lib  public  README  serve.pl  templates
+</pre>
+
+Linuxでは、ディレクトリのこともファイルと呼びます。Linuxでは、ディレクトリは、特別なファイルという扱いです。ですので、ファイル一覧と言ったときに、ディレクトリも含んでいるということに注意してください。
+
+<h4>1行ずつファイルを表示する</h4>
+
+「-1」オプション(数字の１)を使うとlsの出力結果を1行ずつにできます。
+
+<pre>
+ls -1
+</pre>
+
+出力結果です。1行ずつ表示しています。
+
+<pre>
+convert_markdown.pl
+giblog.conf
+lib
+public
+README
+serve.pl
+templates
+</pre>
+
+<h4>ファイル一覧の詳細表示</h4>
+
+lsコマンドで「-l」オプションを使用すると、ファイルの一覧を詳細表示で見れます。
+
+<pre>
+# ファイル一覧 - 詳細表示
+ls -l
+</pre>
+
+出力結果です。ファイルの一覧を詳細表示で見れます。
+
+<pre>
+-rw-r--r-- 1 kimoto kimoto 1116 Aug 15 08:28 convert_markdown.pl
+-rw-r--r-- 1 kimoto kimoto  162 Sep 11 08:42 giblog.conf
+drwxrwxr-x 3 kimoto kimoto 4096 Aug 10 15:01 lib
+drwxrwxr-x 7 kimoto kimoto 4096 Aug 10 15:04 public
+-rw-r--r-- 1 kimoto kimoto  227 Aug 10 15:01 README
+-rw-r--r-- 1 kimoto kimoto  219 Aug 10 15:01 serve.pl
+drwxrwxr-x 5 kimoto kimoto 4096 Aug 10 15:01 templates
+</pre>
+
+一覧表示で見れる情報です。
+
+<ul>
+  <li>ファイルパーミッション</li>
+  <li>(説明省略)</li>
+  <li>所有者ユーザー</li>
+  <li>所有者グループ</li>
+  <li>ファイルサイズ(単位はバイト)</li>
+  <li>ファイルの更新月</li>
+  <li>ファイルの更新日</li>
+  <li>ファイルの更新時刻</li>
+  <li>ファイル名</li>
+</ul>
+
+ファイルパーミッション、所有者ユーザー、所有者グループについては、この後に解説します。
+
+<h4>ファイルサイズに単位をつける</h4>
+
+ファイルサイズに単位をつけたい場合は「-h」オプションを加えます。
+
+<pre>
+# ファイルサイズに単位をつける
+ls -l -h
+</pre>
+
+Linxuコマンドでは、一文字のオプションは、たいていの場合、次のように合体させることもできるので覚えておきましょう。
+
+<pre>
+ls -lh
+</pre>
+
+出力結果です。ファイルサイズに単位がつきました。
+
+<pre>
+-rw-r--r-- 1 kimoto kimoto 1.1K Aug 15 08:28 convert_markdown.pl
+-rw-r--r-- 1 kimoto kimoto  162 Sep 11 08:42 giblog.conf
+drwxrwxr-x 3 kimoto kimoto 4.0K Aug 10 15:01 lib
+drwxrwxr-x 7 kimoto kimoto 4.0K Aug 10 15:04 public
+-rw-r--r-- 1 kimoto kimoto  227 Aug 10 15:01 README
+-rw-r--r-- 1 kimoto kimoto  219 Aug 10 15:01 serve.pl
+drwxrwxr-x 5 kimoto kimoto 4.0K Aug 10 15:01 templates
+</pre>
+
+<h4>隠しファイルを表示する</h4>
+
+Linuxでは、先頭が「.」で始まる隠しファイルを隠しファイルと呼びます。隠しファイルも含めて表示するには「-a」オプションを使用します。
+
+<pre>
+ls -la
+</pre>
+
+出力結果です。先頭が「.」で始まる、隠しファイルが表示されました。
+
+<pre>
+drwxrwxr-x  6 kimoto kimoto 4096 Aug 14 17:51 .
+drwxrwxr-x 40 kimoto kimoto 4096 Nov  9 10:08 ..
+-rw-r--r--  1 kimoto kimoto 1116 Aug 15 08:28 convert_markdown.pl
+-rw-r--r--  1 kimoto kimoto  162 Sep 11 08:42 giblog.conf
+drwxrwxr-x  8 kimoto kimoto 4096 Oct 12 19:52 .git
+-rw-r--r--  1 kimoto kimoto    8 Aug 10 15:01 .gitignore
+drwxrwxr-x  3 kimoto kimoto 4096 Aug 10 15:01 lib
+drwxrwxr-x  7 kimoto kimoto 4096 Aug 10 15:04 public
+-rw-r--r--  1 kimoto kimoto  227 Aug 10 15:01 README
+-rw-r--r--  1 kimoto kimoto  219 Aug 10 15:01 serve.pl
+drwxrwxr-x  5 kimoto kimoto 4096 Aug 10 15:01 templates
+</pre>
+
+Linuxでは、隠しファイルとは、単に、先頭が「.」で始まるファイルという意味です。ユーザーが、自分で作成することもできます。
+
+「.」「..」は、特別なディレクトリです。「.」は、自分自身のディレクトリを意味し、「..」は一つ上の階層のディレクトリを意味します。
+
+「.git」と「.gitignore」は、Gitで利用されている隠しファイルです。
+
+<h3>サブディレクトリを含めたファイル一覧 - findコマンド</h3>
+
+サブディレクトリをを含めたファイル一覧を取得するには<b>findコマンド</b>を使用します。
+
+<pre>
+# サブディレクトリを含めたファイル一覧を取得
+find /usr/local/lib
+</pre>
+
+findコマンドの出力結果のサンプルです。サブディレクトリも含めたファイル一覧が表示されます。
+
+<pre>
+/usr/local/lib
+/usr/local/lib/liblept.so.3.0.0
+/usr/local/lib/liblept.so.3
+/usr/local/lib/liblept.so
+/usr/local/lib/liblept.la
+/usr/local/lib/liblept.a
+/usr/local/lib/libtesseract.so.3.0.2
+/usr/local/lib/libtesseract.so.3
+/usr/local/lib/libtesseract.so
+/usr/local/lib/libtesseract.la
+/usr/local/lib/libtesseract.a
+/usr/local/lib/pkgconfig
+/usr/local/lib/pkgconfig/tesseract.pc
+</pre>
+
+カレントディレクトリのファイル一覧を取得したい場合は、次のようにします。
+
+<pre>
+# カレントディレクトリのファイル一覧を取得
+find .
+</pre>
+
+上記の方法だと、隠しファイルの表示されてしまうので、隠しファイルを除きたい場合は、ワイルドカード「*」を使います。
+
+<pre>
+# 隠しファイルを除いたカレントディレクトリのファイル一覧を取得
+find *
+</pre>
+
+<h3>ワイルドカード</h3>
+
+ワイルドカードは、ワイルドカードの表現にマッチした、隠しファイル以外のすべてのファイルを表現できるシェルの機能です。
+
+たとえば、以下のように表現すると「*.txt」にマッチした、隠しファイル以外のファイルを意味します。
+
+<pre>
+*.txt
+</pre>
+
+ワイルドカードは、単体では、機能せずに、コマンドの引数として渡された場合に、ファイル名の一覧に展開されます。
+
+<pre>
+# ワイルドカードはファイル名の一覧に展開される
+ls *.txt
+find *
+</pre>
+
+<h2>ファイルやディレクトリを作成・削除するコマンド</h2>
+
+ファイルやディレクトリを作成・削除するコマンドです。
+
+<h3>ディレクトリを作成する - mkdirコマンド</h3>
+
+ディレクトリを作成するには<b>mkdir</b>コマンドを使用します。
+
+<pre>
+# ディレクトリを作成
+mkdir foo
+</pre>
+
+「foo」ディレクトリが作成されます。
+
+「ファイルの作成が成功しました」のようなメッセージは、Linuxでは表示されません。基本的には、Linuxのコマンドは、成功した場合に何も表示せず、エラーの場合に、エラーメッセージを表示するという動作をします。
+
+<h4>サブディレクトリも作成 - 「-p」オプション</h4>
+
+「-p」オプションを使用すると、サブディレクトリも作成できます。
+
+<pre>
+# サブディレクトリも作成する
+mkdir -p foo/bar
+</pre>
+
+<h3>ディレクトリを削除する - rmdirコマンド</h3>
+
+ディレクトリを削除するには<b>rmdirコマンド</b>を使用します。
+
+<pre>
+# ディレクトリを削除
+rmdir foo
+</pre>
+
+fooディレクトリが削除されます。fooディレクトリが空でない場合は、失敗します。fooディレクトリが空でない場合に、ディレクトリを削除したい場合は、この後で紹介する「rm -r」を使います。
+
+<h3>ファイルを作成する - touchコマンド</h3>
+
+ファイルを作成するには<b>touchコマンド</b>を使用します。
+
+<pre>
+# ファイルを作成する
+touch foo.txt
+</pre>
+
+「foo.txt」という空のファイルが作成されます。
+
+<h3>ファイルを削除する - rmコマンド</h3>
+
+ファイルを削除するには、<b>rmコマンド</b>を使用します。
+
+<pre>
+# ファイルを削除する
+rm foo.txt
+</pre>
+
+<h4>ディレクトリを削除する</h4>
+
+ディレクトリを削除するにはrmコマンドの「-r」オプションを指定します。「-r」の意味はrecursive、再帰的という意味です。
+
+<pre>
+rm -r foo
+</pre>
+
+上記のコマンドを実行すると、ファイルの削除確認が、ファイルのたびに行われます。
+
+強制的に削除するには「-f」オプションを指定します。
+
+<pre>
+rm -rf 
+</pre>
+
+このコマンドは、fooとfoo以下にあるすべてのファイルを削除するので、気をつけて使いましょう。この後で紹介するGitでファイル管理を行っておくと、間違って消した場合も、安心です。
+
+<h2>ファイルやディレクトリを移動・コピーするコマンド</h2>
+
+<h3>ファイルをコピーする - cpコマンド</h3>
+
+ファイルをコピーするには<b>cpコマンド</b>を使用します。
+
+<pre>
+# ファイルをコピーする
+cp foo.txt bar.txt
+</pre>
+
+「foo.txt」を「bar.txt」にコピーします。
+
+<h3>ディレクトリをコピーする</h3>
+
+ディレクトリをコピーするにはcopyコマンドの「-r」オプションを指定します。
+
+<pre>
+cp -r foo bar
+</pre>
+
+「foo」ディレクトリを「bar」ディレクトリにコピーします。
+
+<h3>ファイルを移動する - mvコマンド</h3>
+
+ファイルを移動するには、<b>mvコマンド</b>を使用します。
+
+<pre>
+# ファイルの移動
+mv foo.txt bar.txt
+</pre>
+
+ディレクトリも一種のファイルなので、mvコマンドで移動できます。
+
+<pre>
+# ディレクトリの移動
+mv foo bar
+</pre>
+
+また、Linuxでは、ファイルの移動と、名前の変更は、まったく同じ操作として扱うことを覚えておきましょう。
+
+<pre>
+# ファイル名の変更もmvで行う
+mv foo.txt bar.txt
+</pre>
+
+<h2>ファイルの内容を出力するコマンド</h2>
+
+ファイルの内容を出力するコマンドを解説します。
+
+<h3>ファイルの内容を出力する</h3>
+
+ファイルの内容を出力するには<b>catコマンド</b>を使用します。
+
+<pre>
+# ファイルの内容を出力
+cat foo.txt
+</pre>
+
+「foo.txt」に記述されている内容が出力されます。
+
+<pre>
+Hello
+World!
+</pre>
+
+<h3>ファイルの先頭の内容を出力する - headコマンド</h3>
+
+ファイルの先頭の内容を出力するには<b>headコマンド</b>を使用します。大きなファイルの場合に先頭だけ表示したい場合に便利です。
+
+<pre>
+# ファイルの先頭を表示する
+head foo.txt
+</pre>
+
+表示する行数を指定するには「-20」のようにします。
+
+<pre>
+# 表示する行数を指定
+head -20 foo.txt
+</pre>
+
+<h3>ファイルの末尾の内容を出力する - tailコマンド</h3>
+
+ファイルの末尾の内容を出力するには<b>tailコマンド</b>を使用します。大きなファイルの場合に末尾だけ表示したい場合に便利です。
+
+<pre>
+# ファイルの末尾を表示する
+tail foo.txt
+</pre>
+
+表示する行数を指定するには「-20」のようにします。
+
+<pre>
+# 表示する行数を指定
+tail -20 foo.txt
+</pre>
+
+<h4>ファイル末尾への出力を監視する</h4>
+
+tailコマンドの「-f」オプションを使うと、ファイル末尾への出力を監視できます。出力されるたびに、新しい行が表示されます。ログへの出力を見たい場合に便利です。
+
+<pre>
+# ファイル末尾を監視
+tail -f foo.txt
+</pre>
+
+<h3>ファイルの差分を確認する - diffコマンド</h3>
+
+ファイルの差分を確認するには<b>diffコマンド</b>を使用します。
+
+<pre>
+diff fruits1.txt fruits2.txt
+</pre>
+
+「fruits1.txt」は以下の内容。
+
+<pre>
+Orange
+Banana
+Peach
+</pre>
+
+「fruits2.txt」は以下の内容。
+
+<pre>
+Orange
+Banana
+Melon
+</pre>
+
+この場合は、次のような差分が表示されます。
+
+<pre>
+3c3
+< Peach
+---
+> Melon
+</pre>
+
+<h2>ファイルのアーカイブ化と圧縮を行うコマンド</h2>
+
+ファイルのアーカイブ化と圧縮を行うコマンドを解説します。
+
+<h3>ファイルのアーカイブ化 - tarコマンド</h3>
+
+ファイルのアーカイブ化と展開を行うには<b>tar</b>コマンドを使用します。アーカイブ化というのは、複数のファイルをひとつのファイルにする処理のことです。
+
+ファイルをアーカイブ化する場合は「cf」オプションを使用します。「project」というディレクトリを「project.tar」という一つのファイルにアーカイブ化します。
+
+<pre>
+# アーカイブ化
+tar cf project.tar project
+</pre>
+
+アーカイブ化されたファイルを展開するには「xf」オプションを使用します。「project.tar」を展開して「project」というディレクトリを作成します。
+
+<pre>
+# 展開
+tar xf project.tar
+</pre>
+
+「z」オプションを使用すると、GZIP形式への圧縮・解凍も同時に行ってくれます。
+
+<pre>
+# アーカイブ化と圧縮を同時に行う
+tar cfz project.tar.gz project
+
+# 解凍と展開を同時に行う
+tar xfz project.tar.gz
+</pre>
+
+<h3>ファイルの圧縮 - gzipコマンド</h3>
+
+GZIP形式のファイルへ圧縮するには<b>gzipコマンド</b>を使用します。「foo」というファイルは「foo.gz」というファイル名で圧縮されます。
+
+<pre>
+gzip foo
+</pre>
+
+<h3>ファイルの解凍 - gunzipコマンド</h3>
+
+GZIP形式のファイルの解凍を行うには<b>gunzipコマンド</b>を使用します。「foo.gz」という圧縮されたファイルが解凍され「foo」になります。
+
+<pre>
+gunzip foo.gz
+</pre>
+
+<h2>ファイル内容の検索</h2>
+
+ファイル内容を検索するコマンドの解説です。
+
+<h3>ファイル内容を検索する - grepコマンド</h3>
+
+<b>grepコマンド</b>を使用すると、ファイルの内容を検索して必要な行を取り出すことができます。
+
+<pre>
+# books.txtからPerlが含まれる行を取り出す
+grep Perl books.txt
+</pre>
+
+出力結果のサンプルです。
+
+<pre>
+Perl Programming
+Perl Web Development
+Perl & Linux
+</pre>
+
+検索対象のファイル名は、複数指定することができます。
+
+<pre>
+# 検索対象のファイルはbooks.txtとbooks2.txt
+grep Perl books.txt books2.txt
+</pre>
+
+<h4>大文字・小文字を区別しない検索</h4>
+
+大文字・小文字を区別しないで検索するには「-i」オプションを使用します。
+
+<pre>
+# perlが含まれる行を取り出す、大文字・小文字の区別なし
+grep -i perl books.txt
+</pre>
+
+出力結果のサンプルです。
+
+<pre>
+Perl Programming
+perl command
+Perl & Linux
+</pre>
+
+<h4>Perlの正規表現を使う</h4>
+
+Linuxのgrepコマンドでは「-P」オプションでPerlの正規表現を利用できます。
+
+<pre>
+# grepコマンドでPerlの正規表現を使う
+grep -P '^(foo|bar)$' foo.txt
+</pre>
+
+<h4>あるディレクトリに含まれるすべてのファイルから検索する</h4>
+
+あるディレクトリに含まれるすべてのファイルを再帰的に検索するには「-r」オプションを使用します。
+
+<pre>
+# fooディレクトリ以下にあるすべてのファイルから
+# Perlが含まれる行を取り出す
+grep -r Perl foo
+</pre>
+
+出力結果のサンプルです。ファイル名とマッチした行の内容が出力されます。
+
+<pre>
+foo/bar/a.txt:Perl Programming
+foo/b.txt: Perl Web Development
+foo/bar/baz/c.txt: Perl & Linux
+</pre>
+
+「-l」オプションを指定するとファイル名だけを取り出すことができます。
+
+<pre>
+# fooディレクトリ以下にあるすべてのファイルから
+# Perlが含まれるファイル一覧を取得
+grep -rl Perl foo
+</pre>
+
+ファイル名だけを取り出した場合の出力結果です。
+
+<pre>
+foo/bar/a.txt
+foo/b.txt
+foo/bar/baz/c.txt
+</pre>
+
+<h2>ファイル内容の置換</h2>
+
+ファイル内容の置換を行うコマンドを解説します。ファイル内容を置換するには<b>sedコマンド</b>、あるいは、<b>perlコマンド</b>を使用します。
+
+置換の処理は、ファイル内容を意図しない内容に書き換えてしまう危険があるので、この後の章で解説するGitによるファイル管理を覚えてから実行することをお勧めします。
+
+<h3>sedコマンド</h3>
+
+<b>sedコマンド</b>を使って「foo.txt」に含まれるすべての「hello」を「bye」に置き換えてみます。
+
+<pre>
+# sedコマンドですべてのhelloをbyeに置換
+sed -e 's/hello/bye/g' foo.txt
+</pre>
+
+<h3>perlコマンド</h3>
+
+<b>perlコマンド</b>を使って「foo.txt」に含まれるすべての「hello」を「bye」に置き換えてみます。
+
+<pre>
+# perlコマンドで複数のファイル名を指定
+perl -pi -e 's/hello/bye/g' foo.txt
+</pre>
+
+複数のファイル名を指定することも可能です。
+
+<pre>
+# perlコマンドですべてのhelloをbyeに置換
+perl -pi -e 's/hello/bye/g' foo.txt bar.txt
+</pre>
+
+Perlは、プログラミング言語ですが、慣習的にワンライナーと呼ばれる機能を使って、Linuxコマンドのように、実行することができます。Perlワンライナーでは、Perlのすべてのテキスト処理・正規表現の機能が使えます。
+
+Perlワンライナーについては、この後の章で詳しく解説します。
+
+<h2>ファイル内容を編集する - テキストエディタ「vi」</h2>
+
+viはCUIで利用できるテキストエディタです。viでは、マウスが使えないので、すべての操作をキーボードで行う必要があります。viエディタを使えるようになることは、Linuxを自由に扱えるようになるための難関のひとつです。最低限、viでテキストファイルを編集して、保存して、終了できるようになる方法を、ここでは紹介します。
+
+<h4>viでテキストファイルを開く</h4>
+
+テキストファイルを開くには次のようにします。存在しない場合は新規に作成されます。
+
+<pre>
+vi テキストファイル名
+</pre>
+
+foo.txtというファイルを開いてみましょう。
+
+<pre>
+vi foo.txt
+</pre>
+
+viが立ち上がります。
+
+<h4>viエディタを終了する</h4>
+
+ここで困るのは、viエディタを終了する方法がわからないということだと思うので、viエディタを終了する方法を覚えてしまいましょう。以下の手順になります。
+
+<pre>
+Escを押す
+</pre>
+
+Escを押すことでviは<b>コマンドモード</b>というモードに変わります。viには、文字を編集するための入力モードと、コマンドを実行するためのコマンドモードの二つのモードがあり、viエディタを終了するためには、まず最初に<b>Esc</b>を押して、コマンドモードにする必要があります。
+
+次に「:q」と入力しましょう。
+
+<pre>
+:q
+</pre>
+
+「:q」と入力してEnterを押してください。viエディタが終了します。qというエディタを終了させるコマンドを実行しています。コロン「:」はコマンドの前に必要になります。
+
+<h4>保存しないで強制終了する</h4>
+
+編集内容を保存しないで強制終了するためのコマンドも覚えておきましょう。viエディタでは、エディタの内容に変更がある場合は、<b>q</b>コマンドでは終了することができません。
+
+保存しないで強制終了するには<b>q!</b>コマンドを使います。Escを押してコマンドモードに変更してから以下のように入力してEnterを押します。
+
+<pre>
+:q!
+</pre>
+
+<h4>編集内容の保存</h4>
+
+編集内容を保存するには「w」コマンドを使用します。<b>Esc</b>を押して、コマンドモードにしてから「:w」と打ってEnterを押すと保存できます。
+
+<pre>
+:w
+</pre>
+
+<h4>編集内容を保存して終了</h4>
+
+もうひとつ保存して終了も覚えておきましょう。<b>wq</b>コマンドを使用します。<b>Esc</b>を押して、コマンドモードにしてから「:wq」と打って、Enterを押すと保存して終了できます。
+
+<pre>
+:wq
+</pre>
+
+三つの終了方法を覚えておけば、間違ってviを起動してしまっても、何とか大丈夫でしょう。
+
+<ul>
+  <li>q - 終了</li>
+  <li>q! - 保存しないで終了</li>
+  <li>wq - 保存して終了</li>
+</ul>
+
+<h4>入力モード</h4>
+
+viエディタは最初は、コマンドモードで起動します。viではコマンドモードと入力モードという二つのモードがあります。最初はコマンドモードになっているので、文字を入力するには、入力モードにする必要があります。入力モードにするには、<b>i</b>を押します。
+
+<pre>
+i
+</pre>
+
+入力モードになると、文字を入力できます。abcなど、自由に文字を入力してみてください。iを押した後は、自由に編集できることがわかると思います。deleteキーで、文字を削除できます。
+
+編集した内容を保存したいときは、コマンドモードになってから<b>w</b>コマンドを使います。コマンドモードになるにはまずEscキーを押すのでした。Escキーを押しましょう。次に、以下のように入力して、Enterを押すと、保存できます。
+
+<pre>
+:w
+</pre>
+
+編集するときはまたiを押して、入力モードに切り替えます。
+
+保存して終了したいときは、以下のようにします。
+
+<pre>
+:wq
+</pre>
+
+テキストファイルを開いて、入力モードで編集して、保存できるようになりました。ここでは、紙面の都合上解説できませんでしたが、viには、他にも、さまざまな便利な機能があります。
+
+<h2>パーミッションを変更するコマンド</h2>
+
+パーミッションを変更するコマンドの解説です。
+
+<h3>パーミッションを変更 - chmodコマンド</h3>
+
+パーミッションを変更するには<b>chmodコマンド</b>を使用します。
+
+以下は、foo.txtのパーミッションを644に変更するサンプルです。
+
+<pre>
+chmod 644 foo.txt
+</pre>
+
+以下は、fooというディレクトリののパーミッションを755に変更するサンプルです。
+
+<pre>
+chmod 755 foo
+</pre>
+
+<h4>パーミッションとは?</h4>
+
+パーミッションについて解説します。
+
+3桁の数字は、左から順に「所有者ユーザーのパーミッション」「所有者グループのパーミッション」「ゲストのパーミッション」を8進数で表現したものです。
+
+8進数のパーミッションは、二進数に変換すると、意味を理解しやすいです。
+
+8進数の6は、2進数で「110」(4 + 2 + 0)です。
+
+8進数の4は、2進数で「100」(4 + 0 + 0)です。
+
+8進数の7は、2進数で「111」(4 + 2 + 1)です。
+
+8進数の5は、2進数で「101」(4 + 0 + 1)です。
+
+2進数したときの3桁は、左から「読込権限」「書込権限」「実行権限」を意味します。
+
+実行権限というのは、ファイルを実行ファイルとして実行できるようにするための権限です。また、ディレクトリを読み書きするためには、ディレクトリに実行権限が必要です。実行権限は、実行ファイルとディレクトリにつけると覚えておきましょう。
+
+例として、644というパーミッションは「所有者ユーザー(u)は読込権限(r)と書込権限(w)」「所有者グループ(g)は読込権限(r)」「ゲスト(o)は読込権限(r)」を持つことを意味します。
+
+<pre>
+# 8進数
+644
+
+# 2進数
+u        g        o
+r w x    r w x    r w x
+1 1 0    1 0 0    1 0 0
+</pre>
+
+例として、755というパーミッションは「所有者ユーザー(u)は読込権限(r)と書込権限(w)と実行権限(x)」「所有者グループ(g)は読込権限(r)と実行権限(x)」「ゲスト(o)は読込権限(r)と実行権限(x)」を持つことを意味します。
+
+<pre>
+# 8進数
+755
+
+# 2進数
+u        g        o
+r w x    r w x    r w x
+1 1 1    1 0 1    1 0 1
+</pre>
+
+<h3>所有者ユーザーを変更する - chownコマンド</h3>
+
+所有者ユーザーを変更するには、<b>chownコマンド</b>を使用します。
+
+<pre>
+chown kimoto foo.txt
+</pre>
+
+「所有者ユーザー」と「所有者グループ」を変更するには次のように書きます。
+
+<pre>
+# 所有者ユーザーと所有者グループを変更
+chown kimoto:webapp foo.txt
+</pre>
+
+<h3>所有者グループを変更する - chgrpコマンド</h3>
+
+所有者グループを変更するには、<b>chgrpコマンド</b>を使用します。
+
+<pre>
+# 所有者グループを変更する
+chgrp webapp foo.txt
+</pre>
+
+
+<h2>シンボリックリンクを作成するコマンド</h2>
+
+シンボリックリンクの作成について解説します。
+
+<h3>シンボリックリンクを作成する - lnコマンド</h3>
+
+シンボリックリンクを作成するには<b>lnコマンド</b>を使用します。シンボリックリンクは、対象のファイル名に別名をつけることができる機能です。
+
+<pre>
+# /usr/binをmybinでアクセスできるようにする
+ln -s /usr/bin mybin
+</pre>
+
+<h2>ディスク容量の確認</h2>
+
+<h3>ディスク容量を確認する - dfコマンド</h3>
+
+ディスク容量を確認するには<b>df</b>コマンドを使用します。サイズの単位はバイトです。
+
+<pre>
+# ディスク容量の確認
+df
+</pre>
+
+dfコマンドの出力サンプルです。
+
+<pre>
+Filesystem     1K-blocks    Used Available Use% Mounted on
+udev              998332       0    998332   0% /dev
+tmpfs             204096     648    203448   1% /run
+/dev/vda3      202226664 8160052 183774432   5% /
+</pre>
+
+「-h」オプションで、ファイルサイズに単位をつけて表示できます。
+
+<pre>
+# ディスク容量に単位をつける
+df -h
+</pre>
+
+出力結果です。単位がついています。
+
+<pre>
+Filesystem      Size  Used Avail Use% Mounted on
+udev            975M     0  975M   0% /dev
+tmpfs           200M  648K  199M   1% /run
+/dev/vda3       193G  7.8G  176G   5% /
+</pre>
+
+<h3>ディレクトリ容量を確認する - duコマンド</h3>
+
+ディレクトリ容量を確認するには<b>duコマンド</b>を使用します。サイズの単位はバイトです。
+
+<pre>
+du .
+</pre>
+
+duコマンドの出力結果のサンプルです。
+
+<pre>
+5000    ./templates/blog
+24      ./templates/common
+20      ./templates/static/css
+192     ./templates/static/js/google-code-prettify
+288     ./templates/static/js
+984     ./templates/static/examples/pdf
+988     ./templates/static/examples
+20      ./templates/static/images/ad
+40      ./templates/static/images/book
+64      ./templates/static/images/bottom
+32      ./templates/static/images/perlbanjo
+184     ./templates/static/images/strawberry_perl
+32      ./templates/static/images/commandprompt
+96      ./templates/static/images/active_perl
+752     ./templates/static/images
+2164    ./templates/static
+7212    ./templates
+</pre>
+
+容量の大きい順に並べ替えるにはsortコマンドとheadコマンドをパイプでつなげます。sortコマンドの「-n」オプションは、数値の大きさで並べ替え、「-r」オプションは、降順を意味しています。
+
+<pre>
+# 容量の多い順に並べ替えて30位まで表示
+du . | sort -nr | head -30
+</pre>
+
+出力結果のサンプルです。
+
+<pre>
+129096  .
+96944   ./public
+84172   ./public/.git
+83896   ./public/.git/objects
+46048   ./public/.git/objects/pack
+24856   ./.git
+24392   ./.git/objects
+10432   ./public/blog
+7376    ./.git/objects/pack
+7212    ./templates
+</pre>
+
+<h2>シェルスクリプトの実行方法</h2>
+
+シェルスクリプトの実行方法を簡単に解説します。ここでは、bashと呼ばれる種類のシェルスクリプトについて解説します。シェルスクリプトを記述すると複数のコマンドを、一度に実行できます。
+
+シェルスクリプトでは、条件分岐や繰り返しなどの文法を記述することができますが、この書籍で扱うのは、シェルスクリプトの実行方法、シェバンを記述して実行ファイルとして実行する方法です。
+
+<h3>シェルスクリプトの実行</h3>
+
+シェルスクリプトを記述してみます。ファイル名は「echo3.bash」です。echoコマンドを三回実行しています。
+
+<pre>
+echo "Hi"
+
+echo "Hello"
+
+echo "World!"
+</pre>
+
+シェルスクリプトを「bash」コマンドを実行してみます。
+
+<pre>
+bash echo3.bash
+</pre>
+
+出力結果です。echoコマンドが三回実行されています。
+
+<pre>
+Hi
+Hello
+World!
+</pre>
+
+<h3>シェルスクリプトを実行ファイルとして実行</h3>
+
+bashコマンドなしで、プログラムを実行できるようにしてみましょう。この方法を覚えると、Linuxコマンドを実装できます。
+
+<h4>シェバンの記述</h4>
+
+方法は、1行目にシェバンと呼ばれる1行を追加するだけです。bashコマンドで実行する場合は、ソースコードの改行コードを気にする必要はありませんでしたが、シェバンを使って、コマンドとしてプログラムを実行する場合は、ソースコードの改行コードはLFになっている必要があるので注意しましょう。
+
+シェバンは「#!」で1行目から始まります。
+
+その後に、bashコマンドを記述します。「/usr/bin/env」コマンドは、その環境における指定したコマンドを実行してくれます。「/usr/bin/env bash」と書くことで、その環境におけるbashを実行してくれます。
+
+bashコマンドなしで実行できる「echo3」です。コマンドらしくみせるために、拡張子もなくしてみました。
+
+<pre>
+#!/usr/bin/env bash
+
+echo "Hi"
+
+echo "Hello"
+
+echo "World!"
+</pre>
+
+<h4>実行権限の追加</h4>
+
+次に、chmodコマンドを使って、プログラムに実行権限を追加します。実行権限があれば単独のコマンドとして実行できます。
+
+<pre>
+chmod +x echo3
+</pre>
+
+lsコマンドで、パーミッションを確認してみましょう。
+
+<pre>
+-rwxrwxr-x 1 kimoto kimoto  148 Oct  1 17:17 echo3
+</pre>
+
+「x」という実行権限が追加されています。
+
+<h4>コマンドの実行</h4>
+
+コマンドを実行してみましょう。コマンドを実行するためには、PATH環境変数で指定されているディレクトリにコマンドが存在するか、「/」が含まれている必要があります。絶対パスで指定する場合は、問題ないのですが、カレントディレクトリのコマンドを実行するには、以下のように記述します。
+
+<pre>
+# コマンドを実行
+./echo3
+</pre>
+
+出力結果です。bashコマンドの指定なしで、コマンドが実行できました。
+
+<pre>
+Hi
+Hello
+World!
+</pre>
+
+<h2>環境変数</h2>
+
+環境変数と環境変数を表示・設定するコマンドについて解説します。
+
+<h3>環境変数とは</h3>
+
+環境変数とは、簡単に書くと、OSが持っている変数のことです。Linuxでは、環境変数は、ユーザー単位で設定することができます。また、プログラムを実行する場合に、一時的に変更することもできます。
+
+<h3>環境変数を表示する - envコマンド</h3>
+
+<pre>
+# 環境変数を表示する
+env
+</pre>
+
+環境変数の出力結果のサンプルです。環境変数は「変数名=値」という形で記録されています。
+
+<pre>
+PERLBREW_SHELLRC_VERSION=0.88
+MANPATH=/home/kimoto/perl5/perlbrew/perls/perl-5.28.0/man:/usr/kerberos/man:/usr/local/share/man:/usr/share/man/en:/usr/share/man
+PERLBREW_VERSION=0.88
+HOSTNAME=www7402u.sakura.ne.jp
+PERLBREW_PERL=perl-5.28.0
+TERM=xterm
+SHELL=/bin/bash
+HISTSIZE=1000
+SSH_CLIENT=119.243.98.202 48719 22
+OLDPWD=/home/kimoto/labo
+SSH_TTY=/dev/pts/0
+USER=kimoto
+LD_LIBRARY_PATH=/usr/lib/oracle/11.2/client64/lib
+LS_COLORS=no=00:fi=00:di=00;34:ln=00;36:pi=40;33:so=00;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.bz=00;31:*.tz=00;31:*.rpm=00;31:*.cpio=00;31:*.jpg=00;35:*.gif=00;35:*.bmp=00;35:*.xbm=00;35:*.xpm=00;35:*.png=00;35:*.tif=00;35:
+PERLBREW_ROOT=/home/kimoto/perl5/perlbrew
+MAIL=/var/spool/mail/kimoto
+PATH=/home/kimoto/perl5/perlbrew/bin:/home/kimoto/perl5/perlbrew/perls/perl-5.28.0/bin:/usr/lib/oracle/11.2/client64/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/home/kimoto/bin:/sbin:/usr/sbin:/usr/local/sbin
+C_INCLUDE_PATH=/usr/include/oracle/11.2/client64
+INPUTRC=/etc/inputrc
+PWD=/home/kimoto/labo/perlzemilinux
+LANG=en_US.UTF-8
+PERLBREW_HOME=/home/kimoto/.perlbrew
+SHLVL=1
+HOME=/home/kimoto
+PERLBREW_MANPATH=/home/kimoto/perl5/perlbrew/perls/perl-5.28.0/man
+PERLBREW_PATH=/home/kimoto/perl5/perlbrew/bin:/home/kimoto/perl5/perlbrew/perls/perl-5.28.0/bin
+LOGNAME=kimoto
+CVS_RSH=ssh
+SSH_CONNECTION=119.243.98.202 48719 59.106.185.196 22
+SPVM_TEST_ENABLE_WARNINGS=1
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+ORACLE_HOME=/usr/lib/oracle/11.2/client64
+G_BROKEN_FILENAMES=1
+_=/bin/env
+</pre>
+
+<h3>環境変数を設定する</h3>
+
+環境変数を設定する場合は、Bシェル系(sh, bash, ksh)呼ばれるシェルと、Cシェル系(csh)と呼ばれるシェルで設定方法に違いがあります。Linuxの場合は、Bシェル系であると考えましょう。UNIXのひとつである、FreeBSDはCシェル系(csh)です。環境変数名は、大文字で記述するのが、慣習となっています。
+
+<b>Bシェル系</b>
+
+<pre>
+# Bシェル系
+export FOO=3
+</pre>
+
+<b>Cシェル系</b>
+
+<pre>
+# Cシェル系
+setenv FOO 3
+</pre>

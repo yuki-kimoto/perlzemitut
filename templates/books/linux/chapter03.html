@@ -1,0 +1,202 @@
+<style>
+  h2 {
+    counter-increment:count1;
+    counter-reset:count2;
+  }
+  h2:before {
+    content:"3." counter(count1) " ";
+  }
+
+  h3 {
+    counter-increment:count2;
+  }
+  h3:before {
+    content:"3." counter(count1) "." counter(count2) " ";
+  }
+</style>
+
+<div style="font-size:25px;font-weight:bold;padding:10px;">第３章 ファイルバックアップの自動化</div>
+
+<div class="chapter">
+<div class="chapter_description">
+  <div class="chapter_description_left">
+    <!-- <img width="65" src="images/chapter_top.png"> -->
+  </div>
+  <div class="chapter_description_right" style="padding:10px;">
+    ファイルのバックアップを自動化する方法について解説するよ。rsyncコマンドを使って、ファイルをコピーする方法、リモートへ同期する方法、バッチ化して自動化する方法を解説するよ。
+  </div>
+</div>
+
+<h2>rsyncを使ったファイルのバックアップ</h2>
+
+rsyncを使ったファイルバックアップの方法を解説します。
+
+<h3>rsyncとは</h3>
+
+rsyncは、ファイルを同期するためのコマンドです。一般的には、ディレクトリを同期するために利用されます。ディレクトリの中の、変更のあるファイルだけを、コピーしてくれるので、転送量が少なく、速度が速いです。
+
+<h3>ディレクトリのコピー</h3>
+
+rsyncを使って、ディレクトリをコピーしてみましょう。「dir1」の「foo」というディレクトリの中身を「dir2」の「foo」というディレクトリの中にコピーしてみます。
+
+<pre>
+# 「dir1」の「foo」というディレクトリの中身を
+# 「dir2」の「foo」というディレクトリの中にコピー
+rsync -av dir1/foo/ dir2/foo/
+</pre>
+
+「-a」オプションは、rsyncのディレクトリ同期のためにしているするオプションを一度に指定できるものです。「-v」オプションは、コピーの結果を標準出力に出力します。「dir1/foo/」「dir2/foo/」と末尾にスラッシュがついているところに注目してください。このように記述するとディレクトリ「dir1/foo」の中身を、ディレクトリ「dir2/foo」の中にコピーするという意味になります。ディレクトリが存在しない場合は、作成されます。
+
+rsyncの出力結果のサンプルです。
+
+<pre>
+sending incremental file list
+created directory dir2/foo
+./
+a.txt
+b.txt
+
+sent 185 bytes  received 88 bytes  546.00 bytes/sec
+total size is 0  speedup is 0.00
+</pre>
+
+ディレクトリを同期させる場合は、ファイル削除の情報も考慮してくれる「--delete」オプションをつけておくとよいでしょう。
+
+<pre>
+# 削除した情報も考慮
+rsync -av --delete dir1/foo/ dir2/foo/
+</pre>
+
+<h3>sshを使ったリモートサーバーへの接続</h3>
+
+次は、リモートサーバーへのディレクトリのコピー方法を解説していきますが、その前に、リモートサーバーへ接続する方法を解説します。rsyncはリモートサーバーへの接続に、sshというコマンドを利用しています。sshは、SSHというプロトコルを使って、セキュアにリモートサーバーにコマンドを送信するためのコマンドです。
+
+まず、sshコマンドで、リモートサーバーに接続してみましょう。
+
+<pre>
+# IPアドレス「59.105.185.193」ポート番号「55555」
+# ユーザー「kimoto」でSSHでリモートサーバーに接続
+ssh -p 55555 kimoto@59.105.185.193
+</pre>
+
+パスワード認証の場合は、パスワードを聞かれるので、入力します。接続ができたら、lsコマンドを実行して、リモートサーバーのkimotoのホームディレクトリのファイル一覧が見れるかどうかを確認してみましょう。
+
+<pre>
+ls
+</pre>
+
+リモートサーバー上の、ファイル一覧が確認できれば、OKです。
+
+<h3>リモートサーバーにディレクトリをコピーする</h3>
+
+rsyncコマンドを使って、リモートサーバーにディレクトリをコピーしてみましょう。「/foo/dir1」を、リモートサーバーの「~/backup/dir1」にコピーします。「~」はkimotoのホームディレクトリです。
+
+コピー先のファイルの名の先頭に「kimoto@59.105.185.193:」と、ユーザー名とIPアドレスを指定します。ポート番号は「-e」コマンドで、使用するSSHコマンドを記述することで指定できます。「-z」オプションを指定するとネットワーク転送時に、ファイルを圧縮して転送してくれます。ネットワーク転送をするときは、指定して置いたほうが効率が良くなると感じます。
+
+<pre>
+# rsyncコマンドでリモートサーバーにディレクトリをコピー
+rsync -e "ssh -p 55555" -avz --delete /foo/dir1/ kimoto@59.105.185.193:~/backup/dir1/
+</pre>
+
+パスワード認証の場合は、パスワードを聞かれるので、入力します。
+
+<h3>公開鍵認証でパスワード入力を不要にする</h3>
+
+上記の方法でコピーした場合は、パスワードの入力が必要です。ファイルバックアップを自動化する場合は、パスワード入力を不要にしたいですね。sshコマンドでは、パスワードの認証の他に、公開鍵認証と呼ばれる認証方法があるので、これを利用します。
+
+公開鍵と秘密鍵のペアを作成して、リモートサーバーに公開鍵を登録すれば、パスワードなしで、SSH接続が行えます。
+
+<h4>秘密鍵と公開鍵の作成</h4>
+
+秘密鍵と公開鍵のペアを作成するには、まず「~/.ssh」というディレクトリを作成します。パーミッションは「~/.ssh」のディレクトリのパーミッションは「700」である必要があります。
+
+<pre>
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+cd ~/.ssh
+</pre>
+
+秘密鍵と公開鍵のペアを作成を作成するには「ssh-keygen」コマンドを使用します。
+
+<pre>
+# 秘密鍵と公開鍵のペアの生成
+ssh-keygen -t rsa
+</pre>
+
+生成するファイル名を聞かれますので以下の名前で入力しましょう。
+
+<pre>
+id_rsa_backup
+</pre>
+
+秘密鍵と公開鍵のペアが生成されます。「id_rsa_backup」は秘密鍵、「id_rsa_backup.pub」は公開鍵です。
+
+<pre>
+id_rsa_backup
+id_rsa_backup.pub
+</pre>
+
+<h4>公開鍵の内容をメモする</h4>
+
+公開鍵の内容をメモしておきましょう。
+
+<pre>
+cat id_rsa_backup.pub
+</pre>
+
+出力結果のサンプルです。これは一行になっています。
+
+<pre>
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjSsucYA958wTIKUcPRXC2iZxb84FXkzm41/jzpfnUeBFsypS8xfTXpfDaSIYeMDyr9pIUfDuWWPykoofL4WZaJYDy5pQclFwby/KttDRAnm0XZQ2ZDUtnrUUdva55mxOcTJP0c1VWXpwrhBA+JSFLOGB8wxCV8UFh9XWXI4c5QKQ/Hyl8//nXT6suQf199VNf4Ru31rs+49FDW9FyvoX1GGEEBJCT2ROVD6qi1xY766PuhM/4OMQeIxZmZg8ysML307viqkKh/2mecwkdV1mxGQt8GbO3gvTOX5h9p7tGEwa3zSHhxudux1Kf6Pfcg4FwKuld8r77DKMXEszpRI11 myapp@myhost
+</pre>
+
+<h4>公開鍵をリモートサーバーに登録する</h4>
+
+リモートサーバーでも「~/.ssh」ディレクトリを作成しましょう。
+
+<pre>
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+cd ~/.ssh
+</pre>
+
+「authorized_keys」という公開鍵を登録するファイルを作成します。すでに作成されている場合は、作成する必要はありません。
+
+<pre>
+touch authorized_keys
+chmod 700 authorized_keys
+</pre>
+
+メモしてある公開鍵の内容を「authorized_keys」に追記しましょう。
+
+<h4>公開鍵を使ってリモートサーバーにディレクトリをコピー</h4>
+
+rsyncコマンドでリモートサーバーにディレクトリをコピーしてみましょう。公開鍵を指定するにはsshコマンドの「-i」オプションを使用します。
+
+<pre>
+# rsyncコマンドでリモートサーバーにディレクトリをコピー
+# 公開鍵認証
+rsync -e "ssh -p 55555 -i /home/kimoto/.ssh/id_rsa_backup" -avz --delete  /home/kimoto/foo/dir1/ kimoto@59.105.185.193:/home/kimoto/backup/dir1/
+</pre>
+
+これで、パスワードを入力しないで、リモートサーバーにディレクトリをコピーすることができるようになりました。
+
+<h3>cronでコマンド実行をスケジュールする</h4>
+
+さて、バックアップの自動化の最後は、cronでコマンド実行をスケジューリングすることです。cronを使えば、1日に一回、この時間に実行するといったスケジュールを記述することができます。
+
+cronの設定は、crontabと呼ばれる設定ファイルに記述します。viで開かれるので、編集しましょう。
+
+<pre>
+# crontabの編集
+crontab -e
+</pre>
+
+毎日午前9時に実行する場合は、以下のように記述します。crontabの記述方法は、「分 時 日 月 週 コマンド」です。毎日、毎週のように「毎」を意味するには「*」を使います。
+
+<pre>
+# 毎日午前9時にバックアップを実行する
+00 09 * * * rsync -e "ssh -p 55555 -i /home/kimoto/.ssh/id_rsa_backup" -avz --delete  /home/kimoto/foo/dir1/ kimoto@59.105.185.193:/home/kimoto/backup/dir1/
+</pre>
+
+これで、ファイルバックアップの自動化ができるようになりました。

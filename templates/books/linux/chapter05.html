@@ -1,0 +1,1441 @@
+<style>
+  h2 {
+    counter-increment:count1;
+    counter-reset:count2;
+  }
+  h2:before {
+    content:"5." counter(count1) " ";
+  }
+
+  h3 {
+    counter-increment:count2;
+  }
+  h3:before {
+    content:"5." counter(count1) "." counter(count2) " ";
+  }
+</style>
+
+<div style="font-size:25px;font-weight:bold;padding:10px;">第５章 Perlファイル操作</div>
+
+<div class="chapter">
+<div class="chapter_description">
+  <div class="chapter_description_left">
+    <!-- <img width="65" src="images/chapter_top.png"> -->
+  </div>
+  <div class="chapter_description_right" style="padding:10px;" style="padding:10px;">
+   Perlを使ったファイル操作について学んでいくよ。ファイルを読み書きする方法、ファイルとディレクトリに対する操作を覚えるとサーバー管理が楽になるよ。
+  </div>
+</div>
+
+<h2>ファイルの読み書き</h2>
+
+まず最初にPerlでファイルを読み書きする方法を解説します。
+
+<h3>ファイルオープン</h3>
+
+ファイルを読み書きするためには、まず最初にファイルをオープンする必要があります。ファイルをオープンするには<b>open関数</b>を使用します。
+
+<pre>
+# open関数
+open ファイルハンドル, オープンモード, ファイル名;
+</pre>
+
+<h3>ファイルを読み込みモードで開く</h3>
+
+ファイルを読み込みモードで開いてみましょう。以下の「book.csv」というファイルをオープンしてみます。文字コードはUTF-8で記述されています。
+
+<pre>
+1,Perl入門,1400
+2,Web開発,2000
+3,データベース入門,2500
+</pre>
+
+以下は、ファイルを読み込む場合の定型文です。サンプルコードは「open_file_read.pl」です。
+
+<pre>
+my $file = 'book.csv';
+open my $fh, '<', $file
+  or die "Can't open file \"$file\": $!";
+</pre>
+
+第一引数は、ファイルハンドルです。ファイルハンドルとして利用したい変数を宣言して、第一引数に渡します。myが、第一引数に含まれているので、変な感じがしますが、Perlでは、変数宣言は、その値を返すので、このような書き方ができます。
+
+第二引数は、<b>オープンモード</b>です。読み込みモードの場合は文字列の<b>「<」</b>を指定します。
+
+第三引数は、ファイル名です。
+
+<b>「or」</b>は、ちょっと見慣れない書き方ですが、左辺が偽の場合に、右辺を実行してくれる、Perlの論理演算子です。open関数が失敗した場合(失敗すると偽が返る)に、右辺を実行してくれます。
+
+<b>die関数</b>は、例外を投げるPerlの関数です。引数に指定した文字列を画面に出力して、エラー終了してくれます。
+
+<b>「$!」</b>は、OSのエラーメッセージが設定されるPerlの特殊変数です。ファイルオープンは、OSに対するシステムコールです。システムコールが失敗した場合のエラーメッセージを含んでおくと親切です。
+
+実行してみましょう。何も起こりませんがファイルをオープンしています。
+
+<pre>
+perl open_file_read.pl
+</pre>
+
+「book.csv」の名前を「mook.csv」に変更してみましょう。この場合は「book.csv」が存在しないので、エラーメッセージが表示されPerlのプログラムが終了します。
+
+<pre>
+Can't open file "book.csv": No such file or directory at open_file_read.pl line 5.
+</pre>
+
+<h3>ファイルの内容を一行ずつ読み込む</h3>
+
+ファイルを一行ずつ読み込むには、<b>行入力演算子「<ファイルハンドル>」</b>を使います。ファイルの内容を一行ずつ読み込む方法は「Perlテキスト処理のエッセンス」で詳しく解説しています。
+
+<pre>
+<ファイルハンドル>
+</pre>
+
+一行ずつ読み込んで、標準出力にそのまま出力するサンプル「read_line_simple.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+my $file = 'book.csv';
+open my $fh, '<', $file
+  or die "Can't open file \"$file\": $!";
+
+while (my $line = <$fh>) {
+  print $line;
+}
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl read_line_simple.pl
+</pre>
+
+出力結果です。
+
+<pre>
+1,Perl入門,1400
+2,Web開発,2000
+3,データベース入門,2500
+</pre>
+
+以下は、改行の削除と日本語に対応したサンプルです。こちらも「Perlテキスト処理のエッセンス」で詳しく解説しています。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode', 'decode';
+
+my $file = 'book.csv';
+open my $fh, '<', $file
+  or die "Can't open file \"$file\": $!";
+
+while (my $line = <$fh>) {
+  
+  # Perlの内部文字列にデコード
+  $line = decode('UTF-8', $line);
+  
+  # 改行を削除
+  chomp $line;
+  
+  # 好きな処理
+  # ...
+  
+  # UTF-8バイト列にエンコードして出力
+  print encode('UTF-8', $line) . "\n";
+}
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl read_line_japan.pl
+</pre>
+
+出力結果です。
+
+<pre>
+1,Perl入門,1400
+2,Web開発,2000
+3,データベース入門,2500
+</pre>
+
+<h3>ファイルの内容をすべて読み込む</h3>
+
+ファイルの内容をすべて読みこむサンプルです。日本語に対応しています。
+
+<pre>
+use strict;
+use warnings;
+use utf8;
+use Encode 'encode', 'decode';
+
+my $file = 'book.csv';
+open my $fh, '<', $file
+  or die "Can't open file \"$file\": $!";
+
+# 一度に読み込む
+my $content = do { local $/; <$fh> };
+$content = decode('UTF-8', $content);
+
+# 好きな処理
+# ...
+
+# UTF-8バイト列にエンコードして出力
+print encode('UTF-8', $content);
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl read_line_japan_all.pl
+</pre>
+
+出力結果です。
+
+<pre>
+1,Perl入門,1400
+2,Web開発,2000
+3,データベース入門,2500
+</pre>
+
+<h3>ファイルクローズ</h3>
+
+「ファイルクローズって必要がないの?」 そう思ったあなた。Perlは、デストラクタと呼ばれる仕組みがあり、スコープが終了すると自動的にファイルハンドルは閉じられます。明示的に閉じる場合は<b>close関数</b>を使用します。
+
+<pre>
+# close関数
+close ファイルハンドル;
+</pre>
+
+<h3>ファイルを書き込みモードで開く</h3>
+
+ファイルを書き込みモードで開くには、<b>オープンモード「>」</b>を指定します。その他は、読み込む場合と同じです。ファイルがない場合は、作成されます。
+
+<pre>
+my $out_file = 'book_out.csv';
+open my $out_fh, '>', $out_file
+  or die "Can't open file \"$out_file\": $!";
+</pre>
+
+<h3>ファイルに書き込む</h3>
+
+ファイルに書き込む場合は、print関数で書き込み先のファイルハンドルを指定します。ファイルハンドルの後ろに、カンマがないことに注意しましょう。
+
+<pre>
+print $out_fh $line . "\n";
+</pre>
+
+以下は「book.csv」を読み込んで「book_out.csv」に出力するサンプル「write_file.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+my $in_file = 'book.csv';
+open my $in_fh, '<', $in_file
+  or die "Can't open file \"$in_file\": $!";
+
+my $out_file = 'book_out.csv';
+open my $out_fh, '>', $out_file
+  or die "Can't open file \"$out_file\": $!";
+
+while (my $line = <$in_fh>) {
+  # ファイルへ書き込み
+  print $out_fh $line;
+}
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl write_file.pl
+</pre>
+
+出力ファイル「book_out.csv」に以下の内容が出力されています。
+
+<pre>
+1,Perl入門,1400
+2,Web開発,2000
+3,データベース入門,2500
+</pre>
+
+<h3>ファイルを追加書き込みモードで開く</h3>
+
+ファイルを追加書き込みモードで開くには、<b>オープンモード「>>」</b>を指定します。ログを出力するなど、末尾に出力を付け足していきたい場合に使います。
+
+<pre>
+my $log_file = 'app.log';
+open my $log_fh, '>>', $log_file
+  or die "Can't open file \"$file\": $!";
+</pre>
+
+以下は、現在時刻の後ろに「Perl」という文字列を連結して出力するサンプル「log.pl」です。現在時刻の作成に、Time::Pieceモジュールを使っています。
+
+<pre>
+use strict;
+use warnings;
+use Time::Piece;
+
+# 現在時刻を取得(2021-09-14 17:19:00)
+my $now_tp = Time::Piece::localtime;
+my $now = $now_tp->strftime('%Y-%m-%d %H:%M:%S');
+
+my $log_file = 'app.log';
+open my $log_fh, '>>', $log_file
+  or die "Can't open file \"$log_file\": $!";
+
+# [現在時刻]Perl
+my $output = "[$now]Perl\n";
+
+# ファイルへ書き込み
+print $log_fh $output;
+</pre>
+
+三回実行した結果です。「app.log」は以下の内容になっています。
+
+<pre>
+[2021-09-14 17:21:07]Perl
+[2021-09-14 17:21:14]Perl
+[2021-09-14 17:21:32]Perl
+</pre>
+
+<h2>ファイル名の扱い</h2>
+
+Perlでファイル名を扱う方法を紹介します。
+
+<h3>ファイルのベース名を取り出す</h3>
+
+ファイルのベース名を取り出すにはFile::Basenameモジュールの<b>basename関数</b>を使用します。ファイルのベース名を取り出す「basename.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+use File::Basename 'basename';
+
+my $file = '/foo/bar.txt';
+
+# ベース名を取得
+my $base_name = basename $file;
+
+print "$base_name\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl basename.pl
+</pre>
+
+実行結果です。ファイルのベース名だけ取り出せています。
+
+<pre>
+bar.txt
+</pre>
+
+<h3>ファイルのディレクトリ名を取り出す</h3>
+
+ファイルのディレクトリ名を取り出すにはFile::Basenameモジュールの<b>dirname関数</b>を使用します。ファイルのディレクトリ名を取り出す「dirname.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+use File::Basename 'dirname';
+
+my $file = '/foo/bar.txt';
+
+# ディレクトリ名を取得
+my $base_name = dirname $file;
+
+print "$base_name\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl dirname.pl
+</pre>
+
+実行結果です。ファイルのディレクトリ名だけ取り出せています。
+
+<pre>
+/foo
+</pre>
+
+<h3>ファイル名から拡張子を分離する</h3>
+
+ファイル名から拡張子を分離してみましょう。サンプルは「file_ext.pl」です。正規表現を使います。
+
+<pre>
+use strict;
+use warnings;
+
+use File::Basename 'basename';
+
+my $file = '/foo/bar.txt';
+
+my $file_without_ext;
+my $file_ext;
+
+# 拡張子前までのファイル名と拡張子を取得
+if ($file =~ /(.*)[\.]([^\.]+)$/) {
+  $file_without_ext = $1;
+  $file_ext = $2;
+}
+
+print "$file_without_ext $file_ext\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl file_ext.pl
+</pre>
+
+実行結果です。拡張子前までのファイル名と拡張子を取得できています。
+
+<pre>
+/foo/bar txt
+</pre>
+
+<h3>プログラムを実行しているディレクトリを取得する</h3>
+
+プログラムを実行しているディレクトリを取得するにはFindBinモジュールの<b>「$FindBin::Bin」変数</b>を使用します。これは、パッケージ変数と呼ばれる変数です。
+
+<pre>
+use strict;
+use warnings;
+
+use FindBin;
+
+# プログラムを実行しているディレクトリを取得
+my $program_dir = $FindBin::Bin;
+
+print "$program_dir\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl bindir.pl
+</pre>
+
+実行結果です。プログラムを実行したディレクトリを取得できています。絶対パスに変換されていますね。
+
+<pre>
+/home/kimoto/labo/perlbook-linux/examples/chapter5
+</pre>
+
+<h3>実行しているプログラムのファイル名を取得する</h3>
+
+実行しているプログラムのファイル名を取得するには<b>「$0」</b>という特殊変数を使います。
+
+<pre>
+use strict;
+use warnings;
+
+# プログラムを実行しているファイル名を取得
+my $program_file = $0;
+
+print "$program_file\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl binfile.pl
+</pre>
+
+実行結果です。実行してりるプログラムのファイル名を取得する。こちらは、相対パスです。
+
+<pre>
+binfile.pl
+</pre>
+
+<h2>ファイルとディレクトリの作成・削除</h2>
+
+ファイルとディレクトリの作成・削除方法を解説します。
+
+<h3>ディレクトリを作成する</h3>
+
+ディレクトリを作成するには<b>mkdir関数</b>を使用します。
+
+<pre>
+mkdir ディレクトリ名
+</pre>
+
+失敗した場合は偽値が返ります。必要な場合は「or die」など使って、例外処理を記述しておくとよいでしょう。
+
+<h3>ディレクトリを削除する</h3>
+
+ディレクトリを削除するには<b>rmdir関数</b>を使用します。
+
+<pre>
+rmdir ディレクトリ名
+</pre>
+
+ディレクトリが空でない場合は、失敗します。
+
+失敗した場合は偽値が返ります。必要な場合は例外処理を記述しておくとよいでしょう。
+
+<h3>ファイルを削除する</h3>
+
+ファイルを削除するには<b>unlink関数</b>を使用します。
+
+<pre>
+unlink ファイル名
+</pre>
+
+失敗した場合は偽値が返ります。必要な場合は例外処理を記述しておくとよいでしょう。
+
+<h3>複数階層のディレクトリを作成する</h3>
+
+複数階層のディレクトリを作成するにはFile::Pathモジュールの<b>mkpath関数</b>を使用します。
+
+<pre>
+use File::Path 'mkpath';
+
+my $dir = 'foo/bar';
+mkpath $dir;
+</pre>
+
+作成に失敗した場合は、例外が発生します。
+
+<h3>複数階層のディレクトリを削除する</h3>
+
+複数階層のディレクトリを削除するにはFile::Pathモジュールの<b>rmtree関数</b>を使用します。以下の例では、fooディレクトリとfooの中に含まれているファイルがすべて削除されます。注意して利用してください。
+
+<pre>
+use File::Path 'rmtree';
+
+my $dir = 'foo';
+rmtree $dir;
+</pre>
+
+戻り値は、削除できたファイルの個数です。すべて失敗した場合は、0が返るので、必要に応じて例外処理を記述しましょう。
+
+<h3>ディレクトリの作成のサンプル</h3>
+
+ファイルとディレクトリの作成と削除のサンプルを書いてみます。
+
+<h4>ディレクトリを作成するサンプル</h4>
+
+ディレクトリ作成するサンプル「create_dir.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+use File::Path 'mkpath';
+
+# ディレクトリを作成
+my $dir1 = 'dir1';
+mkdir $dir1
+  or die "Can't create directory \"$dir1\": $!";
+
+# 複数階層のディレクトリを作成
+my $dir2 = 'dir2/foo';
+mkpath $dir2;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl create_dir.pl
+</pre>
+
+以下のディレクトリが作成されました。
+
+<pre>
+dir1
+dir2/foo
+</pre>
+
+<h3>ディレクトリを削除するサンプル</h3>
+
+ディレクトリ削除するサンプル「remove_dir.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+use File::Path 'rmtree';
+
+# ディレクトリを削除
+my $dir1 = 'dir1';
+rmdir $dir1
+  or die "Can't create directory \"$dir1\": $!";
+
+# 複数階層のディレクトリを削除
+my $dir2 = 'dir2';
+rmtree $dir2;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl remove_dir.pl
+</pre>
+
+以下のディレクトリが削除されました。
+
+<pre>
+dir1
+dir2
+</pre>
+
+<h2>カレントディレクトリの扱い</h2>
+
+カレントディレクトの取得と変更を行う方法について解説します。
+
+<h3>カレントディレクトリの取得</h3>
+
+カレントディレクトリを取得するにはCwdモジュールの<b>getcwd関数</b>を使用します。
+
+<pre>
+use Cwd 'getcwd';
+
+# カレントディレクトリの取得
+my $cur_dir = getcwd;
+</pre>
+
+<h3>カレントディレクトリの変更</h3>
+
+カレントディレクトリを変更するには<b>chdirコマンド</b>を使用します。カレントディレクトリの変更に失敗した場合は、偽値が返るので、必要に応じて例外処理を行います。
+
+<pre>
+# カレントディレクトリを変更する
+my $dir = '/etc';
+chdir $dir
+  or die "Cannot change working directory $dir: $!";
+</pre>
+
+<h2>ファイルテスト演算子</h2>
+
+ファイルの存在、ファイルのサイズ、ファイル更新からの経過日数などを取得するには<b>ファイルテスト演算子</b>を使用します。
+
+<h3>-e ファイルが存在するかどうかの確認</h3>
+
+<b>「-e」</b>でファイルが存在するかどうかを確認することができます。
+
+<pre>
+-e $file
+</pre>
+
+ファイルが存在すると真値を、存在しないと偽値を返します。ディレクトリやシンボリックリンクなどもファイルとして扱われます。Linuxではディレクトリも特別なファイルとみなしファイルという概念でとらえるからです。
+
+<h3>-f 通常ファイルが存在するかどうかの確認</h3>
+
+<b>「-f」</b>で通常ファイルが存在するかどうかを確認することができます。
+
+<pre>
+-f $file
+</pre>
+
+通常ファイルが存在すると真値を、存在しないと偽値を返します。通常ファイルとはテキストファイルやバイナリファイルや実行ファイルなどの通常の意味のファイルのことです。
+
+<h3>-d ディレクトリが存在するかどうかの確認</h3>
+
+<b>「-d」</b>でディレクトリが存在するかどうかを確認することができます。
+
+<pre>
+-d $file
+</pre>
+
+ディレクトリが存在すると真値を、存在しないと偽値を返します。
+
+<h3>-s ファイルサイズの取得</h3>
+
+<b>「-s」</b>でファイルサイズを取得できます。
+
+<pre>
+-s $file
+</pre>
+
+ファイルサイズの単位はバイトです。
+
+<h3>-M 最終更新から経過した日数の取得</h3>
+
+<b>「-M」</b>で最終更新から経過した日数を取得することができます。
+
+<pre>
+-M $file
+</pre>
+
+<h3>-A 最終アクセスから経過した日数の取得</h3>
+
+<b>「-A」</b>で最終アクセスから経過した日数を取得することができます。
+
+<pre>
+-A $file
+</pre>
+
+<h3>ファイルテスト演算子のサンプル</h3>
+
+ファイルテスト演算子のサンプル「file_test.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+use FindBin;
+
+# ファイルとディレクトリの存在確認
+my $file = "$FindBin::Bin/glob.pl";
+
+my $file_none = "$FindBin::Bin/none.pl";
+
+my $dir = "$FindBin::Bin/find_files";
+
+if (-e $file) {
+  print "-e File Found\n";
+}
+
+if (-e $dir) {
+  print "-e Directory Found\n";
+}
+
+if (-f $file) {
+  print "-f File Found\n";
+}
+
+if (-f $file_none) {
+  
+}
+else {
+  print "-f File Not Found\n";
+}
+
+if (-d $dir) {
+  print "-d Directory Found\n";
+}
+
+# ファイルサイズ
+my $file_size = -s $file;
+
+print "File size $file_size bytes\n";
+
+# 最終更新からの経過日数
+my $file_dates_after_last_modify = -M $file;
+
+print "Dates after last modify: $file_dates_after_last_modify\n";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl file_test.pl
+</pre>
+
+出力結果です。
+
+<pre>
+-e File Found
+-e Directory Found
+-f File Found
+-f File Not Found
+-d Directory Found
+File size 186 bytes
+Dates after last modify: 6.99268518518519
+</pre>
+
+<h2>パーミッションを変更する</h2>
+
+パーミッションを変更するには<b>chmod関数</b>を使用します。変更に失敗した場合は、偽値が返ります。
+
+<pre>
+chmod 0666, $file;
+</pre>
+
+<h2>ファイル一覧を取得する</h2>
+
+ファイル一覧を取得する方法を解説します。
+
+<h3>ファイル一覧を取得する</h3>
+
+ファイルを一覧を取得する簡単な方法<b>はglob関数</b>を使用する方法です。戻り値は、取得したファイルのリストです。ファイル名には、シェルのワイルドカードと同じ機能の「*」を使うことができます。
+
+<pre>
+glob ファイル名
+</pre>
+
+glob関数を使って、プログラムのディレクトリにあるファイル一覧を取得するサンプル「glob.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+use FindBin;
+
+# glob関数でファイル名を取得
+my @files = glob "$FindBin::Bin/*";
+
+# ファイル一覧を表示
+warn Dumper \@files;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl glob.pl
+</pre>
+
+出力結果です。プログラムのディレクトリにあるファイル一覧が取得できています。
+
+<pre>
+$VAR1 = [
+          '/home/kimoto/perlbook-linux/chapter5/app.log',
+          '/home/kimoto/perlbook-linux/chapter5/basename.pl',
+          '/home/kimoto/perlbook-linux/chapter5/bindir.pl',
+          '/home/kimoto/perlbook-linux/chapter5/binfile.pl',
+          '/home/kimoto/perlbook-linux/chapter5/book.csv',
+          '/home/kimoto/perlbook-linux/chapter5/book_out.csv',
+        ];
+</pre>
+
+<h3>ファイル一覧を絞り込む</h3>
+
+ファイル一覧を絞り込んでみましょう。「.csv」という拡張子を持つものだけで絞り込んでみましょう。<b>grep関数</b>を使うのが、簡単です。サンプル「glob_grep.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+use FindBin;
+
+# glob関数でファイル名を取得
+my @files = grep { /\.csv$/ } glob "$FindBin::Bin/*";
+
+# ファイル一覧を表示
+warn Dumper \@files;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl glob_grep.pl
+</pre>
+
+出力結果です。プログラムのディレクトリにあるファイル一覧で拡張子が「.csv」のものが取得できています。
+
+<pre>
+$VAR1 = [
+          '/home/kimoto/perlbook-linux/chapter5/book.csv',
+          '/home/kimoto/perlbook-linux/chapter5/book_out.csv'
+        ];
+</pre>
+
+<h3>ファイル一覧を編集する</h3>
+
+ファイル一覧のファイル名を編集して、ベース名だけを取り出してみましょう。<b>map関数</b>を使うのが、簡単です。サンプル「glob_map.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+use FindBin;
+use File::Basename 'basename';
+
+# glob関数でファイル名を取得
+my @files = map { basename $_ } glob "$FindBin::Bin/*";
+
+# ファイル一覧を表示
+warn Dumper \@files;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl glob_map.pl
+</pre>
+
+出力結果です。プログラムのディレクトリにあるファイル一覧のベース名だけを取得できています。
+
+<pre>
+$VAR1 = [
+          'app.log',
+          'basename.pl',
+          'bindir.pl',
+          'binfile.pl',
+          'book.csv',
+          'book_out.csv',
+        ];
+</pre>
+
+<h3>再帰的にファイルを処理する</h3>
+
+Perlで再帰的にファイルを処理するにはFile::Findモジュールの<b>find関数</b>を使用します。第一引数には、処理を行うサブルーチンのリファレンス、第二引数にはルートディレクトリを指定します。
+
+<pre>
+use File::Find 'find';
+
+find(sub { # 処理 }, $root_dir);
+</pre>
+
+File::Findモジュールは、カレントディレクトリの移動を行うのですが、しないように処理した方が、ミスは少なくなると思います。そのような場合は<b>no_chdir</b>オプションを使用します。
+
+<pre>
+find({wanted => sub { # 処理 }, no_chdir => 1}, $root_dir);
+</pre>
+
+ファイル名を絶対パスで取得するには、以下の変数を使用します。
+
+<pre>
+# ファイル名を絶対パスで取得
+$File::Find::name
+</pre>
+
+相対パスが欲しい場合は、ルートディレクトリの部分を、正規表現で削除してあげます。
+
+<pre>
+# ファイル名を相対パスで取得
+my $rel_name = $File::Find::name;
+$rel_name =~ s/^\Q$root_dir\///;
+</pre>
+
+指定したルートディレクトリの中を再帰的にたどって、見つかったファイルの相対パスを出力するサンプル「find_files.pl」です。
+
+<pre>
+use strict;
+use warnings;
+
+use FindBin;
+use File::Find 'find';
+
+my $root_dir = "$FindBin::Bin/find_files";
+
+find(
+  {
+    wanted => sub {
+      my $abs_name = $File::Find::name;
+      my $rel_name = $abs_name;
+      $rel_name =~ s/^\Q$root_dir\///;
+      
+      print "$rel_name\n";
+    },
+    no_chdir => 1
+  }, 
+  $root_dir
+);
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl find_files.pl
+</pre>
+
+出力結果です。ファイルの相対パスがすべて出力されています。
+
+<pre>
+foo.txt
+bar.txt
+baz
+baz/foo.txt
+baz/bar.txt
+</pre>
+
+<h2>ファイル名における日本語の扱い</h2>
+
+ファイル名における日本語の扱いについて解説します。ファイル名がASCIIコードのみで構成されていない場合は、OSの環境の文字コードにエンコードする必要があります。
+
+<h3>Linuxの場合</h3>
+
+一般的にはLinuxの文字コードは、現在ではUTF-8になっていることが多いと思います。これは、設定することができLANG環境変数を確認するとわかります。
+
+<pre>
+env | grep LANG
+</pre>
+
+出力結果の例です。
+
+<pre>
+LANG=en_US.utf8
+</pre>
+
+このような場合は、Perlのプログラムは、UTF-8で記述し「utf8」プラグマを有効にします。また、ファイル名を指定する場合にEncodeモジュールのencode関数でエンコードします。
+
+<pre>
+use utf8;
+use Encode 'encode';
+
+# 日本語のファイルをオープンする
+my $file = '書籍.csv';
+open my $fh, '<', encode('UTF-8', $file)
+  or die "Can't open file \"$file\": $!";
+</pre>
+
+<h3>UNIXの場合</h3>
+
+UNIXの場合はLinuxと同じです。
+
+<h3>Windowsの場合</h3>
+
+Windowsの場合は、ファイル名をcp932でエンコードします。
+
+<pre>
+use utf8;
+use Encode 'encode';
+
+# Windowsで日本語のファイルをオープンする
+my $file = '書籍.csv';
+open my $fh, '<', encode('cp932', $file)
+  or die "Can't open file \"$file\": $!";
+</pre>
+
+<h3>Macの場合</h3>
+
+Macの場合は、Encode::UTF8Macを読み込み、ファイル名を「utf-8-mac」でエンコードします。Macにおけるファイル名の文字コードはMac独自の仕様のUTF-8となっています。
+
+<pre>
+use utf8;
+use Encode 'encode';
+use Encode::UTF8Mac;
+
+# Macで日本語のファイルをオープンする
+my $file = '書籍.csv';
+open my $fh, '<', encode('utf-8-mac', $file)
+  or die "Can't open file \"$file\": $!";
+</pre>
+
+<h2>Linuxフィルタプログラム</h2>
+
+一般的なLinuxコマンドと同じ機能を持つPerlプログラムを作ってみましょう。標準入力とコマンドライン引数のファイルを同様に扱う方法、コマンドのように見せる方法、「--name」「-C」などのコマンドラインオプションを記述する方法を解説します。
+
+<h3>標準入力とコマンドライン引数のファイルを同じように扱う</h3>
+
+標準入力とコマンドライン引数のファイルを同じように扱う方法は、この書籍ですでに解説していますが、ここで改めて、解説します。
+
+標準入力とコマンドライン引数のファイルを同じように扱うには、ファイル入力演算子で、ファイルハンドルを指定しないもの、通称、<b>ダイヤモンド演算子「<>」</b>を使用します。
+
+コマンドラインに指定されたファイルの内容を出力し、かつ標準入力からも受け取れるプログラム「command.pl」を書いてみましょう。データは「test.txt」を使用します。
+
+<pre>
+use strict;
+use warnings;
+
+# Linuxフィルタプログラムを実装する
+while (my $line = <>) {
+  print $line;
+}
+</pre>
+
+「test.txt」です。
+
+<pre>
+Hello
+World
+</pre>
+
+コマンドラインにファイル名を指定して実行してみましょう。
+
+<pre>
+perl command.pl test.txt
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+World
+</pre>
+
+標準入力からファイル内容を受け取って実行してみましょう。
+
+<pre>
+cat test.txt | perl command.pl
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+World
+</pre>
+
+標準入力とコマンドライン引数のファイルを同じように扱うプログラムが作成できました。これは、よくあるLinuxフィルタプログラムですね。
+
+<h3>perlコマンドなしで実行できるようにする</h3>
+
+perlコマンドなしで、プログラムを実行できるようにしてみましょう。この方法を覚えると、Linuxコマンドを実装できます。
+
+<h4>シェバンの記述</h4>
+
+方法は、1行目に<b>シェバン</b>と呼ばれる1行を追加するだけです。perlコマンドで実行する場合は、ソースコードの改行コードを気にする必要はありませんでしたが、シェバンを使って、コマンドとしてプログラムを実行する場合は、ソースコードの改行コードはLFになっている必要があるので注意しましょう。
+
+シェバンは「#!」で1行目から始まります。
+
+その後に、perlコマンドを記述します。「/usr/bin/env」コマンドは、その環境における指定したコマンドを実行してくれます。「/usr/bin/env perl」と書くことで、その環境におけるperlを実行してくれます。
+
+perlコマンドなしで実行できる「command」です。コマンドらしくみせるために、拡張子もなくしてみました。
+
+<pre>
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+# Linuxフィルタプログラムを実装する
+while (my $line = <>) {
+  print $line;
+}
+</pre>
+
+<h4>実行権限の追加</h4>
+
+次に、chmodコマンドを使って、プログラムに<b>実行権限</b>を追加します。実行権限があれば単独のコマンドとして実行できます。
+
+<pre>
+chmod +x command
+</pre>
+
+lsコマンドで、パーミッションを確認してみましょう。
+
+<pre>
+-rwxrwxr-x 1 kimoto kimoto  148 Oct  1 17:17 command
+</pre>
+
+「x」という実行権限が追加されています。
+
+<h4>コマンドの実行</h4>
+
+コマンドを実行してみましょう。コマンドを実行するためには、PATH環境変数で指定されているディレクトリにコマンドが存在するか、「/」が含まれている必要があります。絶対パスで指定する場合は、問題ないのですが、カレントディレクトリのコマンドを実行するには、以下のように記述します。
+
+<pre>
+# コマンドを実行
+./command test.txt
+</pre>
+
+出力結果です。perlコマンドの指定なしで、コマンドが実行できました。
+
+<pre>
+Hello
+World
+</pre>
+
+<h3>コマンドラインオプション</h3>
+
+Linuxコマンドでは以下のようなオプション引数を持つものが多いですね。
+
+<pre>
+# オプション引数
+command -H -C /foo --name 123 file1 file2
+</pre>
+
+Perlでコマンドラインオプションを受け取れるプログラムを作るにはGetopt::Longモジュールの<b>GetOptions関数</b>を使用します。
+
+<pre>
+use Getopt::Long 'GetOptions';
+</pre>
+
+コマンドラインオプションを受け取るサンプル「cmdopt.pl」です。
+
+<pre>
+use strict;
+use warnings;
+use Data::Dumper;
+
+# モジュールの読み込みと関数のインポート
+use Getopt::Long 'GetOptions';
+
+# オプションの処理
+GetOptions(
+  'help|h'  => \my $help,
+  'conf|c=s'  => \my $conf_file,
+  'include|I=s' => \my @includes,
+);
+
+# オプション以外の通常のコマンドライン引数を受け取る 
+my @args = @ARGV;
+
+# オプション引数と通常のコマンドライン引数を出力
+warn Dumper [
+  $help,
+  $conf_file,
+  \@includes,
+  \@args,
+];
+</pre>
+
+GetOption関数は、オプション名とリファレンスの複数のペアを受け取ります。
+
+オプション名は、「help|h」のように「長い名前」に加えて「|」の後ろに記述することで「短い名前」も指定できます。「help」のように長い名前だけでもOKです。
+
+オプションが単なるフラグの場合は、オプション名だけで大丈夫です。オプションが文字列を受け取るときは、「conf|c=s」のように型を指定できます。型には「s」の文字列の他に「i」の整数、「f」の浮動小数点が利用できます。整数型や浮動小数点型を指定した場合は、不正な場合は、例外が投げられます。
+
+リファレンスは、コマンドライン引数で受け取るものがひとつの場合は、スカラリファレンスを、複数ある場合は、配列のリファレンスを指定できます。
+
+まずは、短い名前を使って実行してみましょう。
+
+<pre>
+perl cmdopt.pl -h -c=my.conf -I inc1.h -I inc2.h file1 file2
+</pre>
+
+実行結果です。
+
+<pre>
+$VAR1 = [
+          1,
+          'my.conf',
+          [
+            'inc1.h',
+            'inc2.h'
+          ],
+          [
+            'file1',
+            'file2'
+          ]
+        ];
+</pre>
+
+次に、長い名前を使って実行してみましょう。
+
+<pre>
+perl cmdopt.pl --help --conf=my.conf --include inc1.h --include inc2.h file1 file2
+</pre>
+
+実行結果です。
+
+<pre>
+$VAR1 = [
+          1,
+          'my.conf',
+          [
+            'inc1.h',
+            'inc2.h'
+          ],
+          [
+            'file1',
+            'file2'
+          ]
+        ];
+</pre>
+
+<h3>コマンドオプションを持つフィルタプログラムのサンプル</h3>
+
+コマンドオプションを指定できるフィルタプログラムのサンプルを実装してみます。簡単なgrepコマンド「mygrep」を実装してみましょう。大文字・小文字を無視する「-i, --ignore-case」があります。「qr//」演算子は正規表現のリファレンスを作成でき、正規表現を変数のように扱うことができます。
+
+<pre>
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Getopt::Long 'GetOptions';
+
+# オプション取得
+GetOptions(
+  'ignore-case|i', => \my $ignore_case,
+);
+
+# 第一引数は正規表現
+my $re_str = shift;
+
+# 第二引数以降あるいは、標準入力
+while (my $line = <>) {
+  
+  my $re;
+  
+  # 大文字・小文字を無視
+  if ($ignore_case) {
+    $re = qr/$re_str/i;
+  }
+  # 大文字・小文字を無視しない
+  else {
+    $re = qr/$re_str/;
+  }
+  
+  if ($line =~ /$re/) {
+    print "$line";
+  }
+}
+</pre>
+
+実行権限を追加します。
+
+<pre>
+chmod +x mygrep
+</pre>
+
+コマンドを実行します。lsとパイプで、標準入力にファイル一覧を流し込みます。引数はREADMEで、READMEを含むものを取り出します。
+
+<pre>
+ls | ./mygrep README
+</pre>
+
+実行結果です。READMEを含むファイル名だけを取得できました。
+
+<pre>
+README.html
+</pre>
+
+次に、大文字小文字を無視する「-i」オプションで、「readme」を指定してみましょう。
+
+<pre>
+ls | ./mygrep -i readme
+</pre>
+
+出力結果です。大文字・小文字を無視して「readme」が含まれているファイルを取得できました。
+
+<pre>
+README.html
+readme.txt
+</pre>
+
+<h2>外部プログラムの実行</h2>
+
+外部プログラムを実行してみましょう。
+
+<h3>system関数</h3>
+
+外部プログラムを実行するにはsystem関数を使用します。
+
+<pre>
+system('外部プログラム');
+</pre>
+
+外部プログラム実行の一つの例としてlsコマンドを実行してみましょう。systemコマンドは、外部プログラムの呼び出しが成功し、外部プログラムが正常ステータスを返した場合は、0を返します。0ではなかった場合は、失敗とみなして例外処理を記述しています。
+
+<pre>
+use strict;
+use warnings;
+
+# lsコマンドを実行
+my $cmd = 'ls';
+system($cmd) == 0
+  or die "Can't execute command $cmd: $!";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl outprog_ls.pl
+</pre>
+
+lsコマンドが実行され、出力結果に、ファイル一覧が表示されました。
+
+<pre>
+app.log      binfile.pl    cmdopt.pl   create_dir.pl  file_test.pl   glob_grep.pl
+</pre>
+
+<h4>引数を渡す</h4>
+
+外部プログラムに引数を渡してみましょう。「ls -1」という文字列をsystem関数の引数に指定します。
+
+<pre>
+use strict;
+use warnings;
+
+# lsコマンドを実行
+my $cmd = 'ls -1';
+system($cmd) == 0
+  or die "Can't execute command $cmd: $!";
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl outprog_lsl.pl
+</pre>
+
+「ls -1」コマンドが実行され、出力結果に、ファイル一覧が表示されました。
+
+<pre>
+app.log
+basename.pl
+bindir.pl
+binfile.pl
+book.csv
+book_out.csv
+</pre>
+
+<h4>安全な実行</h4>
+
+外部プログラムに引数が渡される場合は、もしバリデーションされていないユーザー入力であった場合は、外部プログラム呼び出しは、危険です。任意のコマンドを実行されてしまう可能性があります。
+
+このような場合は、コマンドを配列として渡すという方法があります。この方法は、外部プログラム呼び出し時に、シェルが起動されず、安全です。qwは文字列リスト演算子で、文字列のリストを簡単に作ることができます。
+
+<pre>
+use strict;
+use warnings;
+
+# 「ls -1」コマンドを安全に実行
+my @cmd = qw(ls -1);
+system(@cmd) == 0
+  or die "Can't execute command @cmd: $!";
+</pre>
+
+<h4>Perlプログラムの実行</h4>
+
+自分で作成したPerlプログラムも、外部プログラムの一つなので、実行できます。
+
+<pre>
+use strict;
+use warnings;
+
+# 自分で作ったPerlプログラムを実行
+my @cmd = qw(perl basename.pl);
+system(@cmd) == 0
+  or die "Can't execute command @cmd: $!";
+</pre>
+
+<h3>外部プログラムの標準出力を取得</h3>
+
+外部プログラムの標準出力を取得するにはバッククォート演算子「``」を使用します。バッククォート演算子を使ったサンプル「outprog_getout.pl」です。
+
+
+<pre>
+use strict;
+use warnings;
+
+my $foo = `ls -1`;
+
+print $foo;
+</pre>
+
+実行してみましょう。
+
+<pre>
+perl outprog_getout.pl
+</pre>
+
+「ls -1」コマンドが実行され、戻り値で出力を取得し、print関数で出力しています。
+
+<pre>
+app.log
+basename.pl
+bindir.pl
+binfile.pl
+book.csv
+book_out.csv
+</pre>
+
+バッククォート演算子で実行するコマンドに、引数が渡される場合は、もしバリデーションされていない、ユーザー入力であった場合は、外部プログラム呼び出しは、危険です。任意のコマンドを実行されてしまう可能性があります。
+
+<b>PerlでポータブルなLinuxファイル管理 サンプルコードのダウンロード</b>
+
+Perlクラブで会員登録を行うと、PerlでポータブルなLinuxファイル管理のサンプルコードがすべてダウンロードできます。
+
+<div style="height:1100px"></div>
+
+<b><big>PerlでポータブルなLinuxファイル管理入門</big></b>
+　
+発行日
+　2022年1月1日 初版第１刷発行
+　
+著者
+　Perlクラブ
+　
+装丁
+　MNdesign
+　Perlクラブ(株)
+　
+発行者・発行所
+　Perlクラブ(株)
+　〒104-0061
+　東京都中央区銀座７丁目１７番８号銀座松良ビル５階
+　電話 03-6281-5440
+　https://perlclub.net
+　
