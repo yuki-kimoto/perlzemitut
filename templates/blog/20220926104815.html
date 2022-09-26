@@ -1,0 +1,70 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>parentモジュール - クラスの継承</h2>
+
+<strong>parent</strong>モジュールを使用すると、クラスを継承することができます。
+
+<pre>
+# クラスの継承
+package MyClass;
+
+use parent 'BaseClass';
+</pre>
+
+上記のサンプルでは<code>MyClass</code>が<code>BaseClass</code>を継承しています。
+
+<code>BaseClass</code>は、コンパイル時に、<a href="/blog/20090207123288.html">require</a>を使って読み込まれ、特殊変数<a href="/blog/20090324123747.html">@ISA</a>の最後に追加されます。
+
+<h3>同一ファイルで定義されたクラスの継承</h3>
+
+同一ファイルで定義されたクラスを継承するには<code>-norequire</code>オプションを使用します。
+
+<pre>
+package Foo;
+sub exclaim { "I CAN HAS PERL" }
+
+package DoesNotLoadFooBar;
+use parent -norequire, 'Foo', 'Bar';
+</pre>
+
+<h3>baseモジュール</h3>
+
+<a href="/blog/20100425127089.html">base</a>モジュールは、<code>parent</code>モジュールと同じようにクラスの継承を行いますが、<a href="/blog/20090207123288.html">require</a>を使って親クラスを読み込むかどうかは、経験則を利用します。
+
+<pre>
+package MyClass;
+
+# baseモジュール
+use base 'ParentClass';
+</pre>
+
+もし親クラス「ParentClass」が定義されており、このクラスがサブルーチンを持つ場合は、<a href="/blog/20090207123288.html">require</a>は実行されません。
+
+<pre>
+package ParentClass;
+sub exclaim { "I CAN HAS PERL" }
+
+package DoesNotLoadFooBar;
+use base 'ParentClass';
+</pre>
+
+それ以外の場合は、親クラス<code>ParentClass</code>は、コンパイル時に、<a href="/blog/20090207123288.html">require</a>を使って読み込まれます。
+
+<code>parent</code>モジュールは。<code>v5.10</code>からコアモジュールです。
+
+<code>base</code>モジュールは。<code>v5.0</code>からコアモジュールです。

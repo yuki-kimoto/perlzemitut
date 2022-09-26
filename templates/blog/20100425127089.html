@@ -15,25 +15,23 @@
     here
   </li>
 </ol>
-<h2>base - クラスを継承する</h2>
-
-
+<h2>baseモジュール - クラスの継承</h2>
 
 <strong>base</strong>モジュールを使用すると、クラスを継承することができます。
 
 <pre>
 # クラスの継承
-package YourClass;
+package MyClass;
 
-use base 'BaseClass';
+use base 'ParentClass';
 </pre>
 
-継承を行うと基底クラスにあるメソッドをサブクラスで呼び出すことができるようになります。基底クラスのBaseClassでparseというメソッドが定義されていた場合はサブクラスのYourClassでもparseメソッドを呼び出すことができます。
+継承を行うと親クラスにあるメソッドをサブクラスで呼び出すことができるようになります。親クラスのParentClassでparseというメソッドが定義されていた場合はサブクラスのMyClassでもparseメソッドを呼び出すことができます。
 
 <pre>
-基底クラス
+親クラス
 　▲
-サブクラス ← 基底クラスのメソッド + 自身のメソッドを利用できる
+サブクラス ← 親クラスのメソッド + 自身のメソッドを利用できる
 </pre>
 
 <h3>単一継承と多重継承</h3>
@@ -42,19 +40,72 @@ Perlは多重継承をサポートしますが、多重継承はモジュール�
 
 実際、単一継承でプログラムを組むと、わかりやすく可読性の高いプログラムになります。単一継承でできないことはありませんし、設計もきれいになりますので、ぜひ単一継承でプログラムを作成してみてください。
 
-<h3>baseモジュールに関するFAQ</h3>
+<h2>baseモジュールを使ってクラスを継承する</h2>
 
-Q. parentというモジュールを見たことがあるのですが、baseモジュールと何が異なりますか。
-A. parentモジュールはbaseモジュールを簡素にしたものです。役割としては同じものです。parentは5.10.0からコアモジュールになりました。baseモジュールはPerl5.005からコアモジュールです。ポータビリティを考慮して継承を行うときはbaseモジュールが利用されていることが多いと思われます。
+@ISAを使用したクラスの継承を解説しました。けれども、この方法は何かパッケージ変数を触っているので、ほかの言語で継承の構文を学んだ人から見るとどこか変な感じです。
 
-Q. baseモジュールで継承する仕組みを教えてください。
-A. Perlでは@ISAというパッケージ変数に基底クラスを設定すると継承を行うことができます。baseモジュールはこれをコンパイル時に行っているだけです。次のような実装と同じ意味になります。
+もうすこし、継承を表現するわかりやすい方法があります。それは、<a href="/blog/20100425127089.html">baseモジュール</a>を使用する方法です。
+
+<h3>baseモジュール</h3>
+
+Perlの継承は@ISAを使うよりも、baseモジュールを使うほうが良いです。baseモジュールは内部では、 @ISA を触って同じことをしますが、@ISAを触っていることを隠蔽してくれます。
+
+またコンパイル時に@ISAを操作するので、ひとつのスクリプトにクラスの定義とオブジェクトの生成を書く場合に便利です。
+
+では@ISAを使った継承をbaseを使って書き直してみます。
+
 <pre>
-# 継承の仕組み
-package YourClass;
+use strict;
+use warnings;
 
-BEGIN {
-  our @ISA = ('BaseClass');
-}
+# ボタンクラスを使用する。
+my $button = Button->new;
+print $button->x;
+
+
+# コンポーネントクラス
+package Component;
+sub x { return 5 }
+
+# ボタンクラス
+package Button;
+# 継承
+use base 'Component'; 
+
+sub new { bless {}, 'Button' }
 </pre>
 
+use base と記述して引数に継承したいクラス名を渡します。コンパイル時にuse base が実行されるため
+
+<pre>
+my $button = Button->new;
+</pre>
+
+を上側に書いても問題ありません。ここからのサンプルは、baseモジュールを使って書いていきたいと思います。
+
+<h3>parentモジュール</h3>
+
+<a href="/blog/20220926104815.html">parent</a>モジュールは、<code>base</code>モジュールの動作を簡潔にしたものです。
+
+<pre>
+package MyClass;
+
+# parentモジュール
+use parent 'ParentClass';
+</pre>
+
+親クラス<code>ParentClass</code>は、コンパイル時に、<a href="/blog/20090207123288.html">require</a>を使って読み込まれ、特殊変数<a href="/blog/20090324123747.html">@ISA</a>の最後に追加されます。
+
+<a href="/blog/20090207123288.html">require</a>を実行したくない場合は、<code>-norequire</code>オプションを使用する必要があります。
+
+<pre>
+package Foo;
+sub exclaim { "I CAN HAS PERL" }
+
+package DoesNotLoadFooBar;
+use parent -norequire, 'Foo', 'Bar';
+</pre>
+
+<code>parent</code>モジュールは。<code>v5.10</code>からコアモジュールです。
+
+<code>base</code>モジュールは。<code>v5.0</code>からコアモジュールです。

@@ -1,0 +1,56 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20091116124667.html">
+      <span itemprop="name">モジュール</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li>
+    here
+  </li>
+</ol>
+<h2>parentモジュール - クラスの継承</h2>
+
+<strong>parent</strong>モジュールを使用すると、クラスを継承することができます。
+
+<pre>
+# クラスの継承
+package MyClass;
+
+use parent 'BaseClass';
+</pre>
+
+上記のサンプルでは<code>MyClass</code>が<code>BaseClass</code>を継承しています。
+
+<code>BaseClass</code>は、コンパイル時に、<a href="/blog/20090207123288.html">require</a>を使って読み込まれ、特殊変数<a href="/blog/20090324123747.html">@ISA</a>の最後に追加されます。
+
+<h3>同一ファイルで定義されたクラスの継承</h3>
+
+同一ファイルで定義されたクラスを継承するには<code>-norequire</code>オプションを使用します。
+
+<pre>
+  package Foo;
+  sub exclaim { "I CAN HAS PERL" }
+
+  package DoesNotLoadFooBar;
+  use parent -norequire, 'Foo', 'Bar';
+</pre>
+
+<h3>単一継承と多重継承</h3>
+
+Perlは多重継承をサポートしますが、多重継承はモジュール間の継承関係をとても複雑にしてしまいます。ですから、継承は単一継承に限るのがモジュールの関係をシンプルに保つ上でよいとされています。
+
+実際、単一継承でプログラムを組むと、わかりやすく可読性の高いプログラムになります。単一継承でできないことはありませんし、設計もきれいになりますので、ぜひ単一継承でプログラムを作成してみてください。
+
+<h2>parentモジュールを使ってクラスを継承する</h2>
+
+@ISAを使用したクラスの継承を解説しました。けれども、この方法は何かパッケージ変数を触っているので、ほかの言語で継承の構文を学んだ人から見るとどこか変な感じです。
+
+もうすこし、継承を表現するわかりやすい方法があります。それは、<a href="/blog/20100425127089.html">parentモジュール</a>を使用する方法です。
+
