@@ -1,0 +1,42 @@
+<h2>SUPER疑似クラス - スーパークラスのメソッドの呼び出し</h2>
+
+<code>SUPER</code>疑似クラスを使うと、スーパークラスのメソッドを呼び出すことができます。
+
+<pre>
+package Point;
+
+sub move {
+  my ($self, $x, $y) = @_;
+  
+  $self->{x} += $x;
+  $self->{y} += $y;
+}
+
+package Point3D;
+
+use base 'Point';
+
+sub move {
+  my ($self, $x, $y, $z) = @_;
+  
+  # スーパークラスのメソッドの呼び出し
+  $self->SUPER::clear($x, $y);
+  
+  $self->{z} += $z;
+}
+</pre>
+
+<code>$self->SUPER::clear($x, $y)</code>で、現在の<a href="/blog/20090316123712.html">パッケージ</a>である「Point3D」のスーパークラスの<code>clear</code>メソッドを探索します。
+
+<code>Point</code>クラスの<code>clear</code>メソッドが見つかり、これが呼び出されます。
+
+<h3>SUPER疑似クラスの注意点</h3>
+
+SUPER疑似クラスの注意点として、メソッドの探索順序があります。
+
+<quotemeta>
+デフォルトでは、Perl はメソッドに対して深さ優先左から右探索を行います。 つまり、@ISA 配列の最初の親から始め、それからその全ての親、祖父母、 というように探索します。 メソッドを見つけることに失敗すると、元のクラスの @ISA 配列の 次の親に行き、そこから探索します。
+<a href="https://perldoc.jp/docs/perl/5.36.0/perlobj.pod#How32SUPER32is32Resolved">メソッド解決順序 - perlobj</a>
+</quotemeta>
+
+<a href="/blog/20220924105911.html">単一継承</a>のみを使っている場合は、SUPER疑似クラスの使用は問題ありません。
