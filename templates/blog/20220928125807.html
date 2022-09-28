@@ -1,0 +1,114 @@
+<h2>mro - next::methodの有効化・メソッド解決順序の変更</h2>
+
+<code>mro</code>モジュールは、<a href="/blog/20220926105812.html">多重継承</a>における、スーパークラスのメソッド解決順序を変更するためのモジュールです。<code>mro</code>を読み込むと、<code>next::method</code>が有効になります。多重継承で、スーパークラスのメソッドを探索する場合は<a href="/blog/20220922134115.html">SUPER疑似クラス</a>よりも、<code>next::method</code>うことが推奨されています。
+
+<pre>
+# next::methodの有効化
+use mro;
+</pre>
+
+<code>next::method</code>は、オブジェクトから呼び出します。
+
+<pre>
+# next::methodの使い方
+$self->next::method(@args);
+</pre>
+
+<h3>next::methodの動作</h3>
+
+<code>next::method</code>は、C3というアルゴリズムで、スーパークラスを探索します。
+
+<pre>
+C3 は常に局所的な優先順位を保存して動作します。 これは、基本的にどのクラスもそのサブクラスより先に現れることはないことを 意味します。 例えば、以下のような古典的なダイヤ型継承パターンを考えます:
+
+     <A>
+    /   \
+  <B>   <C>
+    \   /
+     <D>
+
+標準の Perl 5 MRO は (D, B, A, C) です。 この結果、C は A のサブクラスにも関わらず、A が C より先に 検索されます。 しかし、C3 MRO アルゴリズムでは、(D, B, C, A) の順序になり、この問題は ありません。
+</pre>
+
+参考:<a href="https://perldoc.jp/docs/modules/mro-1.01/mro.pod#How32does32C332work">C3 の動作 - mro</a>
+
+<h3>next::methodを多重継承で使ったサンプル</h3>
+
+<code>next::method</code>を多重継承で使ったサンプルです。
+
+<pre>
+use strict;
+use warnings;
+use mro;
+
+package MultiBase1 {
+  sub b1_init {
+    my $self = shift;
+    
+    push @{$self->{ps}}, 2;
+    $self->{b1} = 3;
+  }
+}
+
+package MultiBase2 {
+  sub b1_init {
+    my $self = shift;
+    
+    push @{$self->{ps}}, 7;
+    $self->{b1} = 8;
+  }
+  
+  sub b2_init {
+    my $self = shift;
+    
+    push @{$self->{ps}}, 3;
+    $self->{b2} = 4;
+  }
+}
+
+package MultiClass {
+  
+  use base 'MultiBase1', 'MultiBase2';
+  
+  sub new {
+    my $class = shift;
+    
+    my $self = bless {@_}, ref $class || $class;
+    
+    $self->{ps} //= [];
+    
+    $self->init;
+    
+    return $self;
+  }
+  
+  sub init {
+    my $self = shift;
+    
+    push @{$self->{ps}}, 1;
+    
+    $self->b1_init;
+    $self->b2_init;
+  }
+  
+  sub b1_init {
+    my $self = shift;
+    
+    $self->next::method;
+  }
+  
+  sub b2_init {
+    my $self = shift;
+    
+    $self->next::method;
+  }
+}
+
+my $object = MultiClass->new;
+
+print $object->{b1} . "\n"; # 3
+
+print $object->{b2} . "\n"; # 4
+
+print "@{$object->{ps}}" . "\n"; # [1, 2, 3]
+</pre>
