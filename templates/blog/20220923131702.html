@@ -80,3 +80,63 @@ use Point;
 use Foo::Bar;
 </pre>
 
+<h2>クラスの雛形</h2>
+
+
+
+クラスの雛形を示しておきます。
+
+<h3>1. クラスの雛形</h3>
+
+以下がクラスの雛形になります。
+
+<pre>
+package Book;
+use strict;
+use warnings;
+
+# コンストラクタ
+sub new {
+  my $proto = shift;
+  my $class = ref $proto || $proto;
+  my $self = {};
+  bless $self, $class;
+    
+  $self->init( @_ );
+  return $self;
+}
+
+# オブジェクトの初期化
+sub init {
+  my ($self, @args) = @_;
+  # 追加で行いたい処理
+}
+
+# アクセッサ
+sub title {
+  my $self = shift;
+  if (@_) {
+    my $old = $self->{title};
+    return $self->{title} = $_[0];
+  }
+  else{
+    return $self->{ title };
+  }
+}
+
+
+sub author {
+  my $self = shift;
+  if (@_) {
+    my $old = $self->{author};
+    return $self->{author} = $_[0];
+  }
+  else{
+    return $self->{author};
+  }
+}
+
+1;
+</pre>
+後は好きなメソッドを追加するだけですね。
+
