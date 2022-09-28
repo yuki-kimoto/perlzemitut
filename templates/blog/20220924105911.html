@@ -1,9 +1,28 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向プログラミング</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
 <h2>単一継承</h2>
 
 単一継承とは、親クラスを一つ指定する継承のことを言います。一般的には、<a href="/blog/20220926105812.html">多重継承</a>を使わないで、単一継承でオブジェクト指向プログラミングを行うことが推奨されています。
 <h4>単一継承の実装</h4>
 
-Perlには継承を行う方法が複数存在します。公式にはparentモジュールが推奨されていますが、baseモジュールはPerl v5.0から存在し、もっとも多く使われているように感じます。
+単一継承の実装方法を紹介します。Perlには継承を行う方法が複数存在します。公式にはparentモジュールが推奨されていますが、baseモジュールはPerl v5.0から存在し、もっとも多く使われているように感じます。
 
 <h4>@ISAを使う場合</h4>
 
