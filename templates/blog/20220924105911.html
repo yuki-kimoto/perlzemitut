@@ -1,3 +1,54 @@
 <h2>単一継承</h2>
 
-単一継承とは、親クラスを一つ指定する継承のことを言います。
+単一継承とは、親クラスを一つ指定する継承のことを言います。一般的には、<a href="/blog/20220926105812.html">多重継承</a>を使わないで、単一継承でオブジェクト指向プログラミングを行うことが推奨されています。
+<h4>単一継承の実装</h4>
+
+Perlには継承を行う方法が複数存在します。公式にはparentモジュールが推奨されていますが、baseモジュールはPerl v5.0から存在し、もっとも多く使われているように感じます。
+
+<h4>@ISAを使う場合</h4>
+
+<a href="/blog/20090324123747.html">@ISA</a>を使った単一継承のサンプルです。
+
+<pre>
+package Point3D;
+
+sub new {
+  # ...
+}
+
+package Point;
+
+our @ISA = ('Point3D');
+</pre>
+
+<h4>baseモジュール</h4>
+
+<a href="/blog/20100425127089.html">baseモジュール</a>を使った単一継承のサンプルです。
+
+<pre>
+package Point3D;
+
+sub new {
+  # ...
+}
+
+package Point;
+
+use base 'Point3D';
+</pre>
+
+<h4>parentモジュール</h4>
+
+<a href="/blog/20220926104815.html">parentモジュール</a>を使った単一継承のサンプルです。
+
+<pre>
+package Point3D;
+
+sub new {
+  # ...
+}
+
+package Point;
+
+use parent -norequire, 'Point3D';
+</pre>
