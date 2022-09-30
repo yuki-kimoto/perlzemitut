@@ -1,0 +1,38 @@
+<h2>オーバーライド</h2>
+
+オーバーライドとは、スーパークラスのメソッドを再定義することをいいます。
+
+<pre>
+package Point;
+  
+sub move {
+  my $self = shift;
+  
+  my ($x, $y) = @_;
+  
+  $self->{x} += $x;
+  $self->{y} += $y;
+}
+
+package Point3D;
+
+use base 'Point';
+
+# moveメソッドをオーバーライド
+sub move {
+  my $self = shift;
+  
+  my ($x, $y, $z) = @_;
+  
+  $self->SUPER::move($x, $y);
+  $self->{z} += $z;
+}
+</pre>
+
+オーバーライドの詳しい解説については、継承の記事を見てください。
+
+<ul>
+  <li>
+    <a href="/blog/20090325123747.html">継承</a>
+  </li>
+</ul>
