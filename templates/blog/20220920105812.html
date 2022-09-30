@@ -1,0 +1,50 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+      <span itemprop="name">オブジェクト指向プログラミング</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">here</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+<h2>ref関数 - クラス名の取得・リファレンスの種類の取得</h2>
+
+<code>ref</code>関数を使うと、<a href="/blog/20100203126425.html">bless関数</a>を使って生成したオブジェクトから、クラス名を取得できます。
+
+<pre>
+my $http = HTTP::Tiny->new;
+
+# ref関数でクラス名を取得
+my $class_name = ref $http;
+</pre>
+
+<code>HTTP::Tiny</code>という文字列を取得できます。
+
+blessされていないオブジェクトへのリファレンスの場合は、以下の値が返ります。
+
+<blockquote>
+オペランドが bless されていないオブジェクトへのリファレンスの場合、 返り値はオブジェクトの型を示します。 bless されていないリファレンス先がスカラではない場合、 返り値はオブジェクトの種類を示す、 ARRAY, HASH, CODE, FORMAT, IO のいずれかの文字列です。 bless されていないリファレンス先がスカラの場合、 返り値はそのスカラが現在保持している種類に依存して、 SCALAR, VSTRING, REF, GLOB, LVALUE, REGEXP の いずれかの文字列です。 しかし、qr// は既に bless されて作成されるので、 ref qr/.../ はおそらく Regexp を返すことに注意してください。 これらの組み込み型名はまたクラス名として使われることができるので、 ref がこれらの名前の一つを返すことは、 明らかにリファレンス先がその名前が示している種類のものであることを 示しているわけではないことに注意してください。
+
+<a href="https://perldoc.jp/func/ref">Perlの組み込み関数 ref の翻訳 - perldoc.jp</a>
+
+</blockquote>
+
+blessされていないオブジェクトへのリファレンスの場合のサンプルです。
+
+<pre>
+# ARRAY
+my $ref_array_ref = ref [];
+
+# HASH
+my $ref_hash_ref = ref {};
+</pre>
