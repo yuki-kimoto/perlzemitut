@@ -139,29 +139,59 @@ $^O
 
 <table>
   <tr>
-    <td>
-      <span style="font-weight:bold;">$^Oの値</span>
-    </td>
-    <td>
-      <span style="font-weight:bold;">説明とリンク</span>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      MacOS　
-    </td>
-    <td>
-       MacOS 
-    </td>
+    <th>$^Oの値</th>
+    <th>OS</th>
   </tr>
 
   <tr>
     <td>
       MSWin32 
     </td>
+    <td>
+      Windows
+    </td>
   </tr>
-|Windows 全般|
+  <tr>
+    <td>
+      darwin 
+    </td>
+    <td>
+      Mac OS X
+    </td>
+  </tr>
+  <tr>
+    <td>
+      linux    
+    </td>
+    <td>
+       Linux
+    </td>
+  </tr>
+  <tr>
+    <td>
+      freebsd  
+    </td>
+    <td>
+      FreeBSD
+    </td>
+  </tr>
+  <tr>
+    <td>
+      cygwin   
+    </td>
+    <td>
+       cygwin
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      solaris  
+    </td>
+    <td>
+      Solaris
+    </td>
+  </tr>
   <tr>
     <td>
       os2     
@@ -215,69 +245,15 @@ $^O
       MS-DOS
     </td>
   </tr>
-
   <tr>
     <td>
-      cygwin   
+       MacOS 
     </td>
     <td>
-       cygwin
+      旧MacOS
     </td>
   </tr>
 
-  <tr>
-    <td>
-      linux    
-    </td>
-    <td>
-       Linux
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      freebsd  
-    </td>
-    <td>
-      FreeBSD
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      solaris  
-    </td>
-    <td>
-      Solaris
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      Unix  ( 違うかも )     
-    </td>
-    <td>
-       Unix 
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      darwin 
-    </td>
-    <td>
-      Mac OS X
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      CentOS
-    </td>
-    <td>
-      Linux
-    </td>
-  </tr>
 
 </table>
 
@@ -329,14 +305,9 @@ our @ISA = ('ParentClass');
 
 <table>
   <tr>
-    <td>
-      *特殊変数
-    </td>
-    <td>
-      *意味
-    </td>
+    <th>特殊変数</th>
+    <th>意味</th>
   </tr>
-
   <tr>
     <td>
       $_
@@ -345,7 +316,6 @@ our @ISA = ('ParentClass');
       デフォルト引数
     </td>
   </tr>
-
   <tr>
     <td>
       @_
@@ -354,7 +324,6 @@ our @ISA = ('ParentClass');
       サブルーチンの引数
     </td>
   </tr>
-
   <tr>
     <td>
       $"
@@ -363,7 +332,6 @@ our @ISA = ('ParentClass');
       配列がダブルクォートで変数展開された場合のセパレーター
     </td>
   </tr>
-
   <tr>
     <td>
       $$
@@ -372,7 +340,6 @@ our @ISA = ('ParentClass');
       プロセスID
     </td>
   </tr>
-
   <tr>
     <td>
       $0
@@ -381,7 +348,6 @@ our @ISA = ('ParentClass');
       実行されているプログラムの名前
     </td>
   </tr>
-
   <tr>
     <td>
       $(
@@ -390,7 +356,6 @@ our @ISA = ('ParentClass');
       プロセスの実グループID
     </td>
   </tr>
-
   <tr>
     <td>
       $)
@@ -507,7 +472,6 @@ our @ISA = ('ParentClass');
       オペレーティングシステムの名前
     </td>
   </tr>
-|
   <tr>
     <td>
       %SIG
@@ -597,7 +561,6 @@ our @ISA = ('ParentClass');
       パターンマッチにおける最後に使われたグループ
     </td>
   </tr>
-|
   <tr>
     <td>
       @+
