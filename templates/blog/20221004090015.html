@@ -21,52 +21,84 @@
 
 Perlオブジェクト指向プログラミングの入門記事です。
 
-<h3>Object::Simpleのインストール</h3>
-
-Object::Simpleをインストールします。<a href="/blog/20100504127089.html">cpan</a>または<a href="/blog/20101027127859.html">cpanm</a>でモジュールをインストールできます。
-
-<pre>
-# cpan
-cpan Object::Simple
-
-# cpanm
-cpanm Object::Simple
-</pre>
-
 <h3>クラスの定義</h3>
 
-Perlでは<a href="/blog/20220923131702.html">クラス</a>の定義は<strong>package</strong>を使って行います。最初に<b>-base</b>フラグを使って<code>Object::Simple</code>を継承したクラスを作成します。
+Perlでは<a href="/blog/20220923131702.html">クラス</a>の定義は<strong>package</strong>を使って行います。
 
 <pre>
 package Point;
-use Object::Simple -base;
 </pre>
 
 <h3>コンストラクタ</h3>
 
-<a href="/blog/20090317123712.html">コンストラクタ</a>である<b>new</b>という<a href="/blog/20220929115717.html"メソッド</a>を使ってクラスからオブジェクトを生成することができます。この<code>new</code>はObject::Simpleから<a href="/blog/20090325123747.html">継承</a>されたものです。
+<a href="/blog/20090317123712.html">コンストラクタ</a>である<b>new</b>という<a href="/blog/20220930115720.html">クラスメソッド</a>を定義します。<a href="/blog/20100203126425.html">bless関数</a>を使って、オブジェクトを生成します。
+
+<pre>
+package Point;
+
+sub new {
+  my $class = shift;
+  
+  # オブジェクトの生成
+  my $self = bless {@_}, $class;
+  
+  # 初期化処理
+  
+  return $self;
+}
+</pre>
+
+コンストラクタを定義すれば、オブジェクトを作成することができます。
 
 <pre>
 my $point = Point->new;
 </pre>
 
-<b>new</b>メソッドは、<a href="/blog/20161013147635.html">ハッシュ</a>あるいは<a href="/blog/20180208151809.html">ハッシュのリファレンス</a>を受け取ることができます。
+<b>new</b>メソッドは、<a href="/blog/20161013147635.html">ハッシュ</a>を受け取ることができます。
 
 <pre>
 my $point = Point->new(x => 1, y => 2);
-my $point = Point->new({x => 1, y => 2});
 </pre>
 
 この値は、フィールドに設定されます。
 
-<h3>アクセッサ</h3>
+<h4>初期化処理</h4>
 
-次に<a href="/blog/20090321123713.html">アクセッサ</a>を定義してみましょう。アクセッサとはフィールドにアクセスするための<a href="/blog/20220929115717.html"メソッド</a>のことです。アクセッサを定義すれば、フィールドにアクセスすることができます。
-
-アクセッサを生成するには<b>has</b>関数を使用します。
+コンストラクタでの初期化処理は以下のように書きます。
 
 <pre>
-has 'x';
+sub new {
+  my $class = shift;
+  
+  # オブジェクトの生成
+  my $self = bless {@_}, $class;
+ 
+  # 初期化処理
+  $self->{x} //= 0;
+  $self->{y} //= 0;
+
+  return $self;
+}
+</pre>
+
+<a href="/blog/20120702134129.html">//演算子</a>を使って初期化しています。
+
+<h3>アクセッサ</h3>
+
+次に<a href="/blog/20090321123713.html">アクセッサ</a>を定義してみましょう。アクセッサとはフィールドにアクセスするための<a href="/blog/20220929115717.html">メソッド</a>のことです。アクセッサを定義すれば、フィールドにアクセスすることができます。
+
+<pre>
+# xを取得・設定するアクセッサ
+sub x {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{x} = $_[0];
+    return $self;
+  }
+  
+  return $self->{x};
+}
 </pre>
 
 アクセッサを定義するとフィールドにアクセスすることができます。
@@ -79,46 +111,14 @@ $point->x(1);
 my $x = $point->x;
 </pre>
 
-フィールドのデフォルト値を指定することもできます。
-
-<pre>
-has x => 1;
-</pre>
-
-フィールドが設定されていない場合は最初にアクセッサが呼び出されたときにデフォルト値がフィールドに設定されます。
-
-<pre>
-# デフォルト値の1を取得
-my $default = $point->x;
-</pre>
-
-もし<a href="/blog/20100930127859.html">リファレンス</a>や<a href="/blog/20100203126425.html">オブジェクト</a>をデフォルト値として指定したい場合は、サブルーチンのリファレンスの戻り値にする必要があります。
-
-<pre>
-has x => sub { [] };
-has x => sub { {} };
-has x => sub { Point->new };
-</pre>
-
-複数のアクセッサを一度に生成することもできます。
-
-<pre>
-has [qw/x y/];
-has [qw/x y/] => 0;
-</pre>
-
 <h3>継承</h3>
 
-<a href="/blog/20090325123747.html">継承</a>を行うには<b>-base</b>を使います。<b>Point</b>を継承した<b>Point3D</b>を作ってみましょう。
-
-<pre>
-package Point;
-use Object::Simple -base;
-</pre>
+<a href="/blog/20090325123747.html">継承</a>を行うには<a href="/blog/20100425127089.html">baseモジュール</a>を使います。<b>Point</b>を継承した<b>Point3D</b>を作ってみましょう。
 
 <pre>
 package Point3D;
-use Point -base;
+
+use base 'Point';
 </pre>
 
 <h3>スーパークラスのメソッドの呼び出し</h3>
@@ -127,11 +127,14 @@ use Point -base;
 
 <pre>
 package Point3D;
-use Point -base;
+use base 'Point';
+
+# ...
 
 sub clear {
   my $self = shift;
   
+  # スーパークラスのclearメソッドの呼び出し
   $self->SUPER::clear;
 }
 </pre>
@@ -141,14 +144,17 @@ sub clear {
 サブクラスでコンストラクタを<a href="/blog/20221001064718.html">オーバーライド</a>したい場合があると思います。コンストラクタをオーバーライドするには次のようにします。
 
 <pre>
-package Point;
-use Object::Simple -base;
+package Point3D;
+use base 'Point';
 
 sub new {
   my $class = shift;
   
   my $self = $class->SUPER::new(@_);
   
+  # 初期化処理
+  $self->{z} //= 0;
+
   return $self;
 }
 </pre>
@@ -157,7 +163,7 @@ newはコンストラクタなので必ずオブジェクト自身を返すよ�
 
 <h3>クラスの作成 - 実践編</h3>
 
-これだけ覚えればPerlのオブジェクト指向プログラミングはほぼマスターです。実践してみましょう。<b>Point</b>クラスと<b>Point3D</b>クラスを作成してみます。
+Perlのオブジェクト指向プログラミングを実践してみましょう。<b>Point</b>クラスと<b>Point3D</b>クラスを作成してみます。
 
 <h4>Pointクラス</h4>
 
@@ -177,10 +183,43 @@ newはコンストラクタなので必ずオブジェクト自身を返すよ�
 
 <pre>
 package Point;
-use Object::Simple -base;
 
-has x => 0;
-has y => 0;
+sub new {
+  my $class = shift;
+  
+  # オブジェクトの生成
+  my $self = bless {@_}, $class;
+ 
+  # 初期化処理
+  $self->{x} //= 0;
+  $self->{y} //= 0;
+
+  return $self;
+}
+
+# xを取得・設定するアクセッサ
+sub x {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{x} = $_[0];
+    return $self;
+  }
+  
+  return $self->{x};
+}
+
+# yを取得・設定するアクセッサ
+sub y {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{y} = $_[0];
+    return $self;
+  }
+  
+  return $self->{y};
+}
 
 sub clear {
   my $self = shift;
@@ -224,9 +263,19 @@ $point->clear;
     
 <pre>
 package Point3D;
-use Point -base;
+use base 'Point';
 
-has z => 0;
+# zを取得・設定するアクセッサ
+sub z {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{z} = $_[0];
+    return $self;
+  }
+  
+  return $self->{z};
+}
 
 sub clear {
   my $self = shift;
@@ -259,10 +308,46 @@ libというディレクトを作成して、その中にPoint.pmというファ
 
 <pre>
 package Point;
-use Object::Simple -base;
 
-has x => 0;
-has y => 0;
+use strict;
+use warnings;
+
+sub new {
+  my $class = shift;
+  
+  # オブジェクトの生成
+  my $self = bless {@_}, $class;
+ 
+  # 初期化処理
+  $self->{x} //= 0;
+  $self->{y} //= 0;
+
+  return $self;
+}
+
+# xを取得・設定するアクセッサ
+sub x {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{x} = $_[0];
+    return $self;
+  }
+  
+  return $self->{x};
+}
+
+# yを取得・設定するアクセッサ
+sub y {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{y} = $_[0];
+    return $self;
+  }
+  
+  return $self->{y};
+}
 
 sub clear {
   my $self = shift;
@@ -280,9 +365,19 @@ libというディレクトの中にPoint3D.pmというファイルを作成し�
 
 <pre>
 package Point3D;
-use Point -base;
+use base 'Point';
 
-has z => 0;
+# zを取得・設定するアクセッサ
+sub z {
+  my $self = shift;
+  
+  if (@_) {
+    $self->{z} = $_[0];
+    return $self;
+  }
+  
+  return $self->{z};
+}
 
 sub clear {
   my $self = shift;
