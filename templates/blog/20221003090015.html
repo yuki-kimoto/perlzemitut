@@ -1,0 +1,15 @@
+<h2>UNIVERSAL - すべてのオブジェクトのスーパークラス</h2>
+
+<code>UNIVERSAL</code>は、すべてのオブジェクトのスーパークラスです。UNIVERSALで定義されているメソッドは、すべてのオブジェクトから呼び出すことができます。
+
+<h3>isa</h3>
+
+<code>isa</code>メソッドは、あるオブジェクトが、引数で指定された<a href="/blog/20220923131702.html">クラス</a>、または、指定された<a href="/blog/20220923131702.html">クラス</a>を継承しているをチェックします。
+
+<pre>
+# Pointまたは、Pointを継承
+my $isa = $point->isa("Point");
+
+# Point3Dまたは、Point3Dを継承
+my $isa = $point->isa("Point3D");
+</pre>

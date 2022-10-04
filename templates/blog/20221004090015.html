@@ -1,0 +1,349 @@
+<ol class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/">
+        <span itemprop="name">Perl</span></a>
+    <meta itemprop="position" content="1" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="/blog/20161030147778.html">
+        <span itemprop="name">オブジェクト指向</span></a>
+    <meta itemprop="position" content="2" />
+  </li>
+  &#8250;
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <span itemprop="name">入門</span>
+    <meta itemprop="position" content="3" />
+  </li>
+</ol>
+
+<h2>Perlオブジェクト指向プログラミング入門</h2>
+
+Perlオブジェクト指向プログラミングの入門記事です。
+
+<h3>Object::Simpleのインストール</h3>
+
+Object::Simpleをインストールします。<a href="/blog/20100504127089.html">cpan</a>または<a href="/blog/20101027127859.html">cpanm</a>でモジュールをインストールできます。
+
+<pre>
+# cpan
+cpan Object::Simple
+
+# cpanm
+cpanm Object::Simple
+</pre>
+
+<h3>クラスの定義</h3>
+
+Perlでは<a href="/blog/20220923131702.html">クラス</a>の定義は<strong>package</strong>を使って行います。最初に<b>-base</b>フラグを使って<code>Object::Simple</code>を継承したクラスを作成します。
+
+<pre>
+package Point;
+use Object::Simple -base;
+</pre>
+
+<h3>コンストラクタ</h3>
+
+<a href="/blog/20090317123712.html">コンストラクタ</a>である<b>new</b>という<a href="/blog/20220929115717.html"メソッド</a>を使ってクラスからオブジェクトを生成することができます。この<code>new</code>はObject::Simpleから<a href="/blog/20090325123747.html">継承</a>されたものです。
+
+<pre>
+my $point = Point->new;
+</pre>
+
+<b>new</b>メソッドは、<a href="/blog/20161013147635.html">ハッシュ</a>あるいは<a href="/blog/20180208151809.html">ハッシュのリファレンス</a>を受け取ることができます。
+
+<pre>
+my $point = Point->new(x => 1, y => 2);
+my $point = Point->new({x => 1, y => 2});
+</pre>
+
+この値は、フィールドに設定されます。
+
+<h3>アクセッサ</h3>
+
+次に<a href="/blog/20090321123713.html">アクセッサ</a>を定義してみましょう。アクセッサとはフィールドにアクセスするための<a href="/blog/20220929115717.html"メソッド</a>のことです。アクセッサを定義すれば、フィールドにアクセスすることができます。
+
+アクセッサを生成するには<b>has</b>関数を使用します。
+
+<pre>
+has 'x';
+</pre>
+
+アクセッサを定義するとフィールドにアクセスすることができます。
+
+<pre>
+# 値の設定
+$point->x(1);
+
+# 値の取得
+my $x = $point->x;
+</pre>
+
+フィールドのデフォルト値を指定することもできます。
+
+<pre>
+has x => 1;
+</pre>
+
+フィールドが設定されていない場合は最初にアクセッサが呼び出されたときにデフォルト値がフィールドに設定されます。
+
+<pre>
+# デフォルト値の1を取得
+my $default = $point->x;
+</pre>
+
+もし<a href="/blog/20100930127859.html">リファレンス</a>や<a href="/blog/20100203126425.html">オブジェクト</a>をデフォルト値として指定したい場合は、サブルーチンのリファレンスの戻り値にする必要があります。
+
+<pre>
+has x => sub { [] };
+has x => sub { {} };
+has x => sub { Point->new };
+</pre>
+
+複数のアクセッサを一度に生成することもできます。
+
+<pre>
+has [qw/x y/];
+has [qw/x y/] => 0;
+</pre>
+
+<h3>継承</h3>
+
+<a href="/blog/20090325123747.html">継承</a>を行うには<b>-base</b>を使います。<b>Point</b>を継承した<b>Point3D</b>を作ってみましょう。
+
+<pre>
+package Point;
+use Object::Simple -base;
+</pre>
+
+<pre>
+package Point3D;
+use Point -base;
+</pre>
+
+<h3>スーパークラスのメソッドの呼び出し</h3>
+
+<a href="/blog/20220922134115.html">SUPER疑似クラス</a>を使って、スーパークラスのメソッドを呼び出すことができます。
+
+<pre>
+package Point3D;
+use Point -base;
+
+sub clear {
+  my $self = shift;
+  
+  $self->SUPER::clear;
+}
+</pre>
+
+<h3>コンストラクタのオーバーライド</h3>
+
+サブクラスでコンストラクタを<a href="/blog/20221001064718.html">オーバーライド</a>したい場合があると思います。コンストラクタをオーバーライドするには次のようにします。
+
+<pre>
+package Point;
+use Object::Simple -base;
+
+sub new {
+  my $class = shift;
+  
+  my $self = $class->SUPER::new(@_);
+  
+  return $self;
+}
+</pre>
+
+newはコンストラクタなので必ずオブジェクト自身を返すようにします。
+
+<h3>クラスの作成 - 実践編</h3>
+
+これだけ覚えればPerlのオブジェクト指向プログラミングはほぼマスターです。実践してみましょう。<b>Point</b>クラスと<b>Point3D</b>クラスを作成してみます。
+
+<h4>Pointクラス</h4>
+
+<blockquote>
+<ul>
+  <li>
+    Pointは点を表すクラスです。
+  </li>
+  <li>
+    xとyというフィールドがあり、アクセッサを持ちます。
+  </li>
+  <li>
+    xとyの値を0にクリアするclearというメソッドを持ちます。
+  </li>
+</blockquote>
+</ul>
+
+<pre>
+package Point;
+use Object::Simple -base;
+
+has x => 0;
+has y => 0;
+
+sub clear {
+  my $self = shift;
+  
+  $self->x(0);
+  $self->y(0);
+}
+
+1;
+</pre>
+
+末尾に「1;」という記述があるのは、<a href="/blog/20161130148051.html">モジュール</a>を書くファイルの末尾が真でなければならないというルールがあるためです。
+
+Pointクラスは以下のように使用することができます。
+
+<pre>
+use Point;
+my $point = Point->new(x => 3, y => 5);
+print $point->x;
+$point->y(9);
+$point->clear;
+</pre>
+
+<h4>Point3Dクラス</h4>
+
+<blockquote>
+<ul>
+  <li>
+    Point3Dは3次元の点を表すクラスです。
+  </li>
+  <li>
+    x,y,zというフィールドがあり、アクセッサを持ちます。
+  </li>
+  <li>
+    x,y,zの値を0にクリアするclearというメソッドを持ちます。
+  </li>
+</blockquote>
+</ul>
+
+<b>Point3D</b>は<b>Point</b>を継承して作成します。<b>clear</b>メソッドは<b>x</b>と<b>y</b>と<b>z</b>の値をクリアするためにオーバーライドされています。
+    
+<pre>
+package Point3D;
+use Point -base;
+
+has z => 0;
+
+sub clear {
+  my $self = shift;
+  
+  $self->SUPER::clear;
+  
+  $self->z(0);
+}
+
+1;
+</pre>
+
+Point3Dクラスは以下のように利用することができます。
+
+<pre>
+use Point3D;
+my $point = Point->new(x => 3, y => 5, z => 8);
+print $point->z;
+$point->z(9);
+$point->clear;
+</pre>
+
+<h3>実行できるサンプル</h3>
+
+実行できるサンプルを書いておきますね。
+
+<h4>lib/Point.pm</h4>
+
+libというディレクトを作成して、その中にPoint.pmというファイルを作成してください。
+
+<pre>
+package Point;
+use Object::Simple -base;
+
+has x => 0;
+has y => 0;
+
+sub clear {
+  my $self = shift;
+  
+  $self->x(0);
+  $self->y(0);
+}
+
+1;
+</pre>
+
+<h4>lib/Point3D.pm</h4>
+
+libというディレクトの中にPoint3D.pmというファイルを作成してください。
+
+<pre>
+package Point3D;
+use Point -base;
+
+has z => 0;
+
+sub clear {
+  my $self = shift;
+  
+  $self->SUPER::clear;
+  
+  $self->z(0);
+}
+
+1;
+</pre>
+
+<h4>object.pl</h4>
+
+クラスを読み込んで利用するサンプルです。libモジュールを使うことで、モジュールの検索パスを追加できます。
+
+<pre>
+use strict;
+use warnings;
+use lib 'lib';
+use Point3D;
+
+my $point = Point3D->new(x => 3, y => 5, z => 8);
+
+print $point->z . "\n";
+
+$point->z(9);
+
+print $point->z . "\n";
+$point->clear;
+
+print $point->z . "\n";
+</pre>
+
+<h4>スクリプトの実行</h4>
+ディレクトリ構成は以下のようにします。
+
+<pre>
+object.pl
+lib - Point.pm
+    - Point3D.pm
+</pre>
+
+以下のように実行してください。
+
+<pre>
+perl object.pl
+</pre>
+
+出力結果です。
+
+<pre>
+8
+9
+0
+</pre>
+
+<h3>オブジェクト指向プログラミングの詳細</h3>
+
+オブジェクト指向プログラミングの詳細については、以下の記事を見てください。
+
+<ul>
+  <li><a href="/blog/20161030147778.html">Perlオブジェクト指向プログラミング</a>
+</ul>
