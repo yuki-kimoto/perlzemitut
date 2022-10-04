@@ -16,120 +16,118 @@
     <meta itemprop="position" content="3" />
   </li>
 </ol>
-<h2>オブジェクト指向入門</h2>
 
+<h2>Object::Simpleを使ったPerlオブジェクト指向プログラミング入門</h2>
 
-
-Perlで、オブジェクト指向プログラミングをするのは難しい、クラスを作成したり、インスタンス変数を定義したりする方法が直感的にわからないと思う人は多いのではないでしょうか。
-
-実は、モジュールの力を借りれば、Perlのオブジェクト指向はとてもわかりやすくなります。今回はObject::Simpleというモジュールを使ってPerlのオブジェクト指向を解説します。
+<a href="/blog/20160912147368.html">Object::Simple</a>を使ったPerlオブジェクト指向プログラミング入門です。
 
 <h3>Object::Simpleのインストール</h3>
 
-Object::Simpleをインストールします。cpanを使えば簡単にモジュールをインストールできます。
+Object::Simpleをインストールします。<a href="/blog/20100504127089.html">cpan</a>または<a href="/blog/20101027127859.html">cpanm</a>でモジュールをインストールできます。
 
 <pre>
+# cpan
 cpan Object::Simple
-</pre>
 
-これで準備が完了です。
+# cpanm
+cpanm Object::Simple
+</pre>
 
 <h3>クラスの定義</h3>
 
-Perlではクラスの定義は<strong>package</strong>を使って行います。最初に<b>-base</b>フラグを使ってObject::Simpleを継承したクラスを作成します。次の記述は、まずおまじないとして覚えてください。
+Perlでは<a href="/blog/20220923131702.html">クラス</a>の定義は<strong>package</strong>を使って行います。最初に<b>-base</b>フラグを使って<code>Object::Simple</code>を継承したクラスを作成します。
 
 <pre>
-package MyClass;
+package Point;
 use Object::Simple -base;
 </pre>
 
 <h3>コンストラクタ</h3>
 
-このようにすると<b>MyClass</b>というクラスを定義できます。コンストラクタ<b>new</b>を使ってクラスからオブジェクトを生成することができます。(このnewはObject::Simpleから継承されたものです。)
+<a href="/blog/20090317123712.html">コンストラクタ</a>である<b>new</b>という<a href="/blog/20220929115717.html"メソッド</a>を使ってクラスからオブジェクトを生成することができます。この<code>new</code>はObject::Simpleから<a href="/blog/20090325123747.html">継承</a>されたものです。
 
 <pre>
-my $obj = MyClass->new;
+my $point = Point->new;
 </pre>
 
-<b>new</b>メソッドは、ハッシュあるいはハッシュのリファレンスを受け取ることができます。
-    
+<b>new</b>メソッドは、<a href="/blog/20161013147635.html">ハッシュ</a>あるいは<a href="/blog/20180208151809.html">ハッシュのリファレンス</a>を受け取ることができます。
+
 <pre>
-my $obj = MyClass->new(foo => 1, bar => 2);
-my $obj = MyClass->new({foo => 1, bar => 2});
+my $point = Point->new(x => 1, y => 2);
+my $point = Point->new({x => 1, y => 2});
 </pre>
 
-これは属性値として設定されます。
+この値は、フィールドに設定されます。
 
 <h3>アクセッサ</h3>
 
-次にアクセッサを定義してみましょう。アクセッサとは属性値(インスタンス変数)にアクセスするためのメソッドのことです。アクセッサを定義すれば、属性値にアクセスすることができます。
+次に<a href="/blog/20090321123713.html">アクセッサ</a>を定義してみましょう。アクセッサとはフィールドにアクセスするための<a href="/blog/20220929115717.html"メソッド</a>のことです。アクセッサを定義すれば、フィールドにアクセスすることができます。
 
 アクセッサを生成するには<b>has</b>関数を使用します。
 
 <pre>
-has 'foo';
+has 'x';
 </pre>
 
-アクセッサを定義すると属性値にアクセスすることができます。
+アクセッサを定義するとフィールドにアクセスすることができます。
 
 <pre>
 # 値の設定
-$obj->foo(1);
+$point->x(1);
 
 # 値の取得
-my $foo = $obj->foo;
+my $x = $point->x;
 </pre>
 
-属性値のデフォルトを指定することもできます。
+フィールドのデフォルト値を指定することもできます。
 
 <pre>
-has foo => 1;
+has x => 1;
 </pre>
 
-属性値が設定されていない場合は最初にアクセッサが呼び出されたときに
-デフォルト値が属性値に設定されます。
+フィールドが設定されていない場合は最初にアクセッサが呼び出されたときにデフォルト値がフィールドに設定されます。
 
 <pre>
 # デフォルト値の1を取得
-my $default = $obj->foo;
+my $default = $point->x;
 </pre>
 
-もしリファレンスやオブジェクトをデフォルト値として指定したい場合は、サブルーチンのリファレンスの戻り値にする必要があります。
+もし<a href="/blog/20100930127859.html">リファレンス</a>や<a href="/blog/20100203126425.html">オブジェクト</a>をデフォルト値として指定したい場合は、サブルーチンのリファレンスの戻り値にする必要があります。
 
 <pre>
-has foo => sub { [] };
-has foo => sub { {} };
-has foo => sub { MyClass->new };
+has x => sub { [] };
+has x => sub { {} };
+has x => sub { Point->new };
 </pre>
 
 複数のアクセッサを一度に生成することもできます。
 
 <pre>
-has [qw/foo bar baz/];
-has [qw/foo bar baz/] => 0;
+has [qw/x y/];
+has [qw/x y/] => 0;
 </pre>
 
 <h3>継承</h3>
 
-継承を行うには<b>-base</b>を使います。<b>MyClass</b>を継承した<b>SubClass</b>を作ってみましょう。
+<a href="/blog/20090325123747.html">継承</a>を行うには<b>-base</b>を使います。<b>Point</b>を継承した<b>Point3D</b>を作ってみましょう。
 
 <pre>
-package MyClass;
+package Point;
 use Object::Simple -base;
 </pre>
 
 <pre>
-package SubClass;
-use MyClass -base;
+package Point3D;
+use Point -base;
 </pre>
 
 <h3>スーパークラスのメソッドの呼び出し</h3>
 
-<b>SUPER</b>を使って、スーパークラスのメソッドを呼び出すことができます。
+<a href="/blog/20220922134115.html">SUPER疑似クラス</a>を使って、スーパークラスのメソッドを呼び出すことができます。
 
 <pre>
-package SubClass;
-use MyClass -base;
+package Point3D;
+use Point -base;
 
 sub clear {
   my $self = shift;
@@ -140,10 +138,10 @@ sub clear {
 
 <h3>コンストラクタのオーバーライド</h3>
 
-サブクラスでコンストラクタをオーバーライドしたい場合があると思います。コンストラクタをオーバーライドするには次のようにします。
+サブクラスでコンストラクタを<a href="/blog/20221001064718.html">オーバーライド</a>したい場合があると思います。コンストラクタをオーバーライドするには次のようにします。
 
 <pre>
-package MyClass;
+package Point;
 use Object::Simple -base;
 
 sub new {
@@ -159,7 +157,7 @@ newはコンストラクタなので必ずオブジェクト自身を返すよ�
 
 <h3>クラスの作成 - 実践編</h3>
 
-あら不思議、これだけ覚えればPerlのオブジェクト指向はほぼマスターです。では、実践編です。<b>Point</b>クラスと<b>Point3D</b>クラスを作成してみます。
+これだけ覚えればPerlのオブジェクト指向プログラミングはほぼマスターです。実践してみましょう。<b>Point</b>クラスと<b>Point3D</b>クラスを作成してみます。
 
 <h4>Pointクラス</h4>
 
@@ -169,7 +167,7 @@ newはコンストラクタなので必ずオブジェクト自身を返すよ�
     Pointは点を表すクラスです。
   </li>
   <li>
-    xとyというアクセッサを持ちます。
+    xとyというフィールドがあり、アクセッサを持ちます。
   </li>
   <li>
     xとyの値を0にクリアするclearというメソッドを持ちます。
@@ -194,7 +192,7 @@ sub clear {
 1;
 </pre>
 
-(末尾に「1;」という記述があるのは、モジュールを書くファイルの末尾が真でなければならないというルールがあるためです。)
+末尾に「1;」という記述があるのは、<a href="/blog/20161130148051.html">モジュール</a>を書くファイルの末尾が真でなければならないというルールがあるためです。
 
 Pointクラスは以下のように使用することができます。
 
@@ -214,7 +212,7 @@ $point->clear;
     Point3Dは3次元の点を表すクラスです。
   </li>
   <li>
-    x,y,zというアクセッサを持ちます。
+    x,y,zというフィールドがあり、アクセッサを持ちます。
   </li>
   <li>
     x,y,zの値を0にクリアするclearというメソッドを持ちます。
@@ -297,7 +295,7 @@ sub clear {
 1;
 </pre>
 
-<h4>test.pl</h4>
+<h4>object.pl</h4>
 
 クラスを読み込んで利用するサンプルです。libモジュールを使うことで、モジュールの検索パスを追加できます。
 
@@ -326,7 +324,7 @@ print $point->z . "\n";
 ディレクトリ構成は以下のようにします。
 
 <pre>
-test.pl
+object.pl
 lib - Point.pm
     - Point3D.pm
 </pre>
@@ -334,7 +332,7 @@ lib - Point.pm
 以下のように実行してください。
 
 <pre>
-perl test.pl
+perl object.pl
 </pre>
 
 <h3>オブジェクト指向プログラミングの概念</h3>
@@ -375,20 +373,20 @@ sub method3 { ... }
 Perlはオブジェクト指向プログラミングを助ける便利な関数とメソッドを持っています。オブジェクトがどのクラスに属しているかを知るには、ref関数を使用します。
 
 <pre>
-my $class = ref $obj;
+my $class = ref $point;
 </pre>
 
 オブジェクトが特定のクラスを継承しているかどうかを調べるには、isaメソッドを使用します。
 
 <pre>
-$obj->isa('MyClass');
+$point->isa('Point');
 </pre>
 
 オブジェクト（あるいはクラス)が特定のメソッドを呼び出すことができるかどうかを知るには、canメソッドを使用します。
 
 <pre>
-MyClass->can('method1');
-$obj->can('method1');
+Point->can('method1');
+$point->can('method1');
 </pre>
 
 <h4>カプセル化</h4>
@@ -398,16 +396,16 @@ $obj->can('method1');
 このルールを守るためには値を取得や設定を行うためのアクセッサを生成する必要があります。
 
 <pre>
-my $value = $obj->foo;
-$obj->foo(1);
+my $value = $point->x;
+$point->x(1);
 </pre>
 
   直接データにアクセスするのは良くない習慣です。
 
 <pre>
 # 良くない
-my $value = $obj->{foo};
-$obj->{foo} = 1;
+my $value = $point->{x};
+$point->{x} = 1;
 </pre>
 
 <h4>ポリモーフィズム</h4>
@@ -438,12 +436,12 @@ sub method1 { return 2 }
 
 <pre>
 # 1を返す
-my $obj_p = P->new;
-$obj_p->method1;
+my $point_p = P->new;
+$point_p->method1;
 
 # 2を返す
-my $obj_q = Q->new;
-$obj_q->method1; # Return value is 2
+my $point_q = Q->new;
+$point_q->method1; # Return value is 2
 </pre>
 
 もし基底クラスのメソッドをサブクラスから呼び出したい場合はSUPER擬似クラスを使用します。
