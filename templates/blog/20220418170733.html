@@ -11,30 +11,34 @@
   </li>
 </ol>
 
-<h2>WSL2 への Perl のインストール</h2>
+<h2>WSLを使ったWindowsへのPerlのインストール</h2>
 
-<a href="https://docs.microsoft.com/en-us/windows/wsl/install">WSL2</a> は、Linux 用の Windows サブシステムです。 WSL2 を使用して Linux を Windows にインストールできます。そして、Perl を使用できます。
+<a href="https://docs.microsoft.com/en-us/windows/wsl/install">WSL</a> を使うと、Windows上にLinuxが利用可能になります。この記事ではWSLは、WLS2のことを意味します。一般的なLinuxディストリビューションにはPerlがインストールされているため、Perlが利用可能です。
 
 <img style = "border: 1px solid # ddd; max-width: 600px;" src = "/images/installation/wsl2.png">
 
-<h3>WSL2 のインストール</h3>
+<h3>WSL のインストール</h3>
 
-WSL2 をインストールしましょう。<a href="/blog/20080603121251.html">Windows コマンド プロンプト</a>で次のコマンドを実行します。
+WSL をインストールしましょう。<a href="/blog/20080603121251.html">Windows コマンド プロンプト</a>で次のコマンドを実行します。コマンドプロンプトは管理者権限で実行する必要があります。「右クリック」→「管理者として実行」
 
 <pre>
-# WSL2 をインストール
+# WSL をインストール
 wsl --install
 </pre>
 
-<a href="https://en.ubuntu.perlzemi.com/">Ubuntu</a> がデフォルトでインストールされます。
+Windows を再起動して WSL を有効にします。
 
-Windows を再起動して WSL2 を有効にします。
+<h3>Ubuntuのインストール</h3>
 
-数分かかります。
+Linuxディストリビューションのひとつである<a href="https://en.ubuntu.perlzemi.com/">Ubuntu</a>をインストールしましょう。再度、管理者として、コマンドプロンプトを実行して、以下のコマンドを実行します。
 
-次のメッセージが表示されます。
+<pre>
+wsl --install -d Ubuntu
+</pre>
 
-<h4>ユーザー名</h4>
+<h4>ユーザーアカウントの追加</h4>
+
+Ubuntuのユーザーアカウントを追加しましょう。
 
 <pre>
 Installing, this may take a few minutes...
@@ -44,15 +48,17 @@ For more information visit: https://aka.ms/wslusers
 Enter new UNIX username:
 </pre>
 
+<h4>ユーザー名</h4>
+
 例として以下のユーザー名を入力します。
 
 <pre>
-kimoto_ubuntu
+kimoto
 </pre>
 
 Ubuntu 端末上で右クリックすると、ユーザー名を貼り付けることができます。
 
-<h4>Password</h4>
+<h4>パスワード</h4>
 
 次にパスワードを設定します。
 
@@ -80,8 +86,8 @@ This is perl 5, version 30, subversion 0 (v5.30.0) built for x86_64-linux-gnu-th
 
 <h3>エクスプローラー使用してファイルを表示する</h3>
 
-Ubuntu 上のファイルは、次のパスで参照できます。 <b>\\wsl$</b> は WSL2 のルート ディレクトリです。
+Ubuntu 上のファイルは、次のパスで参照できます。 <b>\\wsl$</b> は WSL のルート ディレクトリです。
 
 <pre>
-\\wsl$\Ubuntu\home\kimoto_ubuntu
+\\wsl$\Ubuntu\home\kimoto
 </pre>
