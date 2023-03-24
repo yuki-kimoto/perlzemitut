@@ -628,24 +628,6 @@
     padding-left:115px;
   }
 
-  .youtube_block {
-    width:calc(100% - 30px);
-    margin:0 auto;
-  }
-  .youtube {
-    position: relative;
-    width: 100%;
-    margin:0 auto;
-    padding-top: 56.25%;
-  }
-  .youtube iframe {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-  }
-  
   .perlclub_register {
     width:calc(100% - 30px);
     max-width:500px;
